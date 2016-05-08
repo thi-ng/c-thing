@@ -73,38 +73,13 @@ CT_Vec3f *ct_set3fxyz(CT_Vec3f *v, float x, float y, float z) {
   return v;
 }
 
-CT_Vec3f *ct_add3fv_imm(CT_Vec3f *a, CT_Vec3f *b) {
-  a->x += b->x;
-  a->y += b->y;
-  a->z += b->z;
-  return a;
-}
+VEC3OP(CT_Vec3f, float, ct_add3f, ct_set3f, +)
 
-CT_Vec3f *ct_add3fv(CT_Vec3f *a, CT_Vec3f *b, CT_MPool* mpool) {
-  return ct_add3fv_imm(ct_set3fv(ALLOCATE_TYPE(mpool, CT_Vec3f), a), b);
-}
+VEC3OP(CT_Vec3f, float, ct_sub3f, ct_set3f, -)
 
-CT_Vec3f *ct_add3fn_imm(CT_Vec3f *v, float n) {
-  v->x += n;
-  v->y += n;
-  v->z += n;
-  return v;
-}
+VEC3OP(CT_Vec3f, float, ct_mul3f, ct_set3f, *)
 
-CT_Vec3f *ct_add3fn(CT_Vec3f *a, float n, CT_MPool* mpool) {
-  return ct_add3fn_imm(ct_set3fv(ALLOCATE_TYPE(mpool, CT_Vec3f), a), n);
-}
-
-CT_Vec3f *ct_add3fxyz_imm(CT_Vec3f *v, float x, float y, float z) {
-  v->x += x;
-  v->y += y;
-  v->z += z;
-  return v;
-}
-
-CT_Vec3f *ct_add3fxyz(CT_Vec3f *a, float x, float y, float z, CT_MPool* mpool) {
-  return ct_add3fxyz_imm(ct_set3fv(ALLOCATE_TYPE(mpool, CT_Vec3f), a), x, y, z);
-}
+VEC3OP(CT_Vec3f, float, ct_div3f, ct_set3f, /)
 
 float ct_dot3fv(CT_Vec3f *a, CT_Vec3f *b) {
   return a->x * b->x + a->y * b->y + a->z * b->z;

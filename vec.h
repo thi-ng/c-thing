@@ -18,6 +18,14 @@ typedef struct {
   type *name##xy(type *v, type2 x, type2 y, CT_MPool* mpool);   \
   type *name##xy_imm(type *v, type2 x, type2 y);
 
+#define DECL_VEC3OP(type, type2, name)                                  \
+  type *name##v(type *a, type *b, CT_MPool* mpool);                     \
+  type *name##v_imm(type *a, type *b);                                  \
+  type *name##n(type *v, type2 n, CT_MPool* mpool);                     \
+  type *name##n_imm(type *v, type2 n);                                  \
+  type *name##xyz(type *v, type2 x, type2 y, type2 z, CT_MPool* mpool); \
+  type *name##xyz_imm(type *v, type2 x, type2 y, type2 z);
+
 #define VEC2OP(type, type2, name, set, op)                              \
   type *name##v_imm(type *a, type *b) {                                 \
     a->x op##= b->x;                                                    \
@@ -49,6 +57,39 @@ typedef struct {
     return name##xy_imm(set##v(ALLOCATE_TYPE(mpool, type), a), x, y);   \
   }
 
+#define VEC3OP(type, type2, name, set, op)                              \
+  type *name##v_imm(type *a, type *b) {                                 \
+    a->x op##= b->x;                                                    \
+    a->y op##= b->y;                                                    \
+    a->z op##= b->z;                                                    \
+    return a;                                                           \
+  }                                                                     \
+                                                                        \
+  type *name##v(type *a, type *b, CT_MPool* mpool) {                    \
+    return name##v_imm(set##v(ALLOCATE_TYPE(mpool, type), a), b);       \
+  }                                                                     \
+                                                                        \
+  type *name##n_imm(type *v, type2 n) {                                 \
+    v->x op##= n;                                                       \
+    v->y op##= n;                                                       \
+    v->z op##= n;                                                       \
+    return v;                                                           \
+  }                                                                     \
+                                                                        \
+  type *name##n(type *a, type2 n, CT_MPool* mpool) {                    \
+    return name##n_imm(set##v(ALLOCATE_TYPE(mpool, type), a), n);       \
+  }                                                                     \
+                                                                        \
+  type *name##xyz_imm(type *v, type2 x, type2 y, type2 z) {             \
+    v->x op##= x;                                                       \
+    v->y op##= y;                                                       \
+    v->z op##= z;                                                       \
+    return v;                                                           \
+  }                                                                     \
+                                                                        \
+  type *name##xyz(type *a, type2 x, type2 y, type2 z, CT_MPool* mpool) { \
+    return name##xyz_imm(set##v(ALLOCATE_TYPE(mpool, type), a), x, y, z); \
+  }
 
 CT_Vec2f *ct_vec2f(float x, float y, CT_MPool* mpool);
 CT_Vec2f *ct_set2fv(CT_Vec2f *a, CT_Vec2f *b);
@@ -65,12 +106,10 @@ CT_Vec2f *ct_normalize2f(CT_Vec2f *v, float len, CT_MPool *mpool);
 CT_Vec3f *ct_vec3f(float x, float y, float z, CT_MPool* mpool);
 CT_Vec3f *ct_set3fv(CT_Vec3f *a, CT_Vec3f *b);
 CT_Vec3f *ct_set3fxyz(CT_Vec3f *a, float x, float y, float z);
-CT_Vec3f *ct_add3fv(CT_Vec3f *a, CT_Vec3f *b, CT_MPool* mpool);
-CT_Vec3f *ct_add3fv_imm(CT_Vec3f *a, CT_Vec3f *b);
-CT_Vec3f *ct_add3fn(CT_Vec3f *a, float n, CT_MPool* mpool);
-CT_Vec3f *ct_add3fn_imm(CT_Vec3f *a, float n);
-CT_Vec3f *ct_add3fxyz(CT_Vec3f *v, float x, float y, float z, CT_MPool* mpool);
-CT_Vec3f *ct_add3fxyz_imm(CT_Vec3f *v, float x, float y, float z);
+DECL_VEC3OP(CT_Vec3f, float, ct_add3f)
+DECL_VEC3OP(CT_Vec3f, float, ct_sub3f)
+DECL_VEC3OP(CT_Vec3f, float, ct_mul3f)
+DECL_VEC3OP(CT_Vec3f, float, ct_div3f)
 
 float ct_dot3fv(CT_Vec3f *a, CT_Vec3f *b);
 CT_Vec3f *ct_cross3fv(CT_Vec3f *a, CT_Vec3f *b, CT_MPool* mpool);
