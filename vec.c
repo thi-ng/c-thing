@@ -1,7 +1,7 @@
 #include "vec.h"
 
-CT_Vec2f *ct_vec2f(float x, float y, CT_Arena* arena) {
-  CT_Vec2f *v = ALLOCATE_TYPE(CT_Vec2f);
+CT_Vec2f *ct_vec2f(float x, float y, CT_MPool* mpool) {
+  CT_Vec2f *v = ALLOCATE_TYPE(mpool, CT_Vec2f);
   if (v != NULL) {
     v->x = x;
     v->y = y;
@@ -21,8 +21,8 @@ CT_Vec2f *ct_set2fxy(CT_Vec2f *v, float x, float y) {
   return v;
 }
 
-CT_Vec2f *ct_add2fv(CT_Vec2f *a, CT_Vec2f *b, CT_Arena* arena) {
-  CT_Vec2f *v = ALLOCATE_TYPE(CT_Vec2f);
+CT_Vec2f *ct_add2fv(CT_Vec2f *a, CT_Vec2f *b, CT_MPool* mpool) {
+  CT_Vec2f *v = ALLOCATE_TYPE(mpool, CT_Vec2f);
   if (v != NULL) {
     v->x = a->x + b->x;
     v->y = a->y + b->y;
@@ -36,8 +36,8 @@ CT_Vec2f *ct_add2fv_imm(CT_Vec2f *a, CT_Vec2f *b) {
   return a;
 }
 
-CT_Vec2f *ct_add2fn(CT_Vec2f *a, float n, CT_Arena* arena) {
-  CT_Vec2f *v = ALLOCATE_TYPE(CT_Vec2f);
+CT_Vec2f *ct_add2fn(CT_Vec2f *a, float n, CT_MPool* mpool) {
+  CT_Vec2f *v = ALLOCATE_TYPE(mpool, CT_Vec2f);
   if (v != NULL) {
     v->x = a->x + n;
     v->y = a->y + n;
@@ -51,8 +51,8 @@ CT_Vec2f *ct_add2fn_imm(CT_Vec2f *v, float n) {
   return v;
 }
 
-CT_Vec2f *ct_add2fxy(CT_Vec2f *a, float x, float y, CT_Arena* arena) {
-  CT_Vec2f *v = ALLOCATE_TYPE(CT_Vec2f);
+CT_Vec2f *ct_add2fxy(CT_Vec2f *a, float x, float y, CT_MPool* mpool) {
+  CT_Vec2f *v = ALLOCATE_TYPE(mpool, CT_Vec2f);
   if (v != NULL) {
     v->x = a->x + x;
     v->y = a->y + y;
@@ -72,8 +72,8 @@ float ct_dot2fv(CT_Vec2f *a, CT_Vec2f *b) {
 
 ////// Vec3f
 
-CT_Vec3f *ct_vec3f(float x, float y, float z, CT_Arena* arena) {
-  CT_Vec3f *v = ALLOCATE_TYPE(CT_Vec3f);
+CT_Vec3f *ct_vec3f(float x, float y, float z, CT_MPool* mpool) {
+  CT_Vec3f *v = ALLOCATE_TYPE(mpool, CT_Vec3f);
   if (v != NULL) {
     v->x = x;
     v->y = y;
@@ -96,8 +96,8 @@ CT_Vec3f *ct_set3fxyz(CT_Vec3f *v, float x, float y, float z) {
   return v;
 }
 
-CT_Vec3f *ct_add3fv(CT_Vec3f *a, CT_Vec3f *b, CT_Arena* arena) {
-  CT_Vec3f *v = ALLOCATE_TYPE(CT_Vec3f);
+CT_Vec3f *ct_add3fv(CT_Vec3f *a, CT_Vec3f *b, CT_MPool* mpool) {
+  CT_Vec3f *v = ALLOCATE_TYPE(mpool, CT_Vec3f);
   if (v != NULL) {
     v->x = a->x + b->x;
     v->y = a->y + b->y;
@@ -113,8 +113,8 @@ CT_Vec3f *ct_add3fv_imm(CT_Vec3f *a, CT_Vec3f *b) {
   return a;
 }
 
-CT_Vec3f *ct_add3fn(CT_Vec3f *a, float n, CT_Arena* arena) {
-  CT_Vec3f *v = ALLOCATE_TYPE(CT_Vec3f);
+CT_Vec3f *ct_add3fn(CT_Vec3f *a, float n, CT_MPool* mpool) {
+  CT_Vec3f *v = ALLOCATE_TYPE(mpool, CT_Vec3f);
   if (v != NULL) {
     v->x = a->x + n;
     v->y = a->y + n;
@@ -130,8 +130,8 @@ CT_Vec3f *ct_add3fn_imm(CT_Vec3f *v, float n) {
   return v;
 }
 
-CT_Vec3f *ct_add3fxy(CT_Vec3f *a, float x, float y, float z, CT_Arena* arena) {
-  CT_Vec3f *v = ALLOCATE_TYPE(CT_Vec3f);
+CT_Vec3f *ct_add3fxy(CT_Vec3f *a, float x, float y, float z, CT_MPool* mpool) {
+  CT_Vec3f *v = ALLOCATE_TYPE(mpool, CT_Vec3f);
   if (v != NULL) {
     v->x = a->x + x;
     v->y = a->y + y;
@@ -151,8 +151,8 @@ float ct_dot3fv(CT_Vec3f *a, CT_Vec3f *b) {
   return a->x * b->x + a->y * b->y + a->z * b->z;
 }
 
-CT_Vec3f *ct_cross3fv(CT_Vec3f *a, CT_Vec3f *b, CT_Arena* arena) {
-  CT_Vec3f *v = ALLOCATE_TYPE(CT_Vec3f);
+CT_Vec3f *ct_cross3fv(CT_Vec3f *a, CT_Vec3f *b, CT_MPool* mpool) {
+  CT_Vec3f *v = ALLOCATE_TYPE(mpool, CT_Vec3f);
   if (v != NULL) {
     v->x = a->y * b->z - a->z * b->y;
     v->y = a->z * b->x - a->x * b->z;
