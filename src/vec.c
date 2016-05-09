@@ -28,13 +28,13 @@ uint8_t ct_deltaeq2fv(CT_Vec2f *a, CT_Vec2f *b, float eps) {
     return (ct_deltaeqf(a->x, b->x, eps) && ct_deltaeqf(a->y, b->y, eps));
 }
 
-VEC2OP(CT_Vec2f, float, ct_add2f, ct_set2f, +)
+VEC2OP(CT_Vec2f, float, ct_add2f, +)
 
-VEC2OP(CT_Vec2f, float, ct_sub2f, ct_set2f, -)
+VEC2OP(CT_Vec2f, float, ct_sub2f, -)
 
-VEC2OP(CT_Vec2f, float, ct_mul2f, ct_set2f, *)
+VEC2OP(CT_Vec2f, float, ct_mul2f, *)
 
-VEC2OP(CT_Vec2f, float, ct_div2f, ct_set2f, / )
+VEC2OP(CT_Vec2f, float, ct_div2f, / )
 
 CT_Vec2f *ct_madd2fv_imm(CT_Vec2f *a, CT_Vec2f *b, CT_Vec2f *c) {
     a->x = a->x * b->x + c->x;
@@ -128,13 +128,17 @@ uint8_t ct_deltaeq3fv(CT_Vec3f *a, CT_Vec3f *b, float eps) {
             ct_deltaeqf(a->z, b->z, eps));
 }
 
-VEC3OP(CT_Vec3f, float, ct_add3f, ct_set3f, +)
-
-VEC3OP(CT_Vec3f, float, ct_sub3f, ct_set3f, -)
-
-VEC3OP(CT_Vec3f, float, ct_mul3f, ct_set3f, *)
-
-VEC3OP(CT_Vec3f, float, ct_div3f, ct_set3f, / )
+#ifdef CT_USE_SSE
+VEC3OP_SSE(CT_Vec3f, float, ct_add3f, +)
+VEC3OP_SSE(CT_Vec3f, float, ct_sub3f, -)
+VEC3OP_SSE(CT_Vec3f, float, ct_mul3f, *)
+VEC3OP_SSE(CT_Vec3f, float, ct_div3f, / )
+#else
+VEC3OP(CT_Vec3f, float, ct_add3f, +)
+VEC3OP(CT_Vec3f, float, ct_sub3f, -)
+VEC3OP(CT_Vec3f, float, ct_mul3f, *)
+VEC3OP(CT_Vec3f, float, ct_div3f, / )
+#endif
 
 CT_Vec3f *ct_madd3fv_imm(CT_Vec3f *a, CT_Vec3f *b, CT_Vec3f *c) {
     a->x = a->x * b->x + c->x;

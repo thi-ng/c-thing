@@ -2,7 +2,8 @@
 #include <stdio.h>
 #include <assert.h>
 
-int main() {
+void test_mpool() {
+    printf("---- test_mpool ----\n");
     CT_MPool pool;
     ct_mpool_init(&pool, 16, 8);
     ct_mpool_trace(&pool);
@@ -30,5 +31,4 @@ int main() {
     ct_mpool_free(&pool, b);
     ct_mpool_trace(&pool);
     ct_mpool_free_all(&pool);
-    return 0;
 }

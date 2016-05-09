@@ -1,7 +1,6 @@
 #pragma once
 
 #include <stdint.h>
-#include <stddef.h>
 #include <stdlib.h>
 
 #define ALLOCATE_TYPE(mpool, type)                                             \
@@ -21,7 +20,7 @@ typedef struct {
     uint32_t nextID;
 } CT_MPool;
 
-void ct_mpool_init(CT_MPool *mpool, uint32_t num, uint32_t bsize);
+uint8_t ct_mpool_init(CT_MPool *mpool, uint32_t num, uint32_t bsize);
 void *ct_mpool_malloc(CT_MPool *mpool);
 void ct_mpool_free(CT_MPool *mpool, void *block);
 void ct_mpool_free_all(CT_MPool *mpool);
