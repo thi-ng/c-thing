@@ -94,13 +94,16 @@ DECL_VEC2OP(CT_Vec2f, float, ct_add2f)
 DECL_VEC2OP(CT_Vec2f, float, ct_sub2f)
 DECL_VEC2OP(CT_Vec2f, float, ct_mul2f)
 DECL_VEC2OP(CT_Vec2f, float, ct_div2f)
-
+CT_Vec2f *ct_madd2fv_imm(CT_Vec2f *a, CT_Vec2f *b, CT_Vec2f *c);
+CT_Vec2f *ct_madd2fv(CT_Vec2f *a, CT_Vec2f *b, CT_Vec2f *c, CT_MPool *mpool);
 uint8_t ct_deltaeq2fv(CT_Vec2f *a, CT_Vec2f *b, float eps);
 float ct_dot2fv(CT_Vec2f *a, CT_Vec2f *b);
 float ct_distsq2fv(CT_Vec2f *a, CT_Vec2f *b);
 float ct_dist2fv(CT_Vec2f *a, CT_Vec2f *b);
 float ct_magsq2f(CT_Vec2f *v);
 float ct_mag2f(CT_Vec2f *v);
+CT_Vec2f *ct_mix2fv_imm(CT_Vec2f *a, CT_Vec2f *b, float t);
+CT_Vec2f *ct_mix2fv(CT_Vec2f *a, CT_Vec2f *b, float t, CT_MPool *mpool);
 CT_Vec2f *ct_normalize2f_imm(CT_Vec2f *v, float len);
 CT_Vec2f *ct_normalize2f(CT_Vec2f *v, float len, CT_MPool *mpool);
 uint8_t ct_is_normalized2f(CT_Vec2f *v);
@@ -112,7 +115,8 @@ DECL_VEC3OP(CT_Vec3f, float, ct_add3f)
 DECL_VEC3OP(CT_Vec3f, float, ct_sub3f)
 DECL_VEC3OP(CT_Vec3f, float, ct_mul3f)
 DECL_VEC3OP(CT_Vec3f, float, ct_div3f)
-
+CT_Vec3f *ct_madd3fv_imm(CT_Vec3f *a, CT_Vec3f *b, CT_Vec3f *c);
+CT_Vec3f *ct_madd3fv(CT_Vec3f *a, CT_Vec3f *b, CT_Vec3f *c, CT_MPool *mpool);
 uint8_t ct_deltaeq3fv(CT_Vec3f *a, CT_Vec3f *b, float eps);
 float ct_dot3fv(CT_Vec3f *a, CT_Vec3f *b);
 float ct_distsq3fv(CT_Vec3f *a, CT_Vec3f *b);
@@ -120,6 +124,8 @@ float ct_dist3fv(CT_Vec3f *a, CT_Vec3f *b);
 CT_Vec3f *ct_cross3fv(CT_Vec3f *a, CT_Vec3f *b, CT_MPool *mpool);
 float ct_magsq3f(CT_Vec3f *v);
 float ct_mag3f(CT_Vec3f *v);
+CT_Vec3f *ct_mix3fv_imm(CT_Vec3f *a, CT_Vec3f *b, float t);
+CT_Vec3f *ct_mix3fv(CT_Vec3f *a, CT_Vec3f *b, float t, CT_MPool *mpool);
 CT_Vec3f *ct_normalize3f_imm(CT_Vec3f *v, float len);
 CT_Vec3f *ct_normalize3f(CT_Vec3f *v, float len, CT_MPool *mpool);
 uint8_t ct_is_normalized3f(CT_Vec3f *v);

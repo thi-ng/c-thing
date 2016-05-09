@@ -10,3 +10,7 @@
 static inline uint8_t ct_deltaeqf(float a, float b, float eps) {
     return fabs(a - b) <= eps;
 }
+
+static inline float ct_mixf(float a, float b, float t) {
+    return a + (b - a) * t;
+}

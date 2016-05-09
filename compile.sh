@@ -7,10 +7,11 @@
 # This module MUST be initialized by calling 'Particles();'
 # before first use (in our example this is done from CLJS in ex07.core/main)
 
-emcc -O2 -s ASM_JS=1 -s INVOKE_RUN=0 \
+emcc -Os -s ASM_JS=1 -s INVOKE_RUN=0 \
      -s EXPORTED_FUNCTIONS=@exports.json \
      -s "EXPORT_NAME='geom'" \
      -s MODULARIZE=1 \
+     --closure 1 \
      -o geom.js \
      mpool.c vec.c test-vec.c
 
