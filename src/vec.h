@@ -198,6 +198,7 @@ uint8_t ct_deltaeq3fv(CT_Vec3f *a, CT_Vec3f *b, float eps);
 float ct_dot3fv(CT_Vec3f *a, CT_Vec3f *b);
 float ct_distsq3fv(CT_Vec3f *a, CT_Vec3f *b);
 float ct_dist3fv(CT_Vec3f *a, CT_Vec3f *b);
+CT_Vec3f *ct_cross3fv_imm(CT_Vec3f *a, CT_Vec3f *b);
 CT_Vec3f *ct_cross3fv(CT_Vec3f *a, CT_Vec3f *b, CT_MPool *mpool);
 float ct_magsq3f(CT_Vec3f *v);
 float ct_mag3f(CT_Vec3f *v);

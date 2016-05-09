@@ -152,16 +152,31 @@ CT_Vec3f *ct_madd3fv(CT_Vec3f *a, CT_Vec3f *b, CT_Vec3f *c, CT_MPool *mpool) {
 }
 
 float ct_dot3fv(CT_Vec3f *a, CT_Vec3f *b) {
+#ifdef CT_USE_SSE
+    __m128 d = a->mmval * b->mmval;
+    return d[0] + d[1] + d[2];
+#else
     return a->x * b->x + a->y * b->y + a->z * b->z;
+#endif
 }
 
 CT_Vec3f *ct_cross3fv_imm(CT_Vec3f *a, CT_Vec3f *b) {
+#ifdef CT_USE_SSE
+    __m128 v = _mm_sub_ps(
+        _mm_mul_ps(a->mmval,
+                   _mm_shuffle_ps(b->mmval, b->mmval, _MM_SHUFFLE(3, 0, 2, 1))),
+        _mm_mul_ps(b->mmval, _mm_shuffle_ps(a->mmval, a->mmval,
+                                            _MM_SHUFFLE(3, 0, 2, 1))));
+    a->mmval = _mm_shuffle_ps(v, v, _MM_SHUFFLE(3, 0, 2, 1));
+    return a;
+#else
     float x = a->y * b->z - a->z * b->y;
     float y = a->z * b->x - a->x * b->z;
     a->z = a->x * b->y - a->y * b->x;
     a->y = y;
     a->x = x;
     return a;
+#endif
 }
 
 CT_Vec3f *ct_cross3fv(CT_Vec3f *a, CT_Vec3f *b, CT_MPool *mpool) {
