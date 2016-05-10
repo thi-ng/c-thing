@@ -1,19 +1,58 @@
 #!/bin/sh
 
-# This compiles the file particles.c with optimizations,
-# declares a number of exported function names,
-# post-processes the resulting JS with Closure compiler and
-# wraps all within a global 'Particles' module/object
-# This module MUST be initialized by calling 'Particles();'
-# before first use (in our example this is done from CLJS in ex07.core/main)
+FLAGS=
 
-emcc -Os -s ASM_JS=1 -s INVOKE_RUN=0 \
+usage()
+{
+    cat <<EOF
+Usage:
+  -c     : enable Closure compiler step
+  -D SYM : add define
+  -h     : show this help
+  -m     : enable MPool tracing
+  -s     : enable SSE (SIMD.js)
+  -t     : include tests
+EOF
+    exit 1
+}
+
+while getopts chmsD: opt; do
+    case $opt in
+        s) FLAGS="$FLAGS -fslp-vectorize -msse"
+           ;;
+        c) FLAGS="$FLAGS --closure 1"
+           ;;
+        m) FLAGS="$FLAGS -DTRACE_MPOOL"
+           ;;
+        D) FLAGS="$FLAGS -D$OPTARG"
+           ;;
+        t) TESTS="test/test-mpool.c test/test-vec.c test/main.c"
+           ;;
+        h) usage
+           ;;
+        \?) echo "invalid option: $opt" >&2
+            usage
+            exit 1
+            ;;
+        :) echo "$opt missing argument" >&2
+           usage
+           exit 1
+           ;;
+    esac
+done
+
+echo "using flags: $FLAGS"
+
+emcc -Os -Isrc \
+     $FLAGS \
+     -s ASM_JS=1 -s INVOKE_RUN=0 \
+     -s AGGRESSIVE_VARIABLE_ELIMINATION=1 \
      -s EXPORTED_FUNCTIONS=@exports.json \
      -s "EXPORT_NAME='geom'" \
      -s MODULARIZE=1 \
-     --closure 1 \
      -o geom.js \
-     mpool.c vec.c test-vec.c
+     src/mpool.c src/vec.c \
+     $TESTS
 
 # copy memory initialization file to main webroot dir
-#cp resources/public/js/native.js.mem resources/public/
+# cp geom.js.mem resources/public/
