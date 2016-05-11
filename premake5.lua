@@ -14,7 +14,7 @@ files { "src/**.h", "src/**.c", "test/**.c" }
 filter "configurations:test"
 defines { "DEBUG", "TRACE_MPOOL" }
 flags { "Symbols" }
-optimize "On"
+optimize "Size"
 
 ----- lib
 
