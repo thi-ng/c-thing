@@ -16,7 +16,7 @@ EOF
     exit 1
 }
 
-while getopts chmsD: opt; do
+while getopts chmstD: opt; do
     case $opt in
         s) FLAGS="$FLAGS -fslp-vectorize -msse"
            ;;
@@ -48,12 +48,10 @@ emcc -Os -Isrc \
      --memory-init-file 0 \
      -s ASM_JS=1 -s INVOKE_RUN=0 \
      -s AGGRESSIVE_VARIABLE_ELIMINATION=1 \
-     -s EXPORTED_FUNCTIONS=@exports.json \
      -s "EXPORT_NAME='geom'" \
      -s MODULARIZE=1 \
      -o geom.js \
-     src/mpool.c src/vec.c \
+     src/mpool.c all.c \
      $TESTS
 
-# copy memory initialization file to main webroot dir
-# cp geom.js.mem resources/public/
+# -s EXPORTED_FUNCTIONS=@exports.json

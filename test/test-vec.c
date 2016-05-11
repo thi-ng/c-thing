@@ -72,6 +72,8 @@ void test_vec3f() {
     CT_Vec3f *e = ct_add3fxyz(a, 10, 20, 30, &pool);
     assert_vec3f(e, 11, 22, 33);
     assert(11 * 11 + 22 * 22 + 33 * 33 == ct_dot3fv(e, e));
+    ct_set3fv(b, e);
+    assert_vec3f(b, 11, 22, 33);
     ct_set3fxyz(a, 1, 0, 0);
     ct_set3fxyz(b, 0, 1, 0);
     ct_cross3fv_imm(a, b);

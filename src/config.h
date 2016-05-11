@@ -11,6 +11,8 @@
 #define CT_USE_SSE2
 #endif
 
+#define ct_inline static inline
+
 #ifdef __EMSCRIPTEN__
 #define CT_EXPORT __attribute__((used))
 #else
