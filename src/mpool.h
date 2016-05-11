@@ -2,6 +2,7 @@
 
 #include <stdint.h>
 #include <stdlib.h>
+#include "config.h"
 
 #define ALLOCATE_TYPE(mpool, type)                                             \
     (type *)(mpool != NULL ? ct_mpool_malloc(mpool) : malloc(sizeof(type)))

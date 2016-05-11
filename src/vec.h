@@ -41,39 +41,39 @@ typedef struct { float x, y, z, w; } CT_Vec4f;
     type *name##xyz_imm(type *v, ptype x, ptype y, ptype z);
 
 #define VEC2OP(type, ptype, name, op)                                          \
-    type *name##v_imm(type *a, type *b) {                                      \
+    CT_EXPORT type *name##v_imm(type *a, type *b) {                            \
         a->x op## = b->x;                                                      \
         a->y op## = b->y;                                                      \
         return a;                                                              \
     }                                                                          \
                                                                                \
-    type *name##v(type *a, type *b, CT_MPool *mpool) {                         \
+    CT_EXPORT type *name##v(type *a, type *b, CT_MPool *mpool) {               \
         type *v = ALLOCATE_TYPE(mpool, type);                                  \
         v->x = a->x op b->x;                                                   \
         v->y = a->y op b->y;                                                   \
         return v;                                                              \
     }                                                                          \
                                                                                \
-    type *name##n_imm(type *v, ptype n) {                                      \
+    CT_EXPORT type *name##n_imm(type *v, ptype n) {                            \
         v->x op## = n;                                                         \
         v->y op## = n;                                                         \
         return v;                                                              \
     }                                                                          \
                                                                                \
-    type *name##n(type *a, ptype n, CT_MPool *mpool) {                         \
+    CT_EXPORT type *name##n(type *a, ptype n, CT_MPool *mpool) {               \
         type *v = ALLOCATE_TYPE(mpool, type);                                  \
         v->x = a->x op n;                                                      \
         v->y = a->y op n;                                                      \
         return v;                                                              \
     }                                                                          \
                                                                                \
-    type *name##xy_imm(type *v, ptype x, ptype y) {                            \
+    CT_EXPORT type *name##xy_imm(type *v, ptype x, ptype y) {                  \
         v->x op## = x;                                                         \
         v->y op## = y;                                                         \
         return v;                                                              \
     }                                                                          \
                                                                                \
-    type *name##xy(type *a, ptype x, ptype y, CT_MPool *mpool) {               \
+    CT_EXPORT type *name##xy(type *a, ptype x, ptype y, CT_MPool *mpool) {     \
         type *v = ALLOCATE_TYPE(mpool, type);                                  \
         v->x = a->x op x;                                                      \
         v->y = a->y op y;                                                      \
@@ -81,14 +81,14 @@ typedef struct { float x, y, z, w; } CT_Vec4f;
     }
 
 #define VEC3OP(type, ptype, name, op)                                          \
-    type *name##v_imm(type *a, type *b) {                                      \
+    CT_EXPORT type *name##v_imm(type *a, type *b) {                            \
         a->x op## = b->x;                                                      \
         a->y op## = b->y;                                                      \
         a->z op## = b->z;                                                      \
         return a;                                                              \
     }                                                                          \
                                                                                \
-    type *name##v(type *a, type *b, CT_MPool *mpool) {                         \
+    CT_EXPORT type *name##v(type *a, type *b, CT_MPool *mpool) {               \
         type *v = ALLOCATE_TYPE(mpool, type);                                  \
         v->x = a->x op b->x;                                                   \
         v->y = a->y op b->y;                                                   \
@@ -96,14 +96,14 @@ typedef struct { float x, y, z, w; } CT_Vec4f;
         return v;                                                              \
     }                                                                          \
                                                                                \
-    type *name##n_imm(type *v, ptype n) {                                      \
+    CT_EXPORT type *name##n_imm(type *v, ptype n) {                            \
         v->x op## = n;                                                         \
         v->y op## = n;                                                         \
         v->z op## = n;                                                         \
         return v;                                                              \
     }                                                                          \
                                                                                \
-    type *name##n(type *a, ptype n, CT_MPool *mpool) {                         \
+    CT_EXPORT type *name##n(type *a, ptype n, CT_MPool *mpool) {               \
         type *v = ALLOCATE_TYPE(mpool, type);                                  \
         v->x = a->x op n;                                                      \
         v->y = a->y op n;                                                      \
@@ -111,14 +111,15 @@ typedef struct { float x, y, z, w; } CT_Vec4f;
         return v;                                                              \
     }                                                                          \
                                                                                \
-    type *name##xyz_imm(type *v, ptype x, ptype y, ptype z) {                  \
+    CT_EXPORT type *name##xyz_imm(type *v, ptype x, ptype y, ptype z) {        \
         v->x op## = x;                                                         \
         v->y op## = y;                                                         \
         v->z op## = z;                                                         \
         return v;                                                              \
     }                                                                          \
                                                                                \
-    type *name##xyz(type *a, ptype x, ptype y, ptype z, CT_MPool *mpool) {     \
+    CT_EXPORT type *name##xyz(type *a, ptype x, ptype y, ptype z,              \
+                              CT_MPool *mpool) {                               \
         type *v = ALLOCATE_TYPE(mpool, type);                                  \
         v->x = a->x op x;                                                      \
         v->y = a->y op y;                                                      \
@@ -127,37 +128,38 @@ typedef struct { float x, y, z, w; } CT_Vec4f;
     }
 
 #define VEC3OP_SSE(type, ptype, name, op)                                      \
-    type *name##v_imm(type *a, type *b) {                                      \
+    CT_EXPORT type *name##v_imm(type *a, type *b) {                            \
         a->mmval op## = b->mmval;                                              \
         return a;                                                              \
     }                                                                          \
                                                                                \
-    type *name##v(type *a, type *b, CT_MPool *mpool) {                         \
+    CT_EXPORT type *name##v(type *a, type *b, CT_MPool *mpool) {               \
         type *v = ALLOCATE_TYPE(mpool, type);                                  \
         v->mmval = a->mmval op b->mmval;                                       \
         return v;                                                              \
     }                                                                          \
                                                                                \
-    type *name##n_imm(type *v, ptype n) {                                      \
+    CT_EXPORT type *name##n_imm(type *v, ptype n) {                            \
         __m128 b = {n, n, n, n};                                               \
         v->mmval op## = b;                                                     \
         return v;                                                              \
     }                                                                          \
                                                                                \
-    type *name##n(type *a, ptype n, CT_MPool *mpool) {                         \
+    CT_EXPORT type *name##n(type *a, ptype n, CT_MPool *mpool) {               \
         type *v = ALLOCATE_TYPE(mpool, type);                                  \
         __m128 b = {n, n, n, n};                                               \
         v->mmval = a->mmval op b;                                              \
         return v;                                                              \
     }                                                                          \
                                                                                \
-    type *name##xyz_imm(type *v, ptype x, ptype y, ptype z) {                  \
+    CT_EXPORT type *name##xyz_imm(type *v, ptype x, ptype y, ptype z) {        \
         __m128 b = {x, y, z, 0.f};                                             \
         v->mmval op## = b;                                                     \
         return v;                                                              \
     }                                                                          \
                                                                                \
-    type *name##xyz(type *a, ptype x, ptype y, ptype z, CT_MPool *mpool) {     \
+    CT_EXPORT type *name##xyz(type *a, ptype x, ptype y, ptype z,              \
+                              CT_MPool *mpool) {                               \
         type *v = ALLOCATE_TYPE(mpool, type);                                  \
         __m128 b = {x, y, z, 0.f};                                             \
         v->mmval = a->mmval op b;                                              \

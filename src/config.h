@@ -10,3 +10,9 @@
 #if defined(CT_USE_SSE) && defined(__SSE2__)
 #define CT_USE_SSE2
 #endif
+
+#ifdef __EMSCRIPTEN__
+#define CT_EXPORT __attribute__((used))
+#else
+#define CT_EXPORT
+#endif

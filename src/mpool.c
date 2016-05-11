@@ -5,7 +5,7 @@
 #include <stdio.h>
 #endif
 
-uint8_t ct_mpool_init(CT_MPool *mpool, uint32_t num, uint32_t blockSize) {
+CT_EXPORT uint8_t ct_mpool_init(CT_MPool *mpool, uint32_t num, uint32_t blockSize) {
     mpool->numBlocks = num;
     mpool->blockSize = MAX(blockSize, sizeof(CT_MPoolFreeList));
     mpool->freeList = NULL;
@@ -14,7 +14,7 @@ uint8_t ct_mpool_init(CT_MPool *mpool, uint32_t num, uint32_t blockSize) {
     return mpool->pool == NULL;
 }
 
-void ct_mpool_free(CT_MPool *mpool, void *block) {
+CT_EXPORT void ct_mpool_free(CT_MPool *mpool, void *block) {
 #ifdef TRACE_MPOOL
     printf("free block: %p\n", block);
 #endif
@@ -23,14 +23,14 @@ void ct_mpool_free(CT_MPool *mpool, void *block) {
     mpool->freeList = fb;
 }
 
-void ct_mpool_free_all(CT_MPool *mpool) {
+CT_EXPORT void ct_mpool_free_all(CT_MPool *mpool) {
 #ifdef TRACE_MPOOL
     printf("free mpool: %p\n", mpool->pool);
 #endif
     free(mpool->pool);
 }
 
-void *ct_mpool_malloc(CT_MPool *mpool) {
+CT_EXPORT void *ct_mpool_malloc(CT_MPool *mpool) {
     void *ptr = NULL;
     if (mpool->freeList != NULL) {
         ptr = mpool->freeList;
@@ -42,7 +42,7 @@ void *ct_mpool_malloc(CT_MPool *mpool) {
     return ptr;
 }
 
-void ct_mpool_trace(CT_MPool *mpool) {
+CT_EXPORT void ct_mpool_trace(CT_MPool *mpool) {
 #ifdef TRACE_MPOOL
     printf("nextID: %u, pool: %p, free: %p, bsize: %u, num: %u\n",
            mpool->nextID, mpool->pool, mpool->freeList, mpool->blockSize,
