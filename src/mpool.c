@@ -5,7 +5,8 @@
 #include <stdio.h>
 #endif
 
-CT_EXPORT uint8_t ct_mpool_init(CT_MPool *mpool, uint32_t num, uint32_t blockSize) {
+CT_EXPORT uint8_t ct_mpool_init(CT_MPool *mpool, uint32_t num,
+                                uint32_t blockSize) {
     mpool->numBlocks = num;
     mpool->blockSize = MAX(blockSize, sizeof(CT_MPoolFreeList));
     mpool->freeList = NULL;

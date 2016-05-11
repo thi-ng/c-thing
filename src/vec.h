@@ -189,21 +189,31 @@ typedef union {
         return v;                                                              \
     }
 
-#define VEC2_SWIZZLE(type, name, suffix, i, j)                                 \
-    CT_EXPORT type *ct_##name##suffix(type *a, CT_MPool *mpool) {              \
-        type *b = ALLOCATE_TYPE(mpool, type);                                  \
-        b->buf[0] = a->buf[i];                                                 \
-        b->buf[1] = a->buf[j];                                                 \
-        return b;                                                              \
+#define VEC2_SWIZZLE(type, ptype, name, suffix, i, j)                          \
+    CT_EXPORT type *ct_##name##suffix(type *v) {                               \
+        ptype x = v->buf[i];                                                   \
+        ptype y = v->buf[j];                                                   \
+        v->x = x;                                                              \
+        v->y = y;                                                              \
+        return v;                                                              \
     }
 
-#define VEC3_SWIZZLE(type, name, suffix, i, j, k)                              \
-    CT_EXPORT type *ct_##name##suffix(type *a, CT_MPool *mpool) {              \
-        type *b = ALLOCATE_TYPE(mpool, type);                                  \
-        b->buf[0] = a->buf[i];                                                 \
-        b->buf[1] = a->buf[j];                                                 \
-        b->buf[2] = a->buf[k];                                                 \
-        return b;                                                              \
+#define VEC3_SWIZZLE(type, ptype, name, suffix, i, j, k)                       \
+    CT_EXPORT type *ct_##name##suffix(type *v) {                               \
+        ptype x = v->buf[i];                                                   \
+        ptype y = v->buf[j];                                                   \
+        ptype z = v->buf[k];                                                   \
+        v->x = x;                                                              \
+        v->y = y;                                                              \
+        v->z = z;                                                              \
+        return v;                                                              \
+    }
+
+#define VEC3_SWIZZLE_SSE(type, name, suffix, i, j, k)                          \
+    CT_EXPORT type *ct_##name##suffix(type *v) {                               \
+        v->mmval =                                                             \
+            _mm_shuffle_ps(v->mmval, v->mmval, _MM_SHUFFLE(0, k, j, i));       \
+        return v;                                                              \
     }
 
 CT_Vec2f *ct_vec2f(float x, float y, CT_MPool *mpool);
@@ -251,3 +261,33 @@ CT_Vec3f *ct_mix3fv(CT_Vec3f *a, CT_Vec3f *b, float t, CT_MPool *mpool);
 CT_Vec3f *ct_normalize3f_imm(CT_Vec3f *v, float len);
 CT_Vec3f *ct_normalize3f(CT_Vec3f *v, float len, CT_MPool *mpool);
 uint8_t ct_is_normalized3f(CT_Vec3f *v);
+
+CT_Vec3f *ct_xxxf(CT_Vec3f *v);
+CT_Vec3f *ct_xxyf(CT_Vec3f *v);
+CT_Vec3f *ct_xxzf(CT_Vec3f *v);
+CT_Vec3f *ct_xyxf(CT_Vec3f *v);
+CT_Vec3f *ct_xyyf(CT_Vec3f *v);
+CT_Vec3f *ct_xyzf(CT_Vec3f *v);
+CT_Vec3f *ct_xzxf(CT_Vec3f *v);
+CT_Vec3f *ct_xzyf(CT_Vec3f *v);
+CT_Vec3f *ct_xzzf(CT_Vec3f *v);
+
+CT_Vec3f *ct_yxxf(CT_Vec3f *v);
+CT_Vec3f *ct_yxyf(CT_Vec3f *v);
+CT_Vec3f *ct_yxzf(CT_Vec3f *v);
+CT_Vec3f *ct_yyxf(CT_Vec3f *v);
+CT_Vec3f *ct_yyyf(CT_Vec3f *v);
+CT_Vec3f *ct_yyzf(CT_Vec3f *v);
+CT_Vec3f *ct_yzxf(CT_Vec3f *v);
+CT_Vec3f *ct_yzyf(CT_Vec3f *v);
+CT_Vec3f *ct_yzzf(CT_Vec3f *v);
+
+CT_Vec3f *ct_zxxf(CT_Vec3f *v);
+CT_Vec3f *ct_zxyf(CT_Vec3f *v);
+CT_Vec3f *ct_zxzf(CT_Vec3f *v);
+CT_Vec3f *ct_zyxf(CT_Vec3f *v);
+CT_Vec3f *ct_zyyf(CT_Vec3f *v);
+CT_Vec3f *ct_zyzf(CT_Vec3f *v);
+CT_Vec3f *ct_zzxf(CT_Vec3f *v);
+CT_Vec3f *ct_zzyf(CT_Vec3f *v);
+CT_Vec3f *ct_zzzf(CT_Vec3f *v);

@@ -15,6 +15,10 @@ void assert_vec3f(CT_Vec3f *v, float x, float y, float z) {
     assert(v->z == z);
 }
 
+void trace_vec3f(CT_Vec3f *v) {
+    printf("[%f,%f,%f]\n", v->x, v->y, v->z);
+}
+
 void test_vec2f() {
     printf("---- test_vec2 ----\n");
     CT_MPool pool;
@@ -76,6 +80,11 @@ void test_vec3f() {
     ct_mpool_free(&pool, c);
     ct_mpool_free(&pool, b);
     ct_mpool_free(&pool, a);
+    ct_mpool_trace(&pool);
+    a = ct_vec3f(1, 2, 3, &pool);
+    ct_zyxf(a);
+    trace_vec3f(a);
+    assert_vec3f(a, 3, 2, 1);
     ct_mpool_trace(&pool);
     free(d);
     ct_mpool_free_all(&pool);
