@@ -1,4 +1,8 @@
 ['_main',
+ '_ccall',
+ '_cwrap',
+ '_malloc',
+ '_free',
  '_ct_mpool_init',
  '_ct_mpool_malloc',
  '_ct_mpool_free',
@@ -30,4 +34,8 @@
  '_ct_normalize2f_imm',
  '_ct_normalize2f'
  '_ct_is_normalized2f'
+ '_ct_vec3f',
+ '_ct_add3fv_imm',
+ '_ct_add3fv',
+ '_ct_cross3fv_imm'
 ]
