@@ -45,6 +45,7 @@ echo "using flags: $FLAGS"
 
 emcc -Os -Isrc \
      $FLAGS \
+     --memory-init-file 0 \
      -s ASM_JS=1 -s INVOKE_RUN=0 \
      -s AGGRESSIVE_VARIABLE_ELIMINATION=1 \
      -s EXPORTED_FUNCTIONS=@exports.json \
