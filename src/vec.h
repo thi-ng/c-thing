@@ -3,25 +3,48 @@
 #include "config.h"
 #include "mpool.h"
 
-typedef struct { float x, y; } CT_Vec2f;
+typedef union {
+    struct {
+        float x, y;
+    };
+    float buf[2];
+} CT_Vec2f;
 
 #ifdef CT_USE_SSE
 #include <xmmintrin.h>
+
 typedef union {
     struct {
         float x, y, z;
     };
+    float buf[3];
     __m128 mmval;
 } CT_Vec3f;
+
 typedef union {
     struct {
         float x, y, z, w;
     };
+    float buf[4];
     __m128 mmval;
 } CT_Vec4f;
+
 #else
-typedef struct { float x, y, z; } CT_Vec3f;
-typedef struct { float x, y, z, w; } CT_Vec4f;
+
+typedef union {
+    struct {
+        float x, y, z;
+    };
+    float buf[3];
+} CT_Vec3f;
+
+typedef union {
+    struct {
+        float x, y, z, w;
+    };
+    float buf[4];
+} CT_Vec4f;
+
 #endif
 
 #define DECL_VEC2OP(type, ptype, name)                                         \
@@ -166,7 +189,25 @@ typedef struct { float x, y, z, w; } CT_Vec4f;
         return v;                                                              \
     }
 
+#define VEC2_SWIZZLE(type, name, suffix, i, j)                                 \
+    CT_EXPORT type *ct_##name##suffix(type *a, CT_MPool *mpool) {              \
+        type *b = ALLOCATE_TYPE(mpool, type);                                  \
+        b->buf[0] = a->buf[i];                                                 \
+        b->buf[1] = a->buf[j];                                                 \
+        return b;                                                              \
+    }
+
+#define VEC3_SWIZZLE(type, name, suffix, i, j, k)                              \
+    CT_EXPORT type *ct_##name##suffix(type *a, CT_MPool *mpool) {              \
+        type *b = ALLOCATE_TYPE(mpool, type);                                  \
+        b->buf[0] = a->buf[i];                                                 \
+        b->buf[1] = a->buf[j];                                                 \
+        b->buf[2] = a->buf[k];                                                 \
+        return b;                                                              \
+    }
+
 CT_Vec2f *ct_vec2f(float x, float y, CT_MPool *mpool);
+CT_Vec2f *ct_vec2fn(float n, CT_MPool *mpool);
 CT_Vec2f *ct_set2fv(CT_Vec2f *a, CT_Vec2f *b);
 CT_Vec2f *ct_set2fxy(CT_Vec2f *v, float x, float y);
 DECL_VEC2OP(CT_Vec2f, float, ct_add2f)
@@ -188,6 +229,7 @@ CT_Vec2f *ct_normalize2f(CT_Vec2f *v, float len, CT_MPool *mpool);
 uint8_t ct_is_normalized2f(CT_Vec2f *v);
 
 CT_Vec3f *ct_vec3f(float x, float y, float z, CT_MPool *mpool);
+CT_Vec3f *ct_vec3fn(float n, CT_MPool *mpool);
 CT_Vec3f *ct_set3fv(CT_Vec3f *a, CT_Vec3f *b);
 CT_Vec3f *ct_set3fxyz(CT_Vec3f *a, float x, float y, float z);
 DECL_VEC3OP(CT_Vec3f, float, ct_add3f)

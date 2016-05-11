@@ -12,6 +12,10 @@ CT_EXPORT CT_Vec2f *ct_vec2f(float x, float y, CT_MPool *mpool) {
     return v;
 }
 
+CT_EXPORT CT_Vec2f *ct_vec2fn(float n, CT_MPool *mpool) {
+    return ct_vec2f(n, n, mpool);
+}
+
 CT_EXPORT CT_Vec2f *ct_set2fv(CT_Vec2f *a, CT_Vec2f *b) {
     a->x = b->x;
     a->y = b->y;
@@ -23,6 +27,11 @@ CT_EXPORT CT_Vec2f *ct_set2fxy(CT_Vec2f *v, float x, float y) {
     v->y = y;
     return v;
 }
+
+VEC2_SWIZZLE(CT_Vec2f, xx, 2f, 0, 0)
+VEC2_SWIZZLE(CT_Vec2f, xy, 2f, 0, 1)
+VEC2_SWIZZLE(CT_Vec2f, yy, 2f, 1, 1)
+VEC2_SWIZZLE(CT_Vec2f, yx, 2f, 1, 0)
 
 CT_EXPORT uint8_t ct_deltaeq2fv(CT_Vec2f *a, CT_Vec2f *b, float eps) {
     return (ct_deltaeqf(a->x, b->x, eps) && ct_deltaeqf(a->y, b->y, eps));
@@ -111,6 +120,10 @@ CT_EXPORT CT_Vec3f *ct_vec3f(float x, float y, float z, CT_MPool *mpool) {
     return v;
 }
 
+CT_EXPORT CT_Vec3f *ct_vec3fn(float n, CT_MPool *mpool) {
+    return ct_vec3f(n, n, n, mpool);
+}
+
 CT_EXPORT CT_Vec3f *ct_set3fv(CT_Vec3f *a, CT_Vec3f *b) {
     a->x = b->x;
     a->y = b->y;
@@ -124,6 +137,36 @@ CT_EXPORT CT_Vec3f *ct_set3fxyz(CT_Vec3f *v, float x, float y, float z) {
     v->z = z;
     return v;
 }
+
+VEC3_SWIZZLE(CT_Vec3f, xxx, 3f, 0, 0, 0)
+VEC3_SWIZZLE(CT_Vec3f, xxy, 3f, 0, 0, 1)
+VEC3_SWIZZLE(CT_Vec3f, xxz, 3f, 0, 0, 2)
+VEC3_SWIZZLE(CT_Vec3f, xyx, 3f, 0, 1, 0)
+VEC3_SWIZZLE(CT_Vec3f, xyy, 3f, 0, 1, 1)
+VEC3_SWIZZLE(CT_Vec3f, xyz, 3f, 0, 1, 2)
+VEC3_SWIZZLE(CT_Vec3f, xzx, 3f, 0, 2, 0)
+VEC3_SWIZZLE(CT_Vec3f, xzy, 3f, 0, 2, 1)
+VEC3_SWIZZLE(CT_Vec3f, xzz, 3f, 0, 2, 2)
+
+VEC3_SWIZZLE(CT_Vec3f, yxx, 3f, 1, 0, 0)
+VEC3_SWIZZLE(CT_Vec3f, yxy, 3f, 1, 0, 1)
+VEC3_SWIZZLE(CT_Vec3f, yxz, 3f, 1, 0, 2)
+VEC3_SWIZZLE(CT_Vec3f, yyx, 3f, 1, 1, 0)
+VEC3_SWIZZLE(CT_Vec3f, yyy, 3f, 1, 1, 1)
+VEC3_SWIZZLE(CT_Vec3f, yyz, 3f, 1, 1, 2)
+VEC3_SWIZZLE(CT_Vec3f, yzx, 3f, 1, 2, 0)
+VEC3_SWIZZLE(CT_Vec3f, yzy, 3f, 1, 2, 1)
+VEC3_SWIZZLE(CT_Vec3f, yzz, 3f, 1, 2, 2)
+
+VEC3_SWIZZLE(CT_Vec3f, zxx, 3f, 2, 0, 0)
+VEC3_SWIZZLE(CT_Vec3f, zxy, 3f, 2, 0, 1)
+VEC3_SWIZZLE(CT_Vec3f, zxz, 3f, 2, 0, 2)
+VEC3_SWIZZLE(CT_Vec3f, zyx, 3f, 2, 1, 0)
+VEC3_SWIZZLE(CT_Vec3f, zyy, 3f, 2, 1, 1)
+VEC3_SWIZZLE(CT_Vec3f, zyz, 3f, 2, 1, 2)
+VEC3_SWIZZLE(CT_Vec3f, zzx, 3f, 2, 2, 0)
+VEC3_SWIZZLE(CT_Vec3f, zzy, 3f, 2, 2, 1)
+VEC3_SWIZZLE(CT_Vec3f, zzz, 3f, 2, 2, 2)
 
 CT_EXPORT uint8_t ct_deltaeq3fv(CT_Vec3f *a, CT_Vec3f *b, float eps) {
     return (ct_deltaeqf(a->x, b->x, eps) && ct_deltaeqf(a->y, b->y, eps) &&
