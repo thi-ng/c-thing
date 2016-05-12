@@ -4,19 +4,25 @@
 #include "mpool.h"
 #include "vec.h"
 
+void trace_vec2f(CT_Vec2f *v) {
+    printf("[%f,%f]\n", v->x, v->y);
+}
+
+void trace_vec3f(CT_Vec3f *v) {
+    printf("[%f,%f,%f]\n", v->x, v->y, v->z);
+}
+
 void assert_vec2f(CT_Vec2f *v, float x, float y) {
+  trace_vec2f(v);
     assert(v->x == x);
     assert(v->y == y);
 }
 
 void assert_vec3f(CT_Vec3f *v, float x, float y, float z) {
-    assert(v->x == x);
+  trace_vec3f(v);
+  assert(v->x == x);
     assert(v->y == y);
     assert(v->z == z);
-}
-
-void trace_vec3f(CT_Vec3f *v) {
-    printf("[%f,%f,%f]\n", v->x, v->y, v->z);
 }
 
 void test_vec2f() {
@@ -84,10 +90,35 @@ void test_vec3f() {
     ct_mpool_free(&pool, a);
     ct_mpool_trace(&pool);
     a = ct_vec3f(1, 2, 3, &pool);
-    ct_zyxf(a);
+    ct_zyxf(a, a);
     trace_vec3f(a);
     assert_vec3f(a, 3, 2, 1);
     ct_mpool_trace(&pool);
     free(d);
     ct_mpool_free_all(&pool);
+}
+
+void test_swizzle() {
+  printf("---- test_swizzle ----\n");
+  CT_Vec2f *a2 = ct_vec2f(1,2,NULL);
+  CT_Vec3f *a3 = ct_vec3f(0,0,0,NULL);
+  ct_xxxf(a2, a3);
+  assert_vec2f(a2, 1, 2);
+  assert_vec3f(a3, 1, 1, 1);
+  ct_yyyf(a2, a3); assert_vec3f(a3, 2, 2, 2);
+  ct_xyxf(a2, a3);
+  assert_vec2f(a2, 1, 2);
+  assert_vec3f(a3, 1, 2, 1);
+  ct_xxf(a2, a2); assert_vec2f(a2, 1, 1);
+  ct_set2fxy(a2, 1, 2);
+  ct_xyf(a2, a2); assert_vec2f(a2, 1, 2);
+  ct_set3fxyz(a3, 1, 2, 3);
+  ct_zzf(a3, a2);
+  assert_vec3f(a3, 1, 2, 3);
+  assert_vec2f(a2, 3, 3);
+  ct_zyf(a3, a2); assert_vec2f(a2, 3, 2);
+  ct_yxf(a3, a2); assert_vec2f(a2, 2, 1);
+  
+  free(a2);
+  free(a3);
 }

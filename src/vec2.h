@@ -43,21 +43,17 @@
         return v;                                                              \
     }
 
-#define VEC2_SWIZZLE(type, ptype, name, suffix, i, j)                          \
-    CT_EXPORT ct_inline type *ct_##name##suffix(type *v) {                     \
-        ptype x = v->buf[i];                                                   \
-        ptype y = v->buf[j];                                                   \
-        v->x = x;                                                              \
-        v->y = y;                                                              \
-        return v;                                                              \
-    }
-
 typedef union {
     struct {
         float x, y;
     };
     float buf[2];
 } CT_Vec2f;
+
+VEC2OP(CT_Vec2f, float, ct_add2f, +)
+VEC2OP(CT_Vec2f, float, ct_sub2f, -)
+VEC2OP(CT_Vec2f, float, ct_mul2f, *)
+VEC2OP(CT_Vec2f, float, ct_div2f, / )
 
 CT_EXPORT CT_Vec2f *ct_vec2f(float x, float y, CT_MPool *mpool) {
     CT_Vec2f *v = ALLOCATE_TYPE(mpool, CT_Vec2f);
@@ -83,16 +79,6 @@ CT_EXPORT ct_inline CT_Vec2f *ct_set2fxy(CT_Vec2f *v, float x, float y) {
     v->y = y;
     return v;
 }
-
-VEC2_SWIZZLE(CT_Vec2f, float, xx, f, 0, 0)
-VEC2_SWIZZLE(CT_Vec2f, float, xy, f, 0, 1)
-VEC2_SWIZZLE(CT_Vec2f, float, yx, f, 1, 0)
-VEC2_SWIZZLE(CT_Vec2f, float, yy, f, 1, 1)
-
-VEC2OP(CT_Vec2f, float, ct_add2f, +)
-VEC2OP(CT_Vec2f, float, ct_sub2f, -)
-VEC2OP(CT_Vec2f, float, ct_mul2f, *)
-VEC2OP(CT_Vec2f, float, ct_div2f, / )
 
 CT_EXPORT ct_inline uint8_t ct_deltaeq2fv(CT_Vec2f *a, CT_Vec2f *b, float eps) {
     return (ct_deltaeqf(a->x, b->x, eps) && ct_deltaeqf(a->y, b->y, eps));

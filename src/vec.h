@@ -18,3 +18,4 @@
 #endif
 
 #include "vec3_common.h"
+#include "swizzle.h"

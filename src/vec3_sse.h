@@ -16,14 +16,14 @@
     }                                                                          \
                                                                                \
     CT_EXPORT ct_inline type *name##n_imm(type *v, ptype n) {                  \
-        __m128 b = {n, n, n, n};                                               \
+        __m128 b = {n, n, n, 0.f};                                             \
         v->mmval op## = b;                                                     \
         return v;                                                              \
     }                                                                          \
                                                                                \
     CT_EXPORT ct_inline type *name##n(type *a, ptype n, CT_MPool *mpool) {     \
         type *v = ALLOCATE_TYPE(mpool, type);                                  \
-        __m128 b = {n, n, n, n};                                               \
+        __m128 b = {n, n, n, 0.f};                                             \
         v->mmval = a->mmval op b;                                              \
         return v;                                                              \
     }                                                                          \
@@ -43,13 +43,6 @@
         return v;                                                              \
     }
 
-#define VEC3_SWIZZLE_SSE(type, name, suffix, i, j, k)                          \
-    CT_EXPORT ct_inline type *ct_##name##suffix(type *v) {                     \
-        v->mmval =                                                             \
-            _mm_shuffle_ps(v->mmval, v->mmval, _MM_SHUFFLE(0, k, j, i));       \
-        return v;                                                              \
-    }
-
 typedef union {
     struct {
         float x, y, z;
@@ -62,36 +55,6 @@ VEC3OP_SSE(CT_Vec3f, float, ct_add3f, +)
 VEC3OP_SSE(CT_Vec3f, float, ct_sub3f, -)
 VEC3OP_SSE(CT_Vec3f, float, ct_mul3f, *)
 VEC3OP_SSE(CT_Vec3f, float, ct_div3f, / )
-
-VEC3_SWIZZLE_SSE(CT_Vec3f, xxx, f, 0, 0, 0)
-VEC3_SWIZZLE_SSE(CT_Vec3f, xxy, f, 0, 0, 1)
-VEC3_SWIZZLE_SSE(CT_Vec3f, xxz, f, 0, 0, 2)
-VEC3_SWIZZLE_SSE(CT_Vec3f, xyx, f, 0, 1, 0)
-VEC3_SWIZZLE_SSE(CT_Vec3f, xyy, f, 0, 1, 1)
-VEC3_SWIZZLE_SSE(CT_Vec3f, xyz, f, 0, 1, 2)
-VEC3_SWIZZLE_SSE(CT_Vec3f, xzx, f, 0, 2, 0)
-VEC3_SWIZZLE_SSE(CT_Vec3f, xzy, f, 0, 2, 1)
-VEC3_SWIZZLE_SSE(CT_Vec3f, xzz, f, 0, 2, 2)
-
-VEC3_SWIZZLE_SSE(CT_Vec3f, yxx, f, 1, 0, 0)
-VEC3_SWIZZLE_SSE(CT_Vec3f, yxy, f, 1, 0, 1)
-VEC3_SWIZZLE_SSE(CT_Vec3f, yxz, f, 1, 0, 2)
-VEC3_SWIZZLE_SSE(CT_Vec3f, yyx, f, 1, 1, 0)
-VEC3_SWIZZLE_SSE(CT_Vec3f, yyy, f, 1, 1, 1)
-VEC3_SWIZZLE_SSE(CT_Vec3f, yyz, f, 1, 1, 2)
-VEC3_SWIZZLE_SSE(CT_Vec3f, yzx, f, 1, 2, 0)
-VEC3_SWIZZLE_SSE(CT_Vec3f, yzy, f, 1, 2, 1)
-VEC3_SWIZZLE_SSE(CT_Vec3f, yzz, f, 1, 2, 2)
-
-VEC3_SWIZZLE_SSE(CT_Vec3f, zxx, f, 2, 0, 0)
-VEC3_SWIZZLE_SSE(CT_Vec3f, zxy, f, 2, 0, 1)
-VEC3_SWIZZLE_SSE(CT_Vec3f, zxz, f, 2, 0, 2)
-VEC3_SWIZZLE_SSE(CT_Vec3f, zyx, f, 2, 1, 0)
-VEC3_SWIZZLE_SSE(CT_Vec3f, zyy, f, 2, 1, 1)
-VEC3_SWIZZLE_SSE(CT_Vec3f, zyz, f, 2, 1, 2)
-VEC3_SWIZZLE_SSE(CT_Vec3f, zzx, f, 2, 2, 0)
-VEC3_SWIZZLE_SSE(CT_Vec3f, zzy, f, 2, 2, 1)
-VEC3_SWIZZLE_SSE(CT_Vec3f, zzz, f, 2, 2, 2)
 
 CT_EXPORT ct_inline float ct_dot3fv(CT_Vec3f *a, CT_Vec3f *b) {
     __m128 d = a->mmval * b->mmval;
@@ -134,9 +97,7 @@ CT_EXPORT ct_inline CT_Vec3f *ct_mix3fv_imm(CT_Vec3f *a, CT_Vec3f *b, float t) {
 CT_EXPORT ct_inline CT_Vec3f *ct_normalize3f_imm(CT_Vec3f *v, float len) {
     float m = sqrt(ct_magsq3f(v));
     if (m > 0.0) {
-        len /= m;
-        __m128 ml = {len, len, len, 0.f};
-        v->mmval *= ml;
+        ct_mul3fn_imm(v, len / m);
     }
     return v;
 }

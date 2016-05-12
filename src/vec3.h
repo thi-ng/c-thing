@@ -50,17 +50,6 @@
         return v;                                                              \
     }
 
-#define VEC3_SWIZZLE(type, ptype, name, suffix, i, j, k)                       \
-    CT_EXPORT ct_inline type *ct_##name##suffix(type *v) {                     \
-        ptype x = v->buf[i];                                                   \
-        ptype y = v->buf[j];                                                   \
-        ptype z = v->buf[k];                                                   \
-        v->x = x;                                                              \
-        v->y = y;                                                              \
-        v->z = z;                                                              \
-        return v;                                                              \
-    }
-
 typedef union {
     struct {
         float x, y, z;
@@ -72,36 +61,6 @@ VEC3OP(CT_Vec3f, float, ct_add3f, +)
 VEC3OP(CT_Vec3f, float, ct_sub3f, -)
 VEC3OP(CT_Vec3f, float, ct_mul3f, *)
 VEC3OP(CT_Vec3f, float, ct_div3f, / )
-
-VEC3_SWIZZLE(CT_Vec3f, float, xxx, f, 0, 0, 0)
-VEC3_SWIZZLE(CT_Vec3f, float, xxy, f, 0, 0, 1)
-VEC3_SWIZZLE(CT_Vec3f, float, xxz, f, 0, 0, 2)
-VEC3_SWIZZLE(CT_Vec3f, float, xyx, f, 0, 1, 0)
-VEC3_SWIZZLE(CT_Vec3f, float, xyy, f, 0, 1, 1)
-VEC3_SWIZZLE(CT_Vec3f, float, xyz, f, 0, 1, 2)
-VEC3_SWIZZLE(CT_Vec3f, float, xzx, f, 0, 2, 0)
-VEC3_SWIZZLE(CT_Vec3f, float, xzy, f, 0, 2, 1)
-VEC3_SWIZZLE(CT_Vec3f, float, xzz, f, 0, 2, 2)
-
-VEC3_SWIZZLE(CT_Vec3f, float, yxx, f, 1, 0, 0)
-VEC3_SWIZZLE(CT_Vec3f, float, yxy, f, 1, 0, 1)
-VEC3_SWIZZLE(CT_Vec3f, float, yxz, f, 1, 0, 2)
-VEC3_SWIZZLE(CT_Vec3f, float, yyx, f, 1, 1, 0)
-VEC3_SWIZZLE(CT_Vec3f, float, yyy, f, 1, 1, 1)
-VEC3_SWIZZLE(CT_Vec3f, float, yyz, f, 1, 1, 2)
-VEC3_SWIZZLE(CT_Vec3f, float, yzx, f, 1, 2, 0)
-VEC3_SWIZZLE(CT_Vec3f, float, yzy, f, 1, 2, 1)
-VEC3_SWIZZLE(CT_Vec3f, float, yzz, f, 1, 2, 2)
-
-VEC3_SWIZZLE(CT_Vec3f, float, zxx, f, 2, 0, 0)
-VEC3_SWIZZLE(CT_Vec3f, float, zxy, f, 2, 0, 1)
-VEC3_SWIZZLE(CT_Vec3f, float, zxz, f, 2, 0, 2)
-VEC3_SWIZZLE(CT_Vec3f, float, zyx, f, 2, 1, 0)
-VEC3_SWIZZLE(CT_Vec3f, float, zyy, f, 2, 1, 1)
-VEC3_SWIZZLE(CT_Vec3f, float, zyz, f, 2, 1, 2)
-VEC3_SWIZZLE(CT_Vec3f, float, zzx, f, 2, 2, 0)
-VEC3_SWIZZLE(CT_Vec3f, float, zzy, f, 2, 2, 1)
-VEC3_SWIZZLE(CT_Vec3f, float, zzz, f, 2, 2, 2)
 
 CT_EXPORT ct_inline CT_Vec3f *ct_madd3fv_imm(CT_Vec3f *a, CT_Vec3f *b,
                                              CT_Vec3f *c) {
