@@ -18,4 +18,5 @@
 #endif
 
 #include "vec3_common.h"
+#include "vec4_common.h"
 #include "swizzle.h"

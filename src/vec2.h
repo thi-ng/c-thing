@@ -55,18 +55,8 @@ VEC2OP(CT_Vec2f, float, ct_sub2f, -)
 VEC2OP(CT_Vec2f, float, ct_mul2f, *)
 VEC2OP(CT_Vec2f, float, ct_div2f, / )
 
-CT_EXPORT CT_Vec2f *ct_vec2f(float x, float y, CT_MPool *mpool) {
-    CT_Vec2f *v = ALLOCATE_TYPE(mpool, CT_Vec2f);
-    if (v != NULL) {
-        v->x = x;
-        v->y = y;
-    }
-    return v;
-}
-
-CT_EXPORT CT_Vec2f *ct_vec2fn(float n, CT_MPool *mpool) {
-    return ct_vec2f(n, n, mpool);
-}
+CT_EXPORT CT_Vec2f *ct_vec2f(float x, float y, CT_MPool *mpool);
+CT_EXPORT CT_Vec2f *ct_vec2fn(float n, CT_MPool *mpool);
 
 CT_EXPORT ct_inline CT_Vec2f *ct_set2fv(CT_Vec2f *a, CT_Vec2f *b) {
     a->x = b->x;

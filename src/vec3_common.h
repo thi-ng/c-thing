@@ -2,19 +2,8 @@
 
 #include "vec.h"
 
-CT_EXPORT CT_Vec3f *ct_vec3f(float x, float y, float z, CT_MPool *mpool) {
-    CT_Vec3f *v = ALLOCATE_TYPE(mpool, CT_Vec3f);
-    if (v != NULL) {
-        v->x = x;
-        v->y = y;
-        v->z = z;
-    }
-    return v;
-}
-
-CT_EXPORT CT_Vec3f *ct_vec3fn(float n, CT_MPool *mpool) {
-    return ct_vec3f(n, n, n, mpool);
-}
+CT_EXPORT CT_Vec3f *ct_vec3f(float x, float y, float z, CT_MPool *mpool);
+CT_EXPORT CT_Vec3f *ct_vec3fn(float n, CT_MPool *mpool);
 
 CT_EXPORT ct_inline uint8_t ct_deltaeq3fv(CT_Vec3f *a, CT_Vec3f *b, float eps) {
     return (ct_deltaeqf(a->x, b->x, eps) && ct_deltaeqf(a->y, b->y, eps) &&
