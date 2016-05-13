@@ -137,3 +137,17 @@ CT_EXPORT ct_inline CT_Vec2f *ct_normalize2f(CT_Vec2f *v, float len,
 CT_EXPORT ct_inline uint8_t ct_is_normalized2f(CT_Vec2f *v) {
   return ct_deltaeqf(ct_mag2f(v) - 1.f, 0.f, EPS);
 }
+
+CT_EXPORT ct_inline CT_Vec2f *ct_cartesian2f_imm(CT_Vec2f *v) {
+  float x = v->x * cosf(v->y);
+  v->y = v->x * sinf(v->y);
+  v->x = x;
+  return v;
+}
+
+CT_EXPORT ct_inline CT_Vec2f *ct_polar2f_imm(CT_Vec2f *v) {
+  float x = ct_mag2f(v);
+  v->y = ct_wrapf(atan2f(v->y, v->x), TAU);
+  v->x = x;
+  return v;
+}

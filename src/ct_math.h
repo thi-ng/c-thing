@@ -45,3 +45,7 @@ ct_inline float ct_stepf(const float x, const float edge, const float y1,
                          const float y2) {
   return (x < edge ? y1 : y2);
 }
+
+ct_inline float ct_wrapf(float x, float domain) {
+  return ((x < 0.f) ? (domain + x) : (x >= domain ? (x - domain) : x));
+}

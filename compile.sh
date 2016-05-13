@@ -1,7 +1,7 @@
 #!/bin/sh
 
-FILES="src/mpool.c src/vec.c src/circle.c"
-TESTS=all.c
+FILES="src/circle.c src/mpool.c src/triangle.c src/vec.c"
+TESTS=
 CFLAGS=
 EMFLAGS=
 
