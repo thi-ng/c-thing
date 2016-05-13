@@ -1,12 +1,16 @@
 #!/bin/sh
 
-FLAGS=
+FILES="src/mpool.c src/vec.c"
+TESTS=all.c
+CFLAGS=
+EMFLAGS=
 
 usage()
 {
     cat <<EOF
 Usage:
   -c     : enable Closure compiler step
+  -d     : remove duplicate functions
   -D SYM : add define
   -h     : show this help
   -m     : enable MPool tracing
@@ -16,15 +20,18 @@ EOF
     exit 1
 }
 
-while getopts chmstD: opt; do
+while getopts cdhmstD: opt; do
     case $opt in
-        s) FLAGS="$FLAGS -fslp-vectorize -msse"
+        s) CFLAGS="$CFLAGS -fslp-vectorize -msse"
            ;;
-        c) FLAGS="$FLAGS --closure 1"
+        c) EMFLAGS="$CFLAGS --closure 1"
            ;;
-        m) FLAGS="$FLAGS -DTRACE_MPOOL"
+        d) EMFLAGS="$EMFLAGS -s ELIMINATE_DUPLICATE_FUNCTIONS=1"
+           EMFLAGS="$EMFLAGS -s ELIMINATE_DUPLICATE_FUNCTIONS_DUMP_EQUIVALENT_FUNCTIONS=1"
            ;;
-        D) FLAGS="$FLAGS -D$OPTARG"
+        m) CFLAGS="$CFLAGS -DTRACE_MPOOL"
+           ;;
+        D) CFLAGS="$CFLAGS -D$OPTARG"
            ;;
         t) TESTS="test/test-mpool.c test/test-vec.c test/main.c"
            ;;
@@ -41,10 +48,11 @@ while getopts chmstD: opt; do
     esac
 done
 
-echo "using flags: $FLAGS"
+echo "using cflags: $CFLAGS"
+echo "using emflags: $EMFLAGS"
 
 emcc -Os -Isrc \
-     $FLAGS \
+     $CFLAGS \
      --memory-init-file 0 \
      -s ASM_JS=1 \
      -s INVOKE_RUN=0 \
@@ -52,10 +60,12 @@ emcc -Os -Isrc \
      -s "TOTAL_STACK=1*1024*1024" \
      -s "EXPORT_NAME='geom'" \
      -s MODULARIZE=1 \
+     $EMFLAGS \
      -o geom.js \
-     src/mpool.c all.c \
+     $FILES \
      $TESTS
 
 cp geom.js geom-cljs/resources/public/js/
 
 # -s EXPORTED_FUNCTIONS=@exports.json
+# -s ELIMINATE_DUPLICATE_FUNCTIONS_DUMP_EQUIVALENT_FUNCTIONS=1
