@@ -1,0 +1,130 @@
+** CLJS
+
+#+BEGIN_SRC clojure
+  (defprotocol IFoo
+    (foo [_])
+    (foo1 [_ x])
+    (foo2 [_ x y]))
+
+  (deftype Bar [ptr]
+    IFoo
+    (foo [_] _)
+    (foo1 [_ x] x)
+    (foo2 [_ x y] [x y]))
+#+END_SRC
+
+** Default impl
+#+BEGIN_SRC javascript
+  /**
+   ,* @interface
+   ,*/
+  cljs.user.IFoo = function(){
+  };
+  cljs.user.foo = (function cljs$user$foo(_){
+    if((!((_ == null))) && (!((_.cljs$user$IFoo$foo$arity$1 == null)))){
+      return _.cljs$user$IFoo$foo$arity$1(_);
+    }
+    else {
+      var x__32269__auto__ = (((_ == null))?null:_);
+      var m__32270__auto__ = (cljs.user.foo[goog.typeOf(x__32269__auto__)]);
+      if(!((m__32270__auto__ == null))){
+        return m__32270__auto__.call(null,_);
+      }
+      else {
+        var m__32270__auto____$1 = (cljs.user.foo["_"]);
+        if(!((m__32270__auto____$1 == null))){
+          return m__32270__auto____$1.call(null,_);
+        }
+        else {
+          throw cljs.core.missing_protocol.call(null,"IFoo.foo",_);
+        }
+      }
+    }
+  }
+                  );
+  cljs.user.foo1 = (function cljs$user$foo1(_,x){
+    if((!((_ == null))) && (!((_.cljs$user$IFoo$foo1$arity$2 == null)))){
+      return _.cljs$user$IFoo$foo1$arity$2(_,x);
+    }
+    else {
+      var x__32269__auto__ = (((_ == null))?null:_);
+      var m__32270__auto__ = (cljs.user.foo1[goog.typeOf(x__32269__auto__)]);
+      if(!((m__32270__auto__ == null))){
+        return m__32270__auto__.call(null,_,x);
+      }
+      else {
+        var m__32270__auto____$1 = (cljs.user.foo1["_"]);
+        if(!((m__32270__auto____$1 == null))){
+          return m__32270__auto____$1.call(null,_,x);
+        }
+        else {
+          throw cljs.core.missing_protocol.call(null,"IFoo.foo1",_);
+        }
+      }
+    }
+  }
+                   );
+  cljs.user.foo2 = (function cljs$user$foo2(_,x,y){
+    if((!((_ == null))) && (!((_.cljs$user$IFoo$foo2$arity$3 == null)))){
+      return _.cljs$user$IFoo$foo2$arity$3(_,x,y);
+    }
+    else {
+      var x__32269__auto__ = (((_ == null))?null:_);
+      var m__32270__auto__ = (cljs.user.foo2[goog.typeOf(x__32269__auto__)]);
+      if(!((m__32270__auto__ == null))){
+        return m__32270__auto__.call(null,_,x,y);
+      }
+      else {
+        var m__32270__auto____$1 = (cljs.user.foo2["_"]);
+        if(!((m__32270__auto____$1 == null))){
+          return m__32270__auto____$1.call(null,_,x,y);
+        }
+        else {
+          throw cljs.core.missing_protocol.call(null,"IFoo.foo2",_);
+        }
+      }
+    }
+  }
+                   );
+  /**
+   ,* @constructor
+   ,* @implements {cljs.user.IFoo}
+   ,*/
+  cljs.user.Bar = (function (ptr){
+    this.ptr = ptr;
+  }
+                  )
+  cljs.user.Bar.prototype.cljs$user$IFoo$ = true;
+  cljs.user.Bar.prototype.cljs$user$IFoo$foo$arity$1 = (function (_){
+    var self__ = this;
+    var ___$1 = this;
+    return ___$1;
+  }
+                                                       );
+  cljs.user.Bar.prototype.cljs$user$IFoo$foo1$arity$2 = (function (_,x){
+    var self__ = this;
+    var ___$1 = this;
+    return x;
+  }
+                                                        );
+  cljs.user.Bar.prototype.cljs$user$IFoo$foo2$arity$3 = (function (_,x,y){
+    var self__ = this;
+    var ___$1 = this;
+    return new cljs.core.PersistentVector(null, 2, 5, cljs.core.PersistentVector.EMPTY_NODE, [x,y], null);
+  }
+                                                        );
+  cljs.user.Bar.getBasis = (function (){
+    return new cljs.core.PersistentVector(null, 1, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Symbol(null,"ptr","ptr",(1213150338),null)], null);
+  }
+                           );
+  cljs.user.Bar.cljs$lang$type = true;
+  cljs.user.Bar.cljs$lang$ctorStr = "cljs.user/Bar";
+  cljs.user.Bar.cljs$lang$ctorPrWriter = (function (this__32219__auto__,writer__32220__auto__,opt__32221__auto__){
+    return cljs.core._write.call(null,writer__32220__auto__,"cljs.user/Bar");
+  }
+                                         );
+  cljs.user.__GT_Bar = (function cljs$user$__GT_Bar(ptr){
+    return (new cljs.user.Bar(ptr));
+  }
+                       );
+#+END_SRC

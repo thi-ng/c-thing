@@ -1,17 +1,7 @@
-(ns thi.ng.geom.macros
+(ns thi.ng.geomc.macros
   (:require
    [cljs.analyzer :as ana]
    [clojure.string :as str]))
-
-(defmacro foo
-  [proto module & forms]
-  (let [js 'js*]
-    `(do
-       (~js "~{} = function() { }" ~proto)
-       ~@(map
-          (fn [[pn cn]]
-            `(~js ~(str "~{}.prototype." pn " = function() { return " module "._" cn "(); }") ~proto))
-          (partition 2 forms)))))
 
 (defmacro defproto
   [proto & specs]
