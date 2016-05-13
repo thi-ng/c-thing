@@ -4,9 +4,13 @@
 #include "mpool.h"
 #include "vec.h"
 
-void trace_vec2f(CT_Vec2f *v) { printf("[%f,%f]\n", v->x, v->y); }
+void trace_vec2f(CT_Vec2f *v) {
+  printf("[%f,%f]\n", v->x, v->y);
+}
 
-void trace_vec3f(CT_Vec3f *v) { printf("[%f,%f,%f]\n", v->x, v->y, v->z); }
+void trace_vec3f(CT_Vec3f *v) {
+  printf("[%f,%f,%f]\n", v->x, v->y, v->z);
+}
 
 void assert_vec2f(CT_Vec2f *v, float x, float y) {
   printf("[%f,%f] = [%f,%f]\n", v->x, v->y, x, y);

@@ -19,7 +19,9 @@ CT_EXPORT ct_inline CT_Vec3f *ct_madd3fv(CT_Vec3f *a, CT_Vec3f *b, CT_Vec3f *c,
   return ct_madd3fv_imm(ct_set3fv(ALLOCATE_TYPE(mpool, CT_Vec3f), a), b, c);
 }
 
-CT_EXPORT ct_inline float ct_mag3f(CT_Vec3f *v) { return sqrtf(ct_magsq3f(v)); }
+CT_EXPORT ct_inline float ct_mag3f(CT_Vec3f *v) {
+  return sqrtf(ct_magsq3f(v));
+}
 
 CT_EXPORT ct_inline CT_Vec3f *ct_mix3fv(CT_Vec3f *a, CT_Vec3f *b, float t,
                                         CT_MPool *mpool) {

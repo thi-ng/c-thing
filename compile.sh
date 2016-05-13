@@ -1,6 +1,6 @@
 #!/bin/sh
 
-FILES="src/mpool.c src/vec.c"
+FILES="src/mpool.c src/vec.c src/circle.c"
 TESTS=all.c
 CFLAGS=
 EMFLAGS=
@@ -33,7 +33,7 @@ while getopts cdhmstD: opt; do
            ;;
         D) CFLAGS="$CFLAGS -D$OPTARG"
            ;;
-        t) TESTS="test/test-mpool.c test/test-vec.c test/main.c"
+        t) TESTS="test/test-mpool.c test/test-vec.c test/test-circle.c test/main.c"
            ;;
         h) usage
            ;;

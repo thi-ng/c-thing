@@ -5,6 +5,7 @@ extern void test_mpool();
 extern void test_vec2f();
 extern void test_vec3f();
 extern void test_swizzle();
+extern void test_circle();
 
 int main() {
 #ifdef CT_USE_SSE
@@ -21,5 +22,8 @@ int main() {
 #endif
 #ifndef NO_SWIZZLE
   test_swizzle();
+#endif
+#ifndef NO_CIRCLE
+  test_circle();
 #endif
 }
