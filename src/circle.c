@@ -41,10 +41,11 @@ CT_EXPORT int8_t ct_circle2f_classify_point2f(CT_Circle2f *c, CT_Vec2f *p) {
   return ct_signumf(c->r - ct_dist2fv(&c->p, p), EPS);
 }
 
-CT_EXPORT CT_Vec2f *ct_circle2f_vertices(CT_Circle2f *c, CT_Vec2f *verts, uint32_t n) {
+CT_EXPORT CT_Vec2f *ct_circle2f_vertices(CT_Circle2f *c, CT_Vec2f *verts,
+                                         uint32_t n) {
   CT_Vec2f *ptr = verts;
   float t = TAU / n;
-  for(uint32_t i = 0; i<n; i++) {
+  for (uint32_t i = 0; i < n; i++) {
     ct_cartesian2f_imm(ct_set2fxy(ptr, c->r, t * i));
     ptr++;
   }

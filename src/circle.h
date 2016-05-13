@@ -6,8 +6,8 @@
 
 typedef union {
   struct {
-  CT_Vec2f p;
-  float r;
+    CT_Vec2f p;
+    float r;
   };
   float buf[3];
 } CT_Circle2f;

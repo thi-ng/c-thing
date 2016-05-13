@@ -10,12 +10,11 @@
     return a;                                                             \
   }                                                                       \
                                                                           \
-  CT_EXPORT ct_inline type *name##v(type *a, type *b, CT_MPool *mpool) {  \
-    type *v = ALLOCATE_TYPE(mpool, type);                                 \
-    v->x = a->x op b->x;                                                  \
-    v->y = a->y op b->y;                                                  \
-    v->z = a->z op b->z;                                                  \
-    return v;                                                             \
+  CT_EXPORT ct_inline type *name##v(type *a, type *b, type *out) {        \
+    out->x = a->x op b->x;                                                \
+    out->y = a->y op b->y;                                                \
+    out->z = a->z op b->z;                                                \
+    return out;                                                           \
   }                                                                       \
                                                                           \
   CT_EXPORT ct_inline type *name##n_imm(type *v, ptype n) {               \
@@ -25,12 +24,11 @@
     return v;                                                             \
   }                                                                       \
                                                                           \
-  CT_EXPORT ct_inline type *name##n(type *a, ptype n, CT_MPool *mpool) {  \
-    type *v = ALLOCATE_TYPE(mpool, type);                                 \
-    v->x = a->x op n;                                                     \
-    v->y = a->y op n;                                                     \
-    v->z = a->z op n;                                                     \
-    return v;                                                             \
+  CT_EXPORT ct_inline type *name##n(type *v, ptype n, type *out) {        \
+    out->x = v->x op n;                                                   \
+    out->y = v->y op n;                                                   \
+    out->z = v->z op n;                                                   \
+    return out;                                                           \
   }                                                                       \
                                                                           \
   CT_EXPORT ct_inline type *name##xyz_imm(type *v, ptype x, ptype y,      \
@@ -41,13 +39,12 @@
     return v;                                                             \
   }                                                                       \
                                                                           \
-  CT_EXPORT ct_inline type *name##xyz(type *a, ptype x, ptype y, ptype z, \
-                                      CT_MPool *mpool) {                  \
-    type *v = ALLOCATE_TYPE(mpool, type);                                 \
-    v->x = a->x op x;                                                     \
-    v->y = a->y op y;                                                     \
-    v->z = a->z op z;                                                     \
-    return v;                                                             \
+  CT_EXPORT ct_inline type *name##xyz(type *v, ptype x, ptype y, ptype z, \
+                                      type *out) {                        \
+    out->x = v->x op x;                                                   \
+    out->y = v->y op y;                                                   \
+    out->z = v->z op z;                                                   \
+    return out;                                                           \
   }
 
 typedef union {
@@ -61,14 +58,6 @@ VEC3OP(CT_Vec3f, float, ct_add3f, +)
 VEC3OP(CT_Vec3f, float, ct_sub3f, -)
 VEC3OP(CT_Vec3f, float, ct_mul3f, *)
 VEC3OP(CT_Vec3f, float, ct_div3f, /)
-
-CT_EXPORT ct_inline CT_Vec3f *ct_madd3fv_imm(CT_Vec3f *a, CT_Vec3f *b,
-                                             CT_Vec3f *c) {
-  a->x = a->x * b->x + c->x;
-  a->y = a->y * b->y + c->y;
-  a->z = a->z * b->z + c->z;
-  return a;
-}
 
 CT_EXPORT ct_inline float ct_dot3fv(CT_Vec3f *a, CT_Vec3f *b) {
   return a->x * b->x + a->y * b->y + a->z * b->z;
@@ -84,12 +73,11 @@ CT_EXPORT ct_inline CT_Vec3f *ct_cross3fv_imm(CT_Vec3f *a, CT_Vec3f *b) {
 }
 
 CT_EXPORT ct_inline CT_Vec3f *ct_cross3fv(CT_Vec3f *a, CT_Vec3f *b,
-                                          CT_MPool *mpool) {
-  CT_Vec3f *v = ALLOCATE_TYPE(mpool, CT_Vec3f);
-  v->x = a->y * b->z - a->z * b->y;
-  v->y = a->z * b->x - a->x * b->z;
-  v->z = a->x * b->y - a->y * b->x;
-  return v;
+                                          CT_Vec3f *out) {
+  out->x = a->y * b->z - a->z * b->y;
+  out->y = a->z * b->x - a->x * b->z;
+  out->z = a->x * b->y - a->y * b->x;
+  return out;
 }
 
 CT_EXPORT ct_inline float ct_distsq3fv(CT_Vec3f *a, CT_Vec3f *b) {
@@ -97,6 +85,14 @@ CT_EXPORT ct_inline float ct_distsq3fv(CT_Vec3f *a, CT_Vec3f *b) {
   float dy = a->y - b->y;
   float dz = a->z - b->z;
   return dx * dx + dy * dy + dz * dz;
+}
+
+CT_EXPORT ct_inline CT_Vec3f *ct_madd3fv_imm(CT_Vec3f *a, CT_Vec3f *b,
+                                             CT_Vec3f *c) {
+  a->x = a->x * b->x + c->x;
+  a->y = a->y * b->y + c->y;
+  a->z = a->z * b->z + c->z;
+  return a;
 }
 
 CT_EXPORT ct_inline float ct_magsq3f(CT_Vec3f *v) {

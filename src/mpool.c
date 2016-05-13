@@ -31,7 +31,7 @@ CT_EXPORT void ct_mpool_free_all(CT_MPool *mpool) {
   free(mpool->pool);
 }
 
-CT_EXPORT void *ct_mpool_malloc(CT_MPool *mpool) {
+CT_EXPORT void *ct_mpool_alloc(CT_MPool *mpool) {
   void *ptr = NULL;
   if (mpool->freeList != NULL) {
     ptr = mpool->freeList;

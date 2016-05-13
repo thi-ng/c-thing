@@ -2,45 +2,41 @@
 
 #include "vec.h"
 
-#define VEC2OP(type, ptype, name, op)                                    \
-  CT_EXPORT ct_inline type *name##v_imm(type *a, type *b) {              \
-    a->x op## = b->x;                                                    \
-    a->y op## = b->y;                                                    \
-    return a;                                                            \
-  }                                                                      \
-                                                                         \
-  CT_EXPORT ct_inline type *name##v(type *a, type *b, CT_MPool *mpool) { \
-    type *v = ALLOCATE_TYPE(mpool, type);                                \
-    v->x = a->x op b->x;                                                 \
-    v->y = a->y op b->y;                                                 \
-    return v;                                                            \
-  }                                                                      \
-                                                                         \
-  CT_EXPORT ct_inline type *name##n_imm(type *v, ptype n) {              \
-    v->x op## = n;                                                       \
-    v->y op## = n;                                                       \
-    return v;                                                            \
-  }                                                                      \
-                                                                         \
-  CT_EXPORT ct_inline type *name##n(type *a, ptype n, CT_MPool *mpool) { \
-    type *v = ALLOCATE_TYPE(mpool, type);                                \
-    v->x = a->x op n;                                                    \
-    v->y = a->y op n;                                                    \
-    return v;                                                            \
-  }                                                                      \
-                                                                         \
-  CT_EXPORT ct_inline type *name##xy_imm(type *v, ptype x, ptype y) {    \
-    v->x op## = x;                                                       \
-    v->y op## = y;                                                       \
-    return v;                                                            \
-  }                                                                      \
-                                                                         \
-  CT_EXPORT ct_inline type *name##xy(type *a, ptype x, ptype y,          \
-                                     CT_MPool *mpool) {                  \
-    type *v = ALLOCATE_TYPE(mpool, type);                                \
-    v->x = a->x op x;                                                    \
-    v->y = a->y op y;                                                    \
-    return v;                                                            \
+#define VEC2OP(type, ptype, name, op)                                        \
+  CT_EXPORT ct_inline type *name##v_imm(type *a, type *b) {                  \
+    a->x op## = b->x;                                                        \
+    a->y op## = b->y;                                                        \
+    return a;                                                                \
+  }                                                                          \
+                                                                             \
+  CT_EXPORT ct_inline type *name##v(type *a, type *b, type *out) {           \
+    out->x = a->x op b->x;                                                   \
+    out->y = a->y op b->y;                                                   \
+    return out;                                                              \
+  }                                                                          \
+                                                                             \
+  CT_EXPORT ct_inline type *name##n_imm(type *v, ptype n) {                  \
+    v->x op## = n;                                                           \
+    v->y op## = n;                                                           \
+    return v;                                                                \
+  }                                                                          \
+                                                                             \
+  CT_EXPORT ct_inline type *name##n(type *v, ptype n, type *out) {           \
+    out->x = v->x op n;                                                      \
+    out->y = v->y op n;                                                      \
+    return out;                                                              \
+  }                                                                          \
+                                                                             \
+  CT_EXPORT ct_inline type *name##xy_imm(type *v, ptype x, ptype y) {        \
+    v->x op## = x;                                                           \
+    v->y op## = y;                                                           \
+    return v;                                                                \
+  }                                                                          \
+                                                                             \
+  CT_EXPORT ct_inline type *name##xy(type *v, ptype x, ptype y, type *out) { \
+    out->x = v->x op x;                                                      \
+    out->y = v->y op y;                                                      \
+    return out;                                                              \
   }
 
 typedef union {
@@ -70,6 +66,12 @@ CT_EXPORT ct_inline CT_Vec2f *ct_set2fxy(CT_Vec2f *v, float x, float y) {
   return v;
 }
 
+CT_EXPORT ct_inline CT_Vec2f *ct_set2fp(CT_Vec2f *v, float *xy) {
+  v->x = *xy++;
+  v->y = *xy;
+  return v;
+}
+
 CT_EXPORT ct_inline uint8_t ct_deltaeq2fv(CT_Vec2f *a, CT_Vec2f *b, float eps) {
   return (ct_deltaeqf(a->x, b->x, eps) && ct_deltaeqf(a->y, b->y, eps));
 }
@@ -82,8 +84,8 @@ CT_EXPORT ct_inline CT_Vec2f *ct_madd2fv_imm(CT_Vec2f *a, CT_Vec2f *b,
 }
 
 CT_EXPORT ct_inline CT_Vec2f *ct_madd2fv(CT_Vec2f *a, CT_Vec2f *b, CT_Vec2f *c,
-                                         CT_MPool *mpool) {
-  return ct_madd2fv_imm(ct_set2fv(ALLOCATE_TYPE(mpool, CT_Vec2f), a), b, c);
+                                         CT_Vec2f *out) {
+  return ct_madd2fv_imm(ct_set2fv(out, a), b, c);
 }
 
 CT_EXPORT ct_inline float ct_dot2fv(CT_Vec2f *a, CT_Vec2f *b) {
@@ -115,8 +117,8 @@ CT_EXPORT ct_inline CT_Vec2f *ct_mix2fv_imm(CT_Vec2f *a, CT_Vec2f *b, float t) {
 }
 
 CT_EXPORT ct_inline CT_Vec2f *ct_mix2fv(CT_Vec2f *a, CT_Vec2f *b, float t,
-                                        CT_MPool *mpool) {
-  return ct_mix2fv_imm(ct_set2fv(ALLOCATE_TYPE(mpool, CT_Vec2f), a), b, t);
+                                        CT_Vec2f *out) {
+  return ct_mix2fv_imm(ct_set2fv(out, a), b, t);
 }
 
 CT_EXPORT ct_inline CT_Vec2f *ct_normalize2f_imm(CT_Vec2f *v, float len) {
@@ -130,12 +132,12 @@ CT_EXPORT ct_inline CT_Vec2f *ct_normalize2f_imm(CT_Vec2f *v, float len) {
 }
 
 CT_EXPORT ct_inline CT_Vec2f *ct_normalize2f(CT_Vec2f *v, float len,
-                                             CT_MPool *mpool) {
-  return ct_normalize2f_imm(ct_set2fv(ALLOCATE_TYPE(mpool, CT_Vec2f), v), len);
+                                             CT_Vec2f *out) {
+  return ct_normalize2f_imm(ct_set2fv(out, v), len);
 }
 
 CT_EXPORT ct_inline uint8_t ct_is_normalized2f(CT_Vec2f *v) {
-  return ct_deltaeqf(ct_mag2f(v) - 1.f, 0.f, EPS);
+  return ct_deltaeqf(ct_mag2f(v), 1.f, EPS);
 }
 
 CT_EXPORT ct_inline CT_Vec2f *ct_cartesian2f_imm(CT_Vec2f *v) {

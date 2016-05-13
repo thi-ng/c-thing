@@ -5,7 +5,7 @@
 
 typedef union {
   struct {
-  CT_Vec2f a,b,c;
+    CT_Vec2f a, b, c;
   };
   float buf[6];
 } CT_Triangle2f;

@@ -9,10 +9,9 @@
     return a;                                                                  \
   }                                                                            \
                                                                                \
-  CT_EXPORT ct_inline type *name##v(type *a, type *b, CT_MPool *mpool) {       \
-    type *v = ALLOCATE_TYPE(mpool, type);                                      \
-    v->mmval = a->mmval op b->mmval;                                           \
-    return v;                                                                  \
+  CT_EXPORT ct_inline type *name##v(type *a, type *b, type *out) {             \
+    out->mmval = a->mmval op b->mmval;                                         \
+    return out;                                                                \
   }                                                                            \
                                                                                \
   CT_EXPORT ct_inline type *name##n_imm(type *v, ptype n) {                    \
@@ -21,11 +20,10 @@
     return v;                                                                  \
   }                                                                            \
                                                                                \
-  CT_EXPORT ct_inline type *name##n(type *a, ptype n, CT_MPool *mpool) {       \
-    type *v = ALLOCATE_TYPE(mpool, type);                                      \
+  CT_EXPORT ct_inline type *name##n(type *v, ptype n, type *out) {             \
     __m128 b = {n, n, n, n};                                                   \
-    v->mmval = a->mmval op b;                                                  \
-    return v;                                                                  \
+    out->mmval = v->mmval op b;                                                \
+    return out;                                                                \
   }                                                                            \
                                                                                \
   CT_EXPORT ct_inline type *name##xyzw_imm(type *v, ptype x, ptype y, ptype z, \
@@ -35,12 +33,11 @@
     return v;                                                                  \
   }                                                                            \
                                                                                \
-  CT_EXPORT ct_inline type *name##xyzw(type *a, ptype x, ptype y, ptype z,     \
-                                       ptype w, CT_MPool *mpool) {             \
-    type *v = ALLOCATE_TYPE(mpool, type);                                      \
+  CT_EXPORT ct_inline type *name##xyzw(type *v, ptype x, ptype y, ptype z,     \
+                                       ptype w, type *out) {                   \
     __m128 b = {x, y, z, w};                                                   \
-    v->mmval = a->mmval op b;                                                  \
-    return v;                                                                  \
+    out->mmval = v->mmval op b;                                                \
+    return out;                                                                \
   }
 
 typedef union {
