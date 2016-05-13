@@ -2,477 +2,410 @@
 
 #include "vec.h"
 
-#define VEC2_SWIZZLE(type, ptype, name, suffix, i, j)                          \
-    CT_EXPORT ct_inline type *ct_##name##suffix(void *a, type *b) {            \
-        ptype *v = (ptype *)a;                                                 \
-        ptype x = v[i];                                                        \
-        ptype y = v[j];                                                        \
-        b->x = x;                                                              \
-        b->y = y;                                                              \
-        return b;                                                              \
-    }
+#define CT_SWIZZLE_ID(d, c, b, a) (uint32_t)((d << 6) | (c << 4) | (b << 2) | a)
+#define CT_SWIZZLE_A(id) ((id)&3)
+#define CT_SWIZZLE_B(id) ((id >> 2) & 3)
+#define CT_SWIZZLE_C(id) ((id >> 4) & 3)
+#define CT_SWIZZLE_D(id) ((id >> 6) & 3)
 
-#define VEC2_SWIZZLE_N(type, ptype, name, suffix, i)                           \
-    CT_EXPORT ct_inline type *ct_##name##suffix(void *a, type *b) {            \
-        ptype v = ((ptype *)a)[i];                                             \
-        b->x = v;                                                              \
-        b->y = v;                                                              \
-        return b;                                                              \
-    }
+#define X CT_SWIZZLE_ID(0, 0, 0, 0)
+#define Y CT_SWIZZLE_ID(0, 0, 0, 1)
+#define Z CT_SWIZZLE_ID(0, 0, 0, 2)
+#define W CT_SWIZZLE_ID(0, 0, 0, 3)
+#define XX CT_SWIZZLE_ID(0, 0, 0, 0)
+#define XY CT_SWIZZLE_ID(0, 0, 0, 1)
+#define XZ CT_SWIZZLE_ID(0, 0, 0, 2)
+#define XW CT_SWIZZLE_ID(0, 0, 0, 3)
+#define YX CT_SWIZZLE_ID(0, 0, 1, 0)
+#define YY CT_SWIZZLE_ID(0, 0, 1, 1)
+#define YZ CT_SWIZZLE_ID(0, 0, 1, 2)
+#define YW CT_SWIZZLE_ID(0, 0, 1, 3)
+#define ZX CT_SWIZZLE_ID(0, 0, 2, 0)
+#define ZY CT_SWIZZLE_ID(0, 0, 2, 1)
+#define ZZ CT_SWIZZLE_ID(0, 0, 2, 2)
+#define ZW CT_SWIZZLE_ID(0, 0, 2, 3)
+#define WX CT_SWIZZLE_ID(0, 0, 3, 0)
+#define WY CT_SWIZZLE_ID(0, 0, 3, 1)
+#define WZ CT_SWIZZLE_ID(0, 0, 3, 2)
+#define WW CT_SWIZZLE_ID(0, 0, 3, 3)
+#define XXX CT_SWIZZLE_ID(0, 0, 0, 0)
+#define XXY CT_SWIZZLE_ID(0, 0, 0, 1)
+#define XXZ CT_SWIZZLE_ID(0, 0, 0, 2)
+#define XXW CT_SWIZZLE_ID(0, 0, 0, 3)
+#define XYX CT_SWIZZLE_ID(0, 0, 1, 0)
+#define XYY CT_SWIZZLE_ID(0, 0, 1, 1)
+#define XYZ CT_SWIZZLE_ID(0, 0, 1, 2)
+#define XYW CT_SWIZZLE_ID(0, 0, 1, 3)
+#define XZX CT_SWIZZLE_ID(0, 0, 2, 0)
+#define XZY CT_SWIZZLE_ID(0, 0, 2, 1)
+#define XZZ CT_SWIZZLE_ID(0, 0, 2, 2)
+#define XZW CT_SWIZZLE_ID(0, 0, 2, 3)
+#define XWX CT_SWIZZLE_ID(0, 0, 3, 0)
+#define XWY CT_SWIZZLE_ID(0, 0, 3, 1)
+#define XWZ CT_SWIZZLE_ID(0, 0, 3, 2)
+#define XWW CT_SWIZZLE_ID(0, 0, 3, 3)
+#define YXX CT_SWIZZLE_ID(0, 1, 0, 0)
+#define YXY CT_SWIZZLE_ID(0, 1, 0, 1)
+#define YXZ CT_SWIZZLE_ID(0, 1, 0, 2)
+#define YXW CT_SWIZZLE_ID(0, 1, 0, 3)
+#define YYX CT_SWIZZLE_ID(0, 1, 1, 0)
+#define YYY CT_SWIZZLE_ID(0, 1, 1, 1)
+#define YYZ CT_SWIZZLE_ID(0, 1, 1, 2)
+#define YYW CT_SWIZZLE_ID(0, 1, 1, 3)
+#define YZX CT_SWIZZLE_ID(0, 1, 2, 0)
+#define YZY CT_SWIZZLE_ID(0, 1, 2, 1)
+#define YZZ CT_SWIZZLE_ID(0, 1, 2, 2)
+#define YZW CT_SWIZZLE_ID(0, 1, 2, 3)
+#define YWX CT_SWIZZLE_ID(0, 1, 3, 0)
+#define YWY CT_SWIZZLE_ID(0, 1, 3, 1)
+#define YWZ CT_SWIZZLE_ID(0, 1, 3, 2)
+#define YWW CT_SWIZZLE_ID(0, 1, 3, 3)
+#define ZXX CT_SWIZZLE_ID(0, 2, 0, 0)
+#define ZXY CT_SWIZZLE_ID(0, 2, 0, 1)
+#define ZXZ CT_SWIZZLE_ID(0, 2, 0, 2)
+#define ZXW CT_SWIZZLE_ID(0, 2, 0, 3)
+#define ZYX CT_SWIZZLE_ID(0, 2, 1, 0)
+#define ZYY CT_SWIZZLE_ID(0, 2, 1, 1)
+#define ZYZ CT_SWIZZLE_ID(0, 2, 1, 2)
+#define ZYW CT_SWIZZLE_ID(0, 2, 1, 3)
+#define ZZX CT_SWIZZLE_ID(0, 2, 2, 0)
+#define ZZY CT_SWIZZLE_ID(0, 2, 2, 1)
+#define ZZZ CT_SWIZZLE_ID(0, 2, 2, 2)
+#define ZZW CT_SWIZZLE_ID(0, 2, 2, 3)
+#define ZWX CT_SWIZZLE_ID(0, 2, 3, 0)
+#define ZWY CT_SWIZZLE_ID(0, 2, 3, 1)
+#define ZWZ CT_SWIZZLE_ID(0, 2, 3, 2)
+#define ZWW CT_SWIZZLE_ID(0, 2, 3, 3)
+#define WXX CT_SWIZZLE_ID(0, 3, 0, 0)
+#define WXY CT_SWIZZLE_ID(0, 3, 0, 1)
+#define WXZ CT_SWIZZLE_ID(0, 3, 0, 2)
+#define WXW CT_SWIZZLE_ID(0, 3, 0, 3)
+#define WYX CT_SWIZZLE_ID(0, 3, 1, 0)
+#define WYY CT_SWIZZLE_ID(0, 3, 1, 1)
+#define WYZ CT_SWIZZLE_ID(0, 3, 1, 2)
+#define WYW CT_SWIZZLE_ID(0, 3, 1, 3)
+#define WZX CT_SWIZZLE_ID(0, 3, 2, 0)
+#define WZY CT_SWIZZLE_ID(0, 3, 2, 1)
+#define WZZ CT_SWIZZLE_ID(0, 3, 2, 2)
+#define WZW CT_SWIZZLE_ID(0, 3, 2, 3)
+#define WWX CT_SWIZZLE_ID(0, 3, 3, 0)
+#define WWY CT_SWIZZLE_ID(0, 3, 3, 1)
+#define WWZ CT_SWIZZLE_ID(0, 3, 3, 2)
+#define WWW CT_SWIZZLE_ID(0, 3, 3, 3)
+#define XXXX CT_SWIZZLE_ID(0, 0, 0, 0)
+#define XXXY CT_SWIZZLE_ID(0, 0, 0, 1)
+#define XXXZ CT_SWIZZLE_ID(0, 0, 0, 2)
+#define XXXW CT_SWIZZLE_ID(0, 0, 0, 3)
+#define XXYX CT_SWIZZLE_ID(0, 0, 1, 0)
+#define XXYY CT_SWIZZLE_ID(0, 0, 1, 1)
+#define XXYZ CT_SWIZZLE_ID(0, 0, 1, 2)
+#define XXYW CT_SWIZZLE_ID(0, 0, 1, 3)
+#define XXZX CT_SWIZZLE_ID(0, 0, 2, 0)
+#define XXZY CT_SWIZZLE_ID(0, 0, 2, 1)
+#define XXZZ CT_SWIZZLE_ID(0, 0, 2, 2)
+#define XXZW CT_SWIZZLE_ID(0, 0, 2, 3)
+#define XXWX CT_SWIZZLE_ID(0, 0, 3, 0)
+#define XXWY CT_SWIZZLE_ID(0, 0, 3, 1)
+#define XXWZ CT_SWIZZLE_ID(0, 0, 3, 2)
+#define XXWW CT_SWIZZLE_ID(0, 0, 3, 3)
+#define XYXX CT_SWIZZLE_ID(0, 1, 0, 0)
+#define XYXY CT_SWIZZLE_ID(0, 1, 0, 1)
+#define XYXZ CT_SWIZZLE_ID(0, 1, 0, 2)
+#define XYXW CT_SWIZZLE_ID(0, 1, 0, 3)
+#define XYYX CT_SWIZZLE_ID(0, 1, 1, 0)
+#define XYYY CT_SWIZZLE_ID(0, 1, 1, 1)
+#define XYYZ CT_SWIZZLE_ID(0, 1, 1, 2)
+#define XYYW CT_SWIZZLE_ID(0, 1, 1, 3)
+#define XYZX CT_SWIZZLE_ID(0, 1, 2, 0)
+#define XYZY CT_SWIZZLE_ID(0, 1, 2, 1)
+#define XYZZ CT_SWIZZLE_ID(0, 1, 2, 2)
+#define XYZW CT_SWIZZLE_ID(0, 1, 2, 3)
+#define XYWX CT_SWIZZLE_ID(0, 1, 3, 0)
+#define XYWY CT_SWIZZLE_ID(0, 1, 3, 1)
+#define XYWZ CT_SWIZZLE_ID(0, 1, 3, 2)
+#define XYWW CT_SWIZZLE_ID(0, 1, 3, 3)
+#define XZXX CT_SWIZZLE_ID(0, 2, 0, 0)
+#define XZXY CT_SWIZZLE_ID(0, 2, 0, 1)
+#define XZXZ CT_SWIZZLE_ID(0, 2, 0, 2)
+#define XZXW CT_SWIZZLE_ID(0, 2, 0, 3)
+#define XZYX CT_SWIZZLE_ID(0, 2, 1, 0)
+#define XZYY CT_SWIZZLE_ID(0, 2, 1, 1)
+#define XZYZ CT_SWIZZLE_ID(0, 2, 1, 2)
+#define XZYW CT_SWIZZLE_ID(0, 2, 1, 3)
+#define XZZX CT_SWIZZLE_ID(0, 2, 2, 0)
+#define XZZY CT_SWIZZLE_ID(0, 2, 2, 1)
+#define XZZZ CT_SWIZZLE_ID(0, 2, 2, 2)
+#define XZZW CT_SWIZZLE_ID(0, 2, 2, 3)
+#define XZWX CT_SWIZZLE_ID(0, 2, 3, 0)
+#define XZWY CT_SWIZZLE_ID(0, 2, 3, 1)
+#define XZWZ CT_SWIZZLE_ID(0, 2, 3, 2)
+#define XZWW CT_SWIZZLE_ID(0, 2, 3, 3)
+#define XWXX CT_SWIZZLE_ID(0, 3, 0, 0)
+#define XWXY CT_SWIZZLE_ID(0, 3, 0, 1)
+#define XWXZ CT_SWIZZLE_ID(0, 3, 0, 2)
+#define XWXW CT_SWIZZLE_ID(0, 3, 0, 3)
+#define XWYX CT_SWIZZLE_ID(0, 3, 1, 0)
+#define XWYY CT_SWIZZLE_ID(0, 3, 1, 1)
+#define XWYZ CT_SWIZZLE_ID(0, 3, 1, 2)
+#define XWYW CT_SWIZZLE_ID(0, 3, 1, 3)
+#define XWZX CT_SWIZZLE_ID(0, 3, 2, 0)
+#define XWZY CT_SWIZZLE_ID(0, 3, 2, 1)
+#define XWZZ CT_SWIZZLE_ID(0, 3, 2, 2)
+#define XWZW CT_SWIZZLE_ID(0, 3, 2, 3)
+#define XWWX CT_SWIZZLE_ID(0, 3, 3, 0)
+#define XWWY CT_SWIZZLE_ID(0, 3, 3, 1)
+#define XWWZ CT_SWIZZLE_ID(0, 3, 3, 2)
+#define XWWW CT_SWIZZLE_ID(0, 3, 3, 3)
+#define YXXX CT_SWIZZLE_ID(1, 0, 0, 0)
+#define YXXY CT_SWIZZLE_ID(1, 0, 0, 1)
+#define YXXZ CT_SWIZZLE_ID(1, 0, 0, 2)
+#define YXXW CT_SWIZZLE_ID(1, 0, 0, 3)
+#define YXYX CT_SWIZZLE_ID(1, 0, 1, 0)
+#define YXYY CT_SWIZZLE_ID(1, 0, 1, 1)
+#define YXYZ CT_SWIZZLE_ID(1, 0, 1, 2)
+#define YXYW CT_SWIZZLE_ID(1, 0, 1, 3)
+#define YXZX CT_SWIZZLE_ID(1, 0, 2, 0)
+#define YXZY CT_SWIZZLE_ID(1, 0, 2, 1)
+#define YXZZ CT_SWIZZLE_ID(1, 0, 2, 2)
+#define YXZW CT_SWIZZLE_ID(1, 0, 2, 3)
+#define YXWX CT_SWIZZLE_ID(1, 0, 3, 0)
+#define YXWY CT_SWIZZLE_ID(1, 0, 3, 1)
+#define YXWZ CT_SWIZZLE_ID(1, 0, 3, 2)
+#define YXWW CT_SWIZZLE_ID(1, 0, 3, 3)
+#define YYXX CT_SWIZZLE_ID(1, 1, 0, 0)
+#define YYXY CT_SWIZZLE_ID(1, 1, 0, 1)
+#define YYXZ CT_SWIZZLE_ID(1, 1, 0, 2)
+#define YYXW CT_SWIZZLE_ID(1, 1, 0, 3)
+#define YYYX CT_SWIZZLE_ID(1, 1, 1, 0)
+#define YYYY CT_SWIZZLE_ID(1, 1, 1, 1)
+#define YYYZ CT_SWIZZLE_ID(1, 1, 1, 2)
+#define YYYW CT_SWIZZLE_ID(1, 1, 1, 3)
+#define YYZX CT_SWIZZLE_ID(1, 1, 2, 0)
+#define YYZY CT_SWIZZLE_ID(1, 1, 2, 1)
+#define YYZZ CT_SWIZZLE_ID(1, 1, 2, 2)
+#define YYZW CT_SWIZZLE_ID(1, 1, 2, 3)
+#define YYWX CT_SWIZZLE_ID(1, 1, 3, 0)
+#define YYWY CT_SWIZZLE_ID(1, 1, 3, 1)
+#define YYWZ CT_SWIZZLE_ID(1, 1, 3, 2)
+#define YYWW CT_SWIZZLE_ID(1, 1, 3, 3)
+#define YZXX CT_SWIZZLE_ID(1, 2, 0, 0)
+#define YZXY CT_SWIZZLE_ID(1, 2, 0, 1)
+#define YZXZ CT_SWIZZLE_ID(1, 2, 0, 2)
+#define YZXW CT_SWIZZLE_ID(1, 2, 0, 3)
+#define YZYX CT_SWIZZLE_ID(1, 2, 1, 0)
+#define YZYY CT_SWIZZLE_ID(1, 2, 1, 1)
+#define YZYZ CT_SWIZZLE_ID(1, 2, 1, 2)
+#define YZYW CT_SWIZZLE_ID(1, 2, 1, 3)
+#define YZZX CT_SWIZZLE_ID(1, 2, 2, 0)
+#define YZZY CT_SWIZZLE_ID(1, 2, 2, 1)
+#define YZZZ CT_SWIZZLE_ID(1, 2, 2, 2)
+#define YZZW CT_SWIZZLE_ID(1, 2, 2, 3)
+#define YZWX CT_SWIZZLE_ID(1, 2, 3, 0)
+#define YZWY CT_SWIZZLE_ID(1, 2, 3, 1)
+#define YZWZ CT_SWIZZLE_ID(1, 2, 3, 2)
+#define YZWW CT_SWIZZLE_ID(1, 2, 3, 3)
+#define YWXX CT_SWIZZLE_ID(1, 3, 0, 0)
+#define YWXY CT_SWIZZLE_ID(1, 3, 0, 1)
+#define YWXZ CT_SWIZZLE_ID(1, 3, 0, 2)
+#define YWXW CT_SWIZZLE_ID(1, 3, 0, 3)
+#define YWYX CT_SWIZZLE_ID(1, 3, 1, 0)
+#define YWYY CT_SWIZZLE_ID(1, 3, 1, 1)
+#define YWYZ CT_SWIZZLE_ID(1, 3, 1, 2)
+#define YWYW CT_SWIZZLE_ID(1, 3, 1, 3)
+#define YWZX CT_SWIZZLE_ID(1, 3, 2, 0)
+#define YWZY CT_SWIZZLE_ID(1, 3, 2, 1)
+#define YWZZ CT_SWIZZLE_ID(1, 3, 2, 2)
+#define YWZW CT_SWIZZLE_ID(1, 3, 2, 3)
+#define YWWX CT_SWIZZLE_ID(1, 3, 3, 0)
+#define YWWY CT_SWIZZLE_ID(1, 3, 3, 1)
+#define YWWZ CT_SWIZZLE_ID(1, 3, 3, 2)
+#define YWWW CT_SWIZZLE_ID(1, 3, 3, 3)
+#define ZXXX CT_SWIZZLE_ID(2, 0, 0, 0)
+#define ZXXY CT_SWIZZLE_ID(2, 0, 0, 1)
+#define ZXXZ CT_SWIZZLE_ID(2, 0, 0, 2)
+#define ZXXW CT_SWIZZLE_ID(2, 0, 0, 3)
+#define ZXYX CT_SWIZZLE_ID(2, 0, 1, 0)
+#define ZXYY CT_SWIZZLE_ID(2, 0, 1, 1)
+#define ZXYZ CT_SWIZZLE_ID(2, 0, 1, 2)
+#define ZXYW CT_SWIZZLE_ID(2, 0, 1, 3)
+#define ZXZX CT_SWIZZLE_ID(2, 0, 2, 0)
+#define ZXZY CT_SWIZZLE_ID(2, 0, 2, 1)
+#define ZXZZ CT_SWIZZLE_ID(2, 0, 2, 2)
+#define ZXZW CT_SWIZZLE_ID(2, 0, 2, 3)
+#define ZXWX CT_SWIZZLE_ID(2, 0, 3, 0)
+#define ZXWY CT_SWIZZLE_ID(2, 0, 3, 1)
+#define ZXWZ CT_SWIZZLE_ID(2, 0, 3, 2)
+#define ZXWW CT_SWIZZLE_ID(2, 0, 3, 3)
+#define ZYXX CT_SWIZZLE_ID(2, 1, 0, 0)
+#define ZYXY CT_SWIZZLE_ID(2, 1, 0, 1)
+#define ZYXZ CT_SWIZZLE_ID(2, 1, 0, 2)
+#define ZYXW CT_SWIZZLE_ID(2, 1, 0, 3)
+#define ZYYX CT_SWIZZLE_ID(2, 1, 1, 0)
+#define ZYYY CT_SWIZZLE_ID(2, 1, 1, 1)
+#define ZYYZ CT_SWIZZLE_ID(2, 1, 1, 2)
+#define ZYYW CT_SWIZZLE_ID(2, 1, 1, 3)
+#define ZYZX CT_SWIZZLE_ID(2, 1, 2, 0)
+#define ZYZY CT_SWIZZLE_ID(2, 1, 2, 1)
+#define ZYZZ CT_SWIZZLE_ID(2, 1, 2, 2)
+#define ZYZW CT_SWIZZLE_ID(2, 1, 2, 3)
+#define ZYWX CT_SWIZZLE_ID(2, 1, 3, 0)
+#define ZYWY CT_SWIZZLE_ID(2, 1, 3, 1)
+#define ZYWZ CT_SWIZZLE_ID(2, 1, 3, 2)
+#define ZYWW CT_SWIZZLE_ID(2, 1, 3, 3)
+#define ZZXX CT_SWIZZLE_ID(2, 2, 0, 0)
+#define ZZXY CT_SWIZZLE_ID(2, 2, 0, 1)
+#define ZZXZ CT_SWIZZLE_ID(2, 2, 0, 2)
+#define ZZXW CT_SWIZZLE_ID(2, 2, 0, 3)
+#define ZZYX CT_SWIZZLE_ID(2, 2, 1, 0)
+#define ZZYY CT_SWIZZLE_ID(2, 2, 1, 1)
+#define ZZYZ CT_SWIZZLE_ID(2, 2, 1, 2)
+#define ZZYW CT_SWIZZLE_ID(2, 2, 1, 3)
+#define ZZZX CT_SWIZZLE_ID(2, 2, 2, 0)
+#define ZZZY CT_SWIZZLE_ID(2, 2, 2, 1)
+#define ZZZZ CT_SWIZZLE_ID(2, 2, 2, 2)
+#define ZZZW CT_SWIZZLE_ID(2, 2, 2, 3)
+#define ZZWX CT_SWIZZLE_ID(2, 2, 3, 0)
+#define ZZWY CT_SWIZZLE_ID(2, 2, 3, 1)
+#define ZZWZ CT_SWIZZLE_ID(2, 2, 3, 2)
+#define ZZWW CT_SWIZZLE_ID(2, 2, 3, 3)
+#define ZWXX CT_SWIZZLE_ID(2, 3, 0, 0)
+#define ZWXY CT_SWIZZLE_ID(2, 3, 0, 1)
+#define ZWXZ CT_SWIZZLE_ID(2, 3, 0, 2)
+#define ZWXW CT_SWIZZLE_ID(2, 3, 0, 3)
+#define ZWYX CT_SWIZZLE_ID(2, 3, 1, 0)
+#define ZWYY CT_SWIZZLE_ID(2, 3, 1, 1)
+#define ZWYZ CT_SWIZZLE_ID(2, 3, 1, 2)
+#define ZWYW CT_SWIZZLE_ID(2, 3, 1, 3)
+#define ZWZX CT_SWIZZLE_ID(2, 3, 2, 0)
+#define ZWZY CT_SWIZZLE_ID(2, 3, 2, 1)
+#define ZWZZ CT_SWIZZLE_ID(2, 3, 2, 2)
+#define ZWZW CT_SWIZZLE_ID(2, 3, 2, 3)
+#define ZWWX CT_SWIZZLE_ID(2, 3, 3, 0)
+#define ZWWY CT_SWIZZLE_ID(2, 3, 3, 1)
+#define ZWWZ CT_SWIZZLE_ID(2, 3, 3, 2)
+#define ZWWW CT_SWIZZLE_ID(2, 3, 3, 3)
+#define WXXX CT_SWIZZLE_ID(3, 0, 0, 0)
+#define WXXY CT_SWIZZLE_ID(3, 0, 0, 1)
+#define WXXZ CT_SWIZZLE_ID(3, 0, 0, 2)
+#define WXXW CT_SWIZZLE_ID(3, 0, 0, 3)
+#define WXYX CT_SWIZZLE_ID(3, 0, 1, 0)
+#define WXYY CT_SWIZZLE_ID(3, 0, 1, 1)
+#define WXYZ CT_SWIZZLE_ID(3, 0, 1, 2)
+#define WXYW CT_SWIZZLE_ID(3, 0, 1, 3)
+#define WXZX CT_SWIZZLE_ID(3, 0, 2, 0)
+#define WXZY CT_SWIZZLE_ID(3, 0, 2, 1)
+#define WXZZ CT_SWIZZLE_ID(3, 0, 2, 2)
+#define WXZW CT_SWIZZLE_ID(3, 0, 2, 3)
+#define WXWX CT_SWIZZLE_ID(3, 0, 3, 0)
+#define WXWY CT_SWIZZLE_ID(3, 0, 3, 1)
+#define WXWZ CT_SWIZZLE_ID(3, 0, 3, 2)
+#define WXWW CT_SWIZZLE_ID(3, 0, 3, 3)
+#define WYXX CT_SWIZZLE_ID(3, 1, 0, 0)
+#define WYXY CT_SWIZZLE_ID(3, 1, 0, 1)
+#define WYXZ CT_SWIZZLE_ID(3, 1, 0, 2)
+#define WYXW CT_SWIZZLE_ID(3, 1, 0, 3)
+#define WYYX CT_SWIZZLE_ID(3, 1, 1, 0)
+#define WYYY CT_SWIZZLE_ID(3, 1, 1, 1)
+#define WYYZ CT_SWIZZLE_ID(3, 1, 1, 2)
+#define WYYW CT_SWIZZLE_ID(3, 1, 1, 3)
+#define WYZX CT_SWIZZLE_ID(3, 1, 2, 0)
+#define WYZY CT_SWIZZLE_ID(3, 1, 2, 1)
+#define WYZZ CT_SWIZZLE_ID(3, 1, 2, 2)
+#define WYZW CT_SWIZZLE_ID(3, 1, 2, 3)
+#define WYWX CT_SWIZZLE_ID(3, 1, 3, 0)
+#define WYWY CT_SWIZZLE_ID(3, 1, 3, 1)
+#define WYWZ CT_SWIZZLE_ID(3, 1, 3, 2)
+#define WYWW CT_SWIZZLE_ID(3, 1, 3, 3)
+#define WZXX CT_SWIZZLE_ID(3, 2, 0, 0)
+#define WZXY CT_SWIZZLE_ID(3, 2, 0, 1)
+#define WZXZ CT_SWIZZLE_ID(3, 2, 0, 2)
+#define WZXW CT_SWIZZLE_ID(3, 2, 0, 3)
+#define WZYX CT_SWIZZLE_ID(3, 2, 1, 0)
+#define WZYY CT_SWIZZLE_ID(3, 2, 1, 1)
+#define WZYZ CT_SWIZZLE_ID(3, 2, 1, 2)
+#define WZYW CT_SWIZZLE_ID(3, 2, 1, 3)
+#define WZZX CT_SWIZZLE_ID(3, 2, 2, 0)
+#define WZZY CT_SWIZZLE_ID(3, 2, 2, 1)
+#define WZZZ CT_SWIZZLE_ID(3, 2, 2, 2)
+#define WZZW CT_SWIZZLE_ID(3, 2, 2, 3)
+#define WZWX CT_SWIZZLE_ID(3, 2, 3, 0)
+#define WZWY CT_SWIZZLE_ID(3, 2, 3, 1)
+#define WZWZ CT_SWIZZLE_ID(3, 2, 3, 2)
+#define WZWW CT_SWIZZLE_ID(3, 2, 3, 3)
+#define WWXX CT_SWIZZLE_ID(3, 3, 0, 0)
+#define WWXY CT_SWIZZLE_ID(3, 3, 0, 1)
+#define WWXZ CT_SWIZZLE_ID(3, 3, 0, 2)
+#define WWXW CT_SWIZZLE_ID(3, 3, 0, 3)
+#define WWYX CT_SWIZZLE_ID(3, 3, 1, 0)
+#define WWYY CT_SWIZZLE_ID(3, 3, 1, 1)
+#define WWYZ CT_SWIZZLE_ID(3, 3, 1, 2)
+#define WWYW CT_SWIZZLE_ID(3, 3, 1, 3)
+#define WWZX CT_SWIZZLE_ID(3, 3, 2, 0)
+#define WWZY CT_SWIZZLE_ID(3, 3, 2, 1)
+#define WWZZ CT_SWIZZLE_ID(3, 3, 2, 2)
+#define WWZW CT_SWIZZLE_ID(3, 3, 2, 3)
+#define WWWX CT_SWIZZLE_ID(3, 3, 3, 0)
+#define WWWY CT_SWIZZLE_ID(3, 3, 3, 1)
+#define WWWZ CT_SWIZZLE_ID(3, 3, 3, 2)
+#define WWWW CT_SWIZZLE_ID(3, 3, 3, 3)
 
-#define VEC3_SWIZZLE2(type, ptype, name, suffix, i, j, k)                      \
-    CT_EXPORT ct_inline type *ct_##name##suffix(void *a, type *b) {            \
-        ptype *v = (ptype *)a;                                                 \
-        ptype x = v[i];                                                        \
-        ptype y = v[j];                                                        \
-        ptype z = v[k];                                                        \
-        b->x = x;                                                              \
-        b->y = y;                                                              \
-        b->z = z;                                                              \
-        return b;                                                              \
-    }
+// ct_swizzle2f(ZW, a, [1,2,3,4]) => a=[3,4]
+// ct_set_swizzle2f(ZY, [1,2,3,4], [10,20]) => a=[1,20,10,4]
+// ct_swizzle3f(ZYW, a, [1,2,3,4]) => a=[3,2,4]
+// ct_set_swizzle3f(ZYW, [1,2,3,4], [10,20,30]) => a=[1,20,10,30]
+// ct_swizzle4f(ZYXX, a, [1,2,3]) => a=[3,2,1,1]
+// ct_set_swizzle4f(ZYXX, [1,2,3,4], [10,20,30]) => a=[30,20,10,10]
 
-#ifdef CT_USE_SSE
+CT_EXPORT ct_inline CT_Vec2f *ct_swizzle2f(uint32_t id, CT_Vec2f *a, void *b) {
+  float x = ((float *)b)[CT_SWIZZLE_B(id)];
+  float y = ((float *)b)[CT_SWIZZLE_A(id)];
+  a->x = x;
+  a->y = y;
+  return a;
+}
 
-#define VEC3_SWIZZLE(type, ptype, name, suffix, i, j, k)                       \
-    CT_EXPORT ct_inline type *ct_##name##suffix(void *a, type *b) {            \
-        type *v = (type *)a;                                                   \
-        b->mmval =                                                             \
-            _mm_shuffle_ps(v->mmval, v->mmval, _MM_SHUFFLE(0, k, j, i));       \
-        return b;                                                              \
-    }
+CT_EXPORT ct_inline void *ct_set_swizzle2f(uint32_t id, void *a, CT_Vec2f *b) {
+  float *v = (float *)a;
+  v[CT_SWIZZLE_B(id)] = b->x;
+  v[CT_SWIZZLE_A(id)] = b->y;
+  return a;
+}
 
-#define VEC3_SWIZZLE_N(type, ptype, name, suffix, i)                           \
-    CT_EXPORT ct_inline type *ct_##name##suffix(void *a, type *b) {            \
-        ptype *v = (ptype *)a;                                                 \
-        __m128 mv = {v[i], v[i], v[i], 0.f};                                   \
-        b->mmval = mv;                                                         \
-        return b;                                                              \
-    }
+CT_EXPORT ct_inline CT_Vec3f *ct_swizzle3f(uint32_t id, CT_Vec3f *a, void *b) {
+  float x = ((float *)b)[CT_SWIZZLE_C(id)];
+  float y = ((float *)b)[CT_SWIZZLE_B(id)];
+  float z = ((float *)b)[CT_SWIZZLE_A(id)];
+  a->x = x;
+  a->y = y;
+  a->z = z;
+  return a;
+}
 
-#define VEC4_SWIZZLE(type, ptype, name, suffix, i, j, k, l)                    \
-    CT_EXPORT ct_inline type *ct_##name##suffix(void *a, type *b) {          \
-        type *v = (type *)a;                                                   \
-        b->mmval =                                                             \
-            _mm_shuffle_ps(v->mmval, v->mmval, _MM_SHUFFLE(l, k, j, i));       \
-        return b;                                                              \
-    }
+CT_EXPORT ct_inline void *ct_set_swizzle3f(uint32_t id, void *a, CT_Vec3f *b) {
+  float *v = (float *)a;
+  v[CT_SWIZZLE_C(id)] = b->x;
+  v[CT_SWIZZLE_B(id)] = b->y;
+  v[CT_SWIZZLE_A(id)] = b->z;
+  return a;
+}
 
-#define VEC4_SWIZZLE_N(type, ptype, name, suffix, i)                           \
-    CT_EXPORT ct_inline type *ct_##name##suffix(void *a, type *b) {            \
-        ptype *v = (ptype *)a;                                                 \
-        __m128 mv = {v[i], v[i], v[i], v[i]};                                  \
-        b->mmval = mv;                                                         \
-        return b;                                                              \
-    }
+CT_EXPORT ct_inline CT_Vec4f *ct_swizzle4f(uint32_t id, CT_Vec4f *a, void *b) {
+  float x = ((float *)b)[CT_SWIZZLE_D(id)];
+  float y = ((float *)b)[CT_SWIZZLE_C(id)];
+  float z = ((float *)b)[CT_SWIZZLE_B(id)];
+  float w = ((float *)b)[CT_SWIZZLE_A(id)];
+  a->x = x;
+  a->y = y;
+  a->z = z;
+  a->w = w;
+  return a;
+}
 
-#else
-
-#define VEC3_SWIZZLE(type, ptype, name, suffix, i, j, k)                       \
-    CT_EXPORT ct_inline type *ct_##name##suffix(void *a, type *b) {            \
-        ptype *v = (ptype *)a;                                                 \
-        ptype x = v[i];                                                        \
-        ptype y = v[j];                                                        \
-        ptype z = v[k];                                                        \
-        b->x = x;                                                              \
-        b->y = y;                                                              \
-        b->z = z;                                                              \
-        return b;                                                              \
-    }
-
-#define VEC3_SWIZZLE_N(type, ptype, name, suffix, i)                           \
-    CT_EXPORT ct_inline type *ct_##name##suffix(void *a, type *b) {            \
-      ptype v = ((ptype *)a)[i];                                           \
-        b->x = v;                                                              \
-        b->y = v;                                                              \
-        b->z = v;                                                              \
-        return b;                                                              \
-    }
-
-#define VEC4_SWIZZLE(type, ptype, name, suffix, i, j, k, l)               \
-    CT_EXPORT ct_inline type *ct_##name##suffix(void *a, type *b) {            \
-        ptype *v = (ptype *)a;                                                 \
-        ptype x = v[i];                                                        \
-        ptype y = v[j];                                                        \
-        ptype z = v[k];                                                        \
-        ptype w = v[l];                                                        \
-        b->x = x;                                                              \
-        b->y = y;                                                              \
-        b->z = z;                                                              \
-        b->w = w;                                                              \
-        return b;                                                              \
-    }
-
-#define VEC4_SWIZZLE_N(type, ptype, name, suffix, i)                           \
-    CT_EXPORT ct_inline type *ct_##name##suffix(void *a, type *b) {            \
-        ptype v = ((ptype *)a)[i];                                             \
-        b->x = v;                                                              \
-        b->y = v;                                                              \
-        b->z = v;                                                              \
-        b->w = v;                                                              \
-        return b;                                                              \
-    }
-
-#endif
-
-// ct_xxf(void, 2f)
-// ct_xxf(void, 2f)
-// ct_xxx2f(2f, 3f)
-// ct_xxxf(void, 3f)
-// ct_www4f(4f, 3f)
-
-VEC2_SWIZZLE_N(CT_Vec2f, float, xx, f, 0)
-VEC2_SWIZZLE_N(CT_Vec2f, float, yy, f, 1)
-VEC2_SWIZZLE_N(CT_Vec2f, float, zz, f, 2)
-VEC2_SWIZZLE_N(CT_Vec2f, float, ww, f, 3)
-VEC3_SWIZZLE_N(CT_Vec3f, float, xxx, f, 0)
-VEC3_SWIZZLE_N(CT_Vec3f, float, yyy, f, 1)
-VEC3_SWIZZLE_N(CT_Vec3f, float, zzz, f, 2)
-VEC3_SWIZZLE_N(CT_Vec3f, float, www, f, 3)
-VEC4_SWIZZLE_N(CT_Vec4f, float, xxxx, f, 0)
-VEC4_SWIZZLE_N(CT_Vec4f, float, yyyy, f, 1)
-VEC4_SWIZZLE_N(CT_Vec4f, float, zzzz, f, 2)
-VEC4_SWIZZLE_N(CT_Vec4f, float, wwww, f, 3)
-
-VEC2_SWIZZLE(CT_Vec2f, float, xy, f, 0, 1)
-VEC2_SWIZZLE(CT_Vec2f, float, xz, f, 0, 2)
-VEC2_SWIZZLE(CT_Vec2f, float, xw, f, 0, 3)
-VEC2_SWIZZLE(CT_Vec2f, float, yx, f, 1, 0)
-VEC2_SWIZZLE(CT_Vec2f, float, yz, f, 1, 2)
-VEC2_SWIZZLE(CT_Vec2f, float, yw, f, 1, 3)
-VEC2_SWIZZLE(CT_Vec2f, float, zx, f, 2, 0)
-VEC2_SWIZZLE(CT_Vec2f, float, zy, f, 2, 1)
-VEC2_SWIZZLE(CT_Vec2f, float, zw, f, 2, 3)
-VEC2_SWIZZLE(CT_Vec2f, float, wx, f, 3, 0)
-VEC2_SWIZZLE(CT_Vec2f, float, wy, f, 3, 1)
-VEC2_SWIZZLE(CT_Vec2f, float, wz, f, 3, 2)
-
-VEC3_SWIZZLE2(CT_Vec3f, float, xxy, f, 0, 0, 1)
-VEC3_SWIZZLE2(CT_Vec3f, float, xyx, f, 0, 1, 0)
-VEC3_SWIZZLE2(CT_Vec3f, float, xyy, f, 0, 1, 1)
-VEC3_SWIZZLE2(CT_Vec3f, float, yxx, f, 1, 0, 0)
-VEC3_SWIZZLE2(CT_Vec3f, float, yxy, f, 1, 0, 1)
-VEC3_SWIZZLE2(CT_Vec3f, float, yyx, f, 1, 1, 0)
-
-VEC3_SWIZZLE(CT_Vec3f, float, xxz, f, 0, 0, 2)
-VEC3_SWIZZLE(CT_Vec3f, float, xxw, f, 0, 0, 3)
-VEC3_SWIZZLE(CT_Vec3f, float, xyz, f, 0, 1, 2)
-VEC3_SWIZZLE(CT_Vec3f, float, xyw, f, 0, 1, 3)
-VEC3_SWIZZLE(CT_Vec3f, float, xzx, f, 0, 2, 0)
-VEC3_SWIZZLE(CT_Vec3f, float, xzy, f, 0, 2, 1)
-VEC3_SWIZZLE(CT_Vec3f, float, xzz, f, 0, 2, 2)
-VEC3_SWIZZLE(CT_Vec3f, float, xzw, f, 0, 2, 3)
-VEC3_SWIZZLE(CT_Vec3f, float, xwx, f, 0, 3, 0)
-VEC3_SWIZZLE(CT_Vec3f, float, xwy, f, 0, 3, 1)
-VEC3_SWIZZLE(CT_Vec3f, float, xwz, f, 0, 3, 2)
-VEC3_SWIZZLE(CT_Vec3f, float, xww, f, 0, 3, 3)
-VEC3_SWIZZLE(CT_Vec3f, float, yxz, f, 1, 0, 2)
-VEC3_SWIZZLE(CT_Vec3f, float, yxw, f, 1, 0, 3)
-VEC3_SWIZZLE(CT_Vec3f, float, yyz, f, 1, 1, 2)
-VEC3_SWIZZLE(CT_Vec3f, float, yyw, f, 1, 1, 3)
-VEC3_SWIZZLE(CT_Vec3f, float, yzx, f, 1, 2, 0)
-VEC3_SWIZZLE(CT_Vec3f, float, yzy, f, 1, 2, 1)
-VEC3_SWIZZLE(CT_Vec3f, float, yzz, f, 1, 2, 2)
-VEC3_SWIZZLE(CT_Vec3f, float, yzw, f, 1, 2, 3)
-VEC3_SWIZZLE(CT_Vec3f, float, ywx, f, 1, 3, 0)
-VEC3_SWIZZLE(CT_Vec3f, float, ywy, f, 1, 3, 1)
-VEC3_SWIZZLE(CT_Vec3f, float, ywz, f, 1, 3, 2)
-VEC3_SWIZZLE(CT_Vec3f, float, yww, f, 1, 3, 3)
-VEC3_SWIZZLE(CT_Vec3f, float, zxx, f, 2, 0, 0)
-VEC3_SWIZZLE(CT_Vec3f, float, zxy, f, 2, 0, 1)
-VEC3_SWIZZLE(CT_Vec3f, float, zxz, f, 2, 0, 2)
-VEC3_SWIZZLE(CT_Vec3f, float, zxw, f, 2, 0, 3)
-VEC3_SWIZZLE(CT_Vec3f, float, zyx, f, 2, 1, 0)
-VEC3_SWIZZLE(CT_Vec3f, float, zyy, f, 2, 1, 1)
-VEC3_SWIZZLE(CT_Vec3f, float, zyz, f, 2, 1, 2)
-VEC3_SWIZZLE(CT_Vec3f, float, zyw, f, 2, 1, 3)
-VEC3_SWIZZLE(CT_Vec3f, float, zzx, f, 2, 2, 0)
-VEC3_SWIZZLE(CT_Vec3f, float, zzy, f, 2, 2, 1)
-VEC3_SWIZZLE(CT_Vec3f, float, zzw, f, 2, 2, 3)
-VEC3_SWIZZLE(CT_Vec3f, float, zwx, f, 2, 3, 0)
-VEC3_SWIZZLE(CT_Vec3f, float, zwy, f, 2, 3, 1)
-VEC3_SWIZZLE(CT_Vec3f, float, zwz, f, 2, 3, 2)
-VEC3_SWIZZLE(CT_Vec3f, float, zww, f, 2, 3, 3)
-VEC3_SWIZZLE(CT_Vec3f, float, wxx, f, 3, 0, 0)
-VEC3_SWIZZLE(CT_Vec3f, float, wxy, f, 3, 0, 1)
-VEC3_SWIZZLE(CT_Vec3f, float, wxz, f, 3, 0, 2)
-VEC3_SWIZZLE(CT_Vec3f, float, wxw, f, 3, 0, 3)
-VEC3_SWIZZLE(CT_Vec3f, float, wyx, f, 3, 1, 0)
-VEC3_SWIZZLE(CT_Vec3f, float, wyy, f, 3, 1, 1)
-VEC3_SWIZZLE(CT_Vec3f, float, wyz, f, 3, 1, 2)
-VEC3_SWIZZLE(CT_Vec3f, float, wyw, f, 3, 1, 3)
-VEC3_SWIZZLE(CT_Vec3f, float, wzx, f, 3, 2, 0)
-VEC3_SWIZZLE(CT_Vec3f, float, wzy, f, 3, 2, 1)
-VEC3_SWIZZLE(CT_Vec3f, float, wzz, f, 3, 2, 2)
-VEC3_SWIZZLE(CT_Vec3f, float, wzw, f, 3, 2, 3)
-VEC3_SWIZZLE(CT_Vec3f, float, wwx, f, 3, 3, 0)
-VEC3_SWIZZLE(CT_Vec3f, float, wwy, f, 3, 3, 1)
-VEC3_SWIZZLE(CT_Vec3f, float, wwz, f, 3, 3, 2)
-
-VEC4_SWIZZLE(CT_Vec4f, float, xxxy, f, 0, 0, 0, 1)
-VEC4_SWIZZLE(CT_Vec4f, float, xxxz, f, 0, 0, 0, 2)
-VEC4_SWIZZLE(CT_Vec4f, float, xxxw, f, 0, 0, 0, 3)
-VEC4_SWIZZLE(CT_Vec4f, float, xxyx, f, 0, 0, 1, 0)
-VEC4_SWIZZLE(CT_Vec4f, float, xxyy, f, 0, 0, 1, 1)
-VEC4_SWIZZLE(CT_Vec4f, float, xxyz, f, 0, 0, 1, 2)
-VEC4_SWIZZLE(CT_Vec4f, float, xxyw, f, 0, 0, 1, 3)
-VEC4_SWIZZLE(CT_Vec4f, float, xxzx, f, 0, 0, 2, 0)
-VEC4_SWIZZLE(CT_Vec4f, float, xxzy, f, 0, 0, 2, 1)
-VEC4_SWIZZLE(CT_Vec4f, float, xxzz, f, 0, 0, 2, 2)
-VEC4_SWIZZLE(CT_Vec4f, float, xxzw, f, 0, 0, 2, 3)
-VEC4_SWIZZLE(CT_Vec4f, float, xxwx, f, 0, 0, 3, 0)
-VEC4_SWIZZLE(CT_Vec4f, float, xxwy, f, 0, 0, 3, 1)
-VEC4_SWIZZLE(CT_Vec4f, float, xxwz, f, 0, 0, 3, 2)
-VEC4_SWIZZLE(CT_Vec4f, float, xxww, f, 0, 0, 3, 3)
-
-VEC4_SWIZZLE(CT_Vec4f, float, xyxx, f, 0, 1, 0, 0)
-VEC4_SWIZZLE(CT_Vec4f, float, xyxy, f, 0, 1, 0, 1)
-VEC4_SWIZZLE(CT_Vec4f, float, xyxz, f, 0, 1, 0, 2)
-VEC4_SWIZZLE(CT_Vec4f, float, xyxw, f, 0, 1, 0, 3)
-VEC4_SWIZZLE(CT_Vec4f, float, xyyx, f, 0, 1, 1, 0)
-VEC4_SWIZZLE(CT_Vec4f, float, xyyy, f, 0, 1, 1, 1)
-VEC4_SWIZZLE(CT_Vec4f, float, xyyz, f, 0, 1, 1, 2)
-VEC4_SWIZZLE(CT_Vec4f, float, xyyw, f, 0, 1, 1, 3)
-VEC4_SWIZZLE(CT_Vec4f, float, xyzx, f, 0, 1, 2, 0)
-VEC4_SWIZZLE(CT_Vec4f, float, xyzy, f, 0, 1, 2, 1)
-VEC4_SWIZZLE(CT_Vec4f, float, xyzz, f, 0, 1, 2, 2)
-VEC4_SWIZZLE(CT_Vec4f, float, xyzw, f, 0, 1, 2, 3)
-VEC4_SWIZZLE(CT_Vec4f, float, xywx, f, 0, 1, 3, 0)
-VEC4_SWIZZLE(CT_Vec4f, float, xywy, f, 0, 1, 3, 1)
-VEC4_SWIZZLE(CT_Vec4f, float, xywz, f, 0, 1, 3, 2)
-VEC4_SWIZZLE(CT_Vec4f, float, xyww, f, 0, 1, 3, 3)
-
-VEC4_SWIZZLE(CT_Vec4f, float, xzxx, f, 0, 2, 0, 0)
-VEC4_SWIZZLE(CT_Vec4f, float, xzxy, f, 0, 2, 0, 1)
-VEC4_SWIZZLE(CT_Vec4f, float, xzxz, f, 0, 2, 0, 2)
-VEC4_SWIZZLE(CT_Vec4f, float, xzxw, f, 0, 2, 0, 3)
-VEC4_SWIZZLE(CT_Vec4f, float, xzyx, f, 0, 2, 1, 0)
-VEC4_SWIZZLE(CT_Vec4f, float, xzyy, f, 0, 2, 1, 1)
-VEC4_SWIZZLE(CT_Vec4f, float, xzyz, f, 0, 2, 1, 2)
-VEC4_SWIZZLE(CT_Vec4f, float, xzyw, f, 0, 2, 1, 3)
-VEC4_SWIZZLE(CT_Vec4f, float, xzzx, f, 0, 2, 2, 0)
-VEC4_SWIZZLE(CT_Vec4f, float, xzzy, f, 0, 2, 2, 1)
-VEC4_SWIZZLE(CT_Vec4f, float, xzzz, f, 0, 2, 2, 2)
-VEC4_SWIZZLE(CT_Vec4f, float, xzzw, f, 0, 2, 2, 3)
-VEC4_SWIZZLE(CT_Vec4f, float, xzwx, f, 0, 2, 3, 0)
-VEC4_SWIZZLE(CT_Vec4f, float, xzwy, f, 0, 2, 3, 1)
-VEC4_SWIZZLE(CT_Vec4f, float, xzwz, f, 0, 2, 3, 2)
-VEC4_SWIZZLE(CT_Vec4f, float, xzww, f, 0, 2, 3, 3)
-
-VEC4_SWIZZLE(CT_Vec4f, float, xwxx, f, 0, 3, 0, 0)
-VEC4_SWIZZLE(CT_Vec4f, float, xwxy, f, 0, 3, 0, 1)
-VEC4_SWIZZLE(CT_Vec4f, float, xwxz, f, 0, 3, 0, 2)
-VEC4_SWIZZLE(CT_Vec4f, float, xwxw, f, 0, 3, 0, 3)
-VEC4_SWIZZLE(CT_Vec4f, float, xwyx, f, 0, 3, 1, 0)
-VEC4_SWIZZLE(CT_Vec4f, float, xwyy, f, 0, 3, 1, 1)
-VEC4_SWIZZLE(CT_Vec4f, float, xwyz, f, 0, 3, 1, 2)
-VEC4_SWIZZLE(CT_Vec4f, float, xwyw, f, 0, 3, 1, 3)
-VEC4_SWIZZLE(CT_Vec4f, float, xwzx, f, 0, 3, 2, 0)
-VEC4_SWIZZLE(CT_Vec4f, float, xwzy, f, 0, 3, 2, 1)
-VEC4_SWIZZLE(CT_Vec4f, float, xwzz, f, 0, 3, 2, 2)
-VEC4_SWIZZLE(CT_Vec4f, float, xwzw, f, 0, 3, 2, 3)
-VEC4_SWIZZLE(CT_Vec4f, float, xwwx, f, 0, 3, 3, 0)
-VEC4_SWIZZLE(CT_Vec4f, float, xwwy, f, 0, 3, 3, 1)
-VEC4_SWIZZLE(CT_Vec4f, float, xwwz, f, 0, 3, 3, 2)
-VEC4_SWIZZLE(CT_Vec4f, float, xwww, f, 0, 3, 3, 3)
-
-VEC4_SWIZZLE(CT_Vec4f, float, yxxx, f, 1, 0, 0, 0)
-VEC4_SWIZZLE(CT_Vec4f, float, yxxy, f, 1, 0, 0, 1)
-VEC4_SWIZZLE(CT_Vec4f, float, yxxz, f, 1, 0, 0, 2)
-VEC4_SWIZZLE(CT_Vec4f, float, yxxw, f, 1, 0, 0, 3)
-VEC4_SWIZZLE(CT_Vec4f, float, yxyx, f, 1, 0, 1, 0)
-VEC4_SWIZZLE(CT_Vec4f, float, yxyy, f, 1, 0, 1, 1)
-VEC4_SWIZZLE(CT_Vec4f, float, yxyz, f, 1, 0, 1, 2)
-VEC4_SWIZZLE(CT_Vec4f, float, yxyw, f, 1, 0, 1, 3)
-VEC4_SWIZZLE(CT_Vec4f, float, yxzx, f, 1, 0, 2, 0)
-VEC4_SWIZZLE(CT_Vec4f, float, yxzy, f, 1, 0, 2, 1)
-VEC4_SWIZZLE(CT_Vec4f, float, yxzz, f, 1, 0, 2, 2)
-VEC4_SWIZZLE(CT_Vec4f, float, yxzw, f, 1, 0, 2, 3)
-VEC4_SWIZZLE(CT_Vec4f, float, yxwx, f, 1, 0, 3, 0)
-VEC4_SWIZZLE(CT_Vec4f, float, yxwy, f, 1, 0, 3, 1)
-VEC4_SWIZZLE(CT_Vec4f, float, yxwz, f, 1, 0, 3, 2)
-VEC4_SWIZZLE(CT_Vec4f, float, yxww, f, 1, 0, 3, 3)
-
-VEC4_SWIZZLE(CT_Vec4f, float, yyxx, f, 1, 1, 0, 0)
-VEC4_SWIZZLE(CT_Vec4f, float, yyxy, f, 1, 1, 0, 1)
-VEC4_SWIZZLE(CT_Vec4f, float, yyxz, f, 1, 1, 0, 2)
-VEC4_SWIZZLE(CT_Vec4f, float, yyxw, f, 1, 1, 0, 3)
-VEC4_SWIZZLE(CT_Vec4f, float, yyyx, f, 1, 1, 1, 0)
-VEC4_SWIZZLE(CT_Vec4f, float, yyyz, f, 1, 1, 1, 2)
-VEC4_SWIZZLE(CT_Vec4f, float, yyyw, f, 1, 1, 1, 3)
-VEC4_SWIZZLE(CT_Vec4f, float, yyzx, f, 1, 1, 2, 0)
-VEC4_SWIZZLE(CT_Vec4f, float, yyzy, f, 1, 1, 2, 1)
-VEC4_SWIZZLE(CT_Vec4f, float, yyzz, f, 1, 1, 2, 2)
-VEC4_SWIZZLE(CT_Vec4f, float, yyzw, f, 1, 1, 2, 3)
-VEC4_SWIZZLE(CT_Vec4f, float, yywx, f, 1, 1, 3, 0)
-VEC4_SWIZZLE(CT_Vec4f, float, yywy, f, 1, 1, 3, 1)
-VEC4_SWIZZLE(CT_Vec4f, float, yywz, f, 1, 1, 3, 2)
-VEC4_SWIZZLE(CT_Vec4f, float, yyww, f, 1, 1, 3, 3)
-
-VEC4_SWIZZLE(CT_Vec4f, float, yzxx, f, 1, 2, 0, 0)
-VEC4_SWIZZLE(CT_Vec4f, float, yzxy, f, 1, 2, 0, 1)
-VEC4_SWIZZLE(CT_Vec4f, float, yzxz, f, 1, 2, 0, 2)
-VEC4_SWIZZLE(CT_Vec4f, float, yzxw, f, 1, 2, 0, 3)
-VEC4_SWIZZLE(CT_Vec4f, float, yzyx, f, 1, 2, 1, 0)
-VEC4_SWIZZLE(CT_Vec4f, float, yzyy, f, 1, 2, 1, 1)
-VEC4_SWIZZLE(CT_Vec4f, float, yzyz, f, 1, 2, 1, 2)
-VEC4_SWIZZLE(CT_Vec4f, float, yzyw, f, 1, 2, 1, 3)
-VEC4_SWIZZLE(CT_Vec4f, float, yzzx, f, 1, 2, 2, 0)
-VEC4_SWIZZLE(CT_Vec4f, float, yzzy, f, 1, 2, 2, 1)
-VEC4_SWIZZLE(CT_Vec4f, float, yzzz, f, 1, 2, 2, 2)
-VEC4_SWIZZLE(CT_Vec4f, float, yzzw, f, 1, 2, 2, 3)
-VEC4_SWIZZLE(CT_Vec4f, float, yzwx, f, 1, 2, 3, 0)
-VEC4_SWIZZLE(CT_Vec4f, float, yzwy, f, 1, 2, 3, 1)
-VEC4_SWIZZLE(CT_Vec4f, float, yzwz, f, 1, 2, 3, 2)
-VEC4_SWIZZLE(CT_Vec4f, float, yzww, f, 1, 2, 3, 3)
-
-VEC4_SWIZZLE(CT_Vec4f, float, ywxx, f, 1, 3, 0, 0)
-VEC4_SWIZZLE(CT_Vec4f, float, ywxy, f, 1, 3, 0, 1)
-VEC4_SWIZZLE(CT_Vec4f, float, ywxz, f, 1, 3, 0, 2)
-VEC4_SWIZZLE(CT_Vec4f, float, ywxw, f, 1, 3, 0, 3)
-VEC4_SWIZZLE(CT_Vec4f, float, ywyx, f, 1, 3, 1, 0)
-VEC4_SWIZZLE(CT_Vec4f, float, ywyy, f, 1, 3, 1, 1)
-VEC4_SWIZZLE(CT_Vec4f, float, ywyz, f, 1, 3, 1, 2)
-VEC4_SWIZZLE(CT_Vec4f, float, ywyw, f, 1, 3, 1, 3)
-VEC4_SWIZZLE(CT_Vec4f, float, ywzx, f, 1, 3, 2, 0)
-VEC4_SWIZZLE(CT_Vec4f, float, ywzy, f, 1, 3, 2, 1)
-VEC4_SWIZZLE(CT_Vec4f, float, ywzz, f, 1, 3, 2, 2)
-VEC4_SWIZZLE(CT_Vec4f, float, ywzw, f, 1, 3, 2, 3)
-VEC4_SWIZZLE(CT_Vec4f, float, ywwx, f, 1, 3, 3, 0)
-VEC4_SWIZZLE(CT_Vec4f, float, ywwy, f, 1, 3, 3, 1)
-VEC4_SWIZZLE(CT_Vec4f, float, ywwz, f, 1, 3, 3, 2)
-VEC4_SWIZZLE(CT_Vec4f, float, ywww, f, 1, 3, 3, 3)
-
-VEC4_SWIZZLE(CT_Vec4f, float, zxxx, f, 2, 0, 0, 0)
-VEC4_SWIZZLE(CT_Vec4f, float, zxxy, f, 2, 0, 0, 1)
-VEC4_SWIZZLE(CT_Vec4f, float, zxxz, f, 2, 0, 0, 2)
-VEC4_SWIZZLE(CT_Vec4f, float, zxxw, f, 2, 0, 0, 3)
-VEC4_SWIZZLE(CT_Vec4f, float, zxyx, f, 2, 0, 1, 0)
-VEC4_SWIZZLE(CT_Vec4f, float, zxyy, f, 2, 0, 1, 1)
-VEC4_SWIZZLE(CT_Vec4f, float, zxyz, f, 2, 0, 1, 2)
-VEC4_SWIZZLE(CT_Vec4f, float, zxyw, f, 2, 0, 1, 3)
-VEC4_SWIZZLE(CT_Vec4f, float, zxzx, f, 2, 0, 2, 0)
-VEC4_SWIZZLE(CT_Vec4f, float, zxzy, f, 2, 0, 2, 1)
-VEC4_SWIZZLE(CT_Vec4f, float, zxzz, f, 2, 0, 2, 2)
-VEC4_SWIZZLE(CT_Vec4f, float, zxzw, f, 2, 0, 2, 3)
-VEC4_SWIZZLE(CT_Vec4f, float, zxwx, f, 2, 0, 3, 0)
-VEC4_SWIZZLE(CT_Vec4f, float, zxwy, f, 2, 0, 3, 1)
-VEC4_SWIZZLE(CT_Vec4f, float, zxwz, f, 2, 0, 3, 2)
-VEC4_SWIZZLE(CT_Vec4f, float, zxww, f, 2, 0, 3, 3)
-
-VEC4_SWIZZLE(CT_Vec4f, float, zyxx, f, 2, 1, 0, 0)
-VEC4_SWIZZLE(CT_Vec4f, float, zyxy, f, 2, 1, 0, 1)
-VEC4_SWIZZLE(CT_Vec4f, float, zyxz, f, 2, 1, 0, 2)
-VEC4_SWIZZLE(CT_Vec4f, float, zyxw, f, 2, 1, 0, 3)
-VEC4_SWIZZLE(CT_Vec4f, float, zyyx, f, 2, 1, 1, 0)
-VEC4_SWIZZLE(CT_Vec4f, float, zyyy, f, 2, 1, 1, 1)
-VEC4_SWIZZLE(CT_Vec4f, float, zyyz, f, 2, 1, 1, 2)
-VEC4_SWIZZLE(CT_Vec4f, float, zyyw, f, 2, 1, 1, 3)
-VEC4_SWIZZLE(CT_Vec4f, float, zyzx, f, 2, 1, 2, 0)
-VEC4_SWIZZLE(CT_Vec4f, float, zyzy, f, 2, 1, 2, 1)
-VEC4_SWIZZLE(CT_Vec4f, float, zyzz, f, 2, 1, 2, 2)
-VEC4_SWIZZLE(CT_Vec4f, float, zyzw, f, 2, 1, 2, 3)
-VEC4_SWIZZLE(CT_Vec4f, float, zywx, f, 2, 1, 3, 0)
-VEC4_SWIZZLE(CT_Vec4f, float, zywy, f, 2, 1, 3, 1)
-VEC4_SWIZZLE(CT_Vec4f, float, zywz, f, 2, 1, 3, 2)
-VEC4_SWIZZLE(CT_Vec4f, float, zyww, f, 2, 1, 3, 3)
-
-VEC4_SWIZZLE(CT_Vec4f, float, zzxx, f, 2, 2, 0, 0)
-VEC4_SWIZZLE(CT_Vec4f, float, zzxy, f, 2, 2, 0, 1)
-VEC4_SWIZZLE(CT_Vec4f, float, zzxz, f, 2, 2, 0, 2)
-VEC4_SWIZZLE(CT_Vec4f, float, zzxw, f, 2, 2, 0, 3)
-VEC4_SWIZZLE(CT_Vec4f, float, zzyx, f, 2, 2, 1, 0)
-VEC4_SWIZZLE(CT_Vec4f, float, zzyy, f, 2, 2, 1, 1)
-VEC4_SWIZZLE(CT_Vec4f, float, zzyz, f, 2, 2, 1, 2)
-VEC4_SWIZZLE(CT_Vec4f, float, zzyw, f, 2, 2, 1, 3)
-VEC4_SWIZZLE(CT_Vec4f, float, zzzx, f, 2, 2, 2, 0)
-VEC4_SWIZZLE(CT_Vec4f, float, zzzy, f, 2, 2, 2, 1)
-VEC4_SWIZZLE(CT_Vec4f, float, zzzw, f, 2, 2, 2, 3)
-VEC4_SWIZZLE(CT_Vec4f, float, zzwx, f, 2, 2, 3, 0)
-VEC4_SWIZZLE(CT_Vec4f, float, zzwy, f, 2, 2, 3, 1)
-VEC4_SWIZZLE(CT_Vec4f, float, zzwz, f, 2, 2, 3, 2)
-VEC4_SWIZZLE(CT_Vec4f, float, zzww, f, 2, 2, 3, 3)
-
-VEC4_SWIZZLE(CT_Vec4f, float, zwxx, f, 2, 3, 0, 0)
-VEC4_SWIZZLE(CT_Vec4f, float, zwxy, f, 2, 3, 0, 1)
-VEC4_SWIZZLE(CT_Vec4f, float, zwxz, f, 2, 3, 0, 2)
-VEC4_SWIZZLE(CT_Vec4f, float, zwxw, f, 2, 3, 0, 3)
-VEC4_SWIZZLE(CT_Vec4f, float, zwyx, f, 2, 3, 1, 0)
-VEC4_SWIZZLE(CT_Vec4f, float, zwyy, f, 2, 3, 1, 1)
-VEC4_SWIZZLE(CT_Vec4f, float, zwyz, f, 2, 3, 1, 2)
-VEC4_SWIZZLE(CT_Vec4f, float, zwyw, f, 2, 3, 1, 3)
-VEC4_SWIZZLE(CT_Vec4f, float, zwzx, f, 2, 3, 2, 0)
-VEC4_SWIZZLE(CT_Vec4f, float, zwzy, f, 2, 3, 2, 1)
-VEC4_SWIZZLE(CT_Vec4f, float, zwzz, f, 2, 3, 2, 2)
-VEC4_SWIZZLE(CT_Vec4f, float, zwzw, f, 2, 3, 2, 3)
-VEC4_SWIZZLE(CT_Vec4f, float, zwwx, f, 2, 3, 3, 0)
-VEC4_SWIZZLE(CT_Vec4f, float, zwwy, f, 2, 3, 3, 1)
-VEC4_SWIZZLE(CT_Vec4f, float, zwwz, f, 2, 3, 3, 2)
-VEC4_SWIZZLE(CT_Vec4f, float, zwww, f, 2, 3, 3, 3)
-
-VEC4_SWIZZLE(CT_Vec4f, float, wxxx, f, 3, 0, 0, 0)
-VEC4_SWIZZLE(CT_Vec4f, float, wxxy, f, 3, 0, 0, 1)
-VEC4_SWIZZLE(CT_Vec4f, float, wxxz, f, 3, 0, 0, 2)
-VEC4_SWIZZLE(CT_Vec4f, float, wxxw, f, 3, 0, 0, 3)
-VEC4_SWIZZLE(CT_Vec4f, float, wxyx, f, 3, 0, 1, 0)
-VEC4_SWIZZLE(CT_Vec4f, float, wxyy, f, 3, 0, 1, 1)
-VEC4_SWIZZLE(CT_Vec4f, float, wxyz, f, 3, 0, 1, 2)
-VEC4_SWIZZLE(CT_Vec4f, float, wxyw, f, 3, 0, 1, 3)
-VEC4_SWIZZLE(CT_Vec4f, float, wxzx, f, 3, 0, 2, 0)
-VEC4_SWIZZLE(CT_Vec4f, float, wxzy, f, 3, 0, 2, 1)
-VEC4_SWIZZLE(CT_Vec4f, float, wxzz, f, 3, 0, 2, 2)
-VEC4_SWIZZLE(CT_Vec4f, float, wxzw, f, 3, 0, 2, 3)
-VEC4_SWIZZLE(CT_Vec4f, float, wxwx, f, 3, 0, 3, 0)
-VEC4_SWIZZLE(CT_Vec4f, float, wxwy, f, 3, 0, 3, 1)
-VEC4_SWIZZLE(CT_Vec4f, float, wxwz, f, 3, 0, 3, 2)
-VEC4_SWIZZLE(CT_Vec4f, float, wxww, f, 3, 0, 3, 3)
-
-VEC4_SWIZZLE(CT_Vec4f, float, wyxx, f, 3, 1, 0, 0)
-VEC4_SWIZZLE(CT_Vec4f, float, wyxy, f, 3, 1, 0, 1)
-VEC4_SWIZZLE(CT_Vec4f, float, wyxz, f, 3, 1, 0, 2)
-VEC4_SWIZZLE(CT_Vec4f, float, wyxw, f, 3, 1, 0, 3)
-VEC4_SWIZZLE(CT_Vec4f, float, wyyx, f, 3, 1, 1, 0)
-VEC4_SWIZZLE(CT_Vec4f, float, wyyy, f, 3, 1, 1, 1)
-VEC4_SWIZZLE(CT_Vec4f, float, wyyz, f, 3, 1, 1, 2)
-VEC4_SWIZZLE(CT_Vec4f, float, wyyw, f, 3, 1, 1, 3)
-VEC4_SWIZZLE(CT_Vec4f, float, wyzx, f, 3, 1, 2, 0)
-VEC4_SWIZZLE(CT_Vec4f, float, wyzy, f, 3, 1, 2, 1)
-VEC4_SWIZZLE(CT_Vec4f, float, wyzz, f, 3, 1, 2, 2)
-VEC4_SWIZZLE(CT_Vec4f, float, wyzw, f, 3, 1, 2, 3)
-VEC4_SWIZZLE(CT_Vec4f, float, wywx, f, 3, 1, 3, 0)
-VEC4_SWIZZLE(CT_Vec4f, float, wywy, f, 3, 1, 3, 1)
-VEC4_SWIZZLE(CT_Vec4f, float, wywz, f, 3, 1, 3, 2)
-VEC4_SWIZZLE(CT_Vec4f, float, wyww, f, 3, 1, 3, 3)
-
-VEC4_SWIZZLE(CT_Vec4f, float, wzxx, f, 3, 2, 0, 0)
-VEC4_SWIZZLE(CT_Vec4f, float, wzxy, f, 3, 2, 0, 1)
-VEC4_SWIZZLE(CT_Vec4f, float, wzxz, f, 3, 2, 0, 2)
-VEC4_SWIZZLE(CT_Vec4f, float, wzxw, f, 3, 2, 0, 3)
-VEC4_SWIZZLE(CT_Vec4f, float, wzyx, f, 3, 2, 1, 0)
-VEC4_SWIZZLE(CT_Vec4f, float, wzyy, f, 3, 2, 1, 1)
-VEC4_SWIZZLE(CT_Vec4f, float, wzyz, f, 3, 2, 1, 2)
-VEC4_SWIZZLE(CT_Vec4f, float, wzyw, f, 3, 2, 1, 3)
-VEC4_SWIZZLE(CT_Vec4f, float, wzzx, f, 3, 2, 2, 0)
-VEC4_SWIZZLE(CT_Vec4f, float, wzzy, f, 3, 2, 2, 1)
-VEC4_SWIZZLE(CT_Vec4f, float, wzzz, f, 3, 2, 2, 2)
-VEC4_SWIZZLE(CT_Vec4f, float, wzzw, f, 3, 2, 2, 3)
-VEC4_SWIZZLE(CT_Vec4f, float, wzwx, f, 3, 2, 3, 0)
-VEC4_SWIZZLE(CT_Vec4f, float, wzwy, f, 3, 2, 3, 1)
-VEC4_SWIZZLE(CT_Vec4f, float, wzwz, f, 3, 2, 3, 2)
-VEC4_SWIZZLE(CT_Vec4f, float, wzww, f, 3, 2, 3, 3)
-
-VEC4_SWIZZLE(CT_Vec4f, float, wwxx, f, 3, 3, 0, 0)
-VEC4_SWIZZLE(CT_Vec4f, float, wwxy, f, 3, 3, 0, 1)
-VEC4_SWIZZLE(CT_Vec4f, float, wwxz, f, 3, 3, 0, 2)
-VEC4_SWIZZLE(CT_Vec4f, float, wwxw, f, 3, 3, 0, 3)
-VEC4_SWIZZLE(CT_Vec4f, float, wwyx, f, 3, 3, 1, 0)
-VEC4_SWIZZLE(CT_Vec4f, float, wwyy, f, 3, 3, 1, 1)
-VEC4_SWIZZLE(CT_Vec4f, float, wwyz, f, 3, 3, 1, 2)
-VEC4_SWIZZLE(CT_Vec4f, float, wwyw, f, 3, 3, 1, 3)
-VEC4_SWIZZLE(CT_Vec4f, float, wwzx, f, 3, 3, 2, 0)
-VEC4_SWIZZLE(CT_Vec4f, float, wwzy, f, 3, 3, 2, 1)
-VEC4_SWIZZLE(CT_Vec4f, float, wwzz, f, 3, 3, 2, 2)
-VEC4_SWIZZLE(CT_Vec4f, float, wwzw, f, 3, 3, 2, 3)
-VEC4_SWIZZLE(CT_Vec4f, float, wwwx, f, 3, 3, 3, 0)
-VEC4_SWIZZLE(CT_Vec4f, float, wwwy, f, 3, 3, 3, 1)
-VEC4_SWIZZLE(CT_Vec4f, float, wwwz, f, 3, 3, 3, 2)
+CT_EXPORT ct_inline void *ct_set_swizzle4f(uint32_t id, void *a, CT_Vec4f *b) {
+  float *v = (float *)a;
+  v[CT_SWIZZLE_D(id)] = b->x;
+  v[CT_SWIZZLE_C(id)] = b->y;
+  v[CT_SWIZZLE_B(id)] = b->z;
+  v[CT_SWIZZLE_A(id)] = b->w;
+  return a;
+}

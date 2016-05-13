@@ -8,18 +8,18 @@ extern void test_swizzle();
 
 int main() {
 #ifdef CT_USE_SSE
-    printf("using SSE...\n");
+  printf("using SSE...\n");
 #endif
 #ifndef NO_MPOOL
-    test_mpool();
+  test_mpool();
 #endif
 #ifndef NO_VEC2
-    test_vec2f();
+  test_vec2f();
 #endif
 #ifndef NO_VEC
-    test_vec3f();
+  test_vec3f();
 #endif
 #ifndef NO_SWIZZLE
-    test_swizzle();
+  test_swizzle();
 #endif
 }

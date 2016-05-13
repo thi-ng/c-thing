@@ -9,9 +9,9 @@
 #define MAX(a, b) ((a) > (b) ? (a) : (b))
 
 CT_EXPORT ct_inline uint8_t ct_deltaeqf(float a, float b, float eps) {
-    return fabs(a - b) <= eps;
+  return fabs(a - b) <= eps;
 }
 
 CT_EXPORT ct_inline float ct_mixf(float a, float b, float t) {
-    return a + (b - a) * t;
+  return a + (b - a) * t;
 }

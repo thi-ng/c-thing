@@ -4,8 +4,8 @@
 #include <stdint.h>
 
 #include "config.h"
-#include "mpool.h"
 #include "ct_math.h"
+#include "mpool.h"
 
 #include "vec2.h"
 
@@ -17,6 +17,6 @@
 #include "vec4.h"
 #endif
 
+#include "swizzle.h"
 #include "vec3_common.h"
 #include "vec4_common.h"
-#include "swizzle.h"
