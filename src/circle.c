@@ -10,23 +10,21 @@ CT_IClassify __ct_iclassify_circle2 = {
     .classify_point2f = ct_circle2f_classify_point2f, .classify_point3f = NULL};
 */
 
-CT_EXPORT CT_Circle2f *ct_circle2fxy(float x, float y, float r,
-                                     CT_MPool *mpool) {
-  CT_Circle2f *c = ALLOCATE_TYPE(mpool, CT_Circle2f);
-  if (c != NULL) {
-    c->p.x = x;
-    c->p.y = y;
-    c->r = r;
-  }
+CT_EXPORT CT_Circle2f *ct_circle2f_init(CT_Circle2f *c, float x, float y,
+                                        float r) {
+  c->pos.x = x;
+  c->pos.y = y;
+  c->r = r;
   return c;
 }
 
-CT_EXPORT CT_Circle2f *ct_circle2fv(CT_Vec2f *p, float r, CT_MPool *mpool) {
-  return ct_circle2fxy(p->x, p->y, r, mpool);
+CT_EXPORT CT_Circle2f *ct_circle2f_initvr(CT_Circle2f *c, CT_Vec2f *p,
+                                          float r) {
+  return ct_circle2f_init(c, p->x, p->y, r);
 }
 
-CT_EXPORT CT_Circle2f *ct_circle2fr(float r, CT_MPool *mpool) {
-  return ct_circle2fxy(0, 0, r, mpool);
+CT_EXPORT CT_Circle2f *ct_circle2f_initr(CT_Circle2f *c, float r) {
+  return ct_circle2f_init(c, 0, 0, r);
 }
 
 CT_EXPORT float ct_circle2f_area(CT_Circle2f *c) {
@@ -37,8 +35,8 @@ CT_EXPORT float ct_circle2f_circumference(CT_Circle2f *c) {
   return TAU * c->r;
 }
 
-CT_EXPORT int8_t ct_circle2f_classify_point2f(CT_Circle2f *c, CT_Vec2f *p) {
-  return ct_signumf(c->r - ct_dist2fv(&c->p, p), EPS);
+CT_EXPORT int8_t ct_circle2f_classify_point(CT_Circle2f *c, CT_Vec2f *p) {
+  return ct_signumf(c->r - ct_dist2fv(&c->pos, p), EPS);
 }
 
 CT_EXPORT CT_Vec2f *ct_circle2f_vertices(CT_Circle2f *c, CT_Vec2f *verts,
