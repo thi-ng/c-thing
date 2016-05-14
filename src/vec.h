@@ -20,3 +20,16 @@
 #include "swizzle.h"
 #include "vec3_common.h"
 #include "vec4_common.h"
+
+CT_EXPORT void ct_translate2f(float* ptr, CT_Vec2f* t, uint32_t num,
+                              uint32_t fstride);
+CT_EXPORT void ct_scale2f(float* ptr, CT_Vec2f* t, uint32_t num,
+                          uint32_t fstride);
+CT_EXPORT void ct_translate3f(float* ptr, CT_Vec3f* t, uint32_t num,
+                              uint32_t fstride);
+CT_EXPORT void ct_scale3f(float* ptr, CT_Vec3f* t, uint32_t num,
+                          uint32_t fstride);
+CT_EXPORT void ct_translate4f(float* ptr, CT_Vec4f* t, uint32_t num,
+                              uint32_t fstride);
+CT_EXPORT void ct_scale4f(float* ptr, CT_Vec4f* t, uint32_t num,
+                          uint32_t fstride);
