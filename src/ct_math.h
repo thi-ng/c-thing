@@ -1,6 +1,13 @@
 #pragma once
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 #include <math.h>
+#include <stddef.h>
+#include <stdint.h>
+
 #include "config.h"
 
 #define EPS 1e-6f
@@ -19,10 +26,10 @@
 
 #define MIN(a, b) ((a) < (b) ? (a) : (b))
 #define MAX(a, b) ((a) > (b) ? (a) : (b))
-#define SIGNUM(x, eps) (int8_t)((x) < 0 ? -1 : ((x) > 0) ? 1 : 0)
+#define SIGNUM(x, eps) (ssize_t)((x) < 0 ? -1 : ((x) > 0) ? 1 : 0)
 
-CT_EXPORT ct_inline uint8_t ct_deltaeqf(const float a, const float b,
-                                        const float eps) {
+CT_EXPORT ct_inline size_t ct_deltaeqf(const float a, const float b,
+                                       const float eps) {
   return fabs(a - b) <= eps;
 }
 
@@ -34,7 +41,7 @@ ct_inline float ct_mixf(const float a, const float b, const float t) {
   return a + (b - a) * t;
 }
 
-ct_inline int8_t ct_signumf(const float x, const float eps) {
+ct_inline intmax_t ct_signumf(const float x, const float eps) {
   if (ct_deltaeqf(x, 0.f, eps)) {
     return 0;
   }
@@ -49,3 +56,7 @@ ct_inline float ct_stepf(const float x, const float edge, const float y1,
 ct_inline float ct_wrapf(float x, float domain) {
   return ((x < 0.f) ? (domain + x) : (x >= domain ? (x - domain) : x));
 }
+
+#ifdef __cplusplus
+}
+#endif

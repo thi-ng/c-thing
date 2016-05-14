@@ -5,8 +5,7 @@
 #include <stdio.h>
 #endif
 
-CT_EXPORT uint8_t ct_mpool_init(CT_MPool *mpool, uint32_t num,
-                                uint32_t blockSize) {
+CT_EXPORT size_t ct_mpool_init(CT_MPool *mpool, size_t num, size_t blockSize) {
   mpool->numBlocks = num;
   mpool->blockSize = MAX(blockSize, sizeof(CT_MPoolFreeList));
   mpool->freeList = NULL;
@@ -45,12 +44,13 @@ CT_EXPORT void *ct_mpool_alloc(CT_MPool *mpool) {
 
 CT_EXPORT void ct_mpool_trace(CT_MPool *mpool) {
 #ifdef TRACE_MPOOL
-  printf("nextID: %u, pool: %p, free: %p, bsize: %u, num: %u\n", mpool->nextID,
-         mpool->pool, mpool->freeList, mpool->blockSize, mpool->numBlocks);
+  printf("nextID: %lu, pool: %p, free: %p, bsize: %lu, num: %lu\n",
+         mpool->nextID, mpool->pool, mpool->freeList, mpool->blockSize,
+         mpool->numBlocks);
   CT_MPoolFreeList *f = mpool->freeList;
-  uint32_t i = 0;
+  size_t i = 0;
   while (f != NULL) {
-    printf("free list: %u: %p -> %p\n", i, f, f->next);
+    printf("free list: %lu: %p -> %p\n", i, f, f->next);
     i++;
     f = f->next;
   }

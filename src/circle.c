@@ -35,17 +35,30 @@ CT_EXPORT float ct_circle2f_circumference(CT_Circle2f *c) {
   return TAU * c->r;
 }
 
-CT_EXPORT int8_t ct_circle2f_classify_point(CT_Circle2f *c, CT_Vec2f *p) {
+CT_EXPORT intmax_t ct_circle2f_classify_point(CT_Circle2f *c, CT_Vec2f *p) {
   return ct_signumf(c->r - ct_dist2fv(&c->pos, p), EPS);
 }
 
 CT_EXPORT CT_Vec2f *ct_circle2f_vertices(CT_Circle2f *c, CT_Vec2f *verts,
-                                         uint32_t n) {
+                                         size_t n) {
   CT_Vec2f *ptr = verts;
   float t = TAU / n;
-  for (uint32_t i = 0; i < n; i++) {
+  for (size_t i = 0; i < n; i++) {
     ct_cartesian2f_imm(ct_set2fxy(ptr, c->r, t * i));
     ptr++;
   }
   return verts;
+}
+
+CT_EXPORT CT_Triangle2f *ct_circle2f_tessellate(CT_Circle2f *c,
+                                                CT_Triangle2f *tris, size_t n) {
+  CT_Vec2f *verts =
+      ct_circle2f_vertices(c, (CT_Vec2f *)malloc(sizeof(CT_Vec2f) * n), n);
+  CT_Triangle2f *ptr = tris;
+  for (size_t i = 0; i <= n; i++) {
+    ct_triangle2f_init(ptr, &c->pos, &verts[i % n], &verts[(i + 1) % n]);
+    ptr++;
+  }
+  free(verts);
+  return tris;
 }

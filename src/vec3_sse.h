@@ -68,6 +68,12 @@ CT_EXPORT ct_inline CT_Vec3f *ct_cross3fv_imm(CT_Vec3f *a, CT_Vec3f *b) {
   return a;
 }
 
+CT_EXPORT ct_inline CT_Vec3f *ct_cross3fv(CT_Vec3f *a, CT_Vec3f *b,
+                                          CT_Vec3f *out) {
+  out->mmval = a->mmval;
+  return ct_cross3fv_imm(out, b);
+}
+
 CT_EXPORT ct_inline float ct_distsq3fv(CT_Vec3f *a, CT_Vec3f *b) {
   __m128 d = a->mmval - b->mmval;
   d *= d;

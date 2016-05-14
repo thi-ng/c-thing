@@ -5,7 +5,7 @@
 CT_EXPORT CT_Vec3f *ct_vec3f(float x, float y, float z, CT_MPool *mpool);
 CT_EXPORT CT_Vec3f *ct_vec3fn(float n, CT_MPool *mpool);
 
-CT_EXPORT ct_inline uint8_t ct_deltaeq3fv(CT_Vec3f *a, CT_Vec3f *b, float eps) {
+CT_EXPORT ct_inline size_t ct_deltaeq3fv(CT_Vec3f *a, CT_Vec3f *b, float eps) {
   return (ct_deltaeqf(a->x, b->x, eps) && ct_deltaeqf(a->y, b->y, eps) &&
           ct_deltaeqf(a->z, b->z, eps));
 }
@@ -33,7 +33,7 @@ CT_EXPORT ct_inline CT_Vec3f *ct_normalize3f(CT_Vec3f *v, float len,
   return ct_normalize3f_imm(ct_set3fv(out, v), len);
 }
 
-CT_EXPORT ct_inline uint8_t ct_is_normalized3f(CT_Vec3f *v) {
+CT_EXPORT ct_inline size_t ct_is_normalized3f(CT_Vec3f *v) {
   return ct_deltaeqf(ct_mag3f(v), 1.f, EPS);
 }
 

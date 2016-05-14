@@ -72,7 +72,7 @@ CT_EXPORT ct_inline CT_Vec2f *ct_set2fp(CT_Vec2f *v, float *xy) {
   return v;
 }
 
-CT_EXPORT ct_inline uint8_t ct_deltaeq2fv(CT_Vec2f *a, CT_Vec2f *b, float eps) {
+CT_EXPORT ct_inline size_t ct_deltaeq2fv(CT_Vec2f *a, CT_Vec2f *b, float eps) {
   return (ct_deltaeqf(a->x, b->x, eps) && ct_deltaeqf(a->y, b->y, eps));
 }
 
@@ -136,7 +136,7 @@ CT_EXPORT ct_inline CT_Vec2f *ct_normalize2f(CT_Vec2f *v, float len,
   return ct_normalize2f_imm(ct_set2fv(out, v), len);
 }
 
-CT_EXPORT ct_inline uint8_t ct_is_normalized2f(CT_Vec2f *v) {
+CT_EXPORT ct_inline size_t ct_is_normalized2f(CT_Vec2f *v) {
   return ct_deltaeqf(ct_mag2f(v), 1.f, EPS);
 }
 
