@@ -2,8 +2,9 @@
 
 FILES="src/circle.c src/mpool.c src/triangle.c src/vec.c"
 TESTS=
-CFLAGS=
-EMFLAGS=
+CFLAGS="-std=c11 -Os -Isrc"
+EMFLAGS="-s ASM_JS=1 -s INVOKE_RUN=0 -s AGGRESSIVE_VARIABLE_ELIMINATION=1 -s MODULARIZE=1"
+OUT=geom.js
 
 usage()
 {
@@ -24,7 +25,7 @@ while getopts cdhmstD: opt; do
     case $opt in
         s) CFLAGS="$CFLAGS -fslp-vectorize -msse"
            ;;
-        c) EMFLAGS="$CFLAGS --closure 1"
+        c) EMFLAGS="$EMFLAGS --closure 1"
            ;;
         d) EMFLAGS="$EMFLAGS -s ELIMINATE_DUPLICATE_FUNCTIONS=1"
            # EMFLAGS="$EMFLAGS -s ELIMINATE_DUPLICATE_FUNCTIONS_PASSES=5"
@@ -49,24 +50,20 @@ while getopts cdhmstD: opt; do
     esac
 done
 
-echo "using cflags: $CFLAGS"
-echo "using emflags: $EMFLAGS"
+echo "cflags: $CFLAGS"
+echo "emflags: $EMFLAGS"
 
-emcc -Os -Isrc \
-     $CFLAGS \
+emcc $CFLAGS \
      --memory-init-file 0 \
-     -s ASM_JS=1 \
-     -s INVOKE_RUN=0 \
-     -s AGGRESSIVE_VARIABLE_ELIMINATION=1 \
+     --emit-symbol-map \
+     $EMFLAGS \
      -s "TOTAL_STACK=1*1024*1024" \
      -s "EXPORT_NAME='geom'" \
-     -s MODULARIZE=1 \
-     $EMFLAGS \
-     -o geom.js \
+     -o $OUT \
      $FILES \
      $TESTS
 
-cp geom.js geom-cljs/resources/public/js/
+cp $OUT geom-cljs/resources/public/js/
 
 # -s EXPORTED_FUNCTIONS=@exports.json
 # -s ELIMINATE_DUPLICATE_FUNCTIONS_DUMP_EQUIVALENT_FUNCTIONS=1
