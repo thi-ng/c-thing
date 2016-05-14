@@ -21,7 +21,7 @@
               [{:id           "dev"
                 :source-paths ["src"]
                 :figwheel     true
-                :compiler     {:main                 thi.ng.geom.core
+                :compiler     {:main                 thi.ng.geomc.core
                                :asset-path           "js/compiled/out"
                                :output-to            "resources/public/js/compiled/app.js"
                                :output-dir           "resources/public/js/compiled/out"
