@@ -14,7 +14,7 @@ extern "C" {
 
 #include "vec2.h"
 
-#ifdef CT_USE_SSE
+#ifdef CT_FEATURE_SSE
 #include "vec3_sse.h"
 #include "vec4_sse.h"
 #else

@@ -10,12 +10,11 @@ flags { "Symbols", "FatalWarnings", "C++11" }
 
 project "test"
 removeconfigurations { "debug", "release" }
-removeflags "Symbols"
 kind "ConsoleApp"
 files { "test/**.c" }
 
 filter "configurations:test"
-defines { "DEBUG", "TRACE_MPOOL" }
+defines { "DEBUG", "CT_FEATURE_CHECKS", "CT_FEATURE_TRACE_MPOOL", "CT_FEATURE_SSE" }
 optimize "Size"
 
 ----- lib
@@ -26,8 +25,8 @@ kind "StaticLib"
 targetname "thing-geom"
 
 filter "configurations:debug"
-defines { "DEBUG" }
+defines { "DEBUG", "CT_FEATURE_CHECKS", "CT_FEATURE_TRACE_MPOOL", "CT_FEATURE_SSE" }
 
 filter "configurations:release"
-defines { "NDEBUG" }
+defines { "NDEBUG", "CT_FEATURE_CHECKS", "CT_FEATURE_SSE" }
 optimize "Size"

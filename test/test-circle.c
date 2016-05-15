@@ -2,12 +2,13 @@
 #include <stdio.h>
 
 #include "circle.h"
+#include "dbg.h"
 
 //extern CT_IArea __ct_iarea_circle2;
 //extern CT_ICircumference __ct_icircumference_circle2;
 
 void test_circle() {
-  printf("---- test_circle ----\n");
+  CT_INFO("-------- test_circle --------\n");
   CT_Circle2f c, c2;
   ct_circle2f_initr(&c, 1);
   ct_circle2f_initr(&c2, 2);

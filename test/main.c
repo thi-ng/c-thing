@@ -1,5 +1,5 @@
-#include <stdio.h>
 #include "config.h"
+#include "dbg.h"
 
 extern void test_mpool();
 extern void test_vec2f();
@@ -8,8 +8,8 @@ extern void test_swizzle();
 extern void test_circle();
 
 int main() {
-#ifdef CT_USE_SSE
-  printf("using SSE...\n");
+#ifdef CT_FEATURE_SSE
+  CT_INFO("using SSE...");
 #endif
 #ifndef NO_MPOOL
   test_mpool();
