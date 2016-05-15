@@ -16,7 +16,10 @@
   (mag [_]))
 
 (defproto IMathOps
-  (add! [_ v]))
+  (+! [_ v])
+  (-! [_ v])
+  (*! [_ v])
+  (div! [_ v]))
 
 (defproto ICross
   (cross! [_ v]))
@@ -34,7 +37,8 @@
   IMag
   (mag [_] (._ct_mag2f js/geom ptr))
   IMathOps
-  (add! [_ v] (._ct_add2fv_imm js/geom ptr (.-ptr ^Vec2f v)) _)
+  (+! [_ v] (._ct_add2fv_imm js/geom ptr (.-ptr ^Vec2f v)) _)
+  (-! [_ v] (._ct_sub2fv_imm js/geom ptr (.-ptr ^Vec2f v)) _)
   IPrintWithWriter
   (-pr-writer [_ writer opts]
     (pr-sequential-writer
@@ -46,7 +50,7 @@
   IMag
   (mag [_] (._ct_mag3f js/geom ptr))
   IMathOps
-  (add! [_ v] (._ct_add3fv_imm js/geom ptr (.-ptr ^Vec3f v)) _)
+  (+! [_ v] (._ct_add3fv_imm js/geom ptr (.-ptr ^Vec3f v)) _)
   ICross
   (cross! [_ v] (._ct_cross3fv_imm js/geom ptr (.-ptr ^Vec3f v)) _)
   IMix
@@ -87,10 +91,10 @@
 
 (defn ^:export main
   []
-  (let [a2 (add! (vec2f 10 10) (vec2f 90 90))
-        b2 (add! (vec2f 100 100) (vec2f 100 100))
-        a3 (add! (vec3f 10 10 10) (vec3f 90 90 90))
-        b3 (add! (vec3f 100 100 100) (vec3f 100 100 100))]
+  (let [a2 (+! (vec2f 10 10) (vec2f 90 90))
+        b2 (+! (vec2f 100 100) (vec2f 100 100))
+        a3 (+! (vec3f 10 10 10) (vec3f 90 90 90))
+        b3 (+! (vec3f 100 100 100) (vec3f 100 100 100))]
     (clj->js [(mag a2) (mag b2) (mag a3) (mag b3)])))
 
 (defn ^:export bench-cross

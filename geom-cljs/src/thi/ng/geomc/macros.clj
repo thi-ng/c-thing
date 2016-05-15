@@ -4,7 +4,14 @@
    [clojure.string :as str]))
 
 (def js-replacements
-  {\. \$ \/ \$ \* "_STAR_" \? "_QMARK_" \! "_BANG_" \' "_QUOTE_"})
+  {\. \$
+   \/ \$
+   \- \_
+   \* "_STAR_"
+   \+ "_PLUS_"
+   \? "_QMARK_"
+   \! "_BANG_"
+   \' "_QUOTE_"})
 
 (defn jsify-symbol
   [sym]
