@@ -45,7 +45,8 @@
 #define CT_ERROR(M, ...)
 #define CT_WARN(M, ...)
 #define CT_INFO(M, ...)
-#define CT_SENTINEL(M, ...)
+#define CT_SENTINEL(M, ...) \
+  {}
 #endif
 
 #ifdef CT_FEATURE_CHECKS
