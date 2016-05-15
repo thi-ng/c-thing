@@ -27,6 +27,7 @@ typedef struct {
   size_t blockSize;
   size_t numBlocks;
   size_t nextID;
+  size_t poolID;
 } CT_MPool;
 
 size_t ct_mpool_init(CT_MPool *mpool, size_t num, size_t bsize);
