@@ -14,6 +14,7 @@ Usage:
   -d     : remove duplicate functions
   -D SYM : add define
   -h     : show this help
+  -k     : enable runtime checks
   -m     : enable MPool tracing
   -s     : enable SSE (SIMD.js)
   -t     : include tests
