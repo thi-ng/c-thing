@@ -21,7 +21,7 @@ EOF
     exit 1
 }
 
-while getopts cdhmstD: opt; do
+while getopts cdhkmstD: opt; do
     case $opt in
         s) CFLAGS="$CFLAGS -fslp-vectorize -msse"
            ;;
@@ -31,11 +31,14 @@ while getopts cdhmstD: opt; do
            # EMFLAGS="$EMFLAGS -s ELIMINATE_DUPLICATE_FUNCTIONS_PASSES=5"
            EMFLAGS="$EMFLAGS -s ELIMINATE_DUPLICATE_FUNCTIONS_DUMP_EQUIVALENT_FUNCTIONS=1"
            ;;
-        m) CFLAGS="$CFLAGS -DTRACE_MPOOL"
+        k) CFLAGS="$CFLAGS -DCT_FEATURE_CHECKS"
+           ;;
+        m) CFLAGS="$CFLAGS -DCT_FEATURE_TRACE_MPOOL"
            ;;
         D) CFLAGS="$CFLAGS -D$OPTARG"
            ;;
-        t) TESTS="test/test-mpool.c test/test-vec.c test/test-circle.c test/main.c"
+        t) CFLAGS="$CFLAGS -DCT_FEATURE_CHECKS"
+           TESTS="test/test-mpool.c test/test-vec.c test/test-circle.c test/main.c"
            ;;
         h) usage
            ;;
@@ -63,6 +66,7 @@ emcc $CFLAGS \
      $FILES \
      $TESTS
 
+ls -la $OUT
 cp $OUT geom-cljs/resources/public/js/
 
 # -s EXPORTED_FUNCTIONS=@exports.json

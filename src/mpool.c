@@ -8,7 +8,7 @@
 
 CT_EXPORT size_t ct_mpool_init(CT_MPool *mpool, size_t num, size_t blockSize) {
   CT_CHECK(blockSize >= sizeof(CT_MPoolFreeList),
-           "blocksize must be >= %lu, was %lu", sizeof(CT_MPoolFreeList),
+           "blocksize must be >= %zd, was %zd", sizeof(CT_MPoolFreeList),
            blockSize);
   mpool->numBlocks = num;
   mpool->blockSize = blockSize;
@@ -58,13 +58,13 @@ fail:
 
 CT_EXPORT void ct_mpool_trace(CT_MPool *mpool) {
 #ifdef CT_FEATURE_TRACE_MPOOL
-  CT_INFO("nextID: %lu, pool: %p, free: %p, bsize: %lu, num: %lu",
+  CT_INFO("nextID: %zd, pool: %p, free: %p, bsize: %zd, num: %zd",
           mpool->nextID, mpool->pool, mpool->freeList, mpool->blockSize,
           mpool->numBlocks);
   CT_MPoolFreeList *f = mpool->freeList;
   size_t i = 0;
   while (f != NULL) {
-    CT_INFO("\tfree list: %lu: %p -> %p", i, f, f->next);
+    CT_INFO("\tfree list: %zd: %p -> %p", i, f, f->next);
     i++;
     f = f->next;
   }
