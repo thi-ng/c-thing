@@ -10,7 +10,9 @@ extern "C" {
 
 #include "config.h"
 
+#ifndef EPS
 #define EPS 1e-6f
+#endif
 #define LN2 0.69314718055994530942f
 #define SQRT2 1.414213562373095f
 
@@ -26,7 +28,7 @@ extern "C" {
 
 #define MIN(a, b) ((a) < (b) ? (a) : (b))
 #define MAX(a, b) ((a) > (b) ? (a) : (b))
-#define SIGNUM(x, eps) (ssize_t)((x) < 0 ? -1 : ((x) > 0) ? 1 : 0)
+#define SIGNUM(x, eps) (intmax_t)((x) < 0 ? -1 : ((x) > 0) ? 1 : 0)
 
 CT_EXPORT ct_inline size_t ct_deltaeqf(const float a, const float b,
                                        const float eps) {
