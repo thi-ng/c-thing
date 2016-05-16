@@ -1,6 +1,6 @@
 #!/bin/sh
 
-FILES="src/circle.c src/mpool.c src/triangle.c src/vec.c"
+FILES="src/circle.c src/mpool.c src/quadedge.c src/triangle.c src/vec.c"
 TESTS=
 CFLAGS="-std=c11 -Os -Isrc"
 EMFLAGS="-s ASM_JS=1 -s INVOKE_RUN=0 -s AGGRESSIVE_VARIABLE_ELIMINATION=1 -s MODULARIZE=1"
@@ -39,7 +39,7 @@ while getopts cdhkmstD: opt; do
         D) CFLAGS="$CFLAGS -D$OPTARG"
            ;;
         t) CFLAGS="$CFLAGS -DCT_FEATURE_CHECKS"
-           TESTS="test/test-mpool.c test/test-vec.c test/test-circle.c test/main.c"
+           TESTS="test/test-mpool.c test/test-vec.c test/test-circle.c test/test-qedge.c test/main.c"
            ;;
         h) usage
            ;;
