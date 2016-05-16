@@ -43,6 +43,8 @@ CT_EXPORT CT_Vec4f *ct_vec4n(float n, CT_MPool *mpool) {
   return ct_vec4f(n, n, n, n, mpool);
 }
 
+// ---------- array ops
+
 CT_EXPORT void ct_translate2f(float *ptr, CT_Vec2f *t, size_t num,
                               size_t fstride) {
   while (num--) {
