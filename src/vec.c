@@ -1,4 +1,5 @@
 #include "vec.h"
+#include <float.h>
 
 CT_EXPORT CT_Vec2f *ct_vec2f(float x, float y, CT_MPool *mpool) {
   CT_Vec2f *v = CT_MP_ALLOC_STD(mpool, CT_Vec2f);
@@ -45,47 +46,43 @@ CT_EXPORT CT_Vec4f *ct_vec4n(float n, CT_MPool *mpool) {
 
 // ---------- array ops
 
-CT_EXPORT void ct_translate2f(float *ptr, CT_Vec2f *t, size_t num,
-                              size_t fstride) {
-  while (num--) {
-    ct_add2fv_imm((CT_Vec2f *)ptr, t);
-    ptr += fstride;
+VEC_ARRAYOP(translate2f, CT_Vec2f, float, ct_add2fv_imm)
+VEC_ARRAYOP(scale2f, CT_Vec2f, float, ct_mul2fv_imm)
+VEC_ARRAYOP(translate3f, CT_Vec3f, float, ct_add3fv_imm)
+VEC_ARRAYOP(scale3f, CT_Vec3f, float, ct_mul3fv_imm)
+VEC_ARRAYOP(translate4f, CT_Vec4f, float, ct_add4fv_imm)
+VEC_ARRAYOP(scale4f, CT_Vec4f, float, ct_mul4fv_imm)
+
+CT_EXPORT CT_Vec2f *ct_closest_point2f(float *ptr, CT_Vec2f *p, size_t num,
+                                       size_t fstride) {
+  float minD = FLT_MAX;
+  CT_Vec2f *closest = NULL;
+  if (num > 0) {
+    while (num--) {
+      float d = ct_distsq2fv((CT_Vec2f *)ptr, p);
+      if (d < minD) {
+        closest = (CT_Vec2f *)ptr;
+        minD = d;
+      }
+      ptr += fstride;
+    }
   }
+  return closest;
 }
 
-CT_EXPORT void ct_scale2f(float *ptr, CT_Vec2f *s, size_t num, size_t fstride) {
-  while (num--) {
-    ct_mul2fv_imm((CT_Vec2f *)ptr, s);
-    ptr += fstride;
+CT_EXPORT CT_Vec3f *ct_closest_point3f(float *ptr, CT_Vec3f *p, size_t num,
+                                       size_t fstride) {
+  float minD = FLT_MAX;
+  CT_Vec3f *closest = NULL;
+  if (num > 0) {
+    while (num--) {
+      const float d = ct_distsq3fv((CT_Vec3f *)ptr, p);
+      if (d < minD) {
+        closest = (CT_Vec3f *)ptr;
+        minD = d;
+      }
+      ptr += fstride;
+    }
   }
-}
-
-CT_EXPORT void ct_translate3f(float *ptr, CT_Vec3f *t, size_t num,
-                              size_t fstride) {
-  while (num--) {
-    ct_add3fv_imm((CT_Vec3f *)ptr, t);
-    ptr += fstride;
-  }
-}
-
-CT_EXPORT void ct_scale3f(float *ptr, CT_Vec3f *s, size_t num, size_t fstride) {
-  while (num--) {
-    ct_mul3fv_imm((CT_Vec3f *)ptr, s);
-    ptr += fstride;
-  }
-}
-
-CT_EXPORT void ct_translate4f(float *ptr, CT_Vec4f *t, size_t num,
-                              size_t fstride) {
-  while (num--) {
-    ct_add4fv_imm((CT_Vec4f *)ptr, t);
-    ptr += fstride;
-  }
-}
-
-CT_EXPORT void ct_scale4f(float *ptr, CT_Vec4f *s, size_t num, size_t fstride) {
-  while (num--) {
-    ct_mul4fv_imm((CT_Vec4f *)ptr, s);
-    ptr += fstride;
-  }
+  return closest;
 }
