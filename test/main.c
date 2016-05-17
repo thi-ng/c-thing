@@ -7,8 +7,12 @@ extern void test_vec3f();
 extern void test_swizzle();
 extern void test_circle();
 extern void test_qedge();
+extern void test_cons();
 
 int main() {
+#ifdef CT_FEATURE_CHECKS
+  CT_INFO("using checks...");
+#endif
 #ifdef CT_FEATURE_SSE
   CT_INFO("using SSE...");
 #endif
@@ -29,5 +33,8 @@ int main() {
 #endif
 #ifndef NO_QEDGE
   test_qedge();
+#endif
+#ifndef NO_CONS
+  test_cons();
 #endif
 }

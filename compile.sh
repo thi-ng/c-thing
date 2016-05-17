@@ -1,6 +1,6 @@
 #!/bin/sh
 
-FILES="src/circle.c src/mpool.c src/quadedge.c src/triangle.c src/vec.c"
+FILES="src/circle.c src/cons.c src/mpool.c src/quadedge.c src/triangle.c src/vec.c"
 TESTS=
 CFLAGS="-std=c11 -Os -Isrc"
 EMFLAGS="-s ASM_JS=1 -s INVOKE_RUN=0 -s AGGRESSIVE_VARIABLE_ELIMINATION=1 -s MODULARIZE=1"

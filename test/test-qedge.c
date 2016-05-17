@@ -1,8 +1,8 @@
-#include <stdio.h>
+#include "dbg.h"
 #include "quadedge.h"
 
 void trace_edge(CT_QuadEdgeRef e, void* _) {
-  printf("edge: %zd next: %zd\n", e, ONEXT(e));
+  CT_INFO("edge: %zx next: %zx", e, ONEXT(e));
 }
 
 void test_qedge() {

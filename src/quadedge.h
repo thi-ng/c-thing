@@ -13,6 +13,8 @@ typedef struct {
   size_t mark;
 } CT_QuadEdge;
 
+typedef void (*CT_QuadEdgeVisitor)(CT_QuadEdgeRef, void *);
+
 // Edge orientation operators
 
 #define QE_MASK(e) ((e) & (size_t)-4)
@@ -52,6 +54,4 @@ void ct_qedge_destroy(CT_QuadEdgeRef e);
 
 void ct_qedge_splice(CT_QuadEdgeRef a, CT_QuadEdgeRef b);
 
-void ct_qedge_iterate(CT_QuadEdgeRef a,
-                      void visit_proc(CT_QuadEdgeRef e, void *closure),
-                      void *closure);
+void ct_qedge_iterate(CT_QuadEdgeRef a, CT_QuadEdgeVisitor visit, void *state);
