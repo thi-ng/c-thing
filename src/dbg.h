@@ -21,9 +21,10 @@
 
 #define CT_CLEAN_ERRNO() (errno == 0 ? "None" : strerror(errno))
 
-#define CT_ERROR(M, ...)                                                    \
-  fprintf(stderr, "[ERROR] (%s:%d: errno: %s) " M "\n", __FILE__, __LINE__, \
-          CT_CLEAN_ERRNO(), ##__VA_ARGS__)
+#define CT_ERROR(M, ...)                                                  \
+  fprintf(stderr,                                                         \
+          CT_ANSI_RED "[ERROR] (%s:%d: errno: %s) " M CT_ANSI_RESET "\n", \
+          __FILE__, __LINE__, CT_CLEAN_ERRNO(), ##__VA_ARGS__)
 
 #define CT_WARN(M, ...)                                                    \
   fprintf(stderr, "[WARN] (%s:%d: errno: %s) " M "\n", __FILE__, __LINE__, \
@@ -31,6 +32,10 @@
 
 #define CT_INFO(M, ...) \
   fprintf(stderr, "[INFO] (%s:%d) " M "\n", __FILE__, __LINE__, ##__VA_ARGS__)
+
+#define CT_SUCCESS(M, ...)                                                 \
+  fprintf(stderr, CT_ANSI_GREEN "[SUCCESS] (%s:%d) " M CT_ANSI_RESET "\n", \
+          __FILE__, __LINE__, ##__VA_ARGS__)
 
 #define CT_SENTINEL(M, ...)     \
   {                             \
