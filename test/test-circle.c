@@ -2,24 +2,26 @@
 #include <stdio.h>
 
 #include "circle.h"
-#include "dbg.h"
+#include "test.h"
 
 //extern CT_IArea __ct_iarea_circle2;
 //extern CT_ICircumference __ct_icircumference_circle2;
 
-void test_circle() {
-  CT_INFO("-------- test_circle --------\n");
+CT_TEST_DECLS
+
+int test_circle() {
   CT_Circle2f c, c2;
   ct_circle2f_initr(&c, 1);
   ct_circle2f_initr(&c2, 2);
-  assert(PI == ct_circle2f_area(&c));
-  assert(PI * 4 == ct_circle2f_area(&c2));
-  //assert(PI == ct_area(&__ct_iarea_circle2, &c));
-  assert(TAU == ct_circle2f_circumference(&c));
-  assert(TAU * 2 == ct_circle2f_circumference(&c2));
-  //assert(TAU == ct_circumference(&__ct_icircumference_circle2, &c));
+  CT_IS(PI == ct_circle2f_area(&c), "area c");
+  CT_IS(PI * 4 == ct_circle2f_area(&c2), "area c2");
+  CT_IS(TAU == ct_circle2f_circumference(&c), "circum c");
+  CT_IS(TAU * 2 == ct_circle2f_circumference(&c2), "circum c2");
   CT_Vec2f p = {.x = 0, .y = 0};
-  assert(1 == ct_circle2f_classify_point(&c, &p));
-  assert(0 == ct_circle2f_classify_point(&c, ct_set2fxy(&p, 1, 0)));
-  assert(-1 == ct_circle2f_classify_point(&c, ct_set2fxy(&p, 1.001f, 0)));
+  CT_IS(1 == ct_circle2f_classify_point(&c, &p), "classify 1");
+  CT_IS(0 == ct_circle2f_classify_point(&c, ct_set2fxy(&p, 1, 0)),
+        "classify 0");
+  CT_IS(-1 == ct_circle2f_classify_point(&c, ct_set2fxy(&p, 1.001f, 0)),
+        "classify -1");
+  return 0;
 }

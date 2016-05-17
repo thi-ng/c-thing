@@ -14,7 +14,7 @@ kind "ConsoleApp"
 files { "test/**.c" }
 
 filter "configurations:test"
-defines { "DEBUG", "CT_FEATURE_CHECKS", "CT_FEATURE_TRACE_MPOOL", "CT_FEATURE_SSE" }
+defines { "DEBUG", "CT_FEATURE_ANSI", "CT_FEATURE_CHECKS", "CT_FEATURE_TRACE_MPOOL", "CT_FEATURE_SSE" }
 optimize "Size"
 
 ----- lib
