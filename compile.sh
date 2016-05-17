@@ -39,7 +39,7 @@ while getopts cdhkmstD: opt; do
         D) CFLAGS="$CFLAGS -D$OPTARG"
            ;;
         t) CFLAGS="$CFLAGS -DCT_FEATURE_CHECKS"
-           TESTS="test/test-mpool.c test/test-vec.c test/test-circle.c test/test-qedge.c test/main.c"
+           TESTS="test/test-mpool.c test/test-vec.c test/test-circle.c test/test-qedge.c test/test-cons.c test/main.c"
            ;;
         h) usage
            ;;
