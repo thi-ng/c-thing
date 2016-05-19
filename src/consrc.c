@@ -1,7 +1,7 @@
 #include <stddef.h>
 #include <stdint.h>
-#include <stdlib.h>
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 
 #define CT_FEATURE_LOG
@@ -16,14 +16,14 @@ typedef union {
   uintptr_t u;
   intptr_t i;
   float f;
-  void* p;
+  void *p;
 } CT_Atom;
 
 typedef union {
   uint32_t tag;
   struct {
     uint16_t type;
-    uint16_t free:1;
+    uint16_t free : 1;
   };
 } CT_Tag;
 
@@ -36,27 +36,47 @@ typedef struct {
 typedef struct CT_ConsRC CT_ConsRC;
 
 struct CT_ConsRC {
-  CT_Object* value;
-  CT_ConsRC* next;
+  CT_Object *value;
+  CT_ConsRC *next;
   CT_Ref rc;
 };
 
+static inline CT_Object *ct_object_assign(CT_Object **dest, CT_Object *src) {
+  ct_ref_inc(&src->rc);
+  *dest = src;
+  return *dest;
+}
+
+static inline void ct_object_unassign(CT_Object **o) {
+  ct_ref_dec(&(*o)->rc);
+  *o = NULL;
+}
+
+static void ct_object_free_nop(const CT_Ref *ref) {
+}
+
+static CT_Object CT_NIL = {
+    .atom = {.p = NULL}, .tag = {.tag = 0}, .rc = {ct_object_free_nop, 1}};
+
 void ct_object_print(CT_Object *o) {
-  switch(o->tag.type) {
-  case I32:
-    CT_DEBUG("%p = %zd (refs: %zd, tag: %05x)", o, o->atom.i, o->rc.count, o->tag.tag);
-    break;
-  case F32:
-    CT_DEBUG("%p = %f (refs: %zd, tag: %05x)", o, o->atom.f, o->rc.count, o->tag.tag);
-    break;
-  case STRING:
-    CT_DEBUG("%p = \"%s\" (refs: %zd, tag: %05x)", o, (char*)o->atom.p, o->rc.count, o->tag.tag);
-    break;
-  case NIL:
-    CT_DEBUG("%p = NIL (refs: %zd, tag: %05x)", o, o->rc.count, o->tag.tag);
-    break;
-  default:
-    CT_DEBUG("%p (refs: %zd, tag: %05x)", o, o->rc.count, o->tag.tag);
+  switch (o->tag.type) {
+    case I32:
+      CT_DEBUG("%p = %zd (refs: %zd, tag: %05x)", o, o->atom.i, o->rc.count,
+               o->tag.tag);
+      break;
+    case F32:
+      CT_DEBUG("%p = %f (refs: %zd, tag: %05x)", o, o->atom.f, o->rc.count,
+               o->tag.tag);
+      break;
+    case STRING:
+      CT_DEBUG("%p = \"%s\" (refs: %zd, tag: %05x)", o, (char *)o->atom.p,
+               o->rc.count, o->tag.tag);
+      break;
+    case NIL:
+      CT_DEBUG("%p = NIL (refs: %zd, tag: %05x)", o, o->rc.count, o->tag.tag);
+      break;
+    default:
+      CT_DEBUG("%p (refs: %zd, tag: %05x)", o, o->rc.count, o->tag.tag);
   }
 }
 
@@ -72,11 +92,10 @@ static void ct_object_free(const CT_Ref *ref) {
 }
 
 static CT_Object *ct_object_raw(uint32_t type) {
-  CT_Object *o = (CT_Object*)malloc(sizeof(CT_Object));
-  o->rc = (CT_Ref){ct_object_free, 1};
+  CT_Object *o = (CT_Object *)malloc(sizeof(CT_Object));
+  o->rc = (CT_Ref){ct_object_free, 0};
   o->tag.tag = 0;
   o->tag.type = type;
-  o->tag.free = 0;
   return o;
 }
 
@@ -114,7 +133,7 @@ static void ct_consrc_free(const CT_Ref *ref) {
   free(node);
 }
 
-CT_ConsRC *ct_consrc(CT_Object* value) {
+CT_ConsRC *ct_consrc(CT_Object *value) {
   CT_ConsRC *node = malloc(sizeof(*node));
   node->value = value;
   node->next = NULL;
@@ -147,20 +166,23 @@ void ct_consrc_print(CT_ConsRC *node) {
 }
 
 int main() {
-  char *foo = strdup("foo");  
-  CT_Object *a = ct_object_f32(23);
-  CT_Object *b = ct_object_i32(44);
-  CT_Object *c = ct_object_str(foo, 1);
+  char *foo = strdup("foo");
+  CT_Object *a, *b, *c;
+  ct_object_assign(&a, ct_object_f32(23));
+  ct_object_assign(&b, ct_object_i32(44));
+  ct_object_assign(&c, ct_object_str(foo, 1));
   ct_object_print(a);
   ct_object_print(b);
   ct_object_print(c);
   CT_ConsRC *l = ct_consrc(c);
   ct_consrc_push(&l, b);
   ct_consrc_push(&l, a);
+  ct_consrc_push(&l, ct_object_str("bar", 0));
+  ct_consrc_push(&l, &CT_NIL);
   ct_consrc_print(l);
-  ct_ref_dec(&a->rc);
-  ct_ref_dec(&b->rc);
-  ct_ref_dec(&c->rc);
+  ct_object_unassign(&a);
+  ct_object_unassign(&b);
+  ct_object_unassign(&c);
   ct_consrc_print(l);
   ct_ref_dec(&l->rc);
   return 0;
