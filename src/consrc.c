@@ -55,8 +55,12 @@ static inline void ct_object_unassign(CT_Object **o) {
 static void ct_object_free_nop(const CT_Ref *ref) {
 }
 
+// clang-format off
 static CT_Object CT_NIL = {
-    .atom = {.p = NULL}, .tag = {.tag = 0}, .rc = {ct_object_free_nop, 1}};
+    .atom = {.p = NULL},
+    .tag = {.tag = 0},
+    .rc = {ct_object_free_nop, 1}};
+// clang-format off
 
 void ct_object_print(CT_Object *o) {
   switch (o->tag.type) {
