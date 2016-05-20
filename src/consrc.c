@@ -5,7 +5,7 @@
 #include <string.h>
 
 #define CT_FEATURE_LOG
-#define CT_FEATURE_CHECKS
+//#define CT_FEATURE_CHECKS
 #define DEBUG
 
 #include "dbg.h"
@@ -70,37 +70,84 @@ static CT_Object CT_NIL = {
   .rc   = {ct_object_free_nop, 1}};
 // clang-format on
 
+#define BUF_SIZE 1024
+
+static char buf[BUF_SIZE];
+
 void ct_object_print(CT_Object *o) {
   switch (o->tag.type) {
-  case I32:
-    CT_DEBUG("i32: %p = %zd (refs: %zd, tag: %05x)", o, o->atom.i,
-             o->rc.count, o->tag.tag);
-    break;
-  case F32:
-    CT_DEBUG("f32: %p = %f (refs: %zd, tag: %05x)", o, o->atom.f, o->rc.count,
-             o->tag.tag);
-    break;
-  case STRING:
-    CT_DEBUG("str: %p = \"%s\" (refs: %zd, tag: %05x)", o, (char *)o->atom.p,
-             o->rc.count, o->tag.tag);
-    break;
-  case NIL:
-    CT_DEBUG("nil: %p = NIL (refs: %zd, tag: %05x)", o, o->rc.count,
-             o->tag.tag);
-    break;
-  case CONS:
-    CT_DEBUG("cons: %p (ref: %zd) ", o, o->rc.count);
-    ct_object_print(ct_object_cons_ptr(o)->value);
-    break;
-  default:
-    CT_DEBUG("???: %p (refs: %zd, tag: %05x)", o, o->rc.count, o->tag.tag);
+    case I32:
+      CT_DEBUG("i32: %p = %zd (refs: %zd, tag: %05x)", o, o->atom.i,
+               o->rc.count, o->tag.tag);
+      printf("%zd ", o->atom.i);
+      break;
+    case F32:
+      CT_DEBUG("f32: %p = %f (refs: %zd, tag: %05x)", o, o->atom.f, o->rc.count,
+               o->tag.tag);
+      printf("%f ", o->atom.f);
+      break;
+    case STRING:
+      CT_DEBUG("str: %p = \"%s\" (refs: %zd, tag: %05x)", o, (char *)o->atom.p,
+               o->rc.count, o->tag.tag);
+      printf("\"%s\" ", (char *)o->atom.p);
+      break;
+    case NIL:
+      CT_DEBUG("nil: %p = NIL (refs: %zd, tag: %05x)", o, o->rc.count,
+               o->tag.tag);
+      printf("nil ");
+      break;
+    case CONS:
+      CT_DEBUG("cons: %p (ref: %zd) ", o, o->rc.count);
+      printf("(");
+      while (o) {
+        ct_object_print(ct_object_cons_ptr(o)->value);
+        o = ct_object_cons_ptr(o)->next;
+      }
+      printf(")");
+      break;
+    default:
+      CT_DEBUG("???: %p (refs: %zd, tag: %05x)", o, o->rc.count, o->tag.tag);
   }
+}
+
+int32_t ct_object_print_buf(CT_Object *o, char *buf, int32_t bsize) {
+  int32_t w = 0;
+  CT_CHECK(bsize > 0, "buffer full");
+  switch (o->tag.type) {
+    case I32:
+      w = snprintf(buf, bsize, "%zd ", o->atom.i);
+      break;
+    case F32:
+      w = snprintf(buf, bsize, "%f ", o->atom.f);
+      break;
+    case STRING:
+      w = snprintf(buf, bsize, "\"%s\" ", (char *)o->atom.p);
+      break;
+    case NIL:
+      w = snprintf(buf, bsize, "nil ");
+      break;
+    case CONS:
+      w = snprintf(buf, bsize, "(");
+      char *b2 = buf;
+      while (o) {
+        w += ct_object_print_buf(ct_object_cons_ptr(o)->value, buf + w,
+                                 bsize - w);
+        o = ct_object_cons_ptr(o)->next;
+      }
+      w += snprintf(buf + w, bsize - w, ")");
+      break;
+    default:
+      CT_ERROR("???: %p (refs: %zd, tag: %05x)", o, o->rc.count, o->tag.tag);
+  }
+  buf += w;
+fail:
+  return w;
 }
 
 static void ct_object_free(const CT_Ref *ref) {
   CT_Object *o = container_of(ref, CT_Object, rc);
   CT_DEBUG("free obj: ");
-  ct_object_print(o);
+  //ct_object_print(o);
   if (o->tag.free) {
     CT_DEBUG("free val ptr: %p", o->atom.p);
     free(o->atom.p);
@@ -148,7 +195,7 @@ static void ct_consrc_free(const CT_Ref *ref) {
   CT_ConsRC *c = ct_object_cons_ptr(o);
   CT_Object *next = c->next;
   CT_DEBUG("free cons: %p->%p val: %p", o, next, c->value);
-  ct_object_print(o);
+  //ct_object_print(o);
   if (c->value) ct_ref_dec(&c->value->rc);
   if (next) ct_ref_dec(&next->rc);
   free(c);
@@ -170,42 +217,26 @@ CT_Object *ct_object_cons(CT_Object *value) {
 }
 
 void ct_consrc_push(CT_Object **list, CT_Object *v) {
-  CT_CHECK(ct_object_is(*list,CONS), "%p is not a cons", (*list));
+  CT_CHECK(ct_object_is(*list, CONS), "%p is not a cons", (*list));
   CT_DEBUG("push %p", v);
   CT_Object *node = ct_object_cons(v);
   CT_ConsRC *c = (CT_ConsRC *)node->atom.p;
   c->next = *list;
   node->rc.count = 1;
   *list = node;
-  ct_object_print(node);
- fail:
+//ct_object_print(node);
+fail:
   return;
 }
 
 CT_Object *ct_consrc_pop(CT_Object **list) {
-  CT_CHECK(ct_object_is(*list,CONS), "%p is not a cons", (*list));
+  CT_CHECK(ct_object_is(*list, CONS), "%p is not a cons", (*list));
   CT_Object *node = *list;
   *list = ct_object_cons_ptr(node)->next;
   if (*list) ct_ref_inc(&(*list)->rc);
   return node;
- fail:
+fail:
   return NULL;
-}
-
-void ct_consrc_print(CT_Object *node) {
-  CT_CHECK(ct_object_is(node,CONS), "%p is not a cons", node);
-  CT_DEBUG("--- list %p (refs: %zd)", node, node->rc.count);
-  while (node) {
-    if (ct_object_cons_ptr(node)->value->tag.type == CONS) {
-      ct_consrc_print(ct_object_cons_ptr(node)->value);
-    } else {
-      ct_object_print(node);
-    }
-    node = ct_object_cons_ptr(node)->next;
-  }
-  CT_DEBUG("---");
- fail:
-  return;
 }
 
 int main() {
@@ -213,28 +244,35 @@ int main() {
   ct_object_assign(&a, ct_object_f32(23));
   ct_object_assign(&b, ct_object_i32(44));
   ct_object_assign(&c, ct_object_str(strdup("foo"), 1));
-  ct_object_print(a);
-  ct_object_print(b);
-  ct_object_print(c);
-  ct_object_print(&CT_NIL);
+  //ct_object_print(a);
+  //ct_object_print(b);
+  //ct_object_print(c);
+  //ct_object_print(&CT_NIL);
   ct_object_assign(&l, ct_object_cons(c));
-  ct_consrc_print(l);
+  ct_object_print_buf(l, buf, BUF_SIZE);
+  CT_INFO("l: %s", buf);
   ct_consrc_push(&l, b);
   ct_consrc_push(&l, a);
   ct_consrc_push(&l, ct_object_str("bar", 0));
   ct_consrc_push(&l, &CT_NIL);
-  ct_consrc_print(l);
-  CT_DEBUG("unassigns...");
+  ct_object_print_buf(l, buf, BUF_SIZE);
+  CT_INFO("l: %s", buf);
+  CT_INFO("unassigns...");
   ct_object_unassign(&a);
   ct_object_unassign(&b);
-  ct_consrc_print(l);
+  ct_object_print_buf(l, buf, BUF_SIZE);
+  CT_INFO("l: %s", buf);
   ct_object_assign(&l2, ct_object_cons(l));
   ct_consrc_push(&l2, c);
-  CT_DEBUG("l2");
-  ct_consrc_print(l2);
+  ct_consrc_push(&l2, c);
+  ct_consrc_push(&l2, l2);
+  ct_object_print_buf(l2, buf, BUF_SIZE);
+  CT_INFO("l2: %s", buf);
   ct_object_unassign(&l);
   ct_object_unassign(&c);
-  ct_consrc_print(l2);
+  ct_object_print(l2);
+  ct_object_print_buf(l2, buf, BUF_SIZE);
+  CT_INFO("l2: %s", buf);
   ct_object_unassign(&l2);
   return 0;
 }
