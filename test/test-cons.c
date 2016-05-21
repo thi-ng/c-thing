@@ -1,6 +1,7 @@
 #include "cons.h"
-#include "dbg.h"
 #include "mpool.h"
+
+#include "dbg.h"
 #include "test.h"
 
 CT_TEST_DECLS

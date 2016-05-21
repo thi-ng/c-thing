@@ -9,6 +9,7 @@ extern int test_swizzle();
 extern int test_circle();
 extern int test_qedge();
 extern int test_cons();
+extern int test_consrc();
 extern int test_hash_fns();
 
 CT_TEST_DECLS
@@ -30,6 +31,7 @@ int all_tests() {
   CT_RUN_TEST(test_circle);
   CT_RUN_TEST(test_qedge);
   CT_RUN_TEST(test_cons);
+  CT_RUN_TEST(test_consrc);
   CT_RUN_TEST(test_hash_fns);
   return 0;
 }

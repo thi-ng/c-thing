@@ -16,19 +16,19 @@
 #define CT_DEBUG(M, ...)
 #else
 #define CT_DEBUG(M, ...) \
-  fprintf(stderr, "[DEBUG] %s:%d: " M "\n", __FILE__, __LINE__, ##__VA_ARGS__)
+  fprintf(stderr, "[DEBUG] (%s:%d) " M "\n", __FILE__, __LINE__, ##__VA_ARGS__)
 #endif
 
-#define CT_CLEAN_ERRNO() (errno == 0 ? "None" : strerror(errno))
+#define CT_FMT_ERRNO() (errno == 0 ? "n/a" : strerror(errno))
 
-#define CT_ERROR(M, ...)                                                  \
-  fprintf(stderr,                                                         \
-          CT_ANSI_RED "[ERROR] (%s:%d: errno: %s) " M CT_ANSI_RESET "\n", \
-          __FILE__, __LINE__, CT_CLEAN_ERRNO(), ##__VA_ARGS__)
+#define CT_ERROR(M, ...)                                                \
+  fprintf(stderr,                                                       \
+          CT_ANSI_RED "[ERROR] (%s:%d, err: %s) " M CT_ANSI_RESET "\n", \
+          __FILE__, __LINE__, CT_FMT_ERRNO(), ##__VA_ARGS__)
 
-#define CT_WARN(M, ...)                                                    \
-  fprintf(stderr, "[WARN] (%s:%d: errno: %s) " M "\n", __FILE__, __LINE__, \
-          CT_CLEAN_ERRNO(), ##__VA_ARGS__)
+#define CT_WARN(M, ...)                                                  \
+  fprintf(stderr, "[WARN] (%s:%d: err: %s) " M "\n", __FILE__, __LINE__, \
+          CT_FMT_ERRNO(), ##__VA_ARGS__)
 
 #define CT_INFO(M, ...) \
   fprintf(stderr, "[INFO] (%s:%d) " M "\n", __FILE__, __LINE__, ##__VA_ARGS__)
@@ -46,7 +46,7 @@
 
 #else
 #define CT_DEBUG(M, ...)
-#define CT_CLEAN_ERRNO()
+#define CT_FMT_ERRNO()
 #define CT_ERROR(M, ...)
 #define CT_WARN(M, ...)
 #define CT_INFO(M, ...)
