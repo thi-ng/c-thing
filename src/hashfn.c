@@ -1,17 +1,18 @@
 #include "hashfn.h"
+#include "dbg.h"
 
-#define MURMUR_C1 0xcc9e2d51
-#define MURMUR_C2 0x1b873593
-#define MURMUR_H1 0xe6546b64
-#define MURMUR_H2 0x85ebca6b
-#define MURMUR_H3 0xc2b2ae35
+#define MURMUR_C1 ((uint32_t)0xcc9e2d51)
+#define MURMUR_C2 ((uint32_t)0x1b873593)
+#define MURMUR_H1 ((uint32_t)0xe6546b64)
+#define MURMUR_H2 ((uint32_t)0x85ebca6b)
+#define MURMUR_H3 ((uint32_t)0xc2b2ae35)
 
 CT_EXPORT uint32_t ct_murmur3_32(const void *data, size_t numBytes) {
   if (data == NULL || numBytes == 0) return 0;
 
-  const int numBlocks = numBytes >> 2;
+  const size_t numBlocks = numBytes >> 2;
   const uint32_t *blocks = (const uint32_t *)(data);
-  const uint8_t *tail = (const uint8_t *)(data + (numBlocks << 2));
+  const uint8_t *tail = (const uint8_t *)&data[numBlocks << 2];
 
   uint32_t h = 0;
   uint32_t k;
