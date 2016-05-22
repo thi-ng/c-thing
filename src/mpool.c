@@ -1,10 +1,5 @@
-#ifdef CT_FEATURE_TRACE_MPOOL
-#include <stdio.h>
-#endif
-
-#include "ct_math.h"
-#include "dbg.h"
 #include "mpool.h"
+#include "dbg.h"
 
 static size_t _mpool_id = 0;
 
@@ -27,9 +22,7 @@ CT_EXPORT void ct_mpool_free(CT_MPool *mp, void *block) {
   CT_CHECK(block >= (void *)mp->pool &&
                block < (void *)mp->pool + mp->numBlocks * mp->blockSize,
            "invalid block: %p", block);
-#ifdef CT_FEATURE_TRACE_MPOOL
-  CT_INFO("pool: %zd, free block: %p", mp->poolID, block);
-#endif
+  CT_DEBUG("pool: %zd, free block: %p", mp->poolID, block);
   CT_MPoolFreeList *fb = (CT_MPoolFreeList *)block;
   fb->next = mp->freeList;
   mp->freeList = fb;
@@ -39,9 +32,7 @@ fail:
 
 CT_EXPORT void ct_mpool_free_all(CT_MPool *mp) {
   CT_CHECK(mp->pool, "pool already freed");
-#ifdef CT_FEATURE_TRACE_MPOOL
-  CT_INFO("pool: %zd, free mp: %p", mp->poolID, mp->pool);
-#endif
+  CT_DEBUG("pool: %zd, free mp: %p", mp->poolID, mp->pool);
   free(mp->pool);
 fail:
   return;
@@ -57,22 +48,20 @@ CT_EXPORT void *ct_mpool_alloc(CT_MPool *mp) {
     mp->nextID++;
   }
   CT_CHECK(ptr, "pool full");
-#ifdef CT_FEATURE_TRACE_MPOOL
-  CT_INFO("pool: %zd, alloc block: %p", mp->poolID, ptr);
-#endif
+  CT_DEBUG("pool: %zd, alloc block: %p", mp->poolID, ptr);
 fail:
   return ptr;
 }
 
 CT_EXPORT void ct_mpool_trace(CT_MPool *mp) {
-#ifdef CT_FEATURE_TRACE_MPOOL
-  CT_INFO("pool: %zd, nextID: %zd, addr: %p, free: %p, bsize: %zd, num: %zd",
-          mp->poolID, mp->nextID, mp->pool, mp->freeList, mp->blockSize,
-          mp->numBlocks);
+#ifndef NDEBUG
+  CT_DEBUG("pool: %zd, nextID: %zd, addr: %p, free: %p, bsize: %zd, num: %zd",
+           mp->poolID, mp->nextID, mp->pool, mp->freeList, mp->blockSize,
+           mp->numBlocks);
   CT_MPoolFreeList *f = mp->freeList;
   size_t i = 0;
   while (f != NULL) {
-    CT_INFO("\tfree list: %zd: %p -> %p", i, f, f->next);
+    CT_DEBUG("\tfree list: %zd: %p -> %p", i, f, f->next);
     i++;
     f = f->next;
   }

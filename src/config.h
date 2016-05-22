@@ -5,11 +5,9 @@
 
 //#define CT_FEATURE_CHECKS
 //#define CT_FEATURE_LOG
-//#define CT_FEATURE_TRACE_MPOOL
 //#define CT_FEATURE_SSE
 
-#if (defined(CT_FEATURE_CHECKS) || defined(CT_FEATURE_TRACE_MPOOL)) && \
-    !defined(CT_FEATURE_LOG)
+#ifdef CT_FEATURE_CHECKS
 #define CT_FEATURE_LOG
 #endif
 
