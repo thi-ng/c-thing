@@ -45,6 +45,14 @@ int test_vec2f() {
   ct_mpool_free(&pool, a);
   ct_mpool_trace(&pool);
   free(d);
+  a = ct_vec2f(1, 2, &pool);
+  b = ct_vec2f(1, 1, &pool);
+  c = ct_vec2f(2, 1, &pool);
+  CT_IS(1 == ct_compare2fv(a, b), "a > b");
+  CT_IS(0 == ct_compare2fv(a, a), "a == a");
+  CT_IS(-1 == ct_compare2fv(b, a), "b < a");
+  CT_IS(-1 == ct_compare2fv(a, c), "a < c");
+  CT_IS(1 == ct_compare2fv(c, a), "c > a");
   ct_mpool_free_all(&pool);
   return 0;
 }
@@ -82,6 +90,17 @@ int test_vec3f() {
   ct_mpool_free(&pool, a);
   ct_mpool_trace(&pool);
   free(d);
+  a = ct_vec3f(1, 2, 3, &pool);
+  b = ct_vec3f(3, 2, 1, &pool);
+  c = ct_vec3f(3, 1, 2, &pool);
+  d = ct_vec3f(1, 2, 4, &pool);
+  CT_IS(1 == ct_compare3fv(b, a), "b > a");
+  CT_IS(0 == ct_compare3fv(a, a), "a == a");
+  CT_IS(-1 == ct_compare3fv(a, b), "a < b");
+  CT_IS(-1 == ct_compare3fv(a, c), "a < c");
+  CT_IS(-1 == ct_compare3fv(c, b), "c < b");
+  CT_IS(-1 == ct_compare3fv(a, d), "a < d");
+  CT_IS(1 == ct_compare3fv(d, a), "d > a");
   ct_mpool_free_all(&pool);
   return 0;
 }
@@ -89,6 +108,7 @@ int test_vec3f() {
 int test_swizzle() {
   CT_Vec2f *a2 = ct_vec2f(1, 2, NULL);
   CT_Vec3f *a3 = ct_vec3f(0, 0, 0, NULL);
+  CT_Vec4f *a4 = ct_vec4f(0, 0, 0, 0, NULL);
   ct_swizzle3f(XXX, a3, a2);
   ASSERT_VEC2F(a2, 1, 2);
   ASSERT_VEC3F(a3, 1, 1, 1);
@@ -112,5 +132,6 @@ int test_swizzle() {
   ASSERT_VEC3F(a3, 2, 3, 3);
   free(a2);
   free(a3);
+  free(a4);
   return 0;
 }

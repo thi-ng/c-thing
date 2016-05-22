@@ -73,6 +73,14 @@ CT_EXPORT ct_inline CT_Vec2f *ct_set2fp(CT_Vec2f *v, float *xy) {
   return v;
 }
 
+CT_EXPORT ct_inline int ct_compare2fv(const CT_Vec2f *a, const CT_Vec2f *b) {
+  int c = COMPARE(a->x, b->x);
+  if (!c) {
+    return COMPARE(a->y, b->y);
+  }
+  return c;
+}
+
 CT_EXPORT ct_inline size_t ct_deltaeq2fv(const CT_Vec2f *a, const CT_Vec2f *b,
                                          float eps) {
   return (ct_deltaeqf(a->x, b->x, eps) && ct_deltaeqf(a->y, b->y, eps));

@@ -6,6 +6,20 @@ CT_EXPORT CT_Vec4f *ct_vec4f(float x, float y, float z, float w,
                              CT_MPool *mpool);
 CT_EXPORT CT_Vec4f *ct_vec4n(float n, CT_MPool *mpool);
 
+CT_EXPORT ct_inline int ct_compare4fv(const CT_Vec4f *a, const CT_Vec4f *b) {
+  int c = COMPARE(a->x, b->x);
+  if (!c) {
+    c = COMPARE(a->y, b->y);
+    if (!c) {
+      c = COMPARE(a->z, b->z);
+      if (!c) {
+        return COMPARE(a->w, b->w);
+      }
+    }
+  }
+  return c;
+}
+
 CT_EXPORT ct_inline size_t ct_deltaeq4fv(const CT_Vec4f *a, const CT_Vec4f *b,
                                          float eps) {
   return (ct_deltaeqf(a->x, b->x, eps) && ct_deltaeqf(a->y, b->y, eps) &&
