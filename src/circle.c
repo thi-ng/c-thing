@@ -1,14 +1,22 @@
 #include "circle.h"
+#include "protocols.h"
 
+// clang-format off
 /*
-CT_IArea __ct_iarea_circle2 = {.area = ct_circle2f_area};
+CT_IArea __ct_iarea_circle2 = {
+  .area = ct_circle2f_area
+};
 
-CT_ICircumference __ct_icircumference_circle2 = {.circumference =
-                                                     ct_circle2f_circumference};
+CT_ICircumference __ct_icircumference_circle2 = {
+  .circumference = ct_circle2f_circumference
+};
 
 CT_IClassify __ct_iclassify_circle2 = {
-    .classify_point2f = ct_circle2f_classify_point2f, .classify_point3f = NULL};
+  .classify_point2f = ct_circle2f_classify_point,
+  .classify_point3f = NULL
+};
 */
+// clang-format off
 
 CT_EXPORT CT_Circle2f *ct_circle2f_init(CT_Circle2f *c, float x, float y,
                                         float r) {
@@ -35,7 +43,7 @@ CT_EXPORT float ct_circle2f_circumference(CT_Circle2f *c) {
   return TAU * c->r;
 }
 
-CT_EXPORT intmax_t ct_circle2f_classify_point(CT_Circle2f *c, CT_Vec2f *p) {
+CT_EXPORT int ct_circle2f_classify_point(CT_Circle2f *c, CT_Vec2f *p) {
   return ct_signumf(c->r - ct_dist2fv(&c->pos, p), EPS);
 }
 

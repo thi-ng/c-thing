@@ -29,7 +29,7 @@ extern "C" {
 #define MIN(a, b) ((a) < (b) ? (a) : (b))
 #define MAX(a, b) ((a) > (b) ? (a) : (b))
 #define SIGNUM(x, eps) (int)((x) < 0 ? -1 : ((x) > 0) ? 1 : 0)
-#define COMPARE(a,b) (int)((a) < (b) ? -1 : ((a) > (b) ? 1 : 0))
+#define COMPARE(a, b) (int)((a) < (b) ? -1 : ((a) > (b) ? 1 : 0))
 
 CT_EXPORT ct_inline size_t ct_deltaeqf(const float a, const float b,
                                        const float eps) {

@@ -28,8 +28,8 @@ typedef struct {
 typedef struct { float (*circumference)(void *); } CT_ICircumference;
 
 typedef struct {
-  intmax_t (*classify_point2f)(void *, CT_Vec2f *);
-  intmax_t (*classify_point3f)(void *, CT_Vec3f *);
+  int (*classify_point2f)(void *, CT_Vec2f *);
+  int (*classify_point3f)(void *, CT_Vec3f *);
 } CT_IClassify;
 
 PROTO_FN1(CT_IArea, float, area)
@@ -39,8 +39,8 @@ PROTO_FN1(CT_IBounds, CT_AABB, bounds3f)
 
 PROTO_FN1(CT_ICircumference, float, circumference)
 
-PROTO_FN2(CT_IClassify, intmax_t, classify_point2f, CT_Vec2f)
-PROTO_FN2(CT_IClassify, intmax_t, classify_point3f, CT_Vec3f)
+PROTO_FN2(CT_IClassify, int, classify_point2f, CT_Vec2f)
+PROTO_FN2(CT_IClassify, int, classify_point3f, CT_Vec3f)
 
 #ifdef __cplusplus
 }

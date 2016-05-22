@@ -22,7 +22,7 @@ CT_Circle2f *ct_circle2f_initr(CT_Circle2f *c, float r);
 
 float ct_circle2f_area(CT_Circle2f *c);
 float ct_circle2f_circumference(CT_Circle2f *c);
-intmax_t ct_circle2f_classify_point(CT_Circle2f *c, CT_Vec2f *p);
+int ct_circle2f_classify_point(CT_Circle2f *c, CT_Vec2f *p);
 
 CT_Vec2f *ct_circle2f_vertices(CT_Circle2f *c, CT_Vec2f *verts, size_t n);
 CT_Triangle2f *ct_circle2f_tessellate(CT_Circle2f *c, CT_Triangle2f *tris,
