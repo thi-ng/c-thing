@@ -1,4 +1,5 @@
 #include "hashfn.h"
+#include "ct_math.h"
 #include "dbg.h"
 
 #define MURMUR_C1 ((uint32_t)0xcc9e2d51)
@@ -17,13 +18,8 @@ CT_EXPORT uint32_t ct_murmur3_32(const void *data, size_t numBytes) {
   uint32_t h = 0;
   uint32_t k;
   for (size_t i = 0; i < numBlocks; i++) {
-    k = blocks[i] * MURMUR_C1;
-    k = (k << 15) | (k >> 17);
-    k *= MURMUR_C2;
-
-    h ^= k;
-    h = (h << 13) | (h >> 19);
-    h = (h * 5) + MURMUR_H1;
+    k = ct_rotl32(blocks[i] * MURMUR_C1, 15) * MURMUR_C2;
+    h = ct_rotl32(h ^ k, 13) * 5 + MURMUR_H1;
   }
 
   k = 0;
@@ -41,7 +37,6 @@ CT_EXPORT uint32_t ct_murmur3_32(const void *data, size_t numBytes) {
   }
 
   h ^= numBytes;
-
   h ^= h >> 16;
   h *= MURMUR_H2;
   h ^= h >> 13;
