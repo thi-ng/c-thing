@@ -1,3 +1,4 @@
+#include <stdlib.h>
 #include <string.h>
 
 #include "consrc.h"
@@ -12,6 +13,12 @@ static char buf[BUF_SIZE];
 extern CT_Object CT_NIL;
 
 CT_TEST_DECLS
+
+char *strdup(const char *s) {
+  char *d = malloc(strlen(s) + 1);
+  if (d != NULL) strcpy(d, s);
+  return d;
+}
 
 int test_consrc() {
   CT_Object *a, *b, *c, *l, *l2;
