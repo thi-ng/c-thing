@@ -1,9 +1,5 @@
 #pragma once
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-
 #include <stddef.h>
 #include <stdint.h>
 #include <stdlib.h>
@@ -14,6 +10,8 @@ extern "C" {
 
 #define CT_MP_ALLOC_STD(mpool, type) \
   (type *)(mpool != NULL ? ct_mpool_alloc(mpool) : malloc(sizeof(type)))
+
+CT_BEGIN_DECLS
 
 typedef struct CT_MPoolFreeList CT_MPoolFreeList;
 
@@ -36,6 +34,4 @@ void ct_mpool_free(CT_MPool *mpool, void *block);
 void ct_mpool_free_all(CT_MPool *mpool);
 void ct_mpool_trace(CT_MPool *mpool);
 
-#ifdef __cplusplus
-}
-#endif
+CT_END_DECLS

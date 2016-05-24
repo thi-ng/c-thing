@@ -1,9 +1,6 @@
 #pragma once
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-
+#include "config.h"
 #include "aabb.h"
 #include "circle.h"
 #include "rect.h"
@@ -18,10 +15,12 @@ extern "C" {
     return p->name(i, a);                                                  \
   }
 
+CT_BEGIN_DECLS
+
 typedef struct { float (*area)(void *); } CT_IArea;
 
 typedef struct {
-  CT_Rect2 (*bounds2f)(void *);
+  CT_Rect2f (*bounds2f)(void *);
   CT_AABB (*bounds3f)(void *);
 } CT_IBounds;
 
@@ -34,7 +33,7 @@ typedef struct {
 
 PROTO_FN1(CT_IArea, float, area)
 
-PROTO_FN1(CT_IBounds, CT_Rect2, bounds2f)
+PROTO_FN1(CT_IBounds, CT_Rect2f, bounds2f)
 PROTO_FN1(CT_IBounds, CT_AABB, bounds3f)
 
 PROTO_FN1(CT_ICircumference, float, circumference)
@@ -42,6 +41,4 @@ PROTO_FN1(CT_ICircumference, float, circumference)
 PROTO_FN2(CT_IClassify, int, classify_point2f, CT_Vec2f)
 PROTO_FN2(CT_IClassify, int, classify_point3f, CT_Vec3f)
 
-#ifdef __cplusplus
-}
-#endif
+CT_END_DECLS

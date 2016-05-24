@@ -3,9 +3,14 @@
 #include <stddef.h>
 #include <stdint.h>
 
+#include "config.h"
 #include "ref.h"
 
+#ifndef CT_MAX_TYPES
 #define CT_MAX_TYPES 16
+#endif
+
+CT_BEGIN_DECLS
 
 typedef enum { NIL = 0, I32, U32, F32, PTR, STRING, CONS } CT_PrimType;
 
@@ -65,3 +70,5 @@ static inline void ct_object_unassign(CT_Object **o) {
   ct_ref_dec(&(*o)->rc);
   *o = NULL;
 }
+
+CT_END_DECLS

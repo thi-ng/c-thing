@@ -3,7 +3,10 @@
 #include <stddef.h>
 #include <stdint.h>
 
+#include "config.h"
 #include "vec.h"
+
+CT_BEGIN_DECLS
 
 typedef size_t CT_QuadEdgeRef;
 
@@ -55,3 +58,5 @@ void ct_qedge_destroy(CT_QuadEdgeRef e);
 void ct_qedge_splice(CT_QuadEdgeRef a, CT_QuadEdgeRef b);
 
 void ct_qedge_iterate(CT_QuadEdgeRef a, CT_QuadEdgeVisitor visit, void *state);
+
+CT_END_DECLS

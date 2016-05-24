@@ -1,12 +1,11 @@
 #pragma once
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-
+#include "config.h"
 //#include "protocols.h"
 #include "triangle.h"
 #include "vec.h"
+
+CT_BEGIN_DECLS
 
 typedef union {
   struct {
@@ -28,6 +27,4 @@ CT_Vec2f *ct_circle2f_vertices(CT_Circle2f *c, CT_Vec2f *verts, size_t n);
 CT_Triangle2f *ct_circle2f_tessellate(CT_Circle2f *c, CT_Triangle2f *tris,
                                       size_t n);
 
-#ifdef __cplusplus
-}
-#endif
+CT_END_DECLS

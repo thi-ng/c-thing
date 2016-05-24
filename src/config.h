@@ -36,3 +36,11 @@
 #endif
 
 #define ct_inline static inline
+
+#ifdef __cplusplus
+#define CT_BEGIN_DECLS extern "C" {
+#define CT_END_DECLS   }
+#else
+#define CT_BEGIN_DECLS
+#define CT_END_DECLS
+#endif

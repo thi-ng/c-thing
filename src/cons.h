@@ -1,6 +1,9 @@
 #pragma once
 
+#include "config.h"
 #include "mpool.h"
+
+CT_BEGIN_DECLS
 
 typedef struct CT_Cons CT_Cons;
 
@@ -25,3 +28,5 @@ CT_Cons* ct_cons_concat_imm(CT_Cons* head, CT_Cons* rest);
 CT_Cons* ct_cons_concat(CT_Cons* head, CT_Cons* rest, CT_MPool* mpool);
 
 CT_EXPORT CT_Cons* ct_cons_take(CT_Cons* head, size_t num, CT_MPool* pool);
+
+CT_END_DECLS

@@ -1,9 +1,6 @@
 #pragma once
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-
+#include "config.h"
 #include "vec.h"
 
 #define CT_SWIZZLE_ID(d, c, b, a) (size_t)((d << 6) | (c << 4) | (b << 2) | a)
@@ -353,6 +350,8 @@ extern "C" {
 #define WWWZ CT_SWIZZLE_ID(3, 3, 3, 2)
 #define WWWW CT_SWIZZLE_ID(3, 3, 3, 3)
 
+CT_BEGIN_DECLS
+
 // ct_swizzle2f(ZW, a, [1,2,3,4]) => a=[3,4]
 // ct_set_swizzle2f(ZY, [1,2,3,4], [10,20]) => a=[1,20,10,4]
 // ct_swizzle3f(ZYW, a, [1,2,3,4]) => a=[3,2,4]
@@ -414,6 +413,4 @@ CT_EXPORT ct_inline void *ct_set_swizzle4f(size_t id, void *a, CT_Vec4f *b) {
   return a;
 }
 
-#ifdef __cplusplus
-}
-#endif
+CT_END_DECLS

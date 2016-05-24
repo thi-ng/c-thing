@@ -1,9 +1,5 @@
 #pragma once
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-
 #include <math.h>
 #include <stddef.h>
 #include <stdint.h>
@@ -30,6 +26,8 @@ extern "C" {
 #define MAX(a, b) ((a) > (b) ? (a) : (b))
 #define SIGNUM(x, eps) (int)((x) < 0 ? -1 : ((x) > 0) ? 1 : 0)
 #define COMPARE(a, b) (int)((a) < (b) ? -1 : ((a) > (b) ? 1 : 0))
+
+CT_BEGIN_DECLS
 
 CT_EXPORT ct_inline size_t ct_deltaeqf(const float a, const float b,
                                        const float eps) {
@@ -68,6 +66,4 @@ ct_inline uint64_t ct_rotl64(uint64_t x, uint8_t r) {
   return (x << r) | (x >> (64 - r));
 }
 
-#ifdef __cplusplus
-}
-#endif
+CT_END_DECLS

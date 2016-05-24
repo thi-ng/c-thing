@@ -1,10 +1,9 @@
 #pragma once
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-
+#include "config.h"
 #include "vec.h"
+
+CT_BEGIN_DECLS
 
 typedef union {
   struct {
@@ -38,6 +37,4 @@ CT_EXPORT CT_Triangle3f *ct_triangle3f_initpf(CT_Triangle3f *t, float *coords);
 CT_EXPORT float ct_triangle3f_area(CT_Triangle3f *t);
 CT_EXPORT float ct_triangle3f_circumference(CT_Triangle3f *t);
 
-#ifdef __cplusplus
-}
-#endif
+CT_END_DECLS
