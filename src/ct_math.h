@@ -3,6 +3,7 @@
 #include <math.h>
 #include <stddef.h>
 #include <stdint.h>
+#include <stdlib.h>
 
 #include "config.h"
 
@@ -19,8 +20,8 @@
 #define INV_PI (1.0f / PI)
 #define INV_HALF_PI (1.0f / HALF_PI)
 
-#define INV_RAND_MAX (float)(1.0 / UINT32_MAX)
-#define INV_RAND_MAX2 (float)(2.0 / UINT32_MAX)
+#define INV_RAND_MAX (float)(1.0 / RAND_MAX)
+#define INV_RAND_MAX2 (float)(2.0 / RAND_MAX)
 
 #define MIN(a, b) ((a) < (b) ? (a) : (b))
 #define MAX(a, b) ((a) > (b) ? (a) : (b))
@@ -40,6 +41,14 @@ ct_inline float ct_maddf(const float a, const float b, const float c) {
 
 ct_inline float ct_mixf(const float a, const float b, const float t) {
   return a + (b - a) * t;
+}
+
+ct_inline float ct_rand_norm() {
+  return rand() * INV_RAND_MAX2 - 1.0f;
+}
+
+ct_inline float ct_rand_normpos() {
+  return rand() * INV_RAND_MAX;
 }
 
 ct_inline int ct_signumf(const float x, const float eps) {
