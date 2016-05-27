@@ -1,31 +1,6 @@
-#include <stdio.h>
-#include <stdlib.h>
-
+#include "config.h"
 #include "dbg.h"
-#include "test.h"
-#include "vec.h"
-
-typedef struct CT_QuadTree CT_QuadTree;
-
-enum { CT_QT_EMPTY = 0, CT_QT_BRANCH, CT_QT_LEAF };
-
-struct CT_QuadTree {
-  CT_QuadTree *children[4];
-  CT_Vec2f *point;
-  void *data;
-  float x, y, cx, cy;
-  size_t type;
-};
-
-struct bounds_t {
-  CT_Vec2f min, max;
-};
-
-typedef void (*CT_QuadTreeVisitor)(CT_QuadTree *, void *);
-
-CT_TEST_DECLS
-
-void ct_qtree_trace_node(CT_QuadTree *q, size_t d);
+#include "quadtree.h"
 
 ct_inline size_t child_index(const CT_QuadTree *q, const CT_Vec2f *p) {
   return (p->x < q->cx ? (p->y < q->cy ? 0 : 2) : (p->y < q->cy ? 1 : 3));
@@ -86,7 +61,7 @@ fail:
   return 1;
 }
 
-void ct_qtree_trace_node(CT_QuadTree *q, size_t depth) {
+CT_EXPORT void ct_qtree_trace_node(CT_QuadTree *q, size_t depth) {
   if (q->point) {
     CT_INFO("d: %zd: b: [%f,%f,%f,%f] c: [%p,%p,%p,%p] t: %zu, p: (%f,%f)\n",
             depth, q->x, q->y, q->cx, q->cy, q->children[0], q->children[1],
@@ -98,7 +73,7 @@ void ct_qtree_trace_node(CT_QuadTree *q, size_t depth) {
   }
 }
 
-void ct_qtree_trace(CT_QuadTree *q, size_t depth) {
+CT_EXPORT void ct_qtree_trace(CT_QuadTree *q, size_t depth) {
   if (q != NULL) {
     ct_qtree_trace_node(q, depth);
     for (size_t i = 0; i < 4; i++) {
@@ -107,7 +82,7 @@ void ct_qtree_trace(CT_QuadTree *q, size_t depth) {
   }
 }
 
-void ct_qtree_visit_leaves(CT_QuadTree *q, CT_QuadTreeVisitor visit,
+CT_EXPORT void ct_qtree_visit_leaves(CT_QuadTree *q, CT_QuadTreeVisitor visit,
                            void *state) {
   switch (q->type) {
     case CT_QT_LEAF:
@@ -120,42 +95,4 @@ void ct_qtree_visit_leaves(CT_QuadTree *q, CT_QuadTreeVisitor visit,
         }
       }
   }
-}
-
-void ct_qtree_bounds(CT_QuadTree *q, void *state) {
-  struct bounds_t *bounds = (struct bounds_t *)state;
-  ct_min2fv_imm(&bounds->min, q->point);
-  ct_max2fv_imm(&bounds->max, q->point);
-}
-
-int qt_bench() {
-  CT_INFO("%zd", sizeof(CT_QuadTree));
-  CT_QuadTree q = {.children = {NULL, NULL, NULL, NULL},
-                   .x = 0,
-                   .y = 0,
-                   .cx = 50,
-                   .cy = 50,
-                   .type = CT_QT_EMPTY};
-  CT_MPool qpool, vpool;
-  ct_mpool_init(&qpool, 2e5, sizeof(CT_QuadTree));
-  ct_mpool_init(&vpool, 1e5, sizeof(CT_Vec2f));
-  //srand(time(0));
-  for (int i = 0; i < 1e5; i++) {
-    CT_Vec2f *p =
-        ct_vec2f(ct_rand_normpos() * 100, ct_rand_normpos() * 100, &vpool);
-    ct_qtree_insert(&q, p, NULL, &qpool);
-  }
-  struct bounds_t bounds = {{1000, 1000}, {-1000, -1000}};
-  ct_qtree_visit_leaves(&q, ct_qtree_bounds, &bounds);
-  CT_INFO("%f,%f -> %f, %f", bounds.min.x, bounds.min.y, bounds.max.x,
-          bounds.max.y);
-  //ct_qtree_trace(&q, 0);
-  ct_mpool_trace(&qpool);
-  ct_mpool_free_all(&vpool);
-  ct_mpool_free_all(&qpool);
-  return 0;
-}
-
-int main() {
-  CT_RUN_TEST(qt_bench);
 }
