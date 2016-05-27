@@ -11,6 +11,7 @@ extern int test_qedge();
 extern int test_cons();
 extern int test_consrc();
 extern int test_hash_fns();
+extern int test_quadtree();
 
 CT_TEST_DECLS
 
@@ -33,6 +34,7 @@ int all_tests() {
   CT_RUN_TEST(test_cons);
   CT_RUN_TEST(test_consrc);
   CT_RUN_TEST(test_hash_fns);
+  CT_RUN_TEST(test_quadtree);
   return 0;
 }
 
