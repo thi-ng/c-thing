@@ -3,20 +3,16 @@
 #define CT_VERSION_MAJOR 0
 #define CT_VERSION_MINOR 1
 
-//#define CT_FEATURE_CHECKS
-//#define CT_FEATURE_LOG
-//#define CT_FEATURE_SSE
-
-#ifdef CT_FEATURE_CHECKS
-#define CT_FEATURE_LOG
+#if defined(CT_FEATURE_CHECKS) && !defined(CT_FEATURE_LOG)
+#define CT_FEATURE_LOG 1
 #endif
 
 #if defined(CT_FEATURE_SSE) && !defined(__SSE__)
-#undef CT_FEATURE_SSE
+#undef CT_FEATURE_SSE 1
 #endif
 
 #if defined(CT_FEATURE_SSE) && defined(__SSE2__)
-#define CT_FEATURE_SSE2
+#define CT_FEATURE_SSE2 1
 #endif
 
 #ifdef CT_FEATURE_ANSI
@@ -39,7 +35,7 @@
 
 #ifdef __cplusplus
 #define CT_BEGIN_DECLS extern "C" {
-#define CT_END_DECLS   }
+#define CT_END_DECLS }
 #else
 #define CT_BEGIN_DECLS
 #define CT_END_DECLS
