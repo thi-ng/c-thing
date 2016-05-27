@@ -120,6 +120,18 @@ CT_EXPORT ct_inline float ct_mag2f(const CT_Vec2f *v) {
   return sqrtf(v->x * v->x + v->y * v->y);
 }
 
+CT_EXPORT ct_inline CT_Vec2f *ct_max2fv_imm(CT_Vec2f *a, CT_Vec2f *b) {
+  a->x = MAX(a->x, b->x);
+  a->y = MAX(a->y, b->y);
+  return a;
+}
+
+CT_EXPORT ct_inline CT_Vec2f *ct_min2fv_imm(CT_Vec2f *a, CT_Vec2f *b) {
+  a->x = MIN(a->x, b->x);
+  a->y = MIN(a->y, b->y);
+  return a;
+}
+
 CT_EXPORT ct_inline CT_Vec2f *ct_mix2fv_imm(CT_Vec2f *a, const CT_Vec2f *b,
                                             float t) {
   a->x = ct_mixf(a->x, b->x, t);
