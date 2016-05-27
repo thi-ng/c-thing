@@ -28,6 +28,7 @@ typedef struct {
   size_t poolID;
 } CT_MPool;
 
+CT_MPool *ct_mpool_new();
 size_t ct_mpool_init(CT_MPool *mpool, size_t num, size_t bsize);
 void *ct_mpool_alloc(CT_MPool *mpool);
 void ct_mpool_free(CT_MPool *mpool, void *block);

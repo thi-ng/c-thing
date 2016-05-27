@@ -3,6 +3,10 @@
 
 static size_t _mpool_id = 0;
 
+CT_EXPORT CT_MPool *ct_mpool_new() {
+  return malloc(sizeof(CT_MPool));
+}
+
 CT_EXPORT size_t ct_mpool_init(CT_MPool *mp, size_t num, size_t blockSize) {
   CT_CHECK(blockSize >= sizeof(CT_MPoolFreeList),
            "blocksize must be >= %zd, was %zd", sizeof(CT_MPoolFreeList),
