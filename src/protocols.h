@@ -1,8 +1,8 @@
 #pragma once
 
-#include "config.h"
 #include "aabb.h"
 #include "circle.h"
+#include "config.h"
 #include "rect.h"
 
 #define PROTO_FN1(proto, rtype, name)                            \

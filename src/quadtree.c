@@ -1,5 +1,6 @@
 #include "config.h"
 #include "dbg.h"
+
 #include "quadtree.h"
 
 ct_inline size_t child_index(const CT_QuadTree *q, const CT_Vec2f *p) {
@@ -83,7 +84,7 @@ CT_EXPORT void ct_qtree_trace(CT_QuadTree *q, size_t depth) {
 }
 
 CT_EXPORT void ct_qtree_visit_leaves(CT_QuadTree *q, CT_QuadTreeVisitor visit,
-                           void *state) {
+                                     void *state) {
   switch (q->type) {
     case CT_QT_LEAF:
       visit(q, state);
