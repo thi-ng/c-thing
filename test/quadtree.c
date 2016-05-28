@@ -26,8 +26,8 @@ int test_quadtree() {
                    .cy = 50,
                    .type = CT_QT_EMPTY};
   CT_MPool qpool, vpool;
-  ct_mpool_init(&qpool, 2e5, sizeof(CT_QuadTree));
-  ct_mpool_init(&vpool, 1e5, sizeof(CT_Vec2f));
+  ct_mpool_init(&qpool, 0x10000, sizeof(CT_QuadTree));
+  ct_mpool_init(&vpool, 0x10000, sizeof(CT_Vec2f));
   srand(time(0));
   for (int i = 0; i < 1e5; i++) {
     CT_Vec2f *p =
