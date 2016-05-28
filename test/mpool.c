@@ -44,3 +44,30 @@ int test_mpool() {
   ct_mpool_free_all(&pool);
   return 0;
 }
+
+int test_rmpool() {
+  CT_RMPool pool;
+  void *blocks[12];
+  CT_IS(!ct_rmpool_init(&pool, 4, 8), "can't init rmpool");
+  CT_MPoolList *oh = pool.head;
+  for (int i = 0; i < 12; i++) {
+    blocks[i] = ct_rmpool_alloc(&pool);
+  }
+  CT_IS(oh != pool.head, "wrong head");
+  CT_IS(pool.head->next->next == oh, "wrong head chain");
+  CT_IS(pool.freeList == NULL, "should have no free list");
+  CT_IS(pool.head->next->pool == blocks[4], "2nd pool != blocks[4]");
+  for (int i = 0; i < 5; i++) {
+    ct_rmpool_free(&pool, blocks[i]);
+  }
+  CT_IS(pool.freeList == blocks[4], "free list != blocks[4]");
+  for (int i = 0; i < 4; i++) {
+    blocks[i] = ct_rmpool_alloc(&pool);
+  }
+  CT_IS(pool.freeList->next == NULL, "freelist length != 1");
+  ct_rmpool_alloc(&pool);
+  ct_rmpool_alloc(&pool);
+  ct_rmpool_trace(&pool);
+  ct_rmpool_free_all(&pool);
+  return 0;
+}
