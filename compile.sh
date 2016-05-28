@@ -1,9 +1,12 @@
 #!/bin/sh
 
+# compile with SIMD:
+# ./compile.sh -asd
+
 FILES="src/circle.c src/cons.c src/consrc.c src/hashfn.c src/mpool.c src/object.c src/quadedge.c src/quadtree.c src/triangle.c src/vec.c"
 TESTS=
 CFLAGS="-std=c11 -Os -Isrc"
-EMFLAGS="-s ASM_JS=1 -s INVOKE_RUN=0 -s AGGRESSIVE_VARIABLE_ELIMINATION=1 -s MODULARIZE=1"
+EMFLAGS="-s ASM_JS=1 -s ASSERTIONS=0 -s INVOKE_RUN=0 -s AGGRESSIVE_VARIABLE_ELIMINATION=1 -s MODULARIZE=1 -s NO_EXIT_RUNTIME=1"
 OUT=geom.js
 
 usage()
