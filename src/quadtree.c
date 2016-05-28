@@ -72,6 +72,25 @@ fail:
   return 1;
 }
 
+CT_EXPORT CT_QuadTree *ct_qtree_find_leaf(CT_QuadTree *q, CT_Vec2f *p) {
+  CT_QuadTree *c;
+  size_t idx;
+  while (q->type == CT_QT_BRANCH) {
+    idx = child_index(q, p);
+    c = q->children[idx];
+    if (c == NULL) {
+      return NULL;
+    }
+    q = c;
+  }
+  return ((q->type == CT_QT_LEAF && ct_deltaeq2fv(q->point, p, EPS)) ? q
+                                                                     : NULL);
+}
+
+CT_EXPORT size_t ct_qtree_remove(CT_QuadTree *q, CT_Vec2f *p) {
+  return 0;  // TODO
+}
+
 CT_EXPORT void ct_qtree_trace_node(CT_QuadTree *q, size_t depth) {
   if (q->point) {
     CT_INFO("d: %zd: b: [%f,%f,%f,%f] c: [%p,%p,%p,%p] t: %zu, p: (%f,%f)\n",

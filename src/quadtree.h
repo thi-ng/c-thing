@@ -21,6 +21,8 @@ typedef void (*CT_QuadTreeVisitor)(CT_QuadTree *, void *);
 
 void ct_qtree_init(CT_QuadTree *q, float x, float y, float w, float h);
 size_t ct_qtree_insert(CT_QuadTree *q, CT_Vec2f *p, void *data, CT_MPool *pool);
+CT_QuadTree *ct_qtree_find_leaf(CT_QuadTree *q, CT_Vec2f *p);
+
 void ct_qtree_trace_node(CT_QuadTree *q, size_t depth);
 void ct_qtree_trace(CT_QuadTree *q, size_t depth);
 void ct_qtree_visit_leaves(CT_QuadTree *q, CT_QuadTreeVisitor visit,

@@ -24,6 +24,12 @@ int test_quadtree() {
   ct_qtree_init(&q, 0, 0, 100, 100);
   ct_mpool_init(&qpool, 0x10000, sizeof(CT_QuadTree));
   ct_mpool_init(&vpool, 0x10000, sizeof(CT_Vec2f));
+  CT_Vec2f *a = ct_vec2f(10, 10, &vpool);
+  CT_Vec2f *b = ct_vec2f(10, 11, &vpool);
+  ct_qtree_insert(&q, a, NULL, &qpool);
+  ct_qtree_insert(&q, b, NULL, &qpool);
+  CT_IS(ct_qtree_find_leaf(&q, a), "can't find a");
+  CT_IS(ct_qtree_find_leaf(&q, b), "can't find b");
   srand(time(0));
   for (int i = 0; i < 1e5; i++) {
     CT_Vec2f *p =
@@ -32,7 +38,7 @@ int test_quadtree() {
   }
   struct bounds_t bounds = {{1000, 1000}, {-1000, -1000}, 0};
   ct_qtree_visit_leaves(&q, ct_qtree_bounds, &bounds);
-  CT_IS(1e5 == bounds.num, "wrong leaf count: %zd", bounds.num);
+  CT_IS(100002 == bounds.num, "wrong leaf count: %zd", bounds.num);
   CT_INFO("%f,%f -> %f, %f, %zd", bounds.min.x, bounds.min.y, bounds.max.x,
           bounds.max.y, bounds.num);
   //ct_qtree_trace(&q, 0);
