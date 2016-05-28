@@ -3,6 +3,7 @@
 #include "test.h"
 
 extern int test_mpool();
+extern int test_rmpool();
 extern int test_vec2f();
 extern int test_vec3f();
 extern int test_swizzle();
@@ -26,6 +27,7 @@ int all_tests() {
   CT_INFO("using SSE...");
 #endif
   CT_RUN_TEST(test_mpool);
+  CT_RUN_TEST(test_rmpool);
   CT_RUN_TEST(test_vec2f);
   CT_RUN_TEST(test_vec3f);
   CT_RUN_TEST(test_swizzle);
