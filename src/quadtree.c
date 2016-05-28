@@ -26,6 +26,16 @@ fail:
   return 1;
 }
 
+CT_EXPORT void ct_qtree_init(CT_QuadTree *q, float x, float y, float w,
+                             float h) {
+  q->children[0] = q->children[1] = q->children[2] = q->children[3] = NULL;
+  q->x = x;
+  q->y = y;
+  q->cx = x + w * 0.5f;
+  q->cy = y + h * 0.5f;
+  q->type = CT_QT_EMPTY;
+}
+
 CT_EXPORT size_t ct_qtree_insert(CT_QuadTree *q, CT_Vec2f *p, void *data,
                                  CT_MPool *pool) {
   CT_CHECK(q != NULL, "tree is NULL");

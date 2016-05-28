@@ -19,13 +19,9 @@ void ct_qtree_bounds(CT_QuadTree *q, void *state) {
 
 int test_quadtree() {
   CT_INFO("%zd", sizeof(CT_QuadTree));
-  CT_QuadTree q = {.children = {NULL, NULL, NULL, NULL},
-                   .x = 0,
-                   .y = 0,
-                   .cx = 50,
-                   .cy = 50,
-                   .type = CT_QT_EMPTY};
+  CT_QuadTree q;
   CT_MPool qpool, vpool;
+  ct_qtree_init(&q, 0, 0, 100, 100);
   ct_mpool_init(&qpool, 0x10000, sizeof(CT_QuadTree));
   ct_mpool_init(&vpool, 0x10000, sizeof(CT_Vec2f));
   srand(time(0));
