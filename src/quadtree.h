@@ -13,7 +13,12 @@ struct CT_QuadTree {
   CT_QuadTree *children[4];
   CT_Vec2f *point;
   void *data;
-  float x, y, cx, cy;
+  union {
+    struct {
+      float x, cx, y, cy;
+    };
+    float coords[4];
+  };
   size_t type;
 };
 

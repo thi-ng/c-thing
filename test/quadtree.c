@@ -26,11 +26,13 @@ int test_quadtree() {
   ct_mpool_init(&vpool, 0x10000, sizeof(CT_Vec2f));
   CT_Vec2f *a = ct_vec2f(10, 10, &vpool);
   CT_Vec2f *b = ct_vec2f(10, 11, &vpool);
+  CT_Vec2f *b2 = ct_vec2f(10.1, 11, &vpool);
   ct_qtree_insert(&q, a, NULL, &qpool);
   ct_qtree_insert(&q, b, NULL, &qpool);
   CT_IS(ct_qtree_find_leaf(&q, a), "can't find a");
   CT_IS(ct_qtree_find_leaf(&q, b), "can't find b");
-  srand(time(0));
+  CT_IS(!ct_qtree_find_leaf(&q, b2), "shouldn't find b2");
+  //srand(time(0));
   for (int i = 0; i < 1e5; i++) {
     CT_Vec2f *p =
         ct_vec2f(ct_rand_normpos() * 100, ct_rand_normpos() * 100, &vpool);
