@@ -10,7 +10,7 @@ typedef struct {
 } CT_ConsCloneState;
 
 CT_EXPORT CT_Cons* ct_cons(void* x, CT_Cons* head, CT_MPool* mpool) {
-  CT_Cons* cell = CT_MP_ALLOC_STD(mpool, CT_Cons);
+  CT_Cons* cell = CT_MP_ALLOC(mpool, CT_Cons);
   CT_CHECK_MEM(cell);
   cell->value = x;
   cell->next = head;

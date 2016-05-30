@@ -27,7 +27,7 @@ static int path_for_point(CT_QuadTree *q, CT_Vec2f *p, CT_QuadTree **path) {
 
 static size_t make_leaf(CT_QuadTree *q, size_t idx, CT_Vec2f *p, void *data,
                         CT_MPool *pool) {
-  CT_QuadTree *c = CT_MP_ALLOC_STD(pool, CT_QuadTree);
+  CT_QuadTree *c = CT_MP_ALLOC(pool, CT_QuadTree);
   CT_CHECK_MEM(c);
   clear_children(c);
   c->x = q->coords[idx & 1];
@@ -72,10 +72,11 @@ CT_EXPORT size_t ct_qtree_insert(CT_QuadTree *q, CT_Vec2f *p, void *data,
       q->data = data;
       q->type = CT_QT_LEAF;
       return 0;
-    case CT_QT_LEAF: {
+    case CT_QT_LEAF:
       if (ct_deltaeq2fv(q->point, p, EPS)) {
         q->point = p;
         q->data = data;
+        return 0;
       } else {
         CT_Vec2f *op = q->point;
         void *od = q->data;
@@ -85,7 +86,6 @@ CT_EXPORT size_t ct_qtree_insert(CT_QuadTree *q, CT_Vec2f *p, void *data,
         }
         return 1;
       }
-    }
     case CT_QT_BRANCH:
       return make_leaf(q, idx, p, data, pool);
     default:
@@ -103,13 +103,12 @@ size_t ct_qtree_remove(CT_QuadTree *q, CT_Vec2f *p, CT_MPool *pool) {
     case -1:
       return 1;
     case 0:
-      q->point = NULL;
-      q->data = NULL;
+      q->point = q->data = NULL;
       q->type = CT_QT_EMPTY;
       break;
     default:
       while (d > 0) {
-        CT_MP_FREE_STD(pool, path[d]);
+        CT_MP_FREE(pool, path[d]);
         d--;
         q = path[d];
         q->children[child_index(q, p)] = NULL;

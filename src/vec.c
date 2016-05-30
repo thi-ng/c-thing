@@ -2,7 +2,7 @@
 #include <float.h>
 
 CT_EXPORT CT_Vec2f *ct_vec2f(float x, float y, CT_MPool *mpool) {
-  CT_Vec2f *v = CT_MP_ALLOC_STD(mpool, CT_Vec2f);
+  CT_Vec2f *v = CT_MP_ALLOC(mpool, CT_Vec2f);
   if (v != NULL) {
     v->x = x;
     v->y = y;
@@ -15,7 +15,7 @@ CT_EXPORT CT_Vec2f *ct_vec2fn(float n, CT_MPool *mpool) {
 }
 
 CT_EXPORT CT_Vec3f *ct_vec3f(float x, float y, float z, CT_MPool *mpool) {
-  CT_Vec3f *v = CT_MP_ALLOC_STD(mpool, CT_Vec3f);
+  CT_Vec3f *v = CT_MP_ALLOC(mpool, CT_Vec3f);
   if (v != NULL) {
     v->x = x;
     v->y = y;
@@ -30,7 +30,7 @@ CT_EXPORT CT_Vec3f *ct_vec3fn(float n, CT_MPool *mpool) {
 
 CT_EXPORT CT_Vec4f *ct_vec4f(float x, float y, float z, float w,
                              CT_MPool *mpool) {
-  CT_Vec4f *v = CT_MP_ALLOC_STD(mpool, CT_Vec4f);
+  CT_Vec4f *v = CT_MP_ALLOC(mpool, CT_Vec4f);
   if (v != NULL) {
     v->x = x;
     v->y = y;
