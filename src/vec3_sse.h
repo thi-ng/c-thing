@@ -91,6 +91,16 @@ CT_EXPORT ct_inline float ct_magsq3f(const CT_Vec3f *v) {
   return d[0] + d[1] + d[2];
 }
 
+CT_EXPORT ct_inline CT_Vec3f *ct_max3fv_imm(CT_Vec3f *a, CT_Vec3f *b) {
+  a->mmval = _mm_max_ps(a->mmval, b->mmval);
+  return a;
+}
+
+CT_EXPORT ct_inline CT_Vec3f *ct_min3fv_imm(CT_Vec3f *a, CT_Vec3f *b) {
+  a->mmval = _mm_min_ps(a->mmval, b->mmval);
+  return a;
+}
+
 CT_EXPORT ct_inline CT_Vec3f *ct_mix3fv_imm(CT_Vec3f *a, const CT_Vec3f *b,
                                             float t) {
   __m128 mt = {t, t, t, 0.f};
