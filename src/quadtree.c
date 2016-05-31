@@ -17,7 +17,7 @@ static int path_for_point(CT_QuadTree *q, CT_Vec2f *p, CT_QuadTree **path) {
   while (q->type == CT_QT_BRANCH) {
     q = q->children[child_index(q, p)];
     if (q == NULL) {
-      break;
+      return -1;
     }
     *path++ = q;
     i++;
@@ -96,9 +96,8 @@ fail:
 }
 
 size_t ct_qtree_remove(CT_QuadTree *q, CT_Vec2f *p, CT_MPool *pool) {
-  CT_QuadTree *path[16];
+  CT_QuadTree *path[24];
   int d = path_for_point(q, p, path);
-  CT_INFO("path depth: %d", d);
   switch (d) {
     case -1:
       return 1;
@@ -139,13 +138,13 @@ CT_EXPORT CT_QuadTree *ct_qtree_find_leaf(CT_QuadTree *q, CT_Vec2f *p) {
 
 CT_EXPORT void ct_qtree_trace_node(CT_QuadTree *q, size_t depth) {
   if (q->point) {
-    CT_INFO("d: %zd: b: [%f,%f,%f,%f] c: [%p,%p,%p,%p] t: %zu, p: (%f,%f)",
-            depth, q->x, q->y, q->cx, q->cy, q->children[0], q->children[1],
+    CT_INFO("d: %zd: %p b: [%f,%f,%f,%f] c: [%p,%p,%p,%p] t: %zu, p: (%f,%f)",
+            depth, q, q->x, q->y, q->cx, q->cy, q->children[0], q->children[1],
             q->children[2], q->children[3], q->type, q->point->x, q->point->y);
   } else {
-    CT_INFO("d: %zd: b: [%f,%f,%f,%f] c: [%p,%p,%p,%p] t: %zu", depth, q->x,
-            q->y, q->cx, q->cy, q->children[0], q->children[1], q->children[2],
-            q->children[3], q->type);
+    CT_INFO("d: %zd: %p b: [%f,%f,%f,%f] c: [%p,%p,%p,%p] t: %zu", depth, q,
+            q->x, q->y, q->cx, q->cy, q->children[0], q->children[1],
+            q->children[2], q->children[3], q->type);
   }
 }
 
@@ -171,56 +170,4 @@ CT_EXPORT void ct_qtree_visit_leaves(CT_QuadTree *q, CT_QuadTreeVisitor visit,
         }
       }
   }
-}
-
-int main__() {
-  CT_INFO("size: %zd", sizeof(CT_QuadTree));
-  CT_MPool mp;
-  ct_mpool_init(&mp, 4, sizeof(CT_QuadTree));
-  CT_QuadTree q;
-  ct_qtree_init(&q, 0, 0, 100, 100);
-  CT_Vec2f *a = ct_vec2f(10, 10, NULL);
-  CT_Vec2f *b = ct_vec2f(10, 11, NULL);
-  CT_Vec2f *c = ct_vec2f(50, 12, NULL);
-  ct_qtree_insert(&q, a, NULL, &mp);
-  ct_qtree_insert(&q, b, NULL, &mp);
-  ct_qtree_insert(&q, c, NULL, &mp);
-  ct_qtree_trace(&q, 0);
-
-  CT_INFO("---a removed");
-  ct_qtree_remove(&q, a, &mp);
-  ct_qtree_trace(&q, 0);
-
-  CT_INFO("---b removed");
-  ct_qtree_remove(&q, b, &mp);
-  ct_qtree_trace(&q, 0);
-
-  CT_INFO("---c removed");
-  ct_qtree_remove(&q, c, &mp);
-  ct_qtree_trace(&q, 0);
-
-  CT_INFO("---c add");
-  ct_qtree_insert(&q, c, NULL, &mp);
-  ct_qtree_insert(&q, a, NULL, &mp);
-  ct_qtree_trace(&q, 0);
-  free(a);
-  free(b);
-  free(c);
-  ct_mpool_trace(&mp);
-  ct_mpool_free_all(&mp);
-  return 0;
-}
-
-int main_() {
-  CT_QuadTree q;
-  ct_qtree_init(&q, 0, 0, 100, 90);
-  CT_Vec2f *a = ct_vec2f(20, 50, NULL);
-  size_t idx = child_index(&q, a);
-  CT_INFO("%zd, %zd, %zd", idx, idx & 1, ((idx >> 1) & 1) + 2);
-  CT_INFO("%zd, %f, %f", idx, q.coords[idx & 1],
-          q.coords[((idx >> 1) & 1) + 2]);
-  CT_INFO("%f, %f, %f, %f", q.coords[0], q.coords[1], q.coords[2], q.coords[3]);
-  ct_qtree_trace(&q, 0);
-  free(a);
-  return 0;
 }

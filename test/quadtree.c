@@ -27,20 +27,34 @@ int test_quadtree() {
   CT_Vec2f *a = ct_vec2f(10, 10, &vpool);
   CT_Vec2f *b = ct_vec2f(10, 11, &vpool);
   CT_Vec2f *b2 = ct_vec2f(10.1, 11, &vpool);
+  CT_Vec2f *c = ct_vec2f(50, 12, &vpool);
   ct_qtree_insert(&q, a, NULL, &qpool);
   ct_qtree_insert(&q, b, NULL, &qpool);
+  ct_qtree_insert(&q, c, NULL, &qpool);
+  ct_qtree_trace(&q, 0);
   CT_IS(ct_qtree_find_leaf(&q, a), "can't find a");
   CT_IS(ct_qtree_find_leaf(&q, b), "can't find b");
   CT_IS(!ct_qtree_find_leaf(&q, b2), "shouldn't find b2");
+  ct_qtree_remove(&q, a, &qpool);
+  CT_IS(!ct_qtree_find_leaf(&q, a), "shouldn't find a");
+  CT_IS(ct_qtree_remove(&q, a, &qpool), "remove a again");
+  ct_qtree_remove(&q, b, &qpool);
+  CT_IS(!ct_qtree_find_leaf(&q, b), "shouldn't find b");
+  CT_IS(ct_qtree_remove(&q, b, &qpool), "remove b again");
+  ct_qtree_remove(&q, c, &qpool);
+  CT_IS(!ct_qtree_find_leaf(&q, c), "shouldn't find c");
+  CT_IS(ct_qtree_remove(&q, c, &qpool), "remove c again");
+  CT_IS(CT_QT_EMPTY == q.type, "root is not empty: %zd", q.type);
   //srand(time(0));
-  for (int i = 0; i < 1e5; i++) {
+  int num = 1e5;
+  for (int i = 0; i < num; i++) {
     CT_Vec2f *p =
         ct_vec2f(ct_rand_normpos() * 100, ct_rand_normpos() * 100, &vpool);
     ct_qtree_insert(&q, p, NULL, &qpool);
   }
   struct bounds_t bounds = {{1000, 1000}, {-1000, -1000}, 0};
   ct_qtree_visit_leaves(&q, ct_qtree_bounds, &bounds);
-  CT_IS(100002 == bounds.num, "wrong leaf count: %zd", bounds.num);
+  CT_IS(num == bounds.num, "wrong leaf count: %zd", bounds.num);
   CT_INFO("%f,%f -> %f, %f, %zd", bounds.min.x, bounds.min.y, bounds.max.x,
           bounds.max.y, bounds.num);
   //ct_qtree_trace(&q, 0);
