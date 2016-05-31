@@ -3,14 +3,13 @@
 #include <stddef.h>
 
 #include "mpool.h"
+#include "tree.h"
 #include "vec.h"
 
-enum { CT_QT_EMPTY = 0, CT_QT_BRANCH, CT_QT_LEAF };
+typedef struct CT_Quadtree CT_Quadtree;
 
-typedef struct CT_QuadTree CT_QuadTree;
-
-struct CT_QuadTree {
-  CT_QuadTree *children[4];
+struct CT_Quadtree {
+  CT_Quadtree *children[4];
   CT_Vec2f *point;
   void *data;
   union {
@@ -22,14 +21,14 @@ struct CT_QuadTree {
   size_t type;
 };
 
-typedef void (*CT_QuadTreeVisitor)(CT_QuadTree *, void *);
+typedef void (*CT_QuadtreeVisitor)(CT_Quadtree *, void *);
 
-void ct_qtree_init(CT_QuadTree *q, float x, float y, float w, float h);
-size_t ct_qtree_insert(CT_QuadTree *q, CT_Vec2f *p, void *data, CT_MPool *pool);
-size_t ct_qtree_remove(CT_QuadTree *q, CT_Vec2f *p, CT_MPool *pool);
-CT_QuadTree *ct_qtree_find_leaf(CT_QuadTree *q, CT_Vec2f *p);
+void ct_qtree_init(CT_Quadtree *q, float x, float y, float w, float h);
+size_t ct_qtree_insert(CT_Quadtree *q, CT_Vec2f *p, void *data, CT_MPool *pool);
+size_t ct_qtree_remove(CT_Quadtree *q, CT_Vec2f *p, CT_MPool *pool);
+CT_Quadtree *ct_qtree_find_leaf(CT_Quadtree *q, CT_Vec2f *p);
 
-void ct_qtree_trace_node(CT_QuadTree *q, size_t depth);
-void ct_qtree_trace(CT_QuadTree *q, size_t depth);
-void ct_qtree_visit_leaves(CT_QuadTree *q, CT_QuadTreeVisitor visit,
+void ct_qtree_trace_node(CT_Quadtree *q, size_t depth);
+void ct_qtree_trace(CT_Quadtree *q, size_t depth);
+void ct_qtree_visit_leaves(CT_Quadtree *q, CT_QuadtreeVisitor visit,
                            void *state);

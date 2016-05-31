@@ -10,7 +10,7 @@ struct bounds_t {
   size_t num;
 };
 
-void ct_qtree_bounds(CT_QuadTree *q, void *state) {
+void ct_qtree_bounds(CT_Quadtree *q, void *state) {
   struct bounds_t *bounds = (struct bounds_t *)state;
   ct_min2fv_imm(&bounds->min, q->point);
   ct_max2fv_imm(&bounds->max, q->point);
@@ -18,11 +18,11 @@ void ct_qtree_bounds(CT_QuadTree *q, void *state) {
 }
 
 int test_quadtree() {
-  CT_INFO("%zd", sizeof(CT_QuadTree));
-  CT_QuadTree q;
+  CT_INFO("%zd", sizeof(CT_Quadtree));
+  CT_Quadtree q;
   CT_MPool qpool, vpool;
   ct_qtree_init(&q, 0, 0, 100, 100);
-  ct_mpool_init(&qpool, 0x10000, sizeof(CT_QuadTree));
+  ct_mpool_init(&qpool, 0x10000, sizeof(CT_Quadtree));
   ct_mpool_init(&vpool, 0x10000, sizeof(CT_Vec2f));
   CT_Vec2f *a = ct_vec2f(10, 10, &vpool);
   CT_Vec2f *b = ct_vec2f(10, 11, &vpool);
@@ -44,7 +44,7 @@ int test_quadtree() {
   ct_qtree_remove(&q, c, &qpool);
   CT_IS(!ct_qtree_find_leaf(&q, c), "shouldn't find c");
   CT_IS(ct_qtree_remove(&q, c, &qpool), "remove c again");
-  CT_IS(CT_QT_EMPTY == q.type, "root is not empty: %zd", q.type);
+  CT_IS(CT_TREE_EMPTY == q.type, "root is not empty: %zd", q.type);
   //srand(time(0));
   int num = 1e5;
   for (int i = 0; i < num; i++) {
