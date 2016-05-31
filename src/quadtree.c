@@ -32,8 +32,10 @@ static size_t make_leaf(CT_Quadtree *q, size_t idx, CT_Vec2f *p, void *data,
   clear_children(c);
   c->x = q->coords[idx & 1];
   c->y = q->coords[(idx >> 1) + 2];
-  c->cx = c->x + (q->cx - q->x) * 0.5f;
-  c->cy = c->y + (q->cy - q->y) * 0.5f;
+  c->w = q->w * 0.5f;
+  c->h = q->h * 0.5f;
+  c->cx = c->x + c->w;
+  c->cy = c->y + c->h;
   c->type = CT_TREE_LEAF;
   c->point = p;
   c->data = data;
@@ -49,6 +51,8 @@ CT_EXPORT void ct_qtree_init(CT_Quadtree *q, float x, float y, float w,
   clear_children(q);
   q->x = x;
   q->y = y;
+  q->w = w;
+  q->h = h;
   q->cx = x + w * 0.5f;
   q->cy = y + h * 0.5f;
   q->type = CT_TREE_EMPTY;
@@ -139,11 +143,11 @@ CT_EXPORT CT_Quadtree *ct_qtree_find_leaf(CT_Quadtree *q, CT_Vec2f *p) {
 CT_EXPORT void ct_qtree_trace_node(CT_Quadtree *q, size_t depth) {
   if (q->point) {
     CT_INFO("d: %zd: %p b: [%f,%f,%f,%f] c: [%p,%p,%p,%p] t: %zu, p: (%f,%f)",
-            depth, q, q->x, q->y, q->cx, q->cy, q->children[0], q->children[1],
+            depth, q, q->x, q->y, q->w, q->h, q->children[0], q->children[1],
             q->children[2], q->children[3], q->type, q->point->x, q->point->y);
   } else {
     CT_INFO("d: %zd: %p b: [%f,%f,%f,%f] c: [%p,%p,%p,%p] t: %zu", depth, q,
-            q->x, q->y, q->cx, q->cy, q->children[0], q->children[1],
+            q->x, q->y, q->w, q->h, q->children[0], q->children[1],
             q->children[2], q->children[3], q->type);
   }
 }

@@ -14,9 +14,9 @@ struct CT_Quadtree {
   void *data;
   union {
     struct {
-      float x, cx, y, cy;
+      float x, cx, y, cy, w, h;
     };
-    float coords[4];
+    float coords[6];
   };
   size_t type;
 };

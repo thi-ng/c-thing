@@ -30,8 +30,7 @@ int ct_qtree_select(CT_Quadtree *q, void *state) {
   //ct_qtree_trace_node(q, -1);
   struct isec_t *isec = (struct isec_t *)state;
   ct_set2fxy(&isec->min, q->x, q->y);
-  ct_set2fxy(&isec->max, q->x + (q->cx - q->x) * 2.f,
-             q->y + (q->cy - q->y) * 2.f);
+  ct_set2fxy(&isec->max, q->x + q->w, q->y + q->h);
   int i = ct_intersect_rect_circle(&isec->min, &isec->max, &isec->c, isec->r);
   //CT_INFO("isec: %d", i);
   if (i) {
@@ -50,7 +49,7 @@ void print_isec_results(struct isec_t *isec) {
 }
 
 int test_quadtree() {
-  CT_INFO("%zd", sizeof(CT_Quadtree));
+  CT_INFO("CT_Quadtree size: %zd", sizeof(CT_Quadtree));
   CT_Quadtree q;
   CT_MPool qpool, vpool;
   ct_qtree_init(&q, 0, 0, 100, 100);

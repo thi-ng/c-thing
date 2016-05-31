@@ -35,9 +35,12 @@ static size_t make_leaf(CT_Octree *q, size_t idx, CT_Vec3f *p, void *data,
   c->x = q->coords[idx & 1];
   c->y = q->coords[(idx >> 1) + 2];
   c->z = q->coords[(idx >> 2) + 4];
-  c->cx = c->x + (q->cx - q->x) * 0.5f;
-  c->cy = c->y + (q->cy - q->y) * 0.5f;
-  c->cz = c->z + (q->cz - q->z) * 0.5f;
+  c->w = q->w * 0.5f;
+  c->h = q->h * 0.5f;
+  c->d = q->d * 0.5f;
+  c->cx = c->x + c->w;
+  c->cy = c->y + c->h;
+  c->cz = c->z + c->d;
   c->type = CT_TREE_LEAF;
   c->point = p;
   c->data = data;
@@ -54,6 +57,9 @@ CT_EXPORT void ct_octree_init(CT_Octree *q, float x, float y, float z, float w,
   q->x = x;
   q->y = y;
   q->z = z;
+  q->w = w;
+  q->h = h;
+  q->d = d;
   q->cx = x + w * 0.5f;
   q->cy = y + h * 0.5f;
   q->cz = z + d * 0.5f;
@@ -149,14 +155,14 @@ CT_EXPORT void ct_octree_trace_node(CT_Octree *q, size_t depth) {
     CT_INFO(
         "d: %zd: %p b: [%f,%f,%f,%f,%f,%f] c: [%p,%p,%p,%p,%p,%p,%p,%p] t: "
         "%zd, p: (%f,%f, %f)",
-        depth, q, q->x, q->y, q->z, q->cx, q->cy, q->cz, q->children[0],
+        depth, q, q->x, q->y, q->z, q->w, q->h, q->d, q->children[0],
         q->children[1], q->children[2], q->children[3], q->children[4],
         q->children[5], q->children[6], q->children[7], q->type, q->point->x,
         q->point->y, q->point->z);
   } else {
     CT_INFO(
         "d: %zd: %p b: [%f,%f,%f,%f,%f,%f] c: [%p,%p,%p,%p,%p,%p,%p,%p] t: %zd",
-        depth, q, q->x, q->y, q->z, q->cx, q->cy, q->cz, q->children[0],
+        depth, q, q->x, q->y, q->z, q->w, q->h, q->d, q->children[0],
         q->children[1], q->children[2], q->children[3], q->children[4],
         q->children[5], q->children[6], q->children[7], q->type);
   }
@@ -171,12 +177,11 @@ CT_EXPORT void ct_octree_trace(CT_Octree *q, size_t depth) {
   }
 }
 
-CT_EXPORT void ct_octree_visit_leaves(CT_Octree *q, CT_OctreeVisitor visit,
-                                      void *state) {
+CT_EXPORT int ct_octree_visit_leaves(CT_Octree *q, CT_OctreeVisitor visit,
+                                     void *state) {
   switch (q->type) {
     case CT_TREE_LEAF:
-      visit(q, state);
-      break;
+      return visit(q, state);
     case CT_TREE_BRANCH:
       for (size_t i = 0; i < 8; i++) {
         if (q->children[i]) {
@@ -184,4 +189,21 @@ CT_EXPORT void ct_octree_visit_leaves(CT_Octree *q, CT_OctreeVisitor visit,
         }
       }
   }
+  return 0;
+}
+
+CT_EXPORT int ct_octree_visit(CT_Octree *q, CT_OctreeVisitor visit,
+                              void *state) {
+  int res = visit(q, state);
+  if (res) {
+    return res;
+  }
+  if (q->type == CT_TREE_BRANCH) {
+    for (size_t i = 0; i < 8; i++) {
+      if (q->children[i]) {
+        ct_octree_visit(q->children[i], visit, state);
+      }
+    }
+  }
+  return 0;
 }

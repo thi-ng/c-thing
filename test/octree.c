@@ -10,15 +10,16 @@ struct bounds_t {
   size_t num;
 };
 
-void ct_octree_bounds(CT_Octree *q, void *state) {
+int ct_octree_bounds(CT_Octree *q, void *state) {
   struct bounds_t *bounds = (struct bounds_t *)state;
   ct_min3fv_imm(&bounds->min, q->point);
   ct_max3fv_imm(&bounds->max, q->point);
   bounds->num++;
+  return 0;
 }
 
 int test_octree() {
-  CT_INFO("%zd", sizeof(CT_Octree));
+  CT_INFO("CT_Octree size: %zd", sizeof(CT_Octree));
   CT_Octree q;
   CT_MPool qpool, vpool;
   ct_octree_init(&q, 0, 0, 0, 100, 100, 100);

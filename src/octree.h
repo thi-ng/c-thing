@@ -14,14 +14,14 @@ struct CT_Octree {
   void *data;
   union {
     struct {
-      float x, cx, y, cy, z, cz;
+      float x, cx, y, cy, z, cz, w, h, d;
     };
-    float coords[6];
+    float coords[9];
   };
   size_t type;
 };
 
-typedef void (*CT_OctreeVisitor)(CT_Octree *, void *);
+typedef int (*CT_OctreeVisitor)(CT_Octree *, void *);
 
 void ct_octree_init(CT_Octree *q, float x, float y, float z, float w, float h,
                     float d);
@@ -31,4 +31,5 @@ CT_Octree *ct_octree_find_leaf(CT_Octree *q, CT_Vec3f *p);
 
 void ct_octree_trace_node(CT_Octree *q, size_t depth);
 void ct_octree_trace(CT_Octree *q, size_t depth);
-void ct_octree_visit_leaves(CT_Octree *q, CT_OctreeVisitor visit, void *state);
+int ct_octree_visit_leaves(CT_Octree *q, CT_OctreeVisitor visit, void *state);
+int ct_octree_visit(CT_Octree *q, CT_OctreeVisitor visit, void *state);
