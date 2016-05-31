@@ -81,21 +81,19 @@ fail:
 }
 
 CT_EXPORT void ct_mpool_trace(CT_MPool *mp) {
-#ifndef NDEBUG
-  CT_DEBUG("pool: %zd, nextID: %zd, head: %p, free: %p, bsize: %zd, num: %zd",
-           mp->poolID, mp->nextID, mp->head, mp->freeList, mp->blockSize,
-           mp->numBlocks);
+  CT_INFO("pool: %zd, nextID: %zd, head: %p, free: %p, bsize: %zd, num: %zd",
+          mp->poolID, mp->nextID, mp->head, mp->freeList, mp->blockSize,
+          mp->numBlocks);
   CT_MPoolList *p = mp->head;
   while (p) {
-    CT_DEBUG("\tsub-pool: %p -> %p storage: %p", p, p->next, p->pool);
+    CT_INFO("\tsub-pool: %p -> %p storage: %p", p, p->next, p->pool);
     p = p->next;
   }
   CT_MPoolFreeList *f = mp->freeList;
   size_t i = 0;
   while (f != NULL) {
-    CT_DEBUG("\tfree list: %zd: %p -> %p", i, f, f->next);
+    CT_INFO("\tfree list: %zd: %p -> %p", i, f, f->next);
     i++;
     f = f->next;
   }
-#endif
 }
