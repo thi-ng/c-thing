@@ -1,6 +1,7 @@
 #include "dbg.h"
 #include "test.h"
 
+#include "isec.h"
 #include "quadtree.h"
 
 CT_TEST_DECLS
@@ -10,11 +11,42 @@ struct bounds_t {
   size_t num;
 };
 
-void ct_qtree_bounds(CT_Quadtree *q, void *state) {
+struct isec_t {
+  CT_Vec2f min, max, c;
+  float r;
+  CT_Vec2f *sel[4];
+  size_t num;
+};
+
+int ct_qtree_bounds(CT_Quadtree *q, void *state) {
   struct bounds_t *bounds = (struct bounds_t *)state;
   ct_min2fv_imm(&bounds->min, q->point);
   ct_max2fv_imm(&bounds->max, q->point);
   bounds->num++;
+  return 0;
+}
+
+int ct_qtree_select(CT_Quadtree *q, void *state) {
+  //ct_qtree_trace_node(q, -1);
+  struct isec_t *isec = (struct isec_t *)state;
+  ct_set2fxy(&isec->min, q->x, q->y);
+  ct_set2fxy(&isec->max, q->x + (q->cx - q->x) * 2.f,
+             q->y + (q->cy - q->y) * 2.f);
+  int i = ct_intersect_rect_circle(&isec->min, &isec->max, &isec->c, isec->r);
+  //CT_INFO("isec: %d", i);
+  if (i) {
+    if (q->type == CT_TREE_LEAF) {
+      isec->sel[isec->num++] = q->point;
+    }
+    return 0;
+  }
+  return 1;
+}
+
+void print_isec_results(struct isec_t *isec) {
+  for (size_t i = 0; i < isec->num; i++) {
+    CT_INFO("isec %zd: (%f, %f)", i, isec->sel[i]->x, isec->sel[i]->y);
+  }
 }
 
 int test_quadtree() {
@@ -32,6 +64,10 @@ int test_quadtree() {
   ct_qtree_insert(&q, b, NULL, &qpool);
   ct_qtree_insert(&q, c, NULL, &qpool);
   ct_qtree_trace(&q, 0);
+  struct isec_t isec = {
+      {0, 0}, {0, 0}, {50, 50}, 70.f, {NULL, NULL, NULL, NULL}, 0};
+  ct_qtree_visit(&q, ct_qtree_select, &isec);
+  CT_IS(3 == isec.num, "wrong isec count: %zd", isec.num);
   CT_IS(ct_qtree_find_leaf(&q, a), "can't find a");
   CT_IS(ct_qtree_find_leaf(&q, b), "can't find b");
   CT_IS(!ct_qtree_find_leaf(&q, b2), "shouldn't find b2");

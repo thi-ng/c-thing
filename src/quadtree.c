@@ -157,17 +157,36 @@ CT_EXPORT void ct_qtree_trace(CT_Quadtree *q, size_t depth) {
   }
 }
 
-CT_EXPORT void ct_qtree_visit_leaves(CT_Quadtree *q, CT_QuadtreeVisitor visit,
-                                     void *state) {
+CT_EXPORT int ct_qtree_visit_leaves(CT_Quadtree *q, CT_QuadtreeVisitor visit,
+                                    void *state) {
   switch (q->type) {
     case CT_TREE_LEAF:
-      visit(q, state);
-      break;
+      return visit(q, state);
     case CT_TREE_BRANCH:
       for (size_t i = 0; i < 4; i++) {
         if (q->children[i]) {
-          ct_qtree_visit_leaves(q->children[i], visit, state);
+          int res = ct_qtree_visit_leaves(q->children[i], visit, state);
+          if (res) {
+            return res;
+          }
         }
       }
   }
+  return 0;
+}
+
+CT_EXPORT int ct_qtree_visit(CT_Quadtree *q, CT_QuadtreeVisitor visit,
+                             void *state) {
+  int res = visit(q, state);
+  if (res) {
+    return res;
+  }
+  if (q->type == CT_TREE_BRANCH) {
+    for (size_t i = 0; i < 4; i++) {
+      if (q->children[i]) {
+        ct_qtree_visit(q->children[i], visit, state);
+      }
+    }
+  }
+  return 0;
 }
