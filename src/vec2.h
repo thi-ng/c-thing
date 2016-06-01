@@ -67,6 +67,12 @@ CT_EXPORT ct_inline CT_Vec2f *ct_set2fxy(CT_Vec2f *v, float x, float y) {
   return v;
 }
 
+CT_EXPORT ct_inline CT_Vec2f *ct_set2fn(CT_Vec2f *v, float n) {
+  v->x = n;
+  v->y = n;
+  return v;
+}
+
 CT_EXPORT ct_inline CT_Vec2f *ct_set2fp(CT_Vec2f *v, float *xy) {
   v->x = *xy++;
   v->y = *xy;
@@ -110,6 +116,10 @@ CT_EXPORT ct_inline float ct_distsq2fv(const CT_Vec2f *a, const CT_Vec2f *b) {
 
 CT_EXPORT ct_inline float ct_dist2fv(const CT_Vec2f *a, const CT_Vec2f *b) {
   return sqrtf(ct_distsq2fv(a, b));
+}
+
+CT_EXPORT ct_inline uint32_t ct_hash2f(const CT_Vec2f *v) {
+  return ct_murmur3_32(v, 2 * sizeof(float));
 }
 
 CT_EXPORT ct_inline float ct_magsq2f(const CT_Vec2f *v) {

@@ -40,7 +40,7 @@ CT_EXPORT CT_Vec4f *ct_vec4f(float x, float y, float z, float w,
   return v;
 }
 
-CT_EXPORT CT_Vec4f *ct_vec4n(float n, CT_MPool *mpool) {
+CT_EXPORT CT_Vec4f *ct_vec4fn(float n, CT_MPool *mpool) {
   return ct_vec4f(n, n, n, n, mpool);
 }
 

@@ -7,6 +7,7 @@ extern int test_mpool_resize();
 extern int test_vec2f();
 extern int test_vec3f();
 extern int test_swizzle();
+extern int test_vec_hash();
 extern int test_circle();
 extern int test_qedge();
 extern int test_cons();
@@ -32,6 +33,7 @@ int all_tests() {
   CT_RUN_TEST(test_vec2f);
   CT_RUN_TEST(test_vec3f);
   CT_RUN_TEST(test_swizzle);
+  CT_RUN_TEST(test_vec_hash);
   CT_RUN_TEST(test_circle);
   CT_RUN_TEST(test_qedge);
   CT_RUN_TEST(test_cons);

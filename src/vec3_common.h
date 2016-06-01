@@ -2,8 +2,8 @@
 
 #include "vec.h"
 
-CT_EXPORT CT_Vec3f *ct_vec3f(float x, float y, float z, CT_MPool *mpool);
-CT_EXPORT CT_Vec3f *ct_vec3fn(float n, CT_MPool *mpool);
+CT_Vec3f *ct_vec3f(float x, float y, float z, CT_MPool *mpool);
+CT_Vec3f *ct_vec3fn(float n, CT_MPool *mpool);
 
 CT_EXPORT ct_inline int ct_compare3fv(const CT_Vec3f *a, const CT_Vec3f *b) {
   int c = COMPARE(a->x, b->x);
@@ -24,6 +24,10 @@ CT_EXPORT ct_inline size_t ct_deltaeq3fv(const CT_Vec3f *a, const CT_Vec3f *b,
 
 CT_EXPORT ct_inline float ct_dist3fv(const CT_Vec3f *a, const CT_Vec3f *b) {
   return sqrtf(ct_distsq3fv(a, b));
+}
+
+CT_EXPORT ct_inline uint32_t ct_hash3f(const CT_Vec3f *v) {
+  return ct_murmur3_32(v, 3 * sizeof(float));
 }
 
 CT_EXPORT ct_inline CT_Vec3f *ct_madd3fv(const CT_Vec3f *a, const CT_Vec3f *b,
@@ -54,5 +58,12 @@ CT_EXPORT ct_inline CT_Vec3f *ct_set3fxyz(CT_Vec3f *v, float x, float y,
   v->x = x;
   v->y = y;
   v->z = z;
+  return v;
+}
+
+CT_EXPORT ct_inline CT_Vec3f *ct_set3fn(CT_Vec3f *v, float n) {
+  v->x = n;
+  v->y = n;
+  v->z = n;
   return v;
 }

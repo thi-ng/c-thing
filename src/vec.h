@@ -10,6 +10,7 @@ extern "C" {
 
 #include "config.h"
 #include "ct_math.h"
+#include "hashfn.h"
 #include "mpool.h"
 
 #include "vec2.h"

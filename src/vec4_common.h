@@ -2,9 +2,8 @@
 
 #include "vec.h"
 
-CT_EXPORT CT_Vec4f *ct_vec4f(float x, float y, float z, float w,
-                             CT_MPool *mpool);
-CT_EXPORT CT_Vec4f *ct_vec4n(float n, CT_MPool *mpool);
+CT_Vec4f *ct_vec4f(float x, float y, float z, float w, CT_MPool *mpool);
+CT_Vec4f *ct_vec4fn(float n, CT_MPool *mpool);
 
 CT_EXPORT ct_inline int ct_compare4fv(const CT_Vec4f *a, const CT_Vec4f *b) {
   int c = COMPARE(a->x, b->x);
@@ -28,6 +27,10 @@ CT_EXPORT ct_inline size_t ct_deltaeq4fv(const CT_Vec4f *a, const CT_Vec4f *b,
 
 CT_EXPORT ct_inline float ct_dist4fv(const CT_Vec4f *a, const CT_Vec4f *b) {
   return sqrtf(ct_distsq4fv(a, b));
+}
+
+CT_EXPORT ct_inline uint32_t ct_hash4f(const CT_Vec4f *v) {
+  return ct_murmur3_32(v, 4 * sizeof(float));
 }
 
 CT_EXPORT ct_inline CT_Vec4f *ct_madd4fv(const CT_Vec4f *a, const CT_Vec4f *b,
@@ -59,5 +62,13 @@ CT_EXPORT ct_inline CT_Vec4f *ct_set4fxyzw(CT_Vec4f *v, float x, float y,
   v->y = y;
   v->z = z;
   v->w = w;
+  return v;
+}
+
+CT_EXPORT ct_inline CT_Vec4f *ct_set4fn(CT_Vec4f *v, float n) {
+  v->x = n;
+  v->y = n;
+  v->z = n;
+  v->w = n;
   return v;
 }
