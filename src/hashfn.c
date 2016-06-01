@@ -33,8 +33,7 @@ CT_EXPORT uint32_t ct_murmur3_32(const void *data, size_t numBytes) {
   const uint32_t *blocks = (const uint32_t *)(data);
   const uint8_t *tail = (const uint8_t *)&data[numBlocks << 2];
 
-  uint32_t h = 0;
-  uint32_t k = 0;
+  uint32_t h = 0, k = 0;
   for (size_t i = 0; i < numBlocks; i++) {
     h = mixH(h, mixK(blocks[i]));
   }
@@ -45,11 +44,7 @@ CT_EXPORT uint32_t ct_murmur3_32(const void *data, size_t numBytes) {
     case 2:
       k ^= tail[1] << 8;
     case 1:
-      k ^= tail[0];
-      k *= MURMUR_C1;
-      k = (k << 15) | (k >> 17);
-      k *= MURMUR_C2;
-      h ^= k;
+      h ^= mixK(k ^ tail[0]);
   }
 
   return fmix(h, numBytes);
