@@ -24,9 +24,10 @@ struct CT_HTEntry {
 typedef struct CT_Hashtable {
   CT_MPool pool;
   CT_HTOps ops;
-  CT_HTEntry** entries;
-  uint32_t numEntries;
-  uint32_t maxEntries;
+  CT_HTEntry** bins;
+  uint32_t size;
+  uint32_t numBins;
+  uint32_t numCollisions;
 } CT_Hashtable;
 
 typedef int (*CT_HTVisitor)(CT_HTEntry*, void*);

@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include "ct_math.h"
 #include "dbg.h"
 #include "hashtable.h"
 
@@ -42,17 +43,17 @@ static int push_entry(CT_Hashtable* t, uint32_t bin, void* key, void* val,
   // TODO resize table?
   CT_HTEntry* e = make_entry(t, key, val, ks);
   CT_CHECK_MEM(e);
-  e->next = t->entries[bin];
-  t->entries[bin] = e;
+  e->next = t->bins[bin];
+  t->bins[bin] = e;
 fail:
   return e == NULL;
 }
 
 static void delete_entry(CT_Hashtable* t, uint32_t bin, CT_HTEntry* e) {
-  CT_HTEntry* first = t->entries[bin];
+  CT_HTEntry* first = t->bins[bin];
   CT_HTEntry* rest = first->next;
   if (first == e) {
-    t->entries[bin] = rest;
+    t->bins[bin] = rest;
     free_entry(t, first);
   } else {
     while (rest != NULL) {
@@ -67,33 +68,38 @@ static void delete_entry(CT_Hashtable* t, uint32_t bin, CT_HTEntry* e) {
   }
 }
 
-int ct_ht_init(CT_Hashtable* t, CT_HTOps* ops, size_t num) {
-  int mp = ct_mpool_init(&t->pool, 64, sizeof(CT_HTEntry));
-  t->entries = calloc(num, sizeof(CT_HTEntry*));
-  CT_CHECK_MEM(&t->entries);
-  t->ops = *ops;
-  t->maxEntries = num;
-  t->numEntries = 0;
+CT_EXPORT int ct_ht_init(CT_Hashtable* t, CT_HTOps* ops, size_t num) {
+  int mp = ct_mpool_init(&t->pool, 32, sizeof(CT_HTEntry));
+  if (!mp) {
+    num = ct_ceil_pow2(num);
+    CT_INFO("HT bin count: 0x%zx", num);
+    t->bins = calloc(num, sizeof(CT_HTEntry*));
+    CT_CHECK_MEM(&t->bins);
+    t->ops = *ops;
+    t->numBins = num;
+    t->size = 0;
+    t->numCollisions = 0;
+  }
 fail:
-  return t->entries == NULL;
+  return mp || t->bins == NULL;
 }
 
-void ct_ht_free(CT_Hashtable* t) {
-  CT_DEBUG("free HT: %p", t);
+CT_EXPORT void ct_ht_free(CT_Hashtable* t) {
   ct_mpool_free_all(&t->pool);
-  free(t->entries);
+  CT_DEBUG("free HT bins: %p", t->bins);
+  free(t->bins);
 }
 
-int ct_ht_assoc(CT_Hashtable* t, void* key, void* val, size_t ks) {
+CT_EXPORT int ct_ht_assoc(CT_Hashtable* t, void* key, void* val, size_t ks) {
   uint32_t hash = t->ops.hash(key, ks);
-  uint32_t bin = hash & (t->maxEntries - 1);
-  CT_HTEntry* e = t->entries[bin];
+  uint32_t bin = hash & (t->numBins - 1);
+  CT_HTEntry* e = t->bins[bin];
   if (e == NULL) {
     CT_DEBUG("new entry w/ hash: %x, bin: %x", hash, bin);
     e = make_entry(t, key, val, ks);
     CT_CHECK_MEM(e);
-    t->entries[bin] = e;
-    t->numEntries++;
+    t->bins[bin] = e;
+    t->size++;
   } else {
     e = find_entry(e, key, ks);
     if (e != NULL) {
@@ -104,7 +110,8 @@ int ct_ht_assoc(CT_Hashtable* t, void* key, void* val, size_t ks) {
       if (push_entry(t, bin, key, val, ks)) {
         return 1;
       }
-      t->numEntries++;
+      t->numCollisions++;
+      t->size++;
     }
   }
   return 0;
@@ -112,34 +119,32 @@ fail:
   return 1;
 }
 
-void* ct_ht_get(CT_Hashtable* t, void* key, size_t ks) {
-  uint32_t bin = t->ops.hash(key, ks) & (t->maxEntries - 1);
-  CT_HTEntry* e = t->entries[bin];
-  if (e == NULL) {
-    return NULL;
+CT_EXPORT void* ct_ht_get(CT_Hashtable* t, void* key, size_t ks) {
+  uint32_t bin = t->ops.hash(key, ks) & (t->numBins - 1);
+  CT_HTEntry* e = t->bins[bin];
+  if (e != NULL) {
+    e = find_entry(e, key, ks);
   }
-  e = find_entry(e, key, ks);
-  CT_DEBUG("HT get: %u %p", bin, e);
   return (e != NULL ? e->val : NULL);
 }
 
-int ct_ht_dissoc(CT_Hashtable* t, void* key, size_t ks) {
-  uint32_t bin = t->ops.hash(key, ks) & (t->maxEntries - 1);
-  CT_HTEntry* e = t->entries[bin];
+CT_EXPORT int ct_ht_dissoc(CT_Hashtable* t, void* key, size_t ks) {
+  uint32_t bin = t->ops.hash(key, ks) & (t->numBins - 1);
+  CT_HTEntry* e = t->bins[bin];
   if (e != NULL) {
     e = find_entry(e, key, ks);
     if (e != NULL) {
       delete_entry(t, bin, e);
-      t->numEntries--;
+      t->size--;
       return 0;
     }
   }
   return 1;
 }
 
-int ct_ht_iterate(CT_Hashtable* t, CT_HTVisitor visit, void* state) {
-  for (size_t i = 0; i < t->maxEntries; i++) {
-    CT_HTEntry* e = t->entries[i];
+CT_EXPORT int ct_ht_iterate(CT_Hashtable* t, CT_HTVisitor visit, void* state) {
+  for (size_t i = 0; i < t->numBins; i++) {
+    CT_HTEntry* e = t->bins[i];
     while (e != NULL) {
       int res = visit(e, state);
       if (res) return res;
