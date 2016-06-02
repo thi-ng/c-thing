@@ -15,6 +15,7 @@ extern int test_consrc();
 extern int test_hash_fns();
 extern int test_quadtree();
 extern int test_octree();
+extern int test_hashtable();
 
 CT_TEST_DECLS
 
@@ -39,8 +40,9 @@ int all_tests() {
   CT_RUN_TEST(test_cons);
   CT_RUN_TEST(test_consrc);
   CT_RUN_TEST(test_hash_fns);
-  CT_RUN_TEST(test_quadtree);
-  CT_RUN_TEST(test_octree);
+  //CT_RUN_TEST(test_quadtree);
+  //CT_RUN_TEST(test_octree);
+  CT_RUN_TEST(test_hashtable);
   return 0;
 }
 
