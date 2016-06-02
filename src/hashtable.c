@@ -11,7 +11,13 @@ static CT_HTEntry* make_entry(CT_Hashtable* t, void* key, void* val,
   CT_HTEntry* e = ct_mpool_alloc(&t->pool);
   CT_CHECK_MEM(e);
   CT_DEBUG("new HTEntry: %p k=%p, v=%p", e, key, val);
-  e->key = key;
+  if (t->flags & CT_HT_CONST_KEYS) {
+    e->key = key;
+  } else {
+    e->key = malloc(size);
+    CT_CHECK_MEM(e);
+    memcpy(e->key, key, size);
+  }
   e->val = val;
   e->keySize = size;
   e->next = NULL;
@@ -19,8 +25,17 @@ fail:
   return e;
 }
 
+static int free_key(CT_HTEntry* e, void* _) {
+  CT_DEBUG("free key: %p", e->key);
+  free(e->key);
+  return 0;
+}
+
 static void free_entry(CT_Hashtable* t, CT_HTEntry* e) {
   CT_DEBUG("free HTEntry: %p", e);
+  if (!(t->flags & CT_HT_CONST_KEYS)) {
+    free_key(e, NULL);
+  }
   ct_mpool_free(&t->pool, e);
 }
 
@@ -68,7 +83,8 @@ static void delete_entry(CT_Hashtable* t, uint32_t bin, CT_HTEntry* e) {
   }
 }
 
-CT_EXPORT int ct_ht_init(CT_Hashtable* t, CT_HTOps* ops, size_t num) {
+CT_EXPORT int ct_ht_init(CT_Hashtable* t, CT_HTOps* ops, size_t num,
+                         size_t flags) {
   int mp = ct_mpool_init(&t->pool, 32, sizeof(CT_HTEntry));
   if (!mp) {
     num = ct_ceil_pow2(num);
@@ -77,6 +93,7 @@ CT_EXPORT int ct_ht_init(CT_Hashtable* t, CT_HTOps* ops, size_t num) {
     CT_CHECK_MEM(&t->bins);
     t->ops = *ops;
     t->numBins = num;
+    t->flags = flags;
     t->size = 0;
     t->numCollisions = 0;
   }
@@ -85,6 +102,9 @@ fail:
 }
 
 CT_EXPORT void ct_ht_free(CT_Hashtable* t) {
+  if (!(t->flags & CT_HT_CONST_KEYS)) {
+    ct_ht_iterate(t, free_key, NULL);
+  }
   ct_mpool_free_all(&t->pool);
   CT_DEBUG("free HT bins: %p", t->bins);
   free(t->bins);

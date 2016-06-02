@@ -10,6 +10,8 @@ CT_BEGIN_DECLS
 
 // http://www.nurs.or.jp/~sug/soft/super/hash.htm
 
+enum { CT_HT_NONE = 0, CT_HT_CONST_KEYS = 1 };
+
 typedef struct CT_HTEntry CT_HTEntry;
 
 typedef struct { uint32_t (*hash)(const void*, size_t); } CT_HTOps;
@@ -28,11 +30,12 @@ typedef struct CT_Hashtable {
   uint32_t size;
   uint32_t numBins;
   uint32_t numCollisions;
+  size_t flags;
 } CT_Hashtable;
 
 typedef int (*CT_HTVisitor)(CT_HTEntry*, void*);
 
-int ct_ht_init(CT_Hashtable* t, CT_HTOps* ops, size_t num);
+int ct_ht_init(CT_Hashtable* t, CT_HTOps* ops, size_t num, size_t flags);
 void ct_ht_free(CT_Hashtable* t);
 void* ct_ht_get(CT_Hashtable* t, void* key, size_t ks);
 int ct_ht_assoc(CT_Hashtable* t, void* key, void* value, size_t ks);

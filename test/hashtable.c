@@ -38,7 +38,7 @@ static size_t visit_count(CT_Hashtable *t, CT_HTVisitor visit) {
 int test_hashtable_char() {
   CT_Hashtable t;
   CT_HTOps ops = {.hash = ct_murmur3_32};
-  CT_IS(!ct_ht_init(&t, &ops, 4), "init");
+  CT_IS(!ct_ht_init(&t, &ops, 2, CT_HT_NONE), "init");
   CT_IS(!ct_ht_assoc(&t, "a", "aaa", 1), "assoc a");
   CT_IS(1 == t.size, "size: %u", t.size);
   CT_IS(val_is(&t, "a", "aaa"), "get a");
@@ -72,7 +72,7 @@ int test_hashtable_char() {
 int test_hashtable_vec() {
   CT_Hashtable t;
   CT_HTOps ops = {.hash = ct_murmur3_32};
-  CT_IS(!ct_ht_init(&t, &ops, 4), "init");
+  CT_IS(!ct_ht_init(&t, &ops, 4, CT_HT_NONE), "init");
   CT_Vec3f *a = ct_vec3f(1, 2, 3, NULL);
   CT_Vec3f *b = ct_vec3f(1, 2, 3.000001, NULL);
   CT_IS(!ct_ht_assoc(&t, a, "a", sizeof(CT_Vec3f)), "assoc a");
@@ -89,10 +89,12 @@ int bench_hashtable() {
   CT_MPool vpool;
   CT_HTOps ops = {.hash = ct_murmur3_32};
   uint32_t num = 1e6;
-  CT_IS(!ct_ht_init(&t, &ops, num), "init ht");
+  CT_IS(!ct_ht_init(&t, &ops, num, CT_HT_CONST_KEYS), "init ht");
   CT_IS(!ct_mpool_init(&vpool, num, sizeof(CT_Vec3f)), "init vpool");
-  for(size_t i=0; i < num; i++) {
-    ct_ht_assoc(&t, ct_vec3f(ct_rand_norm()*1000,ct_rand_norm()*1000,ct_rand_norm()*1000, &vpool), "a", sizeof(CT_Vec3f));
+  for (size_t i = 0; i < num; i++) {
+    ct_ht_assoc(&t, ct_vec3f(ct_rand_norm() * 1000, ct_rand_norm() * 1000,
+                             ct_rand_norm() * 1000, &vpool),
+                "a", sizeof(CT_Vec3f));
   }
   CT_IS(num == t.size, "size: %u", t.size);
   CT_INFO("collisions: %u", t.numCollisions);
