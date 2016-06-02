@@ -30,6 +30,9 @@
 
 CT_BEGIN_DECLS
 
+uint32_t ct_ceil_pow2(uint32_t x);
+uint32_t ct_floor_pow2(uint32_t x);
+
 CT_EXPORT ct_inline size_t ct_deltaeqf(const float a, const float b,
                                        const float eps) {
   return fabs(a - b) <= eps;
