@@ -182,8 +182,9 @@ int bench_vec3_create() {
   uint32_t num = 1e6;
   CT_MPool vpool;
   CT_IS(!ct_mpool_init(&vpool, num, sizeof(CT_Vec3f)), "init vpool");
-  for(size_t i=0; i < num; i++) {
-    ct_vec3f(ct_rand_norm()*1000,ct_rand_norm()*1000,ct_rand_norm()*1000, &vpool);
+  for (size_t i = 0; i < num; i++) {
+    ct_vec3f(ct_rand_norm() * 1000, ct_rand_norm() * 1000,
+             ct_rand_norm() * 1000, &vpool);
   }
   ct_mpool_free_all(&vpool);
   return 0;
