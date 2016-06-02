@@ -3,10 +3,10 @@
 # compile with SIMD:
 # ./compile.sh -asd
 
-FILES="src/circle.c src/cons.c src/consrc.c src/hashfn.c src/mpool.c src/object.c src/quadedge.c src/quadtree.c src/triangle.c src/vec.c"
+FILES="src/circle.c src/cons.c src/consrc.c src/ct_math.c src/hashfn.c src/hashtable.c src/isec.c src/mpool.c src/object.c src/octree.c src/quadedge.c src/quadtree.c src/triangle.c src/vec.c"
 TESTS=
 CFLAGS="-std=c11 -Os -Isrc"
-EMFLAGS="-s ASM_JS=1 -s ASSERTIONS=0 -s INVOKE_RUN=0 -s AGGRESSIVE_VARIABLE_ELIMINATION=1 -s MODULARIZE=1 -s NO_EXIT_RUNTIME=1"
+EMFLAGS="-s ASM_JS=1 -s ASSERTIONS=0 -s INVOKE_RUN=0 -s AGGRESSIVE_VARIABLE_ELIMINATION=1 -s MODULARIZE=1 -s NO_EXIT_RUNTIME=1 -s TOTAL_MEMORY='48*1024*1024'"
 OUT=geom.js
 
 usage()
@@ -43,7 +43,7 @@ while getopts acdhkstD: opt; do
         D) CFLAGS="$CFLAGS -D$OPTARG"
            ;;
         t) CFLAGS="$CFLAGS -DNDEBUG -DCT_FEATURE_LOG"
-           TESTS="src/test.c test/circle.c test/cons.c test/consrc.c test/hash.c test/main.c test/mpool.c test/quadtree.c test/qedge.c test/vec.c"
+           TESTS="src/test.c test/main.c test/circle.c test/cons.c test/consrc.c test/hash.c test/hashtable.c test/mpool.c test/octree.c test/quadtree.c test/qedge.c test/vec.c"
            ;;
         h) usage
            ;;
