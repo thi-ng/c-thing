@@ -35,6 +35,17 @@ static size_t visit_count(CT_Hashtable *t, CT_HTVisitor visit) {
   return v.num;
 }
 
+static void *alloc_key_vec(size_t size, void *state) {
+  void *key = ct_mpool_alloc((CT_MPool *)state);
+  CT_DEBUG("alloc vec key: %p", key);
+  return key;
+}
+
+static void free_key_vec(void *key, void *state) {
+  CT_DEBUG("free vec key: %p", key);
+  ct_mpool_free((CT_MPool *)state, key);
+}
+
 int test_hashtable_char() {
   CT_Hashtable t;
   CT_HTOps ops = {.hash = ct_murmur3_32};
@@ -70,17 +81,22 @@ int test_hashtable_char() {
 }
 
 int test_hashtable_vec() {
+  CT_MPool vpool;
+  CT_IS(!ct_mpool_init(&vpool, 4, sizeof(CT_Vec3f)), "init vpool");
   CT_Hashtable t;
-  CT_HTOps ops = {.hash = ct_murmur3_32};
+  CT_HTOps ops = {.hash = ct_murmur3_32,
+                  .alloc_key = alloc_key_vec,
+                  .free_key = free_key_vec,
+                  .state = &vpool};
   CT_IS(!ct_ht_init(&t, &ops, 4, CT_HT_NONE), "init");
-  CT_Vec3f *a = ct_vec3f(1, 2, 3, NULL);
-  CT_Vec3f *b = ct_vec3f(1, 2, 3.000001, NULL);
+  CT_Vec3f *a = ct_vec3f(1, 2, 3, &vpool);
+  CT_Vec3f *b = ct_vec3f(1, 2, 3.000001, &vpool);
   CT_IS(!ct_ht_assoc(&t, a, "a", 12), "assoc a");
   CT_IS(!ct_ht_assoc(&t, b, "b", 12), "assoc b");
   CT_IS(2 == visit_count(&t, dump_ht_vec), "count");
+  ct_mpool_trace(&vpool);
   ct_ht_free(&t);
-  free(a);
-  free(b);
+  ct_mpool_free_all(&vpool);
   return 0;
 }
 

@@ -14,7 +14,13 @@ enum { CT_HT_NONE = 0, CT_HT_CONST_KEYS = 1 };
 
 typedef struct CT_HTEntry CT_HTEntry;
 
-typedef struct { uint32_t (*hash)(const void*, size_t); } CT_HTOps;
+typedef struct {
+  uint32_t (*hash)(const void* key, size_t size);
+  void* (*alloc_key)(size_t size, void* state);
+  void (*free_key)(void* key, void* state);
+  void (*free_val)(void* val, void* state);
+  void* state;
+} CT_HTOps;
 
 struct CT_HTEntry {
   void* key;

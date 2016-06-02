@@ -10,31 +10,39 @@ static CT_HTEntry* make_entry(CT_Hashtable* t, void* key, void* val,
                               size_t size) {
   CT_HTEntry* e = ct_mpool_alloc(&t->pool);
   CT_CHECK_MEM(e);
-  CT_DEBUG("new HTEntry: %p k=%p, v=%p", e, key, val);
   if (t->flags & CT_HT_CONST_KEYS) {
     e->key = key;
   } else {
-    e->key = malloc(size);
+    if (t->ops.alloc_key != NULL) {
+      e->key = t->ops.alloc_key(size, t->ops.state);
+    } else {
+      e->key = malloc(size);
+    }
     CT_CHECK_MEM(e);
     memcpy(e->key, key, size);
   }
   e->val = val;
   e->keySize = size;
   e->next = NULL;
+  CT_DEBUG("new HTEntry: %p, k=%p, v=%p", e, e->key, e->val);
 fail:
   return e;
 }
 
-static int free_key(CT_HTEntry* e, void* _) {
+static int free_key(CT_Hashtable* t, CT_HTEntry* e) {
   CT_DEBUG("free key: %p", e->key);
-  free(e->key);
+  if (t->ops.free_key != NULL) {
+    t->ops.free_key(e->key, t->ops.state);
+  } else {
+    free(e->key);
+  }
   return 0;
 }
 
 static void free_entry(CT_Hashtable* t, CT_HTEntry* e) {
   CT_DEBUG("free HTEntry: %p", e);
   if (!(t->flags & CT_HT_CONST_KEYS)) {
-    free_key(e, NULL);
+    free_key(t, e);
   }
   ct_mpool_free(&t->pool, e);
 }
@@ -103,7 +111,13 @@ fail:
 
 CT_EXPORT void ct_ht_free(CT_Hashtable* t) {
   if (!(t->flags & CT_HT_CONST_KEYS)) {
-    ct_ht_iterate(t, free_key, NULL);
+    for (size_t i = 0; i < t->numBins; i++) {
+      CT_HTEntry* e = t->bins[i];
+      while (e != NULL) {
+        free_key(t, e);
+        e = e->next;
+      }
+    }
   }
   ct_mpool_free_all(&t->pool);
   CT_DEBUG("free HT bins: %p", t->bins);
