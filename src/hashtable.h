@@ -20,6 +20,7 @@ typedef struct CT_HTEntry CT_HTEntry;
 
 typedef struct {
   uint32_t (*hash)(const void* key, size_t size);
+  int (*equiv_keys)(void* a, void* b, size_t sa, size_t sb);
   void* (*alloc_key)(size_t size, void* state);
   void* (*alloc_val)(size_t size, void* state);
   void (*free_key)(void* key, void* state);

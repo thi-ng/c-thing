@@ -82,12 +82,15 @@ static void free_entry(CT_Hashtable* t, CT_HTEntry* e) {
   ct_mpool_free(&t->pool, e);
 }
 
-ct_inline int equiv_keys(void* a, void* b, size_t sa, size_t sb) {
+static int equiv_keys(void* a, void* b, size_t sa, size_t sb) {
   return sa == sb ? !memcmp(a, b, sa) : 0;
 }
 
-static CT_HTEntry* find_entry(CT_HTEntry* e, void* key, size_t ks) {
+static CT_HTEntry* find_entry(CT_Hashtable* t, CT_HTEntry* e, void* key,
+                              size_t ks) {
+  int (*equiv_keys)(void*, void*, size_t, size_t) = t->ops.equiv_keys;
   while (e != NULL) {
+    CT_DEBUG("find e: %p", e);
     if (equiv_keys(key, e->key, ks, e->keySize)) {
       return e;
     }
@@ -139,6 +142,9 @@ CT_EXPORT int ct_ht_init(CT_Hashtable* t, CT_HTOps* ops, size_t num,
     t->bins = calloc(num, sizeof(CT_HTEntry*));
     CT_CHECK_MEM(&t->bins);
     t->ops = *ops;
+    if (t->ops.equiv_keys == NULL) {
+      t->ops.equiv_keys = equiv_keys;
+    }
     t->numBins = num;
     t->flags = flags;
     t->size = 0;
@@ -179,7 +185,7 @@ CT_EXPORT int ct_ht_assoc(CT_Hashtable* t, void* key, void* val, size_t ks,
     t->bins[bin] = e;
     t->size++;
   } else {
-    e = find_entry(e, key, ks);
+    e = find_entry(t, e, key, ks);
     if (e != NULL) {
       CT_DEBUG("overwrite %p w/ hash: %x, bin: %x", e, hash, bin);
       if (!(t->flags & CT_HT_CONST_VALS)) {
@@ -204,7 +210,7 @@ CT_EXPORT void* ct_ht_get(CT_Hashtable* t, void* key, size_t ks, size_t* vs) {
   uint32_t bin = t->ops.hash(key, ks) & (t->numBins - 1);
   CT_HTEntry* e = t->bins[bin];
   if (e != NULL) {
-    e = find_entry(e, key, ks);
+    e = find_entry(t, e, key, ks);
   }
   if (e != NULL) {
     if (vs != NULL) {
@@ -219,7 +225,7 @@ CT_EXPORT int ct_ht_dissoc(CT_Hashtable* t, void* key, size_t ks) {
   uint32_t bin = t->ops.hash(key, ks) & (t->numBins - 1);
   CT_HTEntry* e = t->bins[bin];
   if (e != NULL) {
-    e = find_entry(e, key, ks);
+    e = find_entry(t, e, key, ks);
     if (e != NULL) {
       delete_entry(t, bin, e);
       t->size--;

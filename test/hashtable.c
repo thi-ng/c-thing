@@ -11,6 +11,10 @@ struct htest_t {
   size_t num;
 };
 
+struct edge_t {
+  CT_Vec3f a, b;
+};
+
 static int val_is(CT_Hashtable *t, char *k, char *v) {
   char *res = (char *)ct_ht_get(t, k, strlen(k) + 1, NULL);
   return res ? !strcmp(res, v) : 0;
@@ -46,6 +50,27 @@ static void *ht_alloc_mpool(size_t size, void *state) {
 static void ht_free_mpool(void *key, void *state) {
   CT_DEBUG("custom free vec: %p", key);
   ct_mpool_free((CT_MPool *)state, key);
+}
+
+static uint32_t hash_edge(const void *a, size_t _) {
+  const struct edge_t *e = (struct edge_t *)a;
+  return ct_murmur3_32(&e->a, 12) + ct_murmur3_32(&e->b, 12);
+}
+
+static int equiv_edge(void *a, void *b, size_t as, size_t bs) {
+  struct edge_t *ea = (struct edge_t *)a;
+  struct edge_t *eb = (struct edge_t *)b;
+  if (!memcmp(&ea->a, &eb->a, 12)) {
+    if (!memcmp(&ea->b, &eb->b, 12)) {
+      return 1;
+    }
+  }
+  if (!memcmp(&ea->a, &eb->b, 12)) {
+    if (!memcmp(&ea->b, &eb->a, 12)) {
+      return 1;
+    }
+  }
+  return 0;
 }
 
 int test_hashtable_char() {
@@ -116,6 +141,23 @@ int test_hashtable_vec() {
   ct_ht_free(&t);
   ct_ht_free(&t2);
   ct_mpool_free_all(&vpool);
+  return 0;
+}
+
+int test_hashtable_edge() {
+  CT_Hashtable t;
+  CT_HTOps ops = {.hash = hash_edge, .equiv_keys = equiv_edge};
+  CT_IS(!ct_ht_init(&t, &ops, 4, 8, CT_HT_NONE), "init");
+  struct edge_t e1 = {.a = {0, 0, 0}, .b = {1, 0, 0}};
+  struct edge_t e2 = {.a = {1, 0, 0}, .b = {0, 0, 0}};
+  struct edge_t e3 = {.a = {1, 0, 0}, .b = {0, 1, 0}};
+  CT_IS(!ct_ht_assoc(&t, &e1, "e1", sizeof(e1), 3), "assoc e1");
+  CT_IS(!ct_ht_assoc(&t, &e2, "e2", sizeof(e2), 3), "assoc e2");
+  CT_IS(!ct_ht_assoc(&t, &e3, "e3", sizeof(e3), 3), "assoc e2");
+  CT_IS(!strcmp("e2", (char *)ct_ht_get(&t, &e1, sizeof(e1), NULL)), "get e1");
+  CT_IS(!strcmp("e2", (char *)ct_ht_get(&t, &e2, sizeof(e2), NULL)), "get e2");
+  CT_IS(!strcmp("e3", (char *)ct_ht_get(&t, &e3, sizeof(e3), NULL)), "get e3");
+  ct_ht_free(&t);
   return 0;
 }
 
