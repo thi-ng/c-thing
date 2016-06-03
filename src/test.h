@@ -15,7 +15,7 @@
   }
 
 #define CT_RUN_TEST(test)                                              \
-  CT_INFO("-----%s", " " #test);                                       \
+  CT_INFO("----- %s -----", "" #test);                                 \
   do {                                                                 \
     size_t t = __testAsserts;                                          \
     clock_t begin = clock();                                           \
@@ -31,7 +31,7 @@
 
 #define CT_RUN_TESTS(name)                                                    \
   int main() {                                                                \
-    CT_INFO("----- RUN TESTS:%s", " " #name);                                 \
+    CT_INFO("----- RUN TESTS: %s -----", "" #name);                           \
     int result = name();                                                      \
     CT_INFO("Tests run: %zd, total asserts: %zd", __testsRun, __testAsserts); \
     if (!result) {                                                            \
