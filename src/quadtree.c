@@ -136,17 +136,17 @@ CT_EXPORT CT_Quadtree *ct_qtree_find_leaf(CT_Quadtree *q, CT_Vec2f *p) {
     }
     q = c;
   }
-  return ((q->type == CT_TREE_LEAF && ct_deltaeq2fv(q->point, p, EPS)) ? q
-                                                                       : NULL);
+  return (q->type == CT_TREE_LEAF && ct_deltaeq2fv(q->point, p, EPS) ? q
+                                                                     : NULL);
 }
 
 CT_EXPORT void ct_qtree_trace_node(CT_Quadtree *q, size_t depth) {
   if (q->point) {
-    CT_INFO("d: %zd: %p b: [%f,%f,%f,%f] c: [%p,%p,%p,%p] t: %zu, p: (%f,%f)",
+    CT_INFO("d: %zu: %p b: [%f,%f,%f,%f] c: [%p,%p,%p,%p] t: %zu, p: (%f,%f)",
             depth, q, q->x, q->y, q->w, q->h, q->children[0], q->children[1],
             q->children[2], q->children[3], q->type, q->point->x, q->point->y);
   } else {
-    CT_INFO("d: %zd: %p b: [%f,%f,%f,%f] c: [%p,%p,%p,%p] t: %zu", depth, q,
+    CT_INFO("d: %zu: %p b: [%f,%f,%f,%f] c: [%p,%p,%p,%p] t: %zu", depth, q,
             q->x, q->y, q->w, q->h, q->children[0], q->children[1],
             q->children[2], q->children[3], q->type);
   }

@@ -175,6 +175,9 @@ int test_vec_hash() {
   h = ct_hash4f(ct_set4fxyzw(v4, 1, 2, 3, 4));
   CT_IS(0x79740297 == h, "wrong hash: %x", h);
 
+  free(v2);
+  free(v3);
+  free(v4);
   return 0;
 }
 

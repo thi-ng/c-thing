@@ -14,5 +14,10 @@ int test_qedge() {
   ct_qedge_splice(b, c);
   ct_qedge_splice(d, a);
   ct_qedge_iterate(a, trace_edge, NULL);
+
+  free((void*)a);
+  free((void*)b);
+  free((void*)c);
+  free((void*)d);
   return 0;
 }
