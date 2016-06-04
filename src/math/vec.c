@@ -55,14 +55,14 @@ VEC_ARRAYOP(scale4f, CT_Vec4f, float, ct_mul4fv_imm)
 
 CT_EXPORT CT_Vec2f *ct_closest_point2f(float *ptr, CT_Vec2f *p, size_t num,
                                        size_t fstride) {
-  float minD = FLT_MAX;
+  float minD        = FLT_MAX;
   CT_Vec2f *closest = NULL;
   if (num > 0) {
     while (num--) {
       float d = ct_distsq2fv((CT_Vec2f *)ptr, p);
       if (d < minD) {
         closest = (CT_Vec2f *)ptr;
-        minD = d;
+        minD    = d;
       }
       ptr += fstride;
     }
@@ -72,14 +72,14 @@ CT_EXPORT CT_Vec2f *ct_closest_point2f(float *ptr, CT_Vec2f *p, size_t num,
 
 CT_EXPORT CT_Vec3f *ct_closest_point3f(float *ptr, CT_Vec3f *p, size_t num,
                                        size_t fstride) {
-  float minD = FLT_MAX;
+  float minD        = FLT_MAX;
   CT_Vec3f *closest = NULL;
   if (num > 0) {
     while (num--) {
       const float d = ct_distsq3fv((CT_Vec3f *)ptr, p);
       if (d < minD) {
         closest = (CT_Vec3f *)ptr;
-        minD = d;
+        minD    = d;
       }
       ptr += fstride;
     }

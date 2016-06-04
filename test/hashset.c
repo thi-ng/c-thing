@@ -24,7 +24,7 @@ static int dump_hs_char(CT_HSEntry *e, void *state) {
 
 static int dump_hs_vec(CT_HSEntry *e, void *state) {
   struct htest_t *s = (struct htest_t *)state;
-  CT_Vec3f *v = (CT_Vec3f *)e->key;
+  CT_Vec3f *v       = (CT_Vec3f *)e->key;
   CT_DEBUG("entry: %zd, (%f,%f,%f)", s->num, v->x, v->y, v->z);
   s->num++;
   return 0;
@@ -113,10 +113,10 @@ int test_hashset_vec() {
   CT_MPool vpool;
   CT_IS(!ct_mpool_init(&vpool, 16, sizeof(CT_Vec3f)), "init vpool");
   CT_Hashset s, s2;
-  CT_HSOps ops = {.hash = ct_murmur3_32,
+  CT_HSOps ops = {.hash      = ct_murmur3_32,
                   .alloc_key = hs_alloc_mpool,
-                  .free_key = hs_free_mpool,
-                  .state = &vpool};
+                  .free_key  = hs_free_mpool,
+                  .state     = &vpool};
   CT_IS(!ct_hs_init(&s, &ops, 4, 8, CT_HS_NONE), "init");
   CT_Vec3f *a = ct_vec3f(1, 2, 3, &vpool);
   CT_Vec3f *b = ct_vec3f(1, 2, 3.000001, &vpool);

@@ -94,7 +94,7 @@ size_t ct_register_tostring(uint32_t type,
                             int32_t impl(CT_Object *, char *, int32_t)) {
   CT_CHECK(type < CT_MAX_TYPES, "invalid type id");
   CT_IToString i = {.tostring = impl};
-  __impls_itostring[type] = i;
+  __impls_itostring[type]     = i;
   return 0;
 fail:
   return 1;
@@ -115,27 +115,27 @@ static void ct_object_free(const CT_Ref *ref) {
 
 CT_Object *ct_object_raw(uint32_t type) {
   CT_Object *o = (CT_Object *)malloc(sizeof(CT_Object));
-  o->rc = (CT_Ref){ct_object_free, 0};
-  o->tag.tag = 0;
-  o->tag.type = type;
+  o->rc        = (CT_Ref){ct_object_free, 0};
+  o->tag.tag   = 0;
+  o->tag.type  = type;
   return o;
 }
 
 CT_Object *ct_object_str(char *x, size_t free) {
   CT_Object *o = ct_object_raw(STRING);
-  o->atom.p = x;
-  o->tag.free = free;
+  o->atom.p    = x;
+  o->tag.free  = free;
   return o;
 }
 
 CT_Object *ct_object_i32(int32_t x) {
   CT_Object *o = ct_object_raw(I32);
-  o->atom.i = x;
+  o->atom.i    = x;
   return o;
 }
 
 CT_Object *ct_object_f32(float x) {
   CT_Object *o = ct_object_raw(F32);
-  o->atom.f = x;
+  o->atom.f    = x;
   return o;
 }

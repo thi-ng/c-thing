@@ -24,10 +24,10 @@ int test_octree() {
   CT_MPool vpool;
   ct_octree_init(&t, 0, 0, 0, 100, 100, 100, 0x10000);
   ct_mpool_init(&vpool, 0x10000, sizeof(CT_Vec3f));
-  CT_Vec3f *a = ct_vec3f(10, 10, 10, &vpool);
-  CT_Vec3f *b = ct_vec3f(10, 11, 10, &vpool);
+  CT_Vec3f *a  = ct_vec3f(10, 10, 10, &vpool);
+  CT_Vec3f *b  = ct_vec3f(10, 11, 10, &vpool);
   CT_Vec3f *b2 = ct_vec3f(10.1, 11, 10, &vpool);
-  CT_Vec3f *c = ct_vec3f(50, 12, 50, &vpool);
+  CT_Vec3f *c  = ct_vec3f(50, 12, 50, &vpool);
   ct_octree_insert(&t, a, NULL);
   ct_octree_insert(&t, b, NULL);
   ct_octree_insert(&t, c, NULL);

@@ -40,7 +40,7 @@ static void verify_cons_float(CT_Cons *c, void *state) {
 
 static ConsTestState *reset_state(ConsTestState *cs, void *ref) {
   cs->count = cs->err = 0;
-  cs->ref = ref;
+  cs->ref             = ref;
   return cs;
 }
 
@@ -60,13 +60,13 @@ int test_cons() {
   CT_IS(cs.count == 3, "c mpool length != 3 (%zd)", cs.count);
 
   char *vals[] = {"DDD", "EEE", "FFF"};
-  CT_Cons *c2 = ct_cons_from_parray((void **)vals, 3, NULL, &pool);
+  CT_Cons *c2  = ct_cons_from_parray((void **)vals, 3, NULL, &pool);
   ct_cons_iterate(c2, verify_cons_char, reset_state(&cs, vals));
   CT_IS(!cs.err, "cons != src array (%zd errors)", cs.err);
   CT_IS(cs.count == 3, "c2 length != 3 (%zd)", cs.count);
 
   float fvals[] = {23, 24, 25};
-  CT_Cons *cf = ct_cons_from_array(fvals, 3, sizeof(float), NULL, &pool);
+  CT_Cons *cf   = ct_cons_from_array(fvals, 3, sizeof(float), NULL, &pool);
   reset_state(&cs, fvals);
   ct_cons_iterate(cf, verify_cons_float, &cs);
   CT_IS(!cs.err, "cons != src array (%zd errors)", cs.err);

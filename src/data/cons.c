@@ -13,20 +13,20 @@ CT_EXPORT CT_Cons* ct_cons(void* x, CT_Cons* head, CT_MPool* mpool) {
   CT_Cons* cell = CT_MP_ALLOC(mpool, CT_Cons);
   CT_CHECK_MEM(cell);
   cell->value = x;
-  cell->next = head;
+  cell->next  = head;
 fail:
   return cell;
 }
 
 static void ct_cons_iterate_clone(CT_Cons* c, void* cstate) {
   CT_ConsCloneState* state = (CT_ConsCloneState*)cstate;
-  c = ct_cons(c->value, NULL, state->pool);
+  c                        = ct_cons(c->value, NULL, state->pool);
   if (state->head == NULL) {
     state->head = c;
     state->prev = c;
   } else {
     state->prev->next = c;
-    state->prev = c;
+    state->prev       = c;
   }
 }
 

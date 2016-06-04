@@ -47,10 +47,10 @@ static int equiv_edge_vec3f(const void *a, const void *b, size_t as,
   return 0;
 }
 
-static CT_HTOps _ht_vertex_ops_vec3f = {.hash = hash_vec3f,
+static CT_HTOps _ht_vertex_ops_vec3f = {.hash       = hash_vec3f,
                                         .equiv_keys = equiv_vec3f};
 
-static CT_HTOps _ht_edge_ops_vec3f = {.hash = hash_edge_vec3f,
+static CT_HTOps _ht_edge_ops_vec3f = {.hash       = hash_edge_vec3f,
                                       .equiv_keys = equiv_edge_vec3f};
 
 int ct_mesh_init(CT_Mesh *m, size_t numF, size_t numV) {

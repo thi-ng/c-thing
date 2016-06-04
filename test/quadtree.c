@@ -27,7 +27,7 @@ static int ct_qtree_bounds(CT_QTNode *node, void *state) {
 
 static int ct_qtree_select(CT_QTNode *node, void *state) {
   struct isec_t *isec = (struct isec_t *)state;
-  CT_Vec2f p = {node->x + node->w, node->y + node->h};
+  CT_Vec2f p          = {node->x + node->w, node->y + node->h};
   if (ct_intersect_rect_circle(&node->pos, &p, &isec->c, isec->r)) {
     if (node->type == CT_TREE_LEAF) {
       isec->sel[isec->num++] = node->point;
@@ -50,10 +50,10 @@ int test_quadtree() {
   CT_MPool vpool;
   ct_qtree_init(&t, 0, 0, 100, 100, 0x10000);
   ct_mpool_init(&vpool, 0x10000, sizeof(CT_Vec2f));
-  CT_Vec2f *a = ct_vec2f(10, 10, &vpool);
-  CT_Vec2f *b = ct_vec2f(10, 11, &vpool);
+  CT_Vec2f *a  = ct_vec2f(10, 10, &vpool);
+  CT_Vec2f *b  = ct_vec2f(10, 11, &vpool);
   CT_Vec2f *b2 = ct_vec2f(10.1, 11, &vpool);
-  CT_Vec2f *c = ct_vec2f(50, 12, &vpool);
+  CT_Vec2f *c  = ct_vec2f(50, 12, &vpool);
   ct_qtree_insert(&t, a, NULL);
   ct_qtree_insert(&t, b, NULL);
   ct_qtree_insert(&t, c, NULL);

@@ -62,7 +62,7 @@ CT_EXPORT void bench_sse(CT_Vec3f *a, CT_Vec3f *b) {
   for (size_t i = 0; i < 1e6; i++) {
     ct_add3fv_imm(a, b);
   }
-  clock_t end = clock();
+  clock_t end     = clock();
   double measured = (double)(end - begin) / CLOCKS_PER_SEC * 1000.0;
   CT_INFO("bench: %1.3fms", measured);
   CT_INFO("[%f, %f, %f]", a->x, a->y, a->z);

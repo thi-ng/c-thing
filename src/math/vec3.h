@@ -66,9 +66,9 @@ CT_EXPORT ct_inline float ct_dot3fv(const CT_Vec3f *a, const CT_Vec3f *b) {
 CT_EXPORT ct_inline CT_Vec3f *ct_cross3fv_imm(CT_Vec3f *a, const CT_Vec3f *b) {
   float x = a->y * b->z - a->z * b->y;
   float y = a->z * b->x - a->x * b->z;
-  a->z = a->x * b->y - a->y * b->x;
-  a->y = y;
-  a->x = x;
+  a->z    = a->x * b->y - a->y * b->x;
+  a->y    = y;
+  a->x    = x;
   return a;
 }
 

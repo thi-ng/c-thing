@@ -15,27 +15,27 @@
   }                                                                            \
                                                                                \
   CT_EXPORT ct_inline type *name##n_imm(type *v, ptype n) {                    \
-    __m128 b = {n, n, n, n};                                                   \
+    __m128 b      = {n, n, n, n};                                              \
     v->mmval op## = b;                                                         \
     return v;                                                                  \
   }                                                                            \
                                                                                \
   CT_EXPORT ct_inline type *name##n(const type *v, ptype n, type *out) {       \
-    __m128 b = {n, n, n, n};                                                   \
+    __m128 b   = {n, n, n, n};                                                 \
     out->mmval = v->mmval op b;                                                \
     return out;                                                                \
   }                                                                            \
                                                                                \
   CT_EXPORT ct_inline type *name##xyzw_imm(type *v, ptype x, ptype y, ptype z, \
                                            ptype w) {                          \
-    __m128 b = {x, y, z, w};                                                   \
+    __m128 b      = {x, y, z, w};                                              \
     v->mmval op## = b;                                                         \
     return v;                                                                  \
   }                                                                            \
                                                                                \
   CT_EXPORT ct_inline type *name##xyzw(const type *v, ptype x, ptype y,        \
                                        ptype z, ptype w, type *out) {          \
-    __m128 b = {x, y, z, w};                                                   \
+    __m128 b   = {x, y, z, w};                                                 \
     out->mmval = v->mmval op b;                                                \
     return out;                                                                \
   }

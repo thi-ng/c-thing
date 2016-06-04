@@ -22,7 +22,7 @@ static int val_is(CT_Hashtable *t, char *k, char *v) {
 
 static void ht_inc(void **val, size_t *vs, void *state) {
   char *s = (char *)(*val);
-  *s = *s + 1;
+  *s      = *s + 1;
 }
 
 static int dump_ht_char(CT_HTEntry *e, void *state) {
@@ -34,7 +34,7 @@ static int dump_ht_char(CT_HTEntry *e, void *state) {
 
 static int dump_ht_vec(CT_HTEntry *e, void *state) {
   struct htest_t *s = (struct htest_t *)state;
-  CT_Vec3f *v = (CT_Vec3f *)e->key;
+  CT_Vec3f *v       = (CT_Vec3f *)e->key;
   CT_DEBUG("entry: %zd, [(%f,%f,%f), %s]", s->num, v->x, v->y, v->z, e->val);
   s->num++;
   return 0;
@@ -125,12 +125,12 @@ int test_hashtable_vec() {
   CT_MPool vpool;
   CT_IS(!ct_mpool_init(&vpool, 16, sizeof(CT_Vec3f)), "init vpool");
   CT_Hashtable t, t2;
-  CT_HTOps ops = {.hash = ct_murmur3_32,
+  CT_HTOps ops = {.hash      = ct_murmur3_32,
                   .alloc_key = ht_alloc_mpool,
                   .alloc_val = ht_alloc_mpool,
-                  .free_key = ht_free_mpool,
-                  .free_val = ht_free_mpool,
-                  .state = &vpool};
+                  .free_key  = ht_free_mpool,
+                  .free_val  = ht_free_mpool,
+                  .state     = &vpool};
   CT_IS(!ct_ht_init(&t, &ops, 4, 8, CT_HT_NONE), "init");
   CT_Vec3f *a = ct_vec3f(1, 2, 3, &vpool);
   CT_Vec3f *b = ct_vec3f(1, 2, 3.000001, &vpool);
@@ -173,7 +173,7 @@ int bench_hashtable() {
   CT_MPool vpool;
   CT_HTOps ops = {.hash = ct_murmur3_32};
   uint32_t num = 1e6;
-  char *a = "a";
+  char *a      = "a";
   CT_IS(!ct_ht_init(&t, &ops, num, 0x10000, CT_HT_CONST_ALL), "init ht");
   CT_IS(!ct_mpool_init(&vpool, num, sizeof(CT_Vec3f)), "init vpool");
   for (size_t i = 0; i < num; i++) {

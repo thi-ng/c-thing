@@ -15,7 +15,7 @@ ct_inline void clear_children(CT_OTNode *node) {
 
 static int path_for_point(CT_OTNode *node, CT_Vec3f *p, CT_OTNode **path) {
   size_t i = 0;
-  *path++ = node;
+  *path++  = node;
   while (node->type == CT_TREE_BRANCH) {
     node = node->children[child_index(node, p)];
     if (node == NULL) {
@@ -34,20 +34,20 @@ static size_t make_leaf(CT_OTNode *node, size_t idx, CT_Vec3f *p, void *data,
   CT_OTNode *c = ct_mpool_alloc(pool);
   CT_CHECK_MEM(c);
   clear_children(c);
-  c->x = node->coords[idx & 1];
-  c->y = node->coords[(idx >> 1) + 2];
-  c->z = node->coords[(idx >> 2) + 4];
-  c->w = node->w * 0.5f;
-  c->h = node->h * 0.5f;
-  c->d = node->d * 0.5f;
-  c->cx = c->x + c->w;
-  c->cy = c->y + c->h;
-  c->cz = c->z + c->d;
-  c->type = CT_TREE_LEAF;
-  c->point = p;
-  c->data = data;
+  c->x                = node->coords[idx & 1];
+  c->y                = node->coords[(idx >> 1) + 2];
+  c->z                = node->coords[(idx >> 2) + 4];
+  c->w                = node->w * 0.5f;
+  c->h                = node->h * 0.5f;
+  c->d                = node->d * 0.5f;
+  c->cx               = c->x + c->w;
+  c->cy               = c->y + c->h;
+  c->cz               = c->z + c->d;
+  c->type             = CT_TREE_LEAF;
+  c->point            = p;
+  c->data             = data;
   node->children[idx] = c;
-  node->type = CT_TREE_BRANCH;
+  node->type          = CT_TREE_BRANCH;
   return 0;
 fail:
   return 1;
@@ -58,15 +58,15 @@ CT_EXPORT int ct_octree_init(CT_Octree *t, float x, float y, float z, float w,
   if (!ct_mpool_init(&t->pool, poolSize, sizeof(CT_OTNode))) {
     CT_OTNode *root = &t->root;
     clear_children(root);
-    root->x = x;
-    root->y = y;
-    root->z = z;
-    root->w = w;
-    root->h = h;
-    root->d = d;
-    root->cx = x + w * 0.5f;
-    root->cy = y + h * 0.5f;
-    root->cz = z + d * 0.5f;
+    root->x    = x;
+    root->y    = y;
+    root->z    = z;
+    root->w    = w;
+    root->h    = h;
+    root->d    = d;
+    root->cx   = x + w * 0.5f;
+    root->cy   = y + h * 0.5f;
+    root->cz   = z + d * 0.5f;
     root->type = CT_TREE_EMPTY;
     return 0;
   }
@@ -83,24 +83,24 @@ static int insert_node(CT_OTNode *node, CT_Vec3f *p, void *data,
   size_t idx;
   while (node->type == CT_TREE_BRANCH) {
     idx = child_index(node, p);
-    c = node->children[idx];
+    c   = node->children[idx];
     if (c == NULL) break;
     node = c;
   }
   switch (node->type) {
     case CT_TREE_EMPTY:
       node->point = p;
-      node->data = data;
-      node->type = CT_TREE_LEAF;
+      node->data  = data;
+      node->type  = CT_TREE_LEAF;
       return 0;
     case CT_TREE_LEAF:
       if (ct_deltaeq3fv(node->point, p, EPS)) {
         node->point = p;
-        node->data = data;
+        node->data  = data;
         return 0;
       } else {
         CT_Vec3f *op = node->point;
-        void *od = node->data;
+        void *od     = node->data;
         node->point = node->data = NULL;
         if (!make_leaf(node, child_index(node, p), p, data, pool)) {
           return insert_node(node, op, od, pool);
@@ -132,13 +132,13 @@ CT_EXPORT int ct_octree_remove(CT_Octree *t, CT_Vec3f *p) {
   CT_CHECK(p != NULL, "point is NULL");
   CT_OTNode *path[24];
   CT_OTNode *node = &t->root;
-  int d = path_for_point(node, p, path);
+  int d           = path_for_point(node, p, path);
   switch (d) {
     case -1:
       return 1;
     case 0:
       node->point = node->data = NULL;
-      node->type = CT_TREE_EMPTY;
+      node->type               = CT_TREE_EMPTY;
       break;
     default:
       while (d > 0) {
@@ -167,7 +167,7 @@ CT_EXPORT CT_OTNode *ct_octree_find_leaf(CT_Octree *t, CT_Vec3f *p) {
   size_t idx;
   while (node->type == CT_TREE_BRANCH) {
     idx = child_index(node, p);
-    c = node->children[idx];
+    c   = node->children[idx];
     if (c == NULL) {
       return NULL;
     }

@@ -61,8 +61,8 @@ int all_tests() {
   CT_RUN_TEST(test_hashset_edge);
 
   //CT_RUN_TEST(bench_vec3_create);
-  //CT_RUN_TEST(bench_hashtable);
-  //CT_RUN_TEST(bench_hashset);
+  CT_RUN_TEST(bench_hashtable);
+  CT_RUN_TEST(bench_hashset);
   return 0;
 }
 

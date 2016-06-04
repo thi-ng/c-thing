@@ -49,7 +49,7 @@ CT_EXPORT int ct_hemesh_init(CT_HEMesh *mesh, size_t numV, size_t numF) {
   ct_mpool_init(&mesh->mpoolF, numF, sizeof(CT_HEFace));
   ct_mpool_init(&mesh->mpoolE, numF * 2, sizeof(CT_HalfEdge));
   mesh->vertices = calloc(numV, sizeof(CT_HEVertex *));
-  mesh->faces = calloc(numF, sizeof(CT_HEFace *));
+  mesh->faces    = calloc(numF, sizeof(CT_HEFace *));
   mesh->numV = mesh->numF = 0;
   return 0;
 }

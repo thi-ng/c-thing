@@ -17,9 +17,9 @@
 #define CT_RUN_TEST(test)                                                  \
   CT_INFO("----- %s -----", "" #test);                                     \
   do {                                                                     \
-    size_t t = __testAsserts;                                              \
-    clock_t begin = clock();                                               \
-    int res = test();                                                      \
+    size_t t        = __testAsserts;                                       \
+    clock_t begin   = clock();                                             \
+    int res         = test();                                              \
     double measured = (double)(clock() - begin) / CLOCKS_PER_SEC * 1000.0; \
     CT_INFO("%zd assertions (%1.3fms)", __testAsserts - t, measured);      \
     __testsRun++;                                                          \

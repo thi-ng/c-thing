@@ -8,13 +8,13 @@ ct_inline size_t child_index(const CT_QTNode *node, const CT_Vec2f *p) {
 
 ct_inline void clear_children(CT_QTNode *node) {
   node->children[0] = node->children[1] = node->children[2] =
-      node->children[3] = NULL;
+      node->children[3]                 = NULL;
 }
 
 static int path_for_point(CT_QTNode *node, const CT_Vec2f *p,
                           CT_QTNode **path) {
   size_t i = 0;
-  *path++ = node;
+  *path++  = node;
   while (node->type == CT_TREE_BRANCH) {
     node = node->children[child_index(node, p)];
     if (node == NULL) {
@@ -33,17 +33,17 @@ static size_t make_leaf(CT_QTNode *node, size_t idx, CT_Vec2f *p, void *data,
   CT_QTNode *c = ct_mpool_alloc(pool);
   CT_CHECK_MEM(c);
   clear_children(c);
-  c->x = node->coords[(idx & 1) << 2];
-  c->y = node->coords[((idx & 2) << 1) + 1];
-  c->w = node->w * 0.5f;
-  c->h = node->h * 0.5f;
-  c->cx = c->x + c->w;
-  c->cy = c->y + c->h;
-  c->type = CT_TREE_LEAF;
-  c->point = p;
-  c->data = data;
+  c->x                = node->coords[(idx & 1) << 2];
+  c->y                = node->coords[((idx & 2) << 1) + 1];
+  c->w                = node->w * 0.5f;
+  c->h                = node->h * 0.5f;
+  c->cx               = c->x + c->w;
+  c->cy               = c->y + c->h;
+  c->type             = CT_TREE_LEAF;
+  c->point            = p;
+  c->data             = data;
   node->children[idx] = c;
-  node->type = CT_TREE_BRANCH;
+  node->type          = CT_TREE_BRANCH;
   return 0;
 fail:
   return 1;
@@ -54,12 +54,12 @@ CT_EXPORT int ct_qtree_init(CT_Quadtree *t, float x, float y, float w, float h,
   if (!ct_mpool_init(&t->pool, poolSize, sizeof(CT_QTNode))) {
     CT_QTNode *root = &t->root;
     clear_children(root);
-    root->x = x;
-    root->y = y;
-    root->w = w;
-    root->h = h;
-    root->cx = x + w * 0.5f;
-    root->cy = y + h * 0.5f;
+    root->x    = x;
+    root->y    = y;
+    root->w    = w;
+    root->h    = h;
+    root->cx   = x + w * 0.5f;
+    root->cy   = y + h * 0.5f;
     root->type = CT_TREE_EMPTY;
     return 0;
   }
@@ -76,24 +76,24 @@ static int insert_node(CT_QTNode *node, CT_Vec2f *p, void *data,
   size_t idx;
   while (node->type == CT_TREE_BRANCH) {
     idx = child_index(node, p);
-    c = node->children[idx];
+    c   = node->children[idx];
     if (c == NULL) break;
     node = c;
   }
   switch (node->type) {
     case CT_TREE_EMPTY:
       node->point = p;
-      node->data = data;
-      node->type = CT_TREE_LEAF;
+      node->data  = data;
+      node->type  = CT_TREE_LEAF;
       return 0;
     case CT_TREE_LEAF:
       if (ct_deltaeq2fv(node->point, p, EPS)) {
         node->point = p;
-        node->data = data;
+        node->data  = data;
         return 0;
       } else {
         CT_Vec2f *op = node->point;
-        void *od = node->data;
+        void *od     = node->data;
         node->point = node->data = NULL;
         if (!make_leaf(node, child_index(node, p), p, data, pool)) {
           return insert_node(node, op, od, pool);
@@ -125,13 +125,13 @@ CT_EXPORT int ct_qtree_remove(CT_Quadtree *t, CT_Vec2f *p) {
   CT_CHECK(p != NULL, "point is NULL");
   CT_QTNode *path[24];
   CT_QTNode *node = &t->root;
-  int d = path_for_point(node, p, path);
+  int d           = path_for_point(node, p, path);
   switch (d) {
     case -1:
       return 1;
     case 0:
       node->point = node->data = NULL;
-      node->type = CT_TREE_EMPTY;
+      node->type               = CT_TREE_EMPTY;
       break;
     default:
       while (d > 0) {
@@ -158,7 +158,7 @@ CT_EXPORT CT_QTNode *ct_qtree_find_leaf(CT_Quadtree *t, CT_Vec2f *p) {
   size_t idx;
   while (node->type == CT_TREE_BRANCH) {
     idx = child_index(node, p);
-    c = node->children[idx];
+    c   = node->children[idx];
     if (c == NULL) {
       return NULL;
     }

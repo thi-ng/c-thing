@@ -1,0 +1,6 @@
+BasedOnStyle: Google
+AllowShortFunctionsOnASingleLine: None
+AllowShortBlocksOnASingleLine: false
+ReflowComments: false
+SortIncludes: true
+AlignConsecutiveAssignments: true

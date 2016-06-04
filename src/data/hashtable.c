@@ -105,7 +105,7 @@ static int cons_entry(CT_Hashtable* t, uint32_t bin, void* key, void* val,
   // TODO resize table?
   CT_HTEntry* e = make_entry(t, key, val, ks, vs);
   CT_CHECK_MEM(e);
-  e->next = t->bins[bin];
+  e->next      = t->bins[bin];
   t->bins[bin] = e;
 fail:
   return e == NULL;
@@ -113,7 +113,7 @@ fail:
 
 static void delete_entry(CT_Hashtable* t, uint32_t bin, CT_HTEntry* e) {
   CT_HTEntry* first = t->bins[bin];
-  CT_HTEntry* rest = first->next;
+  CT_HTEntry* rest  = first->next;
   if (first == e) {
     t->bins[bin] = rest;
     free_entry(t, first);
@@ -129,7 +129,7 @@ static void delete_entry(CT_Hashtable* t, uint32_t bin, CT_HTEntry* e) {
         return;
       }
       first = rest;
-      rest = rest->next;
+      rest  = rest->next;
     }
   }
 }
@@ -146,9 +146,9 @@ CT_EXPORT int ct_ht_init(CT_Hashtable* t, CT_HTOps* ops, size_t num,
     if (t->ops.equiv_keys == NULL) {
       t->ops.equiv_keys = equiv_keys;
     }
-    t->binMask = num - 1;
-    t->flags = flags;
-    t->size = 0;
+    t->binMask    = num - 1;
+    t->flags      = flags;
+    t->size       = 0;
     t->collisions = 0;
   }
 fail:
@@ -177,7 +177,7 @@ CT_EXPORT void ct_ht_free(CT_Hashtable* t) {
 CT_EXPORT int ct_ht_assoc(CT_Hashtable* t, void* key, void* val, size_t ks,
                           size_t vs) {
   uint32_t hash = t->ops.hash(key, ks);
-  uint32_t bin = hash & t->binMask;
+  uint32_t bin  = hash & t->binMask;
   CT_HTEntry* e = t->bins[bin];
   if (e == NULL) {
     CT_DEBUG("new entry w/ hash: %x, bin: %x", hash, bin);
@@ -208,7 +208,7 @@ fail:
 }
 
 CT_EXPORT void* ct_ht_get(CT_Hashtable* t, void* key, size_t ks, size_t* vs) {
-  uint32_t bin = t->ops.hash(key, ks) & t->binMask;
+  uint32_t bin  = t->ops.hash(key, ks) & t->binMask;
   CT_HTEntry* e = t->bins[bin];
   if (e != NULL) {
     e = find_entry(t, e, key, ks);
@@ -223,7 +223,7 @@ CT_EXPORT void* ct_ht_get(CT_Hashtable* t, void* key, size_t ks, size_t* vs) {
 }
 
 CT_EXPORT int ct_ht_contains(CT_Hashtable* t, void* key, size_t ks) {
-  uint32_t bin = t->ops.hash(key, ks) & t->binMask;
+  uint32_t bin  = t->ops.hash(key, ks) & t->binMask;
   CT_HTEntry* e = t->bins[bin];
   if (e != NULL) {
     e = find_entry(t, e, key, ks);
@@ -232,7 +232,7 @@ CT_EXPORT int ct_ht_contains(CT_Hashtable* t, void* key, size_t ks) {
 }
 
 CT_EXPORT int ct_ht_dissoc(CT_Hashtable* t, void* key, size_t ks) {
-  uint32_t bin = t->ops.hash(key, ks) & t->binMask;
+  uint32_t bin  = t->ops.hash(key, ks) & t->binMask;
   CT_HTEntry* e = t->bins[bin];
   if (e != NULL) {
     e = find_entry(t, e, key, ks);
@@ -247,7 +247,7 @@ CT_EXPORT int ct_ht_dissoc(CT_Hashtable* t, void* key, size_t ks) {
 
 CT_EXPORT void* ct_ht_update(CT_Hashtable* t, void* key, size_t ks,
                              CT_HTUpdater update, void* state) {
-  uint32_t bin = t->ops.hash(key, ks) & t->binMask;
+  uint32_t bin  = t->ops.hash(key, ks) & t->binMask;
   CT_HTEntry* e = t->bins[bin];
   if (e != NULL) {
     e = find_entry(t, e, key, ks);

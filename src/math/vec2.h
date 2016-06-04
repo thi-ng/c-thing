@@ -185,8 +185,8 @@ CT_EXPORT ct_inline size_t ct_is_normalized2f(const CT_Vec2f *v) {
 
 CT_EXPORT ct_inline CT_Vec2f *ct_cartesian2f_imm(CT_Vec2f *v) {
   float x = v->x * cosf(v->y);
-  v->y = v->x * sinf(v->y);
-  v->x = x;
+  v->y    = v->x * sinf(v->y);
+  v->x    = x;
   return v;
 }
 
@@ -196,8 +196,8 @@ CT_EXPORT ct_inline CT_Vec2f *ct_cartesian2f(const CT_Vec2f *v, CT_Vec2f *out) {
 
 CT_EXPORT ct_inline CT_Vec2f *ct_polar2f_imm(CT_Vec2f *v) {
   float x = ct_mag2f(v);
-  v->y = ct_wrapf(atan2f(v->y, v->x), TAU);
-  v->x = x;
+  v->y    = ct_wrapf(atan2f(v->y, v->x), TAU);
+  v->x    = x;
   return v;
 }
 

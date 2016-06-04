@@ -4,11 +4,11 @@
 
 CT_EXPORT CT_QuadEdgeRef ct_qedge() {
   CT_QuadEdgeRef e = (CT_QuadEdgeRef)malloc(sizeof(CT_QuadEdge));
-  ONEXT(e) = e;
-  SYMDNEXT(e) = SYM(e);
-  ROTRNEXT(e) = TOR(e);
-  TORLNEXT(e) = ROT(e);
-  MARK(e) = 0;
+  ONEXT(e)         = e;
+  SYMDNEXT(e)      = SYM(e);
+  ROTRNEXT(e)      = TOR(e);
+  TORLNEXT(e)      = ROT(e);
+  MARK(e)          = 0;
   return e;
 }
 
@@ -26,16 +26,16 @@ CT_EXPORT void ct_qedge_destroy(CT_QuadEdgeRef e) {
 CT_EXPORT void ct_qedge_splice(CT_QuadEdgeRef a, CT_QuadEdgeRef b) {
   CT_QuadEdgeRef ta, tb;
   CT_QuadEdgeRef alpha = ROT(ONEXT(a));
-  CT_QuadEdgeRef beta = ROT(ONEXT(b));
+  CT_QuadEdgeRef beta  = ROT(ONEXT(b));
 
-  ta = ONEXT(a);
-  tb = ONEXT(b);
-  ONEXT(a) = tb;
-  ONEXT(b) = ta;
-  ta = ONEXT(alpha);
-  tb = ONEXT(beta);
+  ta           = ONEXT(a);
+  tb           = ONEXT(b);
+  ONEXT(a)     = tb;
+  ONEXT(b)     = ta;
+  ta           = ONEXT(alpha);
+  tb           = ONEXT(beta);
   ONEXT(alpha) = tb;
-  ONEXT(beta) = ta;
+  ONEXT(beta)  = ta;
 }
 
 /* Enumerate edge quads */

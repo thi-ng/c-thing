@@ -73,7 +73,7 @@ static int cons_entry(CT_Hashset* s, uint32_t bin, void* key, size_t ks) {
   // TODO resize?
   CT_HSEntry* e = make_entry(s, key, ks);
   CT_CHECK_MEM(e);
-  e->next = s->bins[bin];
+  e->next      = s->bins[bin];
   s->bins[bin] = e;
 fail:
   return e == NULL;
@@ -81,7 +81,7 @@ fail:
 
 static void delete_entry(CT_Hashset* s, uint32_t bin, CT_HSEntry* e) {
   CT_HSEntry* first = s->bins[bin];
-  CT_HSEntry* rest = first->next;
+  CT_HSEntry* rest  = first->next;
   if (first == e) {
     s->bins[bin] = rest;
     free_entry(s, first);
@@ -97,7 +97,7 @@ static void delete_entry(CT_Hashset* s, uint32_t bin, CT_HSEntry* e) {
         return;
       }
       first = rest;
-      rest = rest->next;
+      rest  = rest->next;
     }
   }
 }
@@ -114,9 +114,9 @@ CT_EXPORT int ct_hs_init(CT_Hashset* s, CT_HSOps* ops, size_t num,
     if (s->ops.equiv_keys == NULL) {
       s->ops.equiv_keys = equiv_keys;
     }
-    s->binMask = num - 1;
-    s->flags = flags;
-    s->size = 0;
+    s->binMask    = num - 1;
+    s->flags      = flags;
+    s->size       = 0;
     s->collisions = 0;
   }
 fail:
@@ -141,7 +141,7 @@ CT_EXPORT void ct_hs_free(CT_Hashset* s) {
 
 CT_EXPORT int ct_hs_assoc(CT_Hashset* s, void* key, size_t ks) {
   uint32_t hash = s->ops.hash(key, ks);
-  uint32_t bin = hash & s->binMask;
+  uint32_t bin  = hash & s->binMask;
   CT_HSEntry* e = s->bins[bin];
   if (e == NULL) {
     CT_DEBUG("new entry w/ hash: %x, bin: %x", hash, bin);
@@ -166,7 +166,7 @@ fail:
 }
 
 CT_EXPORT int ct_hs_contains(CT_Hashset* s, void* key, size_t ks) {
-  uint32_t bin = s->ops.hash(key, ks) & s->binMask;
+  uint32_t bin  = s->ops.hash(key, ks) & s->binMask;
   CT_HSEntry* e = s->bins[bin];
   if (e != NULL) {
     e = find_entry(s, e, key, ks);
@@ -175,7 +175,7 @@ CT_EXPORT int ct_hs_contains(CT_Hashset* s, void* key, size_t ks) {
 }
 
 CT_EXPORT int ct_hs_dissoc(CT_Hashset* s, void* key, size_t ks) {
-  uint32_t bin = s->ops.hash(key, ks) & s->binMask;
+  uint32_t bin  = s->ops.hash(key, ks) & s->binMask;
   CT_HSEntry* e = s->bins[bin];
   if (e != NULL) {
     e = find_entry(s, e, key, ks);
