@@ -1,8 +1,8 @@
 #include <assert.h>
 #include <stdio.h>
 
-#include "circle.h"
-#include "test.h"
+#include "common/test.h"
+#include "geom/circle.h"
 
 //extern CT_IArea __ct_iarea_circle2;
 //extern CT_ICircumference __ct_icircumference_circle2;

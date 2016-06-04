@@ -1,5 +1,5 @@
-#include "dbg.h"
-#include "quadedge.h"
+#include "common/dbg.h"
+#include "geom/quadedge.h"
 
 void trace_edge(CT_QuadEdgeRef e, void* _) {
   CT_INFO("edge: %zx next: %zx", e, ONEXT(e));

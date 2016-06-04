@@ -1,8 +1,8 @@
 #include <stdio.h>
 
-#include "dbg.h"
-#include "mpool.h"
-#include "test.h"
+#include "common/dbg.h"
+#include "common/test.h"
+#include "mem/mpool.h"
 
 CT_TEST_DECLS
 

@@ -1,8 +1,7 @@
-#include "cons.h"
-#include "mpool.h"
-
-#include "dbg.h"
-#include "test.h"
+#include "data/cons.h"
+#include "common/dbg.h"
+#include "common/test.h"
+#include "mem/mpool.h"
 
 CT_TEST_DECLS
 

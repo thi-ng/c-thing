@@ -1,11 +1,10 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "consrc.h"
-#include "object.h"
-
-#include "dbg.h"
-#include "test.h"
+#include "common/dbg.h"
+#include "common/test.h"
+#include "data/consrc.h"
+#include "data/object.h"
 
 #define BUF_SIZE 1024
 static char buf[BUF_SIZE];

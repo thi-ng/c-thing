@@ -1,9 +1,9 @@
 #include <string.h>
 
-#include "hashfn.h"
-#include "hashtable.h"
-#include "test.h"
-#include "vec.h"
+#include "common/test.h"
+#include "data/hashtable.h"
+#include "math/hashfn.h"
+#include "math/vec.h"
 
 CT_TEST_DECLS
 

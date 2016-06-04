@@ -4,7 +4,7 @@ language "C"
 includedirs { "src" }
 targetdir "bin/%{cfg.buildcfg}"
 files { "src/**.h", "src/**.c" }
-removefiles { "src/reflist.c" }
+removefiles {"src/geom/mesh.c", "src/reflist.c" }
 flags { "Symbols", "FatalWarnings", "C++11" }
 
 ----- test

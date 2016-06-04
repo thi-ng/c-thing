@@ -1,6 +1,6 @@
+#include "common/dbg.h"
+#include "common/test.h"
 #include "config.h"
-#include "dbg.h"
-#include "test.h"
 
 extern int test_mpool();
 extern int test_mpool_resize();

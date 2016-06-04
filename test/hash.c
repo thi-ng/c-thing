@@ -1,8 +1,8 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "hashfn.h"
-#include "test.h"
+#include "common/test.h"
+#include "math/hashfn.h"
 
 CT_TEST_DECLS
 

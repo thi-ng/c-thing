@@ -1,10 +1,10 @@
 #include <assert.h>
 #include <stdio.h>
 
-#include "dbg.h"
-#include "mpool.h"
-#include "test.h"
-#include "vec.h"
+#include "common/dbg.h"
+#include "common/test.h"
+#include "math/vec.h"
+#include "mem/mpool.h"
 
 CT_TEST_DECLS
 
