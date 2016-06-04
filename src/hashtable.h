@@ -9,11 +9,12 @@
 CT_BEGIN_DECLS
 
 // clang-format off
-enum {
+typedef enum {
   CT_HT_NONE = 0,
   CT_HT_CONST_KEYS = 1,
-  CT_HT_CONST_VALS = 2
-};
+  CT_HT_CONST_VALS = 2,
+  CT_HT_CONST_ALL = 3
+} CT_HTFlags;
 // clang-format on
 
 typedef struct CT_HTEntry CT_HTEntry;
@@ -42,14 +43,14 @@ typedef struct CT_Hashtable {
   CT_MPool pool;
   CT_HTOps ops;
   CT_HTEntry** bins;
+  uint32_t binMask;
   uint32_t size;
-  uint32_t numBins;
-  uint32_t numCollisions;
+  uint32_t collisions;
   size_t flags;
 } CT_Hashtable;
 
 int ct_ht_init(CT_Hashtable* t, CT_HTOps* ops, size_t num, size_t poolSize,
-               size_t flags);
+               CT_HTFlags flags);
 void ct_ht_free(CT_Hashtable* t);
 void* ct_ht_get(CT_Hashtable* t, void* key, size_t ks, size_t* vs);
 int ct_ht_assoc(CT_Hashtable* t, void* key, void* value, size_t ks, size_t vs);

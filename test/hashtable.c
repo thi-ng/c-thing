@@ -92,19 +92,19 @@ int test_hashtable_char() {
   CT_IS(val_is(&t, "d", "ddd"), "get d");
 
   CT_IS(4 == visit_count(&t, dump_ht_char), "count");
-  CT_IS(2 == t.numCollisions, "colls: %u", t.numCollisions);
+  CT_IS(2 == t.collisions, "colls: %u", t.collisions);
 
   CT_IS(!ct_ht_dissoc(&t, "c", 2), "dissoc c");
   CT_IS(3 == visit_count(&t, dump_ht_char), "count");
-  CT_IS(1 == t.numCollisions, "colls: %u", t.numCollisions);
+  CT_IS(1 == t.collisions, "colls: %u", t.collisions);
 
   CT_IS(!ct_ht_dissoc(&t, "b", 2), "dissoc b");
   CT_IS(2 == t.size, "size %u", t.size);
-  CT_IS(0 == t.numCollisions, "colls: %u", t.numCollisions);
+  CT_IS(0 == t.collisions, "colls: %u", t.collisions);
 
   CT_IS(!ct_ht_dissoc(&t, "d", 2), "dissoc d");
   CT_IS(1 == t.size, "size %u", t.size);
-  CT_IS(0 == t.numCollisions, "colls: %u", t.numCollisions);
+  CT_IS(0 == t.collisions, "colls: %u", t.collisions);
 
   CT_IS(!ct_ht_dissoc(&t, "a", 2), "dissoc a");
   CT_IS(0 == t.size, "size %u", t.size);
@@ -167,9 +167,7 @@ int bench_hashtable() {
   CT_HTOps ops = {.hash = ct_murmur3_32};
   uint32_t num = 1e6;
   char *a = "a";
-  CT_IS(
-      !ct_ht_init(&t, &ops, num, 0x10000, CT_HT_CONST_KEYS | CT_HT_CONST_VALS),
-      "init ht");
+  CT_IS(!ct_ht_init(&t, &ops, num, 0x10000, CT_HT_CONST_ALL), "init ht");
   CT_IS(!ct_mpool_init(&vpool, num, sizeof(CT_Vec3f)), "init vpool");
   for (size_t i = 0; i < num; i++) {
     ct_ht_assoc(&t, ct_vec3f(ct_rand_norm() * 1000, ct_rand_norm() * 1000,
@@ -177,7 +175,7 @@ int bench_hashtable() {
                 a, 12, 2);
   }
   CT_IS(num == t.size, "size: %u", t.size);
-  CT_INFO("collisions: %u", t.numCollisions);
+  CT_INFO("collisions: %u", t.collisions);
   CT_IS(num == visit_count(&t, dump_ht_vec), "count");
   ct_ht_free(&t);
   ct_mpool_free_all(&vpool);

@@ -118,14 +118,14 @@ static void delete_entry(CT_Hashtable* t, uint32_t bin, CT_HTEntry* e) {
     t->bins[bin] = rest;
     free_entry(t, first);
     if (rest != NULL) {
-      t->numCollisions--;
+      t->collisions--;
     }
   } else {
     while (rest != NULL) {
       if (rest == e) {
         first->next = e->next;
         free_entry(t, e);
-        t->numCollisions--;
+        t->collisions--;
         return;
       }
       first = rest;
@@ -135,7 +135,7 @@ static void delete_entry(CT_Hashtable* t, uint32_t bin, CT_HTEntry* e) {
 }
 
 CT_EXPORT int ct_ht_init(CT_Hashtable* t, CT_HTOps* ops, size_t num,
-                         size_t poolSize, size_t flags) {
+                         size_t poolSize, CT_HTFlags flags) {
   int mp = ct_mpool_init(&t->pool, poolSize, sizeof(CT_HTEntry));
   if (!mp) {
     num = ct_ceil_pow2(num);
@@ -146,10 +146,10 @@ CT_EXPORT int ct_ht_init(CT_Hashtable* t, CT_HTOps* ops, size_t num,
     if (t->ops.equiv_keys == NULL) {
       t->ops.equiv_keys = equiv_keys;
     }
-    t->numBins = num;
+    t->binMask = num - 1;
     t->flags = flags;
     t->size = 0;
-    t->numCollisions = 0;
+    t->collisions = 0;
   }
 fail:
   return mp || t->bins == NULL;
@@ -159,7 +159,7 @@ CT_EXPORT void ct_ht_free(CT_Hashtable* t) {
   const size_t freeK = !(t->flags & CT_HT_CONST_KEYS);
   const size_t freeV = !(t->flags & CT_HT_CONST_VALS);
   if (freeK || freeV) {
-    for (size_t i = 0; i < t->numBins; i++) {
+    for (size_t i = 0; i <= t->binMask; i++) {
       CT_HTEntry* e = t->bins[i];
       while (e != NULL) {
         if (freeK) free_key(t, e);
@@ -177,7 +177,7 @@ CT_EXPORT void ct_ht_free(CT_Hashtable* t) {
 CT_EXPORT int ct_ht_assoc(CT_Hashtable* t, void* key, void* val, size_t ks,
                           size_t vs) {
   uint32_t hash = t->ops.hash(key, ks);
-  uint32_t bin = hash & (t->numBins - 1);
+  uint32_t bin = hash & t->binMask;
   CT_HTEntry* e = t->bins[bin];
   if (e == NULL) {
     CT_DEBUG("new entry w/ hash: %x, bin: %x", hash, bin);
@@ -198,7 +198,7 @@ CT_EXPORT int ct_ht_assoc(CT_Hashtable* t, void* key, void* val, size_t ks,
       if (push_entry(t, bin, key, val, ks, vs)) {
         return 1;
       }
-      t->numCollisions++;
+      t->collisions++;
       t->size++;
     }
   }
@@ -208,7 +208,7 @@ fail:
 }
 
 CT_EXPORT void* ct_ht_get(CT_Hashtable* t, void* key, size_t ks, size_t* vs) {
-  uint32_t bin = t->ops.hash(key, ks) & (t->numBins - 1);
+  uint32_t bin = t->ops.hash(key, ks) & t->binMask;
   CT_HTEntry* e = t->bins[bin];
   if (e != NULL) {
     e = find_entry(t, e, key, ks);
@@ -223,7 +223,7 @@ CT_EXPORT void* ct_ht_get(CT_Hashtable* t, void* key, size_t ks, size_t* vs) {
 }
 
 CT_EXPORT int ct_ht_dissoc(CT_Hashtable* t, void* key, size_t ks) {
-  uint32_t bin = t->ops.hash(key, ks) & (t->numBins - 1);
+  uint32_t bin = t->ops.hash(key, ks) & t->binMask;
   CT_HTEntry* e = t->bins[bin];
   if (e != NULL) {
     e = find_entry(t, e, key, ks);
@@ -237,7 +237,7 @@ CT_EXPORT int ct_ht_dissoc(CT_Hashtable* t, void* key, size_t ks) {
 }
 
 CT_EXPORT int ct_ht_iterate(CT_Hashtable* t, CT_HTIterator iter, void* state) {
-  for (size_t i = 0; i < t->numBins; i++) {
+  for (size_t i = 0; i <= t->binMask; i++) {
     CT_HTEntry* e = t->bins[i];
     while (e != NULL) {
       int res = iter(e, state);

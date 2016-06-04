@@ -86,14 +86,14 @@ static void delete_entry(CT_Hashset* s, uint32_t bin, CT_HSEntry* e) {
     s->bins[bin] = rest;
     free_entry(s, first);
     if (rest != NULL) {
-      s->numCollisions--;
+      s->collisions--;
     }
   } else {
     while (rest != NULL) {
       if (rest == e) {
         first->next = e->next;
         free_entry(s, e);
-        s->numCollisions--;
+        s->collisions--;
         return;
       }
       first = rest;
@@ -103,7 +103,7 @@ static void delete_entry(CT_Hashset* s, uint32_t bin, CT_HSEntry* e) {
 }
 
 CT_EXPORT int ct_hs_init(CT_Hashset* s, CT_HSOps* ops, size_t num,
-                         size_t poolSize, size_t flags) {
+                         size_t poolSize, CT_HSFlags flags) {
   int mp = ct_mpool_init(&s->pool, poolSize, sizeof(CT_HSEntry));
   if (!mp) {
     num = ct_ceil_pow2(num);
@@ -114,10 +114,10 @@ CT_EXPORT int ct_hs_init(CT_Hashset* s, CT_HSOps* ops, size_t num,
     if (s->ops.equiv_keys == NULL) {
       s->ops.equiv_keys = equiv_keys;
     }
-    s->numBins = num;
+    s->binMask = num - 1;
     s->flags = flags;
     s->size = 0;
-    s->numCollisions = 0;
+    s->collisions = 0;
   }
 fail:
   return mp || s->bins == NULL;
@@ -125,7 +125,7 @@ fail:
 
 CT_EXPORT void ct_hs_free(CT_Hashset* s) {
   if (!(s->flags & CT_HS_CONST_KEYS)) {
-    for (size_t i = 0; i < s->numBins; i++) {
+    for (size_t i = 0; i <= s->binMask; i++) {
       CT_HSEntry* e = s->bins[i];
       while (e != NULL) {
         free_key(s, e);
@@ -141,7 +141,7 @@ CT_EXPORT void ct_hs_free(CT_Hashset* s) {
 
 CT_EXPORT int ct_hs_assoc(CT_Hashset* s, void* key, size_t ks) {
   uint32_t hash = s->ops.hash(key, ks);
-  uint32_t bin = hash & (s->numBins - 1);
+  uint32_t bin = hash & s->binMask;
   CT_HSEntry* e = s->bins[bin];
   if (e == NULL) {
     CT_DEBUG("new entry w/ hash: %x, bin: %x", hash, bin);
@@ -156,7 +156,7 @@ CT_EXPORT int ct_hs_assoc(CT_Hashset* s, void* key, size_t ks) {
       if (push_entry(s, bin, key, ks)) {
         return 1;
       }
-      s->numCollisions++;
+      s->collisions++;
       s->size++;
     }
   }
@@ -166,7 +166,7 @@ fail:
 }
 
 CT_EXPORT int ct_hs_contains(CT_Hashset* s, void* key, size_t ks) {
-  uint32_t bin = s->ops.hash(key, ks) & (s->numBins - 1);
+  uint32_t bin = s->ops.hash(key, ks) & s->binMask;
   CT_HSEntry* e = s->bins[bin];
   if (e != NULL) {
     e = find_entry(s, e, key, ks);
@@ -175,7 +175,7 @@ CT_EXPORT int ct_hs_contains(CT_Hashset* s, void* key, size_t ks) {
 }
 
 CT_EXPORT int ct_hs_dissoc(CT_Hashset* s, void* key, size_t ks) {
-  uint32_t bin = s->ops.hash(key, ks) & (s->numBins - 1);
+  uint32_t bin = s->ops.hash(key, ks) & s->binMask;
   CT_HSEntry* e = s->bins[bin];
   if (e != NULL) {
     e = find_entry(s, e, key, ks);
@@ -189,7 +189,7 @@ CT_EXPORT int ct_hs_dissoc(CT_Hashset* s, void* key, size_t ks) {
 }
 
 CT_EXPORT int ct_hs_iterate(CT_Hashset* s, CT_HSIterator iter, void* state) {
-  for (size_t i = 0; i < s->numBins; i++) {
+  for (size_t i = 0; i <= s->binMask; i++) {
     CT_HSEntry* e = s->bins[i];
     while (e != NULL) {
       int res = iter(e, state);

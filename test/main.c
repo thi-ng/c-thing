@@ -17,9 +17,14 @@ extern int test_quadtree();
 extern int test_octree();
 extern int test_hashtable_char();
 extern int test_hashtable_vec();
+extern int test_hashtable_edge();
+extern int test_hashset_char();
+extern int test_hashset_vec();
+extern int test_hashset_edge();
 
 extern int bench_vec3_create();
 extern int bench_hashtable();
+extern int bench_hashset();
 
 CT_TEST_DECLS
 
@@ -37,7 +42,6 @@ int all_tests() {
   CT_RUN_TEST(test_mpool_resize);
   CT_RUN_TEST(test_vec2f);
   CT_RUN_TEST(test_vec3f);
-  CT_RUN_TEST(bench_vec3_create);
   CT_RUN_TEST(test_swizzle);
   CT_RUN_TEST(test_vec_hash);
   CT_RUN_TEST(test_circle);
@@ -49,7 +53,14 @@ int all_tests() {
   CT_RUN_TEST(test_octree);
   CT_RUN_TEST(test_hashtable_char);
   CT_RUN_TEST(test_hashtable_vec);
-  CT_RUN_TEST(bench_hashtable);
+  CT_RUN_TEST(test_hashtable_edge);
+  CT_RUN_TEST(test_hashset_char);
+  CT_RUN_TEST(test_hashset_vec);
+  CT_RUN_TEST(test_hashset_edge);
+
+  //CT_RUN_TEST(bench_vec3_create);
+  //CT_RUN_TEST(bench_hashtable);
+  //CT_RUN_TEST(bench_hashset);
   return 0;
 }
 

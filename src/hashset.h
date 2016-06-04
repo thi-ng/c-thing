@@ -9,10 +9,10 @@
 CT_BEGIN_DECLS
 
 // clang-format off
-enum {
+typedef enum {
   CT_HS_NONE = 0,
   CT_HS_CONST_KEYS = 1
-};
+} CT_HSFlags;
 // clang-format on
 
 typedef struct CT_HSEntry CT_HSEntry;
@@ -37,14 +37,14 @@ typedef struct CT_Hashset {
   CT_MPool pool;
   CT_HSOps ops;
   CT_HSEntry** bins;
+  uint32_t binMask;
   uint32_t size;
-  uint32_t numBins;
-  uint32_t numCollisions;
+  uint32_t collisions;
   size_t flags;
 } CT_Hashset;
 
 int ct_hs_init(CT_Hashset* s, CT_HSOps* ops, size_t num, size_t poolSize,
-               size_t flags);
+               CT_HSFlags flags);
 void ct_hs_free(CT_Hashset* s);
 int ct_hs_contains(CT_Hashset* s, void* key, size_t ks);
 int ct_hs_assoc(CT_Hashset* s, void* key, size_t ks);
