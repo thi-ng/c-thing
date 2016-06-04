@@ -4,6 +4,7 @@
 
 extern int test_mpool();
 extern int test_mpool_resize();
+extern int test_mpool_compact();
 extern int test_vec2f();
 extern int test_vec3f();
 extern int test_swizzle();
@@ -40,6 +41,7 @@ int all_tests() {
 #endif
   CT_RUN_TEST(test_mpool);
   CT_RUN_TEST(test_mpool_resize);
+  CT_RUN_TEST(test_mpool_compact);
   CT_RUN_TEST(test_vec2f);
   CT_RUN_TEST(test_vec3f);
   CT_RUN_TEST(test_swizzle);

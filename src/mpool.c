@@ -69,7 +69,7 @@ CT_EXPORT CT_MPCompactResult ct_mpool_compact(CT_MPool *mp) {
     uintptr_t end = (uintptr_t)(head->pool + mp->numBlocks * mp->blockSize);
     CT_DEBUG("checking sub-pool: %p (0x%zx - 0x%zx)", head->pool, start, end);
     while (f != NULL) {
-      CT_DEBUG("checking block: %p", f);
+      //CT_DEBUG("checking block: %p", f);
       if ((uintptr_t)f >= start && (uintptr_t)f < end) {
         removed++;
       }
@@ -108,7 +108,7 @@ CT_EXPORT CT_MPCompactResult ct_mpool_compact(CT_MPool *mp) {
       prevHead = head;
       head = head->next;
     }
-    ct_mpool_trace(mp);
+    //ct_mpool_trace(mp);
   }
   return res;
 }

@@ -42,7 +42,7 @@ int test_mpool() {
   CT_IS((uint8_t *)pool.freeList == (uint8_t *)b, "b not 1st free block");
   CT_IS((uint8_t *)pool.freeList->next == (uint8_t *)a, "a not 2nd free block");
 
-  ct_mpool_trace(&pool);
+  //ct_mpool_trace(&pool);
   ct_mpool_free_all(&pool);
   return 0;
 }
@@ -69,7 +69,7 @@ int test_mpool_resize() {
   CT_IS(pool.freeList->next == NULL, "freelist length != 1");
   ct_mpool_alloc(&pool);
   ct_mpool_alloc(&pool);
-  ct_mpool_trace(&pool);
+  //ct_mpool_trace(&pool);
   ct_mpool_free_all(&pool);
   return 0;
 }
