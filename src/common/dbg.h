@@ -53,7 +53,7 @@
 #define CT_SUCCESS(M, ...)
 #define CT_SENTINEL(M, ...) \
   {}
-#endif
+#endif  // CT_FEATURE_LOG
 
 #ifdef CT_FEATURE_CHECKS
 #define CT_CHECK(A, M, ...)     \
@@ -70,9 +70,14 @@
     goto fail;                    \
   }
 
-#define CT_CHECK_MEM(A) CT_CHECK((A), "Out of memory!")
 #else
 #define CT_CHECK(A, M, ...)
 #define CT_CHECK_DEBUG(A, M, ...)
-#define CT_CHECK_MEM(A)
-#endif
+#endif  // CT_FEATURE_CHECKS
+
+#define CT_CHECK_MEM(A)         \
+  if (!(A)) {                   \
+    CT_ERROR("Out of memory!"); \
+    errno = 0;                  \
+    goto fail;                  \
+  }
