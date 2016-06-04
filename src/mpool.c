@@ -14,12 +14,12 @@ CT_EXPORT size_t ct_mpool_init(CT_MPool *mp, size_t num, size_t blockSize) {
   mp->numBlocks = num;
   mp->blockSize = blockSize;
   mp->freeList = NULL;
-  mp->nextID = 0;
   CT_MPoolList *head = malloc(sizeof(CT_MPoolList));
   CT_CHECK_MEM(head);
   head->pool = malloc(num * mp->blockSize);
   CT_CHECK_MEM(head->pool);
   head->next = NULL;
+  head->nextID = 0;
   mp->head = head;
   mp->poolID = _mpool_id++;
   CT_DEBUG("init pool: %zd, head pool: %p, bsize: %zd, num: %zd", mp->poolID,
@@ -57,7 +57,6 @@ fail:
 }
 
 CT_EXPORT CT_MPCompactResult ct_mpool_compact(CT_MPool *mp) {
-  size_t limit = mp->nextID;
   CT_MPoolList *head = mp->head;
   CT_MPoolList *prevHead = NULL;
   CT_MPCompactResult res = {.blocks = 0, .pools = 0};
@@ -65,6 +64,7 @@ CT_EXPORT CT_MPCompactResult ct_mpool_compact(CT_MPool *mp) {
     CT_MPoolFreeList *f = mp->freeList;
     CT_MPoolFreeList *prev = NULL;
     size_t removed = 0;
+    size_t limit = head->nextID;
     uintptr_t start = (uintptr_t)head->pool;
     uintptr_t end = (uintptr_t)(head->pool + mp->numBlocks * mp->blockSize);
     CT_DEBUG("checking sub-pool: %p (0x%zx - 0x%zx)", head->pool, start, end);
@@ -108,7 +108,6 @@ CT_EXPORT CT_MPCompactResult ct_mpool_compact(CT_MPool *mp) {
       prevHead = head;
       head = head->next;
     }
-    limit = mp->numBlocks;
     ct_mpool_trace(mp);
   }
   return res;
@@ -119,9 +118,9 @@ CT_EXPORT void *ct_mpool_alloc(CT_MPool *mp) {
   if (mp->freeList != NULL) {
     ptr = mp->freeList;
     mp->freeList = mp->freeList->next;
-  } else if (mp->nextID < mp->numBlocks) {
-    ptr = mp->head->pool + mp->nextID * mp->blockSize;
-    mp->nextID++;
+  } else if (mp->head->nextID < mp->numBlocks) {
+    ptr = mp->head->pool + mp->head->nextID * mp->blockSize;
+    mp->head->nextID++;
   } else {
     CT_MPoolList *head = malloc(sizeof(CT_MPoolList));
     CT_CHECK_MEM(head);
@@ -130,8 +129,8 @@ CT_EXPORT void *ct_mpool_alloc(CT_MPool *mp) {
     CT_DEBUG("adding new sub-pool: %p, %p", head, head->pool);
     ptr = head->pool;
     head->next = mp->head;
+    head->nextID = 1;
     mp->head = head;
-    mp->nextID = 1;
   }
   CT_DEBUG("pool: %zd, alloc block: %p", mp->poolID, ptr);
 fail:
@@ -140,7 +139,7 @@ fail:
 
 CT_EXPORT void ct_mpool_trace(CT_MPool *mp) {
   CT_INFO("pool: %zd, nextID: %zd, head: %p, free: %p, bsize: %zd, num: %zd",
-          mp->poolID, mp->nextID, mp->head, mp->freeList, mp->blockSize,
+          mp->poolID, mp->head->nextID, mp->head, mp->freeList, mp->blockSize,
           mp->numBlocks);
   CT_MPoolList *p = mp->head;
   while (p) {

@@ -24,6 +24,7 @@ struct CT_MPoolFreeList {
 struct CT_MPoolList {
   uint8_t *pool;
   CT_MPoolList *next;
+  size_t nextID;
 };
 
 typedef struct {
@@ -31,7 +32,6 @@ typedef struct {
   CT_MPoolFreeList *freeList;
   size_t blockSize;
   size_t numBlocks;
-  size_t nextID;
   size_t poolID;
 } CT_MPool;
 
