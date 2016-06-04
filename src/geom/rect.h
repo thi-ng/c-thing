@@ -8,7 +8,7 @@ CT_BEGIN_DECLS
 
 typedef union {
   struct {
-    CT_Vec2f p;
+    CT_Vec2f pos;
     CT_Vec2f size;
   };
   float buf[4];

@@ -29,8 +29,8 @@ static size_t make_leaf(CT_Quadtree *q, size_t idx, CT_Vec2f *p, void *data,
   CT_Quadtree *c = CT_MP_ALLOC(pool, CT_Quadtree);
   CT_CHECK_MEM(c);
   clear_children(c);
-  c->x = q->coords[idx & 1];
-  c->y = q->coords[(idx >> 1) + 2];
+  c->x = q->coords[(idx & 1) << 2];
+  c->y = q->coords[((idx & 2) << 1) + 1];
   c->w = q->w * 0.5f;
   c->h = q->h * 0.5f;
   c->cx = c->x + c->w;
@@ -98,7 +98,7 @@ fail:
   return 1;
 }
 
-size_t ct_qtree_remove(CT_Quadtree *q, CT_Vec2f *p, CT_MPool *pool) {
+CT_EXPORT size_t ct_qtree_remove(CT_Quadtree *q, CT_Vec2f *p, CT_MPool *pool) {
   CT_Quadtree *path[24];
   int d = path_for_point(q, p, path);
   switch (d) {

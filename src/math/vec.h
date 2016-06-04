@@ -9,8 +9,8 @@ extern "C" {
 #include <stdint.h>
 
 #include "config.h"
-#include "math/math.h"
 #include "math/hashfn.h"
+#include "math/math.h"
 #include "mem/mpool.h"
 
 #include "math/vec2.h"

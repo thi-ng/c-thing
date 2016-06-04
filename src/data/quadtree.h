@@ -3,6 +3,7 @@
 #include <stddef.h>
 
 #include "data/tree.h"
+#include "geom/rect.h"
 #include "math/vec.h"
 #include "mem/mpool.h"
 
@@ -14,8 +15,12 @@ struct CT_Quadtree {
   void *data;
   union {
     struct {
-      float x, cx, y, cy, w, h;
+      float x, y, w, h, cx, cy;
     };
+    struct {
+      CT_Vec2f pos, size, centroid;
+    };
+    CT_Rect2f bounds;
     float coords[6];
   };
   size_t type;

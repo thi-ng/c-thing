@@ -11,7 +11,7 @@ struct bounds_t {
 };
 
 struct isec_t {
-  CT_Vec2f min, max, c;
+  CT_Vec2f c;
   float r;
   CT_Vec2f *sel[4];
   size_t num;
@@ -26,13 +26,9 @@ int ct_qtree_bounds(CT_Quadtree *q, void *state) {
 }
 
 int ct_qtree_select(CT_Quadtree *q, void *state) {
-  //ct_qtree_trace_node(q, -1);
   struct isec_t *isec = (struct isec_t *)state;
-  ct_set2fxy(&isec->min, q->x, q->y);
-  ct_set2fxy(&isec->max, q->x + q->w, q->y + q->h);
-  int i = ct_intersect_rect_circle(&isec->min, &isec->max, &isec->c, isec->r);
-  //CT_INFO("isec: %d", i);
-  if (i) {
+  CT_Vec2f p = {q->x + q->w, q->y + q->h};
+  if (ct_intersect_rect_circle(&q->pos, &p, &isec->c, isec->r)) {
     if (q->type == CT_TREE_LEAF) {
       isec->sel[isec->num++] = q->point;
     }
@@ -62,8 +58,7 @@ int test_quadtree() {
   ct_qtree_insert(&q, b, NULL, &qpool);
   ct_qtree_insert(&q, c, NULL, &qpool);
   ct_qtree_trace(&q, 0);
-  struct isec_t isec = {
-      {0, 0}, {0, 0}, {50, 50}, 70.f, {NULL, NULL, NULL, NULL}, 0};
+  struct isec_t isec = {{50, 50}, 70.f, {NULL, NULL, NULL, NULL}, 0};
   ct_qtree_visit(&q, ct_qtree_select, &isec);
   CT_IS(3 == isec.num, "wrong isec count: %zd", isec.num);
   CT_IS(ct_qtree_find_leaf(&q, a), "can't find a");
