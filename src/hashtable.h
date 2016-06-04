@@ -19,7 +19,8 @@ typedef enum {
 
 typedef struct CT_HTEntry CT_HTEntry;
 
-typedef int (*CT_HTIterator)(CT_HTEntry*, void*);
+typedef int (*CT_HTVisitor)(CT_HTEntry* e, void* state);
+typedef void (*CT_HTUpdater)(void** val, size_t* vs, void* state);
 
 typedef struct {
   uint32_t (*hash)(const void* key, size_t size);
@@ -56,7 +57,9 @@ void* ct_ht_get(CT_Hashtable* t, void* key, size_t ks, size_t* vs);
 int ct_ht_contains(CT_Hashtable* t, void* key, size_t ks);
 int ct_ht_assoc(CT_Hashtable* t, void* key, void* value, size_t ks, size_t vs);
 int ct_ht_dissoc(CT_Hashtable* t, void* key, size_t ks);
-int ct_ht_iterate(CT_Hashtable* t, CT_HTIterator visit, void* state);
+void* ct_ht_update(CT_Hashtable* t, void* key, size_t ks, CT_HTUpdater update,
+                   void* state);
+int ct_ht_iterate(CT_Hashtable* t, CT_HTVisitor visit, void* state);
 int ct_ht_into(CT_Hashtable* dest, CT_Hashtable* src);
 
 CT_END_DECLS

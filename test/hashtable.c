@@ -20,6 +20,11 @@ static int val_is(CT_Hashtable *t, char *k, char *v) {
   return res ? !strcmp(res, v) : 0;
 }
 
+static void ht_inc(void **val, size_t *vs, void *state) {
+  char *s = (char *)(*val);
+  *s = *s + 1;
+}
+
 static int dump_ht_char(CT_HTEntry *e, void *state) {
   struct htest_t *s = (struct htest_t *)state;
   CT_DEBUG("entry: %zd, [%s, %s]", s->num, e->key, e->val);
@@ -35,7 +40,7 @@ static int dump_ht_vec(CT_HTEntry *e, void *state) {
   return 0;
 }
 
-static size_t visit_count(CT_Hashtable *t, CT_HTIterator visit) {
+static size_t visit_count(CT_Hashtable *t, CT_HTVisitor visit) {
   struct htest_t v = {.num = 0};
   ct_ht_iterate(t, visit, &v);
   return v.num;
@@ -82,6 +87,8 @@ int test_hashtable_char() {
   CT_IS(val_is(&t, "a", "aaa"), "get a");
   CT_IS(!ct_ht_assoc(&t, "a", "AAA", 2, 4), "re-assoc a");
   CT_IS(val_is(&t, "a", "AAA"), "get a");
+  CT_IS(!strcmp("BAA", (char *)ct_ht_update(&t, "a", 2, ht_inc, NULL)),
+        "update");
   CT_IS(NULL == ct_ht_get(&t, "b", 2, NULL), "no b");
   // hash collissions
   CT_IS(!ct_ht_assoc(&t, "b", "bbb", 2, 4), "assoc b");

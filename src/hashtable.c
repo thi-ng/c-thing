@@ -245,7 +245,22 @@ CT_EXPORT int ct_ht_dissoc(CT_Hashtable* t, void* key, size_t ks) {
   return 1;
 }
 
-CT_EXPORT int ct_ht_iterate(CT_Hashtable* t, CT_HTIterator iter, void* state) {
+CT_EXPORT void* ct_ht_update(CT_Hashtable* t, void* key, size_t ks,
+                             CT_HTUpdater update, void* state) {
+  uint32_t bin = t->ops.hash(key, ks) & t->binMask;
+  CT_HTEntry* e = t->bins[bin];
+  if (e != NULL) {
+    e = find_entry(t, e, key, ks);
+  }
+  if (e != NULL) {
+    // TODO mutate or free old & create new val
+    update(&e->val, &e->valSize, state);
+    return e->val;
+  }
+  return NULL;
+}
+
+CT_EXPORT int ct_ht_iterate(CT_Hashtable* t, CT_HTVisitor iter, void* state) {
   for (size_t i = 0; i <= t->binMask; i++) {
     CT_HTEntry* e = t->bins[i];
     while (e != NULL) {
