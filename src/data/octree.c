@@ -2,207 +2,255 @@
 #include "common/dbg.h"
 #include "config.h"
 
-ct_inline size_t child_index(const CT_Octree *q, const CT_Vec3f *p) {
-  return (p->z < q->cz ? 0 : 4) + (p->y < q->cy ? 0 : 2) +
-         (p->x < q->cx ? 0 : 1);
+ct_inline size_t child_index(const CT_OTNode *node, const CT_Vec3f *p) {
+  return (p->z < node->cz ? 0 : 4) + (p->y < node->cy ? 0 : 2) +
+         (p->x < node->cx ? 0 : 1);
 }
 
-ct_inline void clear_children(CT_Octree *q) {
-  q->children[0] = q->children[1] = q->children[2] = q->children[3] =
-      q->children[4] = q->children[5] = q->children[6] = q->children[7] = NULL;
+ct_inline void clear_children(CT_OTNode *node) {
+  node->children[0] = node->children[1] = node->children[2] =
+      node->children[3] = node->children[4] = node->children[5] =
+          node->children[6] = node->children[7] = NULL;
 }
 
-static int path_for_point(CT_Octree *q, CT_Vec3f *p, CT_Octree **path) {
+static int path_for_point(CT_OTNode *node, CT_Vec3f *p, CT_OTNode **path) {
   size_t i = 0;
-  *path++ = q;
-  while (q->type == CT_TREE_BRANCH) {
-    q = q->children[child_index(q, p)];
-    if (q == NULL) {
+  *path++ = node;
+  while (node->type == CT_TREE_BRANCH) {
+    node = node->children[child_index(node, p)];
+    if (node == NULL) {
       return -1;
     }
-    *path++ = q;
+    *path++ = node;
     i++;
   }
-  return (q->type == CT_TREE_LEAF && ct_deltaeq3fv(q->point, p, EPS)) ? i : -1;
+  return (node->type == CT_TREE_LEAF && ct_deltaeq3fv(node->point, p, EPS))
+             ? i
+             : -1;
 }
 
-static size_t make_leaf(CT_Octree *q, size_t idx, CT_Vec3f *p, void *data,
+static size_t make_leaf(CT_OTNode *node, size_t idx, CT_Vec3f *p, void *data,
                         CT_MPool *pool) {
-  CT_Octree *c = CT_MP_ALLOC(pool, CT_Octree);
+  CT_OTNode *c = ct_mpool_alloc(pool);
   CT_CHECK_MEM(c);
   clear_children(c);
-  c->x = q->coords[idx & 1];
-  c->y = q->coords[(idx >> 1) + 2];
-  c->z = q->coords[(idx >> 2) + 4];
-  c->w = q->w * 0.5f;
-  c->h = q->h * 0.5f;
-  c->d = q->d * 0.5f;
+  c->x = node->coords[idx & 1];
+  c->y = node->coords[(idx >> 1) + 2];
+  c->z = node->coords[(idx >> 2) + 4];
+  c->w = node->w * 0.5f;
+  c->h = node->h * 0.5f;
+  c->d = node->d * 0.5f;
   c->cx = c->x + c->w;
   c->cy = c->y + c->h;
   c->cz = c->z + c->d;
   c->type = CT_TREE_LEAF;
   c->point = p;
   c->data = data;
-  q->children[idx] = c;
-  q->type = CT_TREE_BRANCH;
+  node->children[idx] = c;
+  node->type = CT_TREE_BRANCH;
   return 0;
 fail:
   return 1;
 }
 
-CT_EXPORT void ct_octree_init(CT_Octree *q, float x, float y, float z, float w,
-                              float h, float d) {
-  clear_children(q);
-  q->x = x;
-  q->y = y;
-  q->z = z;
-  q->w = w;
-  q->h = h;
-  q->d = d;
-  q->cx = x + w * 0.5f;
-  q->cy = y + h * 0.5f;
-  q->cz = z + d * 0.5f;
-  q->type = CT_TREE_EMPTY;
+CT_EXPORT int ct_octree_init(CT_Octree *t, float x, float y, float z, float w,
+                             float h, float d, size_t poolSize) {
+  if (!ct_mpool_init(&t->pool, poolSize, sizeof(CT_OTNode))) {
+    CT_OTNode *root = &t->root;
+    clear_children(root);
+    root->x = x;
+    root->y = y;
+    root->z = z;
+    root->w = w;
+    root->h = h;
+    root->d = d;
+    root->cx = x + w * 0.5f;
+    root->cy = y + h * 0.5f;
+    root->cz = z + d * 0.5f;
+    root->type = CT_TREE_EMPTY;
+    return 0;
+  }
+  return 1;
 }
 
-CT_EXPORT size_t ct_octree_insert(CT_Octree *q, CT_Vec3f *p, void *data,
-                                  CT_MPool *pool) {
-  CT_CHECK(q != NULL, "tree is NULL");
-  CT_CHECK(p != NULL, "point is NULL");
-  CT_Octree *c;
+CT_EXPORT void ct_octree_free(CT_Octree *t) {
+  ct_mpool_free_all(&t->pool);
+}
+
+static int insert_node(CT_OTNode *node, CT_Vec3f *p, void *data,
+                       CT_MPool *pool) {
+  CT_OTNode *c;
   size_t idx;
-  while (q->type == CT_TREE_BRANCH) {
-    idx = child_index(q, p);
-    c = q->children[idx];
+  while (node->type == CT_TREE_BRANCH) {
+    idx = child_index(node, p);
+    c = node->children[idx];
     if (c == NULL) break;
-    q = c;
+    node = c;
   }
-  switch (q->type) {
+  switch (node->type) {
     case CT_TREE_EMPTY:
-      q->point = p;
-      q->data = data;
-      q->type = CT_TREE_LEAF;
+      node->point = p;
+      node->data = data;
+      node->type = CT_TREE_LEAF;
       return 0;
     case CT_TREE_LEAF:
-      if (ct_deltaeq3fv(q->point, p, EPS)) {
-        q->point = p;
-        q->data = data;
+      if (ct_deltaeq3fv(node->point, p, EPS)) {
+        node->point = p;
+        node->data = data;
         return 0;
       } else {
-        CT_Vec3f *op = q->point;
-        void *od = q->data;
-        q->point = q->data = NULL;
-        if (!make_leaf(q, child_index(q, p), p, data, pool)) {
-          return ct_octree_insert(q, op, od, pool);
+        CT_Vec3f *op = node->point;
+        void *od = node->data;
+        node->point = node->data = NULL;
+        if (!make_leaf(node, child_index(node, p), p, data, pool)) {
+          return insert_node(node, op, od, pool);
         }
         return 1;
       }
     case CT_TREE_BRANCH:
-      return make_leaf(q, idx, p, data, pool);
+      return make_leaf(node, idx, p, data, pool);
     default:
-      CT_SENTINEL("invalid node type: %zu", q->type);
+      CT_SENTINEL("invalid node type: %zu", node->type);
   }
 fail:
   return 1;
 }
 
-size_t ct_octree_remove(CT_Octree *q, CT_Vec3f *p, CT_MPool *pool) {
-  CT_Octree *path[24];
-  int d = path_for_point(q, p, path);
+CT_EXPORT int ct_octree_insert(CT_Octree *t, CT_Vec3f *p, void *data) {
+  CT_CHECK(t != NULL, "tree is NULL");
+  CT_CHECK(p != NULL, "point is NULL");
+  if (insert_node(&t->root, p, data, &t->pool)) {
+    t->size++;
+    return 0;
+  }
+fail:
+  return 1;
+}
+
+CT_EXPORT int ct_octree_remove(CT_Octree *t, CT_Vec3f *p) {
+  CT_CHECK(t != NULL, "tree is NULL");
+  CT_CHECK(p != NULL, "point is NULL");
+  CT_OTNode *path[24];
+  CT_OTNode *node = &t->root;
+  int d = path_for_point(node, p, path);
   switch (d) {
     case -1:
       return 1;
     case 0:
-      q->point = q->data = NULL;
-      q->type = CT_TREE_EMPTY;
+      node->point = node->data = NULL;
+      node->type = CT_TREE_EMPTY;
       break;
     default:
       while (d > 0) {
-        CT_MP_FREE(pool, path[d]);
+        ct_mpool_free(&t->pool, path[d]);
         d--;
-        q = path[d];
-        q->children[child_index(q, p)] = NULL;
-        if (q->children[0] != NULL || q->children[1] != NULL ||
-            q->children[2] != NULL || q->children[3] != NULL ||
-            q->children[4] != NULL || q->children[5] != NULL ||
-            q->children[6] != NULL || q->children[7] != NULL) {
+        node = path[d];
+        node->children[child_index(node, p)] = NULL;
+        if (node->children[0] != NULL || node->children[1] != NULL ||
+            node->children[2] != NULL || node->children[3] != NULL ||
+            node->children[4] != NULL || node->children[5] != NULL ||
+            node->children[6] != NULL || node->children[7] != NULL) {
           break;
         }
-        q->type = CT_TREE_EMPTY;
+        node->type = CT_TREE_EMPTY;
       }
   }
   return 0;
+fail:
+  return 1;
 }
 
-CT_EXPORT CT_Octree *ct_octree_find_leaf(CT_Octree *q, CT_Vec3f *p) {
-  CT_Octree *c;
+CT_EXPORT CT_OTNode *ct_octree_find_leaf(CT_Octree *t, CT_Vec3f *p) {
+  CT_CHECK(t != NULL, "tree is NULL");
+  CT_CHECK(p != NULL, "point is NULL");
+  CT_OTNode *c, *node = &t->root;
   size_t idx;
-  while (q->type == CT_TREE_BRANCH) {
-    idx = child_index(q, p);
-    c = q->children[idx];
+  while (node->type == CT_TREE_BRANCH) {
+    idx = child_index(node, p);
+    c = node->children[idx];
     if (c == NULL) {
       return NULL;
     }
-    q = c;
+    node = c;
   }
-  return ((q->type == CT_TREE_LEAF && ct_deltaeq3fv(q->point, p, EPS)) ? q
-                                                                       : NULL);
+  return ((node->type == CT_TREE_LEAF && ct_deltaeq3fv(node->point, p, EPS))
+              ? node
+              : NULL);
+fail:
+  return NULL;
 }
 
-CT_EXPORT void ct_octree_trace_node(CT_Octree *q, size_t depth) {
-  if (q->point) {
+CT_EXPORT void ct_octree_trace_node(CT_OTNode *node, size_t depth) {
+  if (node->point) {
     CT_INFO(
-        "d: %zd: %p b: [%f,%f,%f,%f,%f,%f] c: [%p,%p,%p,%p,%p,%p,%p,%p] t: "
+        "d: %zd: %p b: [%f,%f,%f,%f,%f,%f] c: [%p,%p,%p,%p,%p,%p,%p,%p] node: "
         "%zd, p: (%f,%f, %f)",
-        depth, q, q->x, q->y, q->z, q->w, q->h, q->d, q->children[0],
-        q->children[1], q->children[2], q->children[3], q->children[4],
-        q->children[5], q->children[6], q->children[7], q->type, q->point->x,
-        q->point->y, q->point->z);
+        depth, node, node->x, node->y, node->z, node->w, node->h, node->d,
+        node->children[0], node->children[1], node->children[2],
+        node->children[3], node->children[4], node->children[5],
+        node->children[6], node->children[7], node->type, node->point->x,
+        node->point->y, node->point->z);
   } else {
     CT_INFO(
-        "d: %zd: %p b: [%f,%f,%f,%f,%f,%f] c: [%p,%p,%p,%p,%p,%p,%p,%p] t: %zd",
-        depth, q, q->x, q->y, q->z, q->w, q->h, q->d, q->children[0],
-        q->children[1], q->children[2], q->children[3], q->children[4],
-        q->children[5], q->children[6], q->children[7], q->type);
+        "d: %zd: %p b: [%f,%f,%f,%f,%f,%f] c: [%p,%p,%p,%p,%p,%p,%p,%p] node: "
+        "%zd",
+        depth, node, node->x, node->y, node->z, node->w, node->h, node->d,
+        node->children[0], node->children[1], node->children[2],
+        node->children[3], node->children[4], node->children[5],
+        node->children[6], node->children[7], node->type);
   }
 }
 
-CT_EXPORT void ct_octree_trace(CT_Octree *q, size_t depth) {
-  if (q != NULL) {
-    ct_octree_trace_node(q, depth);
+static void trace_node_recursive(CT_OTNode *node, size_t depth) {
+  if (node != NULL) {
+    ct_octree_trace_node(node, depth);
     for (size_t i = 0; i < 8; i++) {
-      ct_octree_trace(q->children[i], depth + 1);
+      trace_node_recursive(node->children[i], depth + 1);
     }
   }
 }
 
-CT_EXPORT int ct_octree_visit_leaves(CT_Octree *q, CT_OctreeVisitor visit,
-                                     void *state) {
-  switch (q->type) {
+CT_EXPORT void ct_octree_trace(CT_Octree *t) {
+  trace_node_recursive(&t->root, 0);
+}
+
+static int visit_leaves(CT_OTNode *node, CT_OTVisitor visit, void *state) {
+  switch (node->type) {
     case CT_TREE_LEAF:
-      return visit(q, state);
+      return visit(node, state);
     case CT_TREE_BRANCH:
       for (size_t i = 0; i < 8; i++) {
-        if (q->children[i]) {
-          ct_octree_visit_leaves(q->children[i], visit, state);
+        if (node->children[i]) {
+          int res = visit_leaves(node->children[i], visit, state);
+          if (res) {
+            return res;
+          }
         }
       }
   }
   return 0;
 }
 
-CT_EXPORT int ct_octree_visit(CT_Octree *q, CT_OctreeVisitor visit,
-                              void *state) {
-  int res = visit(q, state);
+CT_EXPORT int ct_octree_visit_leaves(CT_Octree *t, CT_OTVisitor visit,
+                                     void *state) {
+  return visit_leaves(&t->root, visit, state);
+}
+
+static int visit_all(CT_OTNode *node, CT_OTVisitor visit, void *state) {
+  int res = visit(node, state);
   if (res) {
     return res;
   }
-  if (q->type == CT_TREE_BRANCH) {
+  if (node->type == CT_TREE_BRANCH) {
     for (size_t i = 0; i < 8; i++) {
-      if (q->children[i]) {
-        ct_octree_visit(q->children[i], visit, state);
+      if (node->children[i]) {
+        visit_all(node->children[i], visit, state);
       }
     }
   }
   return 0;
+}
+
+CT_EXPORT int ct_octree_visit(CT_Octree *t, CT_OTVisitor visit, void *state) {
+  return visit_all(&t->root, visit, state);
 }

@@ -34,13 +34,13 @@ typedef struct {
 
 typedef int (*CT_QTVisitor)(CT_QTNode *, void *);
 
-int ct_qtree_init(CT_Quadtree *q, float x, float y, float w, float h,
+int ct_qtree_init(CT_Quadtree *t, float x, float y, float w, float h,
                   size_t poolSize);
-void ct_qtree_free(CT_Quadtree *q);
-int ct_qtree_insert(CT_Quadtree *q, CT_Vec2f *p, void *data);
-int ct_qtree_remove(CT_Quadtree *q, CT_Vec2f *p);
-CT_QTNode *ct_qtree_find_leaf(CT_Quadtree *q, CT_Vec2f *p);
-void ct_qtree_trace_node(CT_QTNode *q, size_t depth);
-void ct_qtree_trace(CT_Quadtree *q);
-int ct_qtree_visit_leaves(CT_Quadtree *q, CT_QTVisitor visit, void *state);
-int ct_qtree_visit(CT_Quadtree *q, CT_QTVisitor visit, void *state);
+void ct_qtree_free(CT_Quadtree *t);
+int ct_qtree_insert(CT_Quadtree *t, CT_Vec2f *p, void *data);
+int ct_qtree_remove(CT_Quadtree *t, CT_Vec2f *p);
+CT_QTNode *ct_qtree_find_leaf(CT_Quadtree *t, CT_Vec2f *p);
+void ct_qtree_trace_node(CT_QTNode *node, size_t depth);
+void ct_qtree_trace(CT_Quadtree *t);
+int ct_qtree_visit_leaves(CT_Quadtree *t, CT_QTVisitor visit, void *state);
+int ct_qtree_visit(CT_Quadtree *t, CT_QTVisitor visit, void *state);
