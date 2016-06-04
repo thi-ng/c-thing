@@ -2,10 +2,10 @@
 
 #pragma once
 
+#include <errno.h>
 #include "config.h"
 
 #if defined(CT_FEATURE_CHECKS) || defined(CT_FEATURE_LOG)
-#include <errno.h>
 #include <stdio.h>
 #include <string.h>
 #endif
@@ -37,13 +37,6 @@
   fprintf(stderr, CT_ANSI_GREEN "[SUCCESS] (%s:%d) " M CT_ANSI_RESET "\n", \
           __FILE__, __LINE__, ##__VA_ARGS__)
 
-#define CT_SENTINEL(M, ...)     \
-  {                             \
-    CT_ERROR(M, ##__VA_ARGS__); \
-    errno = 0;                  \
-    goto fail;                  \
-  }
-
 #else
 #define CT_DEBUG(M, ...)
 #define CT_FMT_ERRNO()
@@ -51,8 +44,6 @@
 #define CT_WARN(M, ...)
 #define CT_INFO(M, ...)
 #define CT_SUCCESS(M, ...)
-#define CT_SENTINEL(M, ...) \
-  {}
 #endif  // CT_FEATURE_LOG
 
 #ifdef CT_FEATURE_CHECKS
@@ -78,6 +69,13 @@
 #define CT_CHECK_MEM(A)         \
   if (!(A)) {                   \
     CT_ERROR("Out of memory!"); \
+    errno = 0;                  \
+    goto fail;                  \
+  }
+
+#define CT_SENTINEL(M, ...)     \
+  {                             \
+    CT_ERROR(M, ##__VA_ARGS__); \
     errno = 0;                  \
     goto fail;                  \
   }
