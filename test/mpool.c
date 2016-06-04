@@ -73,3 +73,22 @@ int test_mpool_resize() {
   ct_mpool_free_all(&pool);
   return 0;
 }
+
+int test_mpool_compact() {
+  CT_MPool pool;
+  CT_IS(!ct_mpool_init(&pool, 2, 8), "init");
+  ct_mpool_alloc(&pool);
+  ct_mpool_alloc(&pool);
+  uint32_t *a = ct_mpool_alloc(&pool);
+  uint32_t *b = ct_mpool_alloc(&pool);
+  uint32_t *c = ct_mpool_alloc(&pool);
+  uint32_t *d = ct_mpool_alloc(&pool);
+  ct_mpool_free(&pool, a);
+  ct_mpool_free(&pool, b);
+  ct_mpool_free(&pool, c);
+  CT_MPCompactResult res = ct_mpool_compact(&pool);
+  CT_IS(2 == res.blocks, "blocks: %zu", res.blocks);
+  CT_IS(1 == res.pools, "pools: %zu", res.pools);
+  ct_mpool_free_all(&pool);
+  return 0;
+}

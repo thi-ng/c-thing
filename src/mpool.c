@@ -56,6 +56,64 @@ fail:
   return;
 }
 
+CT_EXPORT CT_MPCompactResult ct_mpool_compact(CT_MPool *mp) {
+  size_t limit = mp->nextID;
+  CT_MPoolList *head = mp->head;
+  CT_MPoolList *prevHead = NULL;
+  CT_MPCompactResult res = {.blocks = 0, .pools = 0};
+  while (mp->freeList != NULL && head->next != NULL) {
+    CT_MPoolFreeList *f = mp->freeList;
+    CT_MPoolFreeList *prev = NULL;
+    size_t removed = 0;
+    uintptr_t start = (uintptr_t)head->pool;
+    uintptr_t end = (uintptr_t)(head->pool + mp->numBlocks * mp->blockSize);
+    CT_DEBUG("checking sub-pool: %p (0x%zx - 0x%zx)", head->pool, start, end);
+    while (f != NULL) {
+      CT_DEBUG("checking block: %p", f);
+      if ((uintptr_t)f >= start && (uintptr_t)f < end) {
+        removed++;
+      }
+      f = f->next;
+    }
+    CT_DEBUG("found %zu eligible blocks", removed);
+    if (removed >= limit) {
+      f = mp->freeList;
+      while (f != NULL) {
+        if ((uintptr_t)f >= start && (uintptr_t)f < end) {
+          if (prev == NULL) {
+            mp->freeList = f->next;
+          } else {
+            prev->next = f->next;
+          }
+          CT_DEBUG("remove block: %p -> %p, prev: %p, head: %p", f, f->next,
+                   prev, mp->freeList);
+        } else {
+          prev = f;
+        }
+        f = f->next;
+      }
+      CT_DEBUG("freeing sub-pool %p (limit: %zu)", head, limit);
+      CT_MPoolList *p = head;
+      if (prevHead == NULL) {
+        mp->head = head->next;
+      } else {
+        prevHead->next = head->next;
+      }
+      head = head->next;
+      free(p->pool);
+      free(p);
+      res.blocks += removed;
+      res.pools++;
+    } else {
+      prevHead = head;
+      head = head->next;
+    }
+    limit = mp->numBlocks;
+    ct_mpool_trace(mp);
+  }
+  return res;
+}
+
 CT_EXPORT void *ct_mpool_alloc(CT_MPool *mp) {
   void *ptr = NULL;
   if (mp->freeList != NULL) {
