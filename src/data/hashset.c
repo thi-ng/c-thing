@@ -4,7 +4,7 @@
 
 #include "common/dbg.h"
 #include "data/hashset.h"
-#include "math/ct_math.h"
+#include "math/math.h"
 
 static int make_key(CT_Hashset* s, CT_HSEntry* e, void* key, size_t ks) {
   if (s->flags & CT_HS_CONST_KEYS) {

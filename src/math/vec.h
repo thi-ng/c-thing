@@ -9,7 +9,7 @@ extern "C" {
 #include <stdint.h>
 
 #include "config.h"
-#include "math/ct_math.h"
+#include "math/math.h"
 #include "math/hashfn.h"
 #include "mem/mpool.h"
 

@@ -1,5 +1,5 @@
 #include "math/hashfn.h"
-#include "math/ct_math.h"
+#include "math/math.h"
 
 #define MURMUR_C1 ((uint32_t)0xcc9e2d51)
 #define MURMUR_C2 ((uint32_t)0x1b873593)

@@ -4,7 +4,7 @@
 
 #include "common/dbg.h"
 #include "data/hashtable.h"
-#include "math/ct_math.h"
+#include "math/math.h"
 
 static int make_key(CT_Hashtable* t, CT_HTEntry* e, void* key, size_t ks) {
   if (t->flags & CT_HT_CONST_KEYS) {

@@ -1,4 +1,4 @@
-#include "math/ct_math.h"
+#include "math/math.h"
 
 uint32_t ct_ceil_pow2(uint32_t x) {
   if (x) {
