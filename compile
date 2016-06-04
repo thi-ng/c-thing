@@ -3,7 +3,7 @@
 # compile with SIMD:
 # ./compile.sh -asd
 
-FILES="src/circle.c src/cons.c src/consrc.c src/ct_math.c src/hashfn.c src/hashtable.c src/isec.c src/mpool.c src/object.c src/octree.c src/quadedge.c src/quadtree.c src/triangle.c src/vec.c"
+FILES="src/data/cons.c src/data/consrc.c src/data/hashset.c src/data/hashtable.c src/data/object.c src/data/octree.c src/data/quadtree.c src/geom/circle.c src/geom/halfedge.c src/geom/isec.c src/geom/quadedge.c src/geom/triangle.c src/math/ct_math.c src/math/hashfn.c src/math/vec.c src/mem/mpool.c"
 TESTS=
 CFLAGS="-std=c11 -Os -Isrc"
 EMFLAGS="-s ASM_JS=1 -s ASSERTIONS=0 -s INVOKE_RUN=0 -s AGGRESSIVE_VARIABLE_ELIMINATION=1 -s MODULARIZE=1 -s NO_EXIT_RUNTIME=1 -s TOTAL_MEMORY='48*1024*1024'"
@@ -43,7 +43,7 @@ while getopts acdhkstD: opt; do
         D) CFLAGS="$CFLAGS -D$OPTARG"
            ;;
         t) CFLAGS="$CFLAGS -DNDEBUG -DCT_FEATURE_LOG"
-           TESTS="src/test.c test/main.c test/circle.c test/cons.c test/consrc.c test/hash.c test/hashtable.c test/mpool.c test/octree.c test/quadtree.c test/qedge.c test/vec.c"
+           TESTS="src/common/test.c test/main.c test/circle.c test/cons.c test/consrc.c test/hash.c test/hashset.c test/hashtable.c test/mpool.c test/octree.c test/quadtree.c test/qedge.c test/vec.c"
            ;;
         h) usage
            ;;
