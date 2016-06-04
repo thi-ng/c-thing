@@ -14,19 +14,18 @@
     return 1;                         \
   }
 
-#define CT_RUN_TEST(test)                                              \
-  CT_INFO("----- %s -----", "" #test);                                 \
-  do {                                                                 \
-    size_t t = __testAsserts;                                          \
-    clock_t begin = clock();                                           \
-    int res = test();                                                  \
-    clock_t end = clock();                                             \
-    double measured = (double)(end - begin) / CLOCKS_PER_SEC * 1000.0; \
-    CT_INFO("%zd assertions (%1.3fms)", __testAsserts - t, measured);  \
-    __testsRun++;                                                      \
-    if (res) {                                                         \
-      return res;                                                      \
-    }                                                                  \
+#define CT_RUN_TEST(test)                                                  \
+  CT_INFO("----- %s -----", "" #test);                                     \
+  do {                                                                     \
+    size_t t = __testAsserts;                                              \
+    clock_t begin = clock();                                               \
+    int res = test();                                                      \
+    double measured = (double)(clock() - begin) / CLOCKS_PER_SEC * 1000.0; \
+    CT_INFO("%zd assertions (%1.3fms)", __testAsserts - t, measured);      \
+    __testsRun++;                                                          \
+    if (res) {                                                             \
+      return res;                                                          \
+    }                                                                      \
   } while (0);
 
 #define CT_RUN_TESTS(name)                                                    \

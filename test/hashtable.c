@@ -57,7 +57,7 @@ static uint32_t hash_edge(const void *a, size_t _) {
   return ct_murmur3_32(&e->a, 12) + ct_murmur3_32(&e->b, 12);
 }
 
-static int equiv_edge(void *a, void *b, size_t as, size_t bs) {
+static int equiv_edge(const void *a, const void *b, size_t as, size_t bs) {
   struct edge_t *ea = (struct edge_t *)a;
   struct edge_t *eb = (struct edge_t *)b;
   if (!memcmp(&ea->a, &eb->a, 12)) {

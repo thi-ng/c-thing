@@ -82,13 +82,14 @@ static void free_entry(CT_Hashtable* t, CT_HTEntry* e) {
   ct_mpool_free(&t->pool, e);
 }
 
-static int equiv_keys(void* a, void* b, size_t sa, size_t sb) {
+static int equiv_keys(const void* a, const void* b, size_t sa, size_t sb) {
   return sa == sb ? !memcmp(a, b, sa) : 0;
 }
 
 static CT_HTEntry* find_entry(CT_Hashtable* t, CT_HTEntry* e, void* key,
                               size_t ks) {
-  int (*equiv_keys)(void*, void*, size_t, size_t) = t->ops.equiv_keys;
+  int (*equiv_keys)(const void*, const void*, size_t, size_t) =
+      t->ops.equiv_keys;
   while (e != NULL) {
     CT_DEBUG("find e: %p", e);
     if (equiv_keys(key, e->key, ks, e->keySize)) {

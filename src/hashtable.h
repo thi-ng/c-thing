@@ -18,9 +18,11 @@ enum {
 
 typedef struct CT_HTEntry CT_HTEntry;
 
+typedef int (*CT_HTIterator)(CT_HTEntry*, void*);
+
 typedef struct {
   uint32_t (*hash)(const void* key, size_t size);
-  int (*equiv_keys)(void* a, void* b, size_t sa, size_t sb);
+  int (*equiv_keys)(const void* a, const void* b, size_t sa, size_t sb);
   void* (*alloc_key)(size_t size, void* state);
   void* (*alloc_val)(size_t size, void* state);
   void (*free_key)(void* key, void* state);
@@ -45,8 +47,6 @@ typedef struct CT_Hashtable {
   uint32_t numCollisions;
   size_t flags;
 } CT_Hashtable;
-
-typedef int (*CT_HTIterator)(CT_HTEntry*, void*);
 
 int ct_ht_init(CT_Hashtable* t, CT_HTOps* ops, size_t num, size_t poolSize,
                size_t flags);
