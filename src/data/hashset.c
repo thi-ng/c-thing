@@ -69,7 +69,7 @@ static CT_HSEntry* find_entry(CT_Hashset* s, CT_HSEntry* e, void* key,
   return e;
 }
 
-static int push_entry(CT_Hashset* s, uint32_t bin, void* key, size_t ks) {
+static int cons_entry(CT_Hashset* s, uint32_t bin, void* key, size_t ks) {
   // TODO resize?
   CT_HSEntry* e = make_entry(s, key, ks);
   CT_CHECK_MEM(e);
@@ -153,7 +153,7 @@ CT_EXPORT int ct_hs_assoc(CT_Hashset* s, void* key, size_t ks) {
     e = find_entry(s, e, key, ks);
     if (e == NULL) {
       CT_DEBUG("hash coll (hash: %x, bin: %x), push new entry...", hash, bin);
-      if (push_entry(s, bin, key, ks)) {
+      if (cons_entry(s, bin, key, ks)) {
         return 1;
       }
       s->collisions++;

@@ -100,7 +100,7 @@ static CT_HTEntry* find_entry(CT_Hashtable* t, CT_HTEntry* e, void* key,
   return e;
 }
 
-static int push_entry(CT_Hashtable* t, uint32_t bin, void* key, void* val,
+static int cons_entry(CT_Hashtable* t, uint32_t bin, void* key, void* val,
                       size_t ks, size_t vs) {
   // TODO resize table?
   CT_HTEntry* e = make_entry(t, key, val, ks, vs);
@@ -195,7 +195,7 @@ CT_EXPORT int ct_ht_assoc(CT_Hashtable* t, void* key, void* val, size_t ks,
       return make_val(t, e, val, vs);
     } else {
       CT_DEBUG("hash coll (hash: %x, bin: %x), push new entry...", hash, bin);
-      if (push_entry(t, bin, key, val, ks, vs)) {
+      if (cons_entry(t, bin, key, val, ks, vs)) {
         return 1;
       }
       t->collisions++;
