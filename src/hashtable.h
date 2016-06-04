@@ -53,6 +53,7 @@ int ct_ht_init(CT_Hashtable* t, CT_HTOps* ops, size_t num, size_t poolSize,
                CT_HTFlags flags);
 void ct_ht_free(CT_Hashtable* t);
 void* ct_ht_get(CT_Hashtable* t, void* key, size_t ks, size_t* vs);
+int ct_ht_contains(CT_Hashtable* t, void* key, size_t ks);
 int ct_ht_assoc(CT_Hashtable* t, void* key, void* value, size_t ks, size_t vs);
 int ct_ht_dissoc(CT_Hashtable* t, void* key, size_t ks);
 int ct_ht_iterate(CT_Hashtable* t, CT_HTIterator visit, void* state);

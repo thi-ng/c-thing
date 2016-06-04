@@ -222,6 +222,15 @@ CT_EXPORT void* ct_ht_get(CT_Hashtable* t, void* key, size_t ks, size_t* vs) {
   return NULL;
 }
 
+CT_EXPORT int ct_ht_contains(CT_Hashtable* t, void* key, size_t ks) {
+  uint32_t bin = t->ops.hash(key, ks) & t->binMask;
+  CT_HTEntry* e = t->bins[bin];
+  if (e != NULL) {
+    e = find_entry(t, e, key, ks);
+  }
+  return (e != NULL);
+}
+
 CT_EXPORT int ct_ht_dissoc(CT_Hashtable* t, void* key, size_t ks) {
   uint32_t bin = t->ops.hash(key, ks) & t->binMask;
   CT_HTEntry* e = t->bins[bin];
