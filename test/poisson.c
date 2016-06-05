@@ -6,9 +6,10 @@
 #include "math/math.h"
 #include "math/poisson.h"
 
-#include "elaine.h"
-
 CT_TEST_DECLS
+
+#ifndef __EMSCRIPTEN__
+#include "elaine.h"
 
 static uint32_t w = 512;
 static uint32_t h = 512;
@@ -24,7 +25,6 @@ static float disc_gen(CT_Quadtree *t, CT_Circle2f *disc) {
   return disc->r = ct_mixf(1.5f, 8.f, powf(tt, 3.f));
 }
 
-#ifndef __EMSCRIPTEN__
 int test_poisson_svg() {
   CT_Quadtree t;
   CT_MPool vpool;
