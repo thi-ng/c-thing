@@ -19,8 +19,8 @@ static int find_candidate(CT_QTNode *node, void *s) {
   return 1;
 }
 
-CT_EXPORT CT_Vec2f *ct_poisson_sample2f(CT_Quadtree *t, float radius,
-                                        size_t num, CT_Vec2f *out) {
+CT_EXPORT int ct_poisson_sample2f(CT_Quadtree *t, float radius, size_t num,
+                                  CT_Vec2f *out) {
   float maxD = 0;
   float w    = t->root.w;
   float h    = t->root.h;
@@ -37,7 +37,7 @@ CT_EXPORT CT_Vec2f *ct_poisson_sample2f(CT_Quadtree *t, float radius,
   if (maxD >= radius) {
     //CT_INFO("final dist: %f (%f, %f)", maxD, out->x, out->y);
     ct_qtree_insert(t, out, NULL);
-    return out;
+    return 0;
   }
-  return NULL;
+  return 1;
 }

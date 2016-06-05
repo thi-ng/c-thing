@@ -6,7 +6,8 @@
 
 CT_TEST_DECLS
 
-int test_poisson() {
+#ifndef __EMSCRIPTEN__
+int test_poisson_svg() {
   CT_Quadtree t;
   CT_MPool vpool;
   int w = 600, h = 600;
@@ -20,19 +21,50 @@ int test_poisson() {
           w, h);
   fprintf(f, "<g stroke=\"none\" fill=\"black\">\n");
   srand(time(0));
-  float r      = 5;
-  size_t count = 0;
-  CT_Vec2f *p  = (CT_Vec2f *)ct_mpool_alloc(&vpool);
-  for (size_t i = 0; i < 10000; i++) {
-    if (ct_poisson_sample2f(&t, r, 20, p)) {
+  float r       = 10;
+  size_t count  = 0;
+  size_t failed = 0;
+  CT_Vec2f *p   = (CT_Vec2f *)ct_mpool_alloc(&vpool);
+  while (1) {
+    if (!ct_poisson_sample2f(&t, r, 20, p)) {
       fprintf(f, "<circle cx=\"%f\" cy=\"%f\" r=\"%f\"/>", p->x, p->y, 2.f);
       p = (CT_Vec2f *)ct_mpool_alloc(&vpool);
       count++;
+      failed = 0;
+    } else if (++failed > 50) {
+      break;
     }
   }
   fprintf(f, "</g></svg>");
   fclose(f);
   CT_INFO("%zu points", count);
+  ct_mpool_free_all(&vpool);
+  ct_qtree_free(&t);
+  return 0;
+}
+#endif
+
+int test_poisson() {
+  CT_Quadtree t;
+  CT_MPool vpool;
+  int w = 600, h = 600;
+  CT_IS(!ct_qtree_init(&t, 0, 0, w, h, 0x1000), "init");
+  CT_IS(!ct_mpool_init(&vpool, 0x1000, sizeof(CT_Vec2f)), "init pool");
+  srand(0);
+  float r       = 10;
+  size_t count  = 0;
+  size_t failed = 0;
+  CT_Vec2f *p   = (CT_Vec2f *)ct_mpool_alloc(&vpool);
+  while (1) {
+    if (!ct_poisson_sample2f(&t, r, 20, p)) {
+      p = (CT_Vec2f *)ct_mpool_alloc(&vpool);
+      count++;
+      failed = 0;
+    } else if (++failed > 50) {
+      break;
+    }
+  }
+  CT_IS(2000 < count, "count: %zu", count);
   ct_mpool_free_all(&vpool);
   ct_qtree_free(&t);
   return 0;

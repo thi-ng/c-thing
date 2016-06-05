@@ -22,6 +22,8 @@ extern int test_hashtable_edge();
 extern int test_hashset_char();
 extern int test_hashset_vec();
 extern int test_hashset_edge();
+extern int test_poisson_svg();
+extern int test_poisson();
 
 extern int bench_vec3_create();
 extern int bench_hashtable();
@@ -59,10 +61,16 @@ int all_tests() {
   CT_RUN_TEST(test_hashset_char);
   CT_RUN_TEST(test_hashset_vec);
   CT_RUN_TEST(test_hashset_edge);
+  CT_RUN_TEST(test_poisson);
+
+#ifndef __EMSCRIPTEN__
+  CT_RUN_TEST(test_poisson_svg);
+#else
+#endif
 
   //CT_RUN_TEST(bench_vec3_create);
-  CT_RUN_TEST(bench_hashtable);
-  CT_RUN_TEST(bench_hashset);
+  //CT_RUN_TEST(bench_hashtable);
+  //CT_RUN_TEST(bench_hashset);
   return 0;
 }
 
