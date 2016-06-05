@@ -260,7 +260,7 @@ CT_EXPORT void* ct_ht_update(CT_Hashtable* t, void* key, size_t ks,
   return NULL;
 }
 
-CT_EXPORT int ct_ht_iterate(CT_Hashtable* t, CT_HTVisitor iter, void* state) {
+CT_EXPORT int ct_ht_iterate(CT_Hashtable* t, CT_HTIterator iter, void* state) {
   for (size_t i = 0; i <= t->binMask; i++) {
     CT_HTEntry* e = t->bins[i];
     while (e != NULL) {

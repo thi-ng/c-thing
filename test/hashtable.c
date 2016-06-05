@@ -40,9 +40,9 @@ static int dump_ht_vec(CT_HTEntry *e, void *state) {
   return 0;
 }
 
-static size_t visit_count(CT_Hashtable *t, CT_HTVisitor visit) {
+static size_t iter_count(CT_Hashtable *t, CT_HTIterator iter) {
   struct htest_t v = {.num = 0};
-  ct_ht_iterate(t, visit, &v);
+  ct_ht_iterate(t, iter, &v);
   return v.num;
 }
 
@@ -98,11 +98,11 @@ int test_hashtable_char() {
   CT_IS(val_is(&t, "c", "ccc"), "get c");
   CT_IS(val_is(&t, "d", "ddd"), "get d");
 
-  CT_IS(4 == visit_count(&t, dump_ht_char), "count");
+  CT_IS(4 == iter_count(&t, dump_ht_char), "count");
   CT_IS(2 == t.collisions, "colls: %u", t.collisions);
 
   CT_IS(!ct_ht_dissoc(&t, "c", 2), "dissoc c");
-  CT_IS(3 == visit_count(&t, dump_ht_char), "count");
+  CT_IS(3 == iter_count(&t, dump_ht_char), "count");
   CT_IS(1 == t.collisions, "colls: %u", t.collisions);
 
   CT_IS(!ct_ht_dissoc(&t, "b", 2), "dissoc b");
@@ -136,10 +136,10 @@ int test_hashtable_vec() {
   CT_Vec3f *b = ct_vec3f(1, 2, 3.000001, &vpool);
   CT_IS(!ct_ht_assoc(&t, a, "a", 12, 2), "assoc a");
   CT_IS(!ct_ht_assoc(&t, b, "b", 12, 2), "assoc b");
-  CT_IS(2 == visit_count(&t, dump_ht_vec), "count");
+  CT_IS(2 == iter_count(&t, dump_ht_vec), "count");
   CT_IS(!ct_ht_init(&t2, &ops, 4, 8, CT_HT_NONE), "init t2");
   CT_IS(!ct_ht_into(&t2, &t), "into");
-  CT_IS(2 == visit_count(&t2, dump_ht_vec), "count");
+  CT_IS(2 == iter_count(&t2, dump_ht_vec), "count");
   CT_IS(!ct_ht_assoc(&t2, a, "A", 12, 2), "assoc a");
   CT_IS(!strcmp("a", (char *)ct_ht_get(&t, a, 12, NULL)), "get t a");
   CT_IS(!strcmp("A", (char *)ct_ht_get(&t2, a, 12, NULL)), "get t2 a");
@@ -183,7 +183,7 @@ int bench_hashtable() {
   }
   CT_IS(num == t.size, "size: %u", t.size);
   CT_INFO("collisions: %u", t.collisions);
-  CT_IS(num == visit_count(&t, dump_ht_vec), "count");
+  CT_IS(num == iter_count(&t, dump_ht_vec), "count");
   ct_ht_free(&t);
   ct_mpool_free_all(&vpool);
   return 0;
