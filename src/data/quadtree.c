@@ -1,9 +1,16 @@
-#include "data/quadtree.h"
+#include <stdlib.h>
+
 #include "common/dbg.h"
 #include "config.h"
+#include "data/quadtree.h"
 
 ct_inline size_t child_index(const CT_QTNode *node, const CT_Vec2f *p) {
+  CT_CHECK(p->x >= node->x && p->x < node->x + node->w, "x bounds");
+  CT_CHECK(p->y >= node->y && p->y < node->y + node->h, "y bounds");
   return (p->y < node->cy ? 0 : 2) + (p->x < node->cx ? 0 : 1);
+fail:
+  ct_qtree_trace_node(node, 0);
+  exit(1);
 }
 
 ct_inline void clear_children(CT_QTNode *node) {
@@ -37,8 +44,8 @@ static size_t make_leaf(CT_QTNode *node, size_t idx, CT_Vec2f *p, void *data,
   c->y                = node->coords[((idx & 2) << 1) + 1];
   c->w                = node->w * 0.5f;
   c->h                = node->h * 0.5f;
-  c->cx               = c->x + c->w;
-  c->cy               = c->y + c->h;
+  c->cx               = c->x + c->w * 0.5;
+  c->cy               = c->y + c->h * 0.5;
   c->type             = CT_TREE_LEAF;
   c->point            = p;
   c->data             = data;
@@ -77,6 +84,8 @@ static int insert_node(CT_QTNode *node, CT_Vec2f *p, void *data,
   while (node->type == CT_TREE_BRANCH) {
     idx = child_index(node, p);
     c   = node->children[idx];
+    //ct_qtree_trace_node(node, 0);
+    //CT_DEBUG("node: %p, child: %p, idx: %zu, t: %zu", node, c, idx, node->type);
     if (c == NULL) break;
     node = c;
   }
@@ -92,6 +101,7 @@ static int insert_node(CT_QTNode *node, CT_Vec2f *p, void *data,
         node->data  = data;
         return 0;
       } else {
+        //CT_DEBUG("split leaf: %p", node);
         CT_Vec2f *op = node->point;
         void *od     = node->data;
         node->point = node->data = NULL;
@@ -172,17 +182,20 @@ fail:
   return NULL;
 }
 
-CT_EXPORT void ct_qtree_trace_node(CT_QTNode *node, size_t depth) {
+CT_EXPORT void ct_qtree_trace_node(const CT_QTNode *node, size_t depth) {
   if (node->point) {
-    CT_INFO("d: %zu, %p b: [%f,%f,%f,%f] c: [%p,%p,%p,%p] t: %zu, p: (%f,%f)",
-            depth, node, node->x, node->y, node->w, node->h, node->children[0],
-            node->children[1], node->children[2], node->children[3], node->type,
-            node->point->x, node->point->y);
+    CT_INFO(
+        "d: %zu, %p b: [%f,%f,%f,%f] [%f,%f] c: [%p,%p,%p,%p] t: %zu, p: "
+        "(%f,%f)",
+        depth, node, node->x, node->y, node->x + node->w, node->y + node->h,
+        node->cx, node->cy, node->children[0], node->children[1],
+        node->children[2], node->children[3], node->type, node->point->x,
+        node->point->y);
   } else {
-    CT_INFO("d: %zu, %p b: [%f,%f,%f,%f] c: [%p,%p,%p,%p] t: %zu", depth, node,
-            node->x, node->y, node->w, node->h, node->children[0],
-            node->children[1], node->children[2], node->children[3],
-            node->type);
+    CT_INFO("d: %zu, %p b: [%f,%f,%f,%f] [%f,%f] c: [%p,%p,%p,%p] t: %zu",
+            depth, node, node->x, node->y, node->x + node->w, node->y + node->h,
+            node->cx, node->cy, node->children[0], node->children[1],
+            node->children[2], node->children[3], node->type);
   }
 }
 
@@ -221,21 +234,16 @@ CT_EXPORT int ct_qtree_visit_leaves(CT_Quadtree *t, CT_QTVisitor visit,
   return visit_leaves(&t->root, visit, state);
 }
 
-static int visit_all(CT_QTNode *node, CT_QTVisitor visit, void *state) {
-  int res = visit(node, state);
-  if (res) {
-    return res;
-  }
-  if (node->type == CT_TREE_BRANCH) {
+static void visit_all(CT_QTNode *node, CT_QTVisitor visit, void *state) {
+  if (!visit(node, state) && node->type == CT_TREE_BRANCH) {
     for (size_t i = 0; i < 4; i++) {
       if (node->children[i]) {
         visit_all(node->children[i], visit, state);
       }
     }
   }
-  return 0;
 }
 
-CT_EXPORT int ct_qtree_visit(CT_Quadtree *t, CT_QTVisitor visit, void *state) {
-  return visit_all(&t->root, visit, state);
+CT_EXPORT void ct_qtree_visit(CT_Quadtree *t, CT_QTVisitor visit, void *state) {
+  visit_all(&t->root, visit, state);
 }

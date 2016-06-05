@@ -1,10 +1,18 @@
-#include "data/octree.h"
+#include <stdlib.h>
+
 #include "common/dbg.h"
 #include "config.h"
+#include "data/octree.h"
 
 ct_inline size_t child_index(const CT_OTNode *node, const CT_Vec3f *p) {
+  CT_CHECK(p->x >= node->x && p->x < node->x + node->w, "x bounds");
+  CT_CHECK(p->y >= node->y && p->y < node->y + node->h, "y bounds");
+  CT_CHECK(p->z >= node->z && p->z < node->z + node->d, "z bounds");
   return (p->z < node->cz ? 0 : 4) + (p->y < node->cy ? 0 : 2) +
          (p->x < node->cx ? 0 : 1);
+fail:
+  ct_octree_trace_node(node, 0);
+  exit(1);
 }
 
 ct_inline void clear_children(CT_OTNode *node) {
@@ -40,9 +48,9 @@ static size_t make_leaf(CT_OTNode *node, size_t idx, CT_Vec3f *p, void *data,
   c->w                = node->w * 0.5f;
   c->h                = node->h * 0.5f;
   c->d                = node->d * 0.5f;
-  c->cx               = c->x + c->w;
-  c->cy               = c->y + c->h;
-  c->cz               = c->z + c->d;
+  c->cx               = c->x + c->w * 0.5f;
+  c->cy               = c->y + c->h * 0.5f;
+  c->cz               = c->z + c->d * 0.5f;
   c->type             = CT_TREE_LEAF;
   c->point            = p;
   c->data             = data;
@@ -181,7 +189,7 @@ fail:
   return NULL;
 }
 
-CT_EXPORT void ct_octree_trace_node(CT_OTNode *node, size_t depth) {
+CT_EXPORT void ct_octree_trace_node(const CT_OTNode *node, size_t depth) {
   if (node->point) {
     CT_INFO(
         "d: %zd: %p b: [%f,%f,%f,%f,%f,%f] c: [%p,%p,%p,%p,%p,%p,%p,%p] node: "
@@ -237,21 +245,16 @@ CT_EXPORT int ct_octree_visit_leaves(CT_Octree *t, CT_OTVisitor visit,
   return visit_leaves(&t->root, visit, state);
 }
 
-static int visit_all(CT_OTNode *node, CT_OTVisitor visit, void *state) {
-  int res = visit(node, state);
-  if (res) {
-    return res;
-  }
-  if (node->type == CT_TREE_BRANCH) {
+static void visit_all(CT_OTNode *node, CT_OTVisitor visit, void *state) {
+  if (!visit(node, state) && node->type == CT_TREE_BRANCH) {
     for (size_t i = 0; i < 8; i++) {
       if (node->children[i]) {
         visit_all(node->children[i], visit, state);
       }
     }
   }
-  return 0;
 }
 
-CT_EXPORT int ct_octree_visit(CT_Octree *t, CT_OTVisitor visit, void *state) {
-  return visit_all(&t->root, visit, state);
+CT_EXPORT void ct_octree_visit(CT_Octree *t, CT_OTVisitor visit, void *state) {
+  visit_all(&t->root, visit, state);
 }

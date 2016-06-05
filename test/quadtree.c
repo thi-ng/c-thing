@@ -28,7 +28,9 @@ static int ct_qtree_bounds(CT_QTNode *node, void *state) {
 static int ct_qtree_select(CT_QTNode *node, void *state) {
   struct isec_t *isec = (struct isec_t *)state;
   CT_Vec2f p          = {node->x + node->w, node->y + node->h};
-  if (ct_intersect_rect_circle(&node->pos, &p, &isec->c, isec->r)) {
+  int i = ct_intersect_rect_circle(&node->pos, &p, &isec->c, isec->r);
+  //CT_INFO("isec: %d, n: %1.3f,%1.3f -> %1.3f,%1.3f c: %f,%f, r: %f", i, node->x, node->y, p.x, p.y, isec->c.x, isec->c.y, isec->r);
+  if (i) {
     if (node->type == CT_TREE_LEAF) {
       if (ct_dist2fv(node->point, &isec->c) <= isec->r) {
         isec->sel[isec->num++] = node->point;
@@ -56,16 +58,16 @@ int test_quadtree() {
   CT_Vec2f *b  = ct_vec2f(10, 11, &vpool);
   CT_Vec2f *b2 = ct_vec2f(10.1, 11, &vpool);
   CT_Vec2f *c  = ct_vec2f(50, 12, &vpool);
-  ct_qtree_insert(&t, a, NULL);
-  ct_qtree_insert(&t, b, NULL);
-  ct_qtree_insert(&t, c, NULL);
-  ct_qtree_trace(&t);
+  CT_IS(!ct_qtree_insert(&t, a, NULL), "add a");
+  CT_IS(!ct_qtree_insert(&t, b, NULL), "add b");
+  CT_IS(!ct_qtree_insert(&t, c, NULL), "add c");
   struct isec_t isec = {{50, 50}, 70.f, {NULL, NULL, NULL, NULL}, 0};
   ct_qtree_visit(&t, ct_qtree_select, &isec);
   CT_IS(3 == isec.num, "wrong isec count: %zd", isec.num);
-  struct isec_t isec2 = {{9, 9}, 10.f, {NULL, NULL, NULL, NULL}, 0};
+  //print_isec_results(&isec);
+  struct isec_t isec2 = {{10, 10}, 0.9f, {NULL, NULL, NULL, NULL}, 0};
   ct_qtree_visit(&t, ct_qtree_select, &isec2);
-  CT_IS(2 == isec2.num, "wrong isec2 count: %zd", isec2.num);
+  CT_IS(1 == isec2.num, "wrong isec2 count: %zd", isec2.num);
   struct isec_t isec3 = {{52, 12}, 5.f, {NULL, NULL, NULL, NULL}, 0};
   ct_qtree_visit(&t, ct_qtree_select, &isec3);
   CT_IS(1 == isec3.num, "wrong isec3 count: %zd", isec3.num);
