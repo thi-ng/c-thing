@@ -119,7 +119,7 @@ fail:
 CT_EXPORT int ct_octree_insert(CT_Octree *t, CT_Vec3f *p, void *data) {
   CT_CHECK(t != NULL, "tree is NULL");
   CT_CHECK(p != NULL, "point is NULL");
-  if (insert_node(&t->root, p, data, &t->pool)) {
+  if (!insert_node(&t->root, p, data, &t->pool)) {
     t->size++;
     return 0;
   }
@@ -155,6 +155,7 @@ CT_EXPORT int ct_octree_remove(CT_Octree *t, CT_Vec3f *p) {
         node->type = CT_TREE_EMPTY;
       }
   }
+  t->size--;
   return 0;
 fail:
   return 1;

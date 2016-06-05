@@ -112,7 +112,7 @@ fail:
 CT_EXPORT int ct_qtree_insert(CT_Quadtree *t, CT_Vec2f *p, void *data) {
   CT_CHECK(t != NULL, "tree is NULL");
   CT_CHECK(p != NULL, "point is NULL");
-  if (insert_node(&t->root, p, data, &t->pool)) {
+  if (!insert_node(&t->root, p, data, &t->pool)) {
     t->size++;
     return 0;
   }
@@ -146,6 +146,7 @@ CT_EXPORT int ct_qtree_remove(CT_Quadtree *t, CT_Vec2f *p) {
         node->type = CT_TREE_EMPTY;
       }
   }
+  t->size--;
   return 0;
 fail:
   return 1;

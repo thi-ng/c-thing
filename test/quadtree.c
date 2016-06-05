@@ -30,7 +30,9 @@ static int ct_qtree_select(CT_QTNode *node, void *state) {
   CT_Vec2f p          = {node->x + node->w, node->y + node->h};
   if (ct_intersect_rect_circle(&node->pos, &p, &isec->c, isec->r)) {
     if (node->type == CT_TREE_LEAF) {
-      isec->sel[isec->num++] = node->point;
+      if (ct_dist2fv(node->point, &isec->c) <= isec->r) {
+        isec->sel[isec->num++] = node->point;
+      }
     }
     return 0;
   }
@@ -61,6 +63,12 @@ int test_quadtree() {
   struct isec_t isec = {{50, 50}, 70.f, {NULL, NULL, NULL, NULL}, 0};
   ct_qtree_visit(&t, ct_qtree_select, &isec);
   CT_IS(3 == isec.num, "wrong isec count: %zd", isec.num);
+  struct isec_t isec2 = {{9, 9}, 10.f, {NULL, NULL, NULL, NULL}, 0};
+  ct_qtree_visit(&t, ct_qtree_select, &isec2);
+  CT_IS(2 == isec2.num, "wrong isec2 count: %zd", isec2.num);
+  struct isec_t isec3 = {{52, 12}, 5.f, {NULL, NULL, NULL, NULL}, 0};
+  ct_qtree_visit(&t, ct_qtree_select, &isec3);
+  CT_IS(1 == isec3.num, "wrong isec3 count: %zd", isec3.num);
   CT_IS(ct_qtree_find_leaf(&t, a), "can't find a");
   CT_IS(ct_qtree_find_leaf(&t, b), "can't find b");
   CT_IS(!ct_qtree_find_leaf(&t, b2), "shouldn't find b2");
