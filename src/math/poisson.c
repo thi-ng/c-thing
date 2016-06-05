@@ -1,6 +1,5 @@
 #include <math.h>
 
-#include "geom/circle.h"
 #include "geom/isec.h"
 #include "math/poisson.h"
 
@@ -27,6 +26,29 @@ CT_EXPORT int ct_poisson_sample2f(CT_Quadtree *t, float radius, size_t num,
   CT_Circle2f disc;
   for (size_t i = 0; i < num; i++) {
     ct_set2fxy(&disc.pos, ct_rand_normpos() * w, ct_rand_normpos() * h);
+    disc.r = radius;
+    ct_qtree_visit(t, find_candidate, &disc);
+    if (disc.r > maxD) {
+      maxD = disc.r;
+      *out = disc.pos;
+    }
+  }
+  if (maxD >= radius) {
+    //CT_INFO("final dist: %f (%f, %f)", maxD, out->x, out->y);
+    ct_qtree_insert(t, out, NULL);
+    return 0;
+  }
+  return 1;
+}
+
+CT_EXPORT int ct_poisson_sample2f_with(CT_Quadtree *t, CT_PoissonDiskGen gen,
+                                       size_t num, CT_Vec2f *out) {
+  float maxD = 0;
+  float radius;
+  CT_Circle2f disc;
+  radius = gen(t, &disc);
+  for (size_t i = 0; i < num; i++) {
+    ct_add2fxy_imm(&disc.pos, ct_rand_norm(), ct_rand_norm());
     disc.r = radius;
     ct_qtree_visit(t, find_candidate, &disc);
     if (disc.r > maxD) {
