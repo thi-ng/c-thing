@@ -1,7 +1,6 @@
 #include <stdlib.h>
 
 #include "common/dbg.h"
-#include "config.h"
 #include "data/octree.h"
 
 ct_inline size_t child_index(const CT_OTNode *node, const CT_Vec3f *p) {
@@ -192,18 +191,22 @@ fail:
 CT_EXPORT void ct_octree_trace_node(const CT_OTNode *node, size_t depth) {
   if (node->point) {
     CT_INFO(
-        "d: %zd: %p b: [%f,%f,%f,%f,%f,%f] c: [%p,%p,%p,%p,%p,%p,%p,%p] node: "
+        "d: %zd: %p b: [%f,%f,%f,%f,%f,%f] [%f,%f,%f] c: "
+        "[%p,%p,%p,%p,%p,%p,%p,%p] node: "
         "%zd, p: (%f,%f, %f)",
-        depth, node, node->x, node->y, node->z, node->w, node->h, node->d,
+        depth, node, node->x, node->y, node->z, node->x + node->w,
+        node->y + node->h, node->z + node->d, node->cx, node->cy, node->cz,
         node->children[0], node->children[1], node->children[2],
         node->children[3], node->children[4], node->children[5],
         node->children[6], node->children[7], node->type, node->point->x,
         node->point->y, node->point->z);
   } else {
     CT_INFO(
-        "d: %zd: %p b: [%f,%f,%f,%f,%f,%f] c: [%p,%p,%p,%p,%p,%p,%p,%p] node: "
+        "d: %zd: %p b: [%f,%f,%f,%f,%f,%f] [%f,%f,%f] c: "
+        "[%p,%p,%p,%p,%p,%p,%p,%p] node: "
         "%zd",
-        depth, node, node->x, node->y, node->z, node->w, node->h, node->d,
+        depth, node, node->x, node->y, node->z, node->x + node->w,
+        node->y + node->h, node->z + node->d, node->cx, node->cy, node->cz,
         node->children[0], node->children[1], node->children[2],
         node->children[3], node->children[4], node->children[5],
         node->children[6], node->children[7], node->type);
