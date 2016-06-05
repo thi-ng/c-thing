@@ -6,8 +6,9 @@
 ct_inline size_t child_index(const CT_QTNode *node, const CT_Vec2f *p) {
   CT_CHECK(p->x >= node->x && p->x < node->x + node->w, "x bounds");
   CT_CHECK(p->y >= node->y && p->y < node->y + node->h, "y bounds");
-  return (p->y < node->cy ? 0 : 2) + (p->x < node->cx ? 0 : 1);
+  return ((p->y >= node->cy) << 1) | (p->x >= node->cx);
 fail:
+  CT_INFO("p: [%f,%f]", p->x, p->y);
   ct_qtree_trace_node(node, 0);
   exit(1);
 }
@@ -40,7 +41,7 @@ static size_t make_leaf(CT_QTNode *node, size_t idx, CT_Vec2f *p, void *data,
   CT_CHECK_MEM(c);
   clear_children(c);
   c->x                = node->coords[(idx & 1) << 2];
-  c->y                = node->coords[((idx & 2) << 1) + 1];
+  c->y                = node->coords[((idx & 2) << 1) | 1];
   c->w                = node->w * 0.5f;
   c->h                = node->h * 0.5f;
   c->cx               = c->x + c->w * 0.5;

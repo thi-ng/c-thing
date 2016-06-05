@@ -7,9 +7,10 @@ ct_inline size_t child_index(const CT_OTNode *node, const CT_Vec3f *p) {
   CT_CHECK(p->x >= node->x && p->x < node->x + node->w, "x bounds");
   CT_CHECK(p->y >= node->y && p->y < node->y + node->h, "y bounds");
   CT_CHECK(p->z >= node->z && p->z < node->z + node->d, "z bounds");
-  return (p->z < node->cz ? 0 : 4) + (p->y < node->cy ? 0 : 2) +
-         (p->x < node->cx ? 0 : 1);
+  return ((p->z >= node->cz) << 2) | ((p->y >= node->cy) << 1) |
+         (p->x >= node->cx);
 fail:
+  CT_INFO("p: [%f,%f,%f]", p->x, p->y, p->z);
   ct_octree_trace_node(node, 0);
   exit(1);
 }
@@ -42,8 +43,8 @@ static size_t make_leaf(CT_OTNode *node, size_t idx, CT_Vec3f *p, void *data,
   CT_CHECK_MEM(c);
   clear_children(c);
   c->x                = node->coords[idx & 1];
-  c->y                = node->coords[(idx >> 1) + 2];
-  c->z                = node->coords[(idx >> 2) + 4];
+  c->y                = node->coords[((idx & 2) >> 1) | 2];
+  c->z                = node->coords[(idx >> 2) | 4];
   c->w                = node->w * 0.5f;
   c->h                = node->h * 0.5f;
   c->d                = node->d * 0.5f;

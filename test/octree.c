@@ -31,7 +31,7 @@ int test_octree() {
   ct_octree_insert(&t, a, NULL);
   ct_octree_insert(&t, b, NULL);
   ct_octree_insert(&t, c, NULL);
-  ct_octree_trace(&t);
+  //ct_octree_trace(&t);
   CT_IS(ct_octree_find_leaf(&t, a), "can't find a");
   CT_IS(ct_octree_find_leaf(&t, b), "can't find b");
   CT_IS(!ct_octree_find_leaf(&t, b2), "shouldn't find b2");
@@ -59,7 +59,7 @@ int test_octree() {
           bounds.max.x, bounds.max.y, bounds.max.z, bounds.num);
   //ct_octree_trace(&t);
   ct_mpool_free_all(&vpool);
-  ct_mpool_trace(&t.pool);
+  //ct_mpool_trace(&t.pool);
   ct_octree_free(&t);
   return 0;
 }

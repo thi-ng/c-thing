@@ -61,7 +61,7 @@ int test_quadtree() {
   CT_IS(!ct_qtree_insert(&t, a, NULL), "add a");
   CT_IS(!ct_qtree_insert(&t, b, NULL), "add b");
   CT_IS(!ct_qtree_insert(&t, c, NULL), "add c");
-  ct_qtree_trace(&t);
+  //ct_qtree_trace(&t);
   struct isec_t isec = {{50, 50}, 70.f, {NULL, NULL, NULL, NULL}, 0};
   ct_qtree_visit(&t, ct_qtree_select, &isec);
   CT_IS(3 == isec.num, "wrong isec count: %zd", isec.num);
@@ -98,7 +98,7 @@ int test_quadtree() {
   CT_INFO("%f,%f -> %f, %f, %zd", bounds.min.x, bounds.min.y, bounds.max.x,
           bounds.max.y, bounds.num);
   ct_mpool_free_all(&vpool);
-  ct_mpool_trace(&t.pool);
+  //ct_mpool_trace(&t.pool);
   ct_qtree_free(&t);
   return 0;
 }
