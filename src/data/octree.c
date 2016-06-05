@@ -127,7 +127,11 @@ fail:
 CT_EXPORT int ct_octree_insert(CT_Octree *t, CT_Vec3f *p, void *data) {
   CT_CHECK(t != NULL, "tree is NULL");
   CT_CHECK(p != NULL, "point is NULL");
-  if (!insert_node(&t->root, p, data, &t->pool)) {
+  CT_OTNode *root = &t->root;
+  CT_CHECK(p->x >= root->x && p->x < root->x + root->w, "x out of bounds");
+  CT_CHECK(p->y >= root->y && p->y < root->y + root->h, "y out of bounds");
+  CT_CHECK(p->z >= root->z && p->z < root->z + root->d, "z out of bounds");
+  if (!insert_node(root, p, data, &t->pool)) {
     t->size++;
     return 0;
   }
