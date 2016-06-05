@@ -28,11 +28,11 @@ static float disc_gen(CT_Quadtree *t, CT_Circle2f *disc) {
 int test_poisson_svg() {
   CT_Quadtree t;
   CT_MPool vpool;
-  CT_IS(!ct_qtree_init(&t, 0, 0, w, h, 0x1000), "init");
-  CT_IS(!ct_mpool_init(&vpool, 0x1000, sizeof(CT_Vec2f)), "init pool");
+  CT_IS(!ct_qtree_init(&t, 0, 0, w, h, 0x4000), "init");
+  CT_IS(!ct_mpool_init(&vpool, 0x4000, sizeof(CT_Vec2f)), "init pool");
   FILE *f = fopen("poisson.svg", "w");
   char buf[0x10000];
-  setvbuf(f, buf, _IOFBF, 0x1000);
+  setvbuf(f, buf, _IOFBF, 0x4000);
   ct_svg_write_header(
       f, ct_svg_attribs(1, 2, SVG_INT("width", w), SVG_INT("height", h)));
   ct_svg_write_rect(f, 0, 0, w, h, ct_svg_attribs(1, 1, SVG_HEX("fill", 0xff)));
@@ -47,7 +47,7 @@ int test_poisson_svg() {
       p = (CT_Vec2f *)ct_mpool_alloc(&vpool);
       count++;
       failed = 0;
-    } else if (++failed > 1e3) {
+    } else if (++failed > 1e2) {
       break;
     }
   }
