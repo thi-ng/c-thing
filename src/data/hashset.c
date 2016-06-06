@@ -106,8 +106,7 @@ CT_EXPORT int ct_hs_init(CT_Hashset* s, CT_HSOps* ops, size_t num,
                          size_t poolSize, CT_HSFlags flags) {
   int mp = ct_mpool_init(&s->pool, poolSize, sizeof(CT_HSEntry));
   if (!mp) {
-    num = ct_ceil_pow2(num);
-    CT_INFO("HS bin count: 0x%zx", num);
+    num     = ct_ceil_pow2(num);
     s->bins = calloc(num, sizeof(CT_HSEntry*));
     CT_CHECK_MEM(&s->bins);
     s->ops = *ops;

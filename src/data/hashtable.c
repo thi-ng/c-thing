@@ -138,8 +138,7 @@ CT_EXPORT int ct_ht_init(CT_Hashtable* t, CT_HTOps* ops, size_t num,
                          size_t poolSize, CT_HTFlags flags) {
   int mp = ct_mpool_init(&t->pool, poolSize, sizeof(CT_HTEntry));
   if (!mp) {
-    num = ct_ceil_pow2(num);
-    CT_INFO("HT bin count: 0x%zx", num);
+    num     = ct_ceil_pow2(num);
     t->bins = calloc(num, sizeof(CT_HTEntry*));
     CT_CHECK_MEM(&t->bins);
     t->ops = *ops;
