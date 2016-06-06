@@ -33,6 +33,8 @@ CT_BEGIN_DECLS
 
 uint32_t ct_ceil_pow2(uint32_t x);
 uint32_t ct_floor_pow2(uint32_t x);
+float ct_parse_float(char *src, float err);
+uint32_t ct_parse_hex32(char *src, uint32_t err);
 
 CT_EXPORT ct_inline float ct_clampf(const float a, const float b,
                                     const float c) {
