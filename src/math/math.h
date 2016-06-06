@@ -25,6 +25,7 @@
 
 #define MIN(a, b) ((a) < (b) ? (a) : (b))
 #define MAX(a, b) ((a) > (b) ? (a) : (b))
+#define CLAMP(a, b, c) MIN(MAX(a, b), c)
 #define SIGNUM(x, eps) (int)((x) < 0 ? -1 : ((x) > 0) ? 1 : 0)
 #define COMPARE(a, b) (int)((a) < (b) ? -1 : ((a) > (b) ? 1 : 0))
 
@@ -32,6 +33,11 @@ CT_BEGIN_DECLS
 
 uint32_t ct_ceil_pow2(uint32_t x);
 uint32_t ct_floor_pow2(uint32_t x);
+
+CT_EXPORT ct_inline float ct_clampf(const float a, const float b,
+                                    const float c) {
+  return CLAMP(a, b, c);
+}
 
 CT_EXPORT ct_inline size_t ct_deltaeqf(const float a, const float b,
                                        const float eps) {

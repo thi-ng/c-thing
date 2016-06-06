@@ -81,6 +81,13 @@ CT_EXPORT ct_inline CT_Vec2f *ct_set2fp(CT_Vec2f *v, float *xy) {
   return v;
 }
 
+CT_EXPORT ct_inline CT_Vec2f *ct_clamp2fv_imm(CT_Vec2f *a, const CT_Vec2f *min,
+                                              const CT_Vec2f *max) {
+  a->x = ct_clampf(a->x, min->x, max->x);
+  a->y = ct_clampf(a->y, min->y, max->y);
+  return a;
+}
+
 CT_EXPORT ct_inline int ct_compare2fv(const CT_Vec2f *a, const CT_Vec2f *b) {
   int c = COMPARE(a->x, b->x);
   if (!c) {
@@ -132,13 +139,13 @@ CT_EXPORT ct_inline float ct_mag2f(const CT_Vec2f *v) {
   return sqrtf(v->x * v->x + v->y * v->y);
 }
 
-CT_EXPORT ct_inline CT_Vec2f *ct_max2fv_imm(CT_Vec2f *a, CT_Vec2f *b) {
+CT_EXPORT ct_inline CT_Vec2f *ct_max2fv_imm(CT_Vec2f *a, const CT_Vec2f *b) {
   a->x = MAX(a->x, b->x);
   a->y = MAX(a->y, b->y);
   return a;
 }
 
-CT_EXPORT ct_inline CT_Vec2f *ct_min2fv_imm(CT_Vec2f *a, CT_Vec2f *b) {
+CT_EXPORT ct_inline CT_Vec2f *ct_min2fv_imm(CT_Vec2f *a, const CT_Vec2f *b) {
   a->x = MIN(a->x, b->x);
   a->y = MIN(a->y, b->y);
   return a;
