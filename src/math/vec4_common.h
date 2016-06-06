@@ -2,6 +2,8 @@
 
 #include "math/vec.h"
 
+CT_BEGIN_DECLS
+
 CT_Vec4f *ct_vec4f(float x, float y, float z, float w, CT_MPool *mpool);
 CT_Vec4f *ct_vec4fn(float n, CT_MPool *mpool);
 
@@ -72,3 +74,5 @@ CT_EXPORT ct_inline CT_Vec4f *ct_set4fn(CT_Vec4f *v, float n) {
   v->w = n;
   return v;
 }
+
+CT_END_DECLS

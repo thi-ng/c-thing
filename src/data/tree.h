@@ -1,3 +1,7 @@
 #pragma once
 
+CT_BEGIN_DECLS
+
 enum { CT_TREE_EMPTY = 0, CT_TREE_BRANCH, CT_TREE_LEAF };
+
+CT_END_DECLS

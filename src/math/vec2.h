@@ -40,6 +40,8 @@
     return out;                                                                \
   }
 
+CT_BEGIN_DECLS
+
 typedef union {
   struct {
     float x, y;
@@ -204,3 +206,5 @@ CT_EXPORT ct_inline CT_Vec2f *ct_polar2f_imm(CT_Vec2f *v) {
 CT_EXPORT ct_inline CT_Vec2f *ct_polar2f(const CT_Vec2f *v, CT_Vec2f *out) {
   return ct_polar2f_imm(ct_set2fv(out, v));
 }
+
+CT_END_DECLS

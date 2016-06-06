@@ -40,6 +40,8 @@
     return out;                                                                \
   }
 
+CT_BEGIN_DECLS
+
 __attribute__((aligned(16))) typedef union {
   struct {
     float x, y, z, w;
@@ -94,3 +96,5 @@ CT_EXPORT ct_inline CT_Vec4f *ct_set4fv(CT_Vec4f *a, const CT_Vec4f *b) {
   a->mmval = b->mmval;
   return a;
 }
+
+CT_END_DECLS

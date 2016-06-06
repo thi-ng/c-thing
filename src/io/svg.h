@@ -10,6 +10,8 @@
 #define SVG_INT(k, v) (k), 'd', (v)
 #define SVG_HEX(k, v) (k), 'x', (v)
 
+CT_BEGIN_DECLS
+
 typedef struct {
   CT_Hashtable attribs;
   size_t flags;
@@ -24,3 +26,5 @@ int ct_svg_write_circle(FILE *out, float x, float y, float r,
 
 int ct_svg_write_rect(FILE *out, float x, float y, float w, float h,
                       CT_SVGAttribs *attribs);
+
+CT_END_DECLS

@@ -16,11 +16,11 @@ struct CT_Ref {
   size_t count;
 };
 
-static inline void ct_ref_inc(const CT_Ref *ref) {
+ct_inline void ct_ref_inc(const CT_Ref *ref) {
   ((CT_Ref *)ref)->count++;
 }
 
-static inline void ct_ref_dec(const CT_Ref *ref) {
+ct_inline void ct_ref_dec(const CT_Ref *ref) {
   if (--((CT_Ref *)ref)->count == 0) ref->free(ref);
 }
 

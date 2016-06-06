@@ -2,9 +2,12 @@
 
 #include <stddef.h>
 
+#include "config.h"
 #include "data/tree.h"
 #include "math/vec.h"
 #include "mem/mpool.h"
+
+CT_BEGIN_DECLS
 
 typedef struct CT_OTNode CT_OTNode;
 
@@ -39,3 +42,5 @@ void ct_octree_trace_node(const CT_OTNode *t, size_t depth);
 void ct_octree_trace(CT_Octree *t);
 int ct_octree_visit_leaves(CT_Octree *t, CT_OTVisitor visit, void *state);
 void ct_octree_visit(CT_Octree *t, CT_OTVisitor visit, void *state);
+
+CT_END_DECLS

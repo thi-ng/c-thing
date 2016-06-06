@@ -10,6 +10,8 @@
     }                                                                        \
   }
 
+CT_BEGIN_DECLS
+
 void ct_translate2f(float* ptr, CT_Vec2f* t, size_t num, size_t fstride);
 void ct_scale2f(float* ptr, CT_Vec2f* t, size_t num, size_t fstride);
 void ct_translate3f(float* ptr, CT_Vec3f* t, size_t num, size_t fstride);
@@ -22,3 +24,5 @@ CT_Vec2f* ct_closest_point2f(float* ptr, CT_Vec2f* p, size_t num,
 
 CT_Vec3f* ct_closest_point3f(float* ptr, CT_Vec3f* p, size_t num,
                              size_t fstride);
+
+CT_END_DECLS

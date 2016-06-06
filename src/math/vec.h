@@ -1,9 +1,5 @@
 #pragma once
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-
 #include <math.h>
 #include <stddef.h>
 #include <stdint.h>
@@ -21,7 +17,7 @@ extern "C" {
 #else
 #include "math/vec3.h"
 #include "math/vec4.h"
-#endif
+#endif  // CT_FEATURE_SSE
 
 #include "math/vec3_common.h"
 #include "math/vec4_common.h"
@@ -29,7 +25,3 @@ extern "C" {
 #include "math/swizzle.h"
 
 #include "math/vec_arrayops.h"
-
-#ifdef __cplusplus
-}
-#endif

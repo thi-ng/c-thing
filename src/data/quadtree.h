@@ -2,10 +2,13 @@
 
 #include <stddef.h>
 
+#include "config.h"
 #include "data/tree.h"
 #include "geom/rect.h"
 #include "math/vec.h"
 #include "mem/mpool.h"
+
+CT_BEGIN_DECLS
 
 typedef struct CT_QTNode CT_QTNode;
 
@@ -44,3 +47,5 @@ void ct_qtree_trace_node(const CT_QTNode *node, size_t depth);
 void ct_qtree_trace(CT_Quadtree *t);
 int ct_qtree_visit_leaves(CT_Quadtree *t, CT_QTVisitor visit, void *state);
 void ct_qtree_visit(CT_Quadtree *t, CT_QTVisitor visit, void *state);
+
+CT_END_DECLS

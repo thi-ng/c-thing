@@ -2,6 +2,8 @@
 
 #include "math/vec.h"
 
+CT_BEGIN_DECLS
+
 CT_Vec3f *ct_vec3f(float x, float y, float z, CT_MPool *mpool);
 CT_Vec3f *ct_vec3fn(float n, CT_MPool *mpool);
 
@@ -67,3 +69,5 @@ CT_EXPORT ct_inline CT_Vec3f *ct_set3fn(CT_Vec3f *v, float n) {
   v->z = n;
   return v;
 }
+
+CT_END_DECLS
