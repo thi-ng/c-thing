@@ -45,10 +45,14 @@ CT_EXPORT int ct_poisson_sample2f_with(CT_Quadtree *t, CT_PoissonDiskGen gen,
                                        size_t num, CT_Vec2f *out) {
   float maxD = 0;
   float radius;
+  CT_Vec2f *min = &t->root.pos;
+  CT_Vec2f max;
+  ct_add2fxy(min, t->root.w - 1e-3, t->root.h - 1e-3, &max);
   CT_Circle2f disc;
   radius = gen(t, &disc);
   for (size_t i = 0; i < num; i++) {
     ct_add2fxy_imm(&disc.pos, ct_rand_norm(), ct_rand_norm());
+    ct_clamp2fv_imm(&disc.pos, min, &max);
     disc.r = radius;
     ct_qtree_visit(t, find_candidate, &disc);
     if (disc.r > maxD) {
