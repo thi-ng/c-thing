@@ -30,7 +30,9 @@ make help
 #+END_SRC
 
 ** Examples
-*** Poisson disk sampling image conversion
+*** Poisson disc sampling image conversion
+
+[[./assets/iris-poisson.png]]
 
 #+BEGIN_SRC shell
 # build library & example app
