@@ -118,9 +118,11 @@ CT_EXPORT void *ct_mpool_alloc(CT_MPool *mp) {
   if (mp->freeList != NULL) {
     ptr          = mp->freeList;
     mp->freeList = mp->freeList->next;
+    return ptr;
   } else if (mp->head->nextID < mp->numBlocks) {
     ptr = mp->head->pool + mp->head->nextID * mp->blockSize;
     mp->head->nextID++;
+    return ptr;
   } else {
     CT_MPoolList *head = malloc(sizeof(CT_MPoolList));
     CT_CHECK_MEM(head);
