@@ -51,7 +51,7 @@ bin/release/ex-poisson
 # 	-q INT		quality (default: 100)
  
 # concrete example (for image size roughly 700x1000px)
-bin/release/ex-poisson -b 00ffff -f ff0000 -i -q 500 -m 1.5 -x 16 myimage.jpg > poisson.svg
+bin/release/ex-poisson -b 00ffff -f 0000ff -i -q 500 -m 1.5 -x 16 assets/iris.jpg > assets/iris.svg
 #+END_SRC
 
 ** Compile with emscripten
