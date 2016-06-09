@@ -7,6 +7,7 @@
 struct CT_SPB {
   void *value;
   CT_SPB *next;
+  float key;
 };
 
 static size_t find_bin(const CT_SpatialBin *bin, float x) {
@@ -29,6 +30,7 @@ fail:
 }
 
 void ct_spbin_free(CT_SpatialBin *bin) {
+  free(bin->bins);
   ct_mpool_free_all(&bin->pool);
 }
 
@@ -40,6 +42,7 @@ int ct_spbin_insert(CT_SpatialBin *bin, float x, void *item) {
   CT_DEBUG("insert @ bin: %zu new: (%p) -> %p", id, b, bin->bins[id]);
   b->value      = item;
   b->next       = bin->bins[id];
+  b->key        = x;
   bin->bins[id] = b;
   return 0;
 fail:
@@ -68,24 +71,37 @@ fail:
   return 1;
 }
 
+int ct_spbin_update(CT_SpatialBin *bin, float x1, float x2, void *item) {
+  size_t id1 = find_bin(bin, x1);
+  size_t id2 = find_bin(bin, x2);
+  if (id1 != id2) {
+    return !ct_spbin_remove(bin, x1, item) && ct_spbin_insert(bin, x2, item);
+  }
+  return 0;
+}
+
 size_t ct_spbin_select(CT_SpatialBin *bin, float x, float eps, void **results,
                        size_t len) {
   size_t i = 0;
-  size_t s = find_bin(bin, x - eps);
-  size_t e = find_bin(bin, x + eps);
+  float x1 = x - eps;
+  float x2 = x + eps;
+  size_t s = find_bin(bin, x1);
+  size_t e = find_bin(bin, x2);
   s        = MAX(s, 0);
   e        = MIN(e, bin->numBins - 1);
   while (s <= e) {
-    CT_DEBUG("selecting bin: %zu", s);
     CT_SPB *b = bin->bins[s];
     while (b) {
-      CT_DEBUG("sel: %p = %p / %p -> %p", &results[i], b->value, b, b->next);
-      results[i] = b->value;
-      b          = b->next;
-      i++;
-      if (i == len) {
-        return i;
+      if (b->key >= x1 && b->key <= x2) {
+        CT_DEBUG("sel @ %zu: %p = %p / %p -> %p", s, &results[i], b->value, b,
+                 b->next);
+        results[i] = b->value;
+        i++;
+        if (i == len) {
+          return i;
+        }
       }
+      b = b->next;
     }
     s++;
   }

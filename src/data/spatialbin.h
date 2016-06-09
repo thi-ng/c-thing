@@ -22,6 +22,7 @@ int ct_spbin_init(CT_SpatialBin *bin, float x1, float x2, size_t numBins,
 void ct_spbin_free(CT_SpatialBin *bin);
 int ct_spbin_insert(CT_SpatialBin *bin, float x, void *item);
 int ct_spbin_remove(CT_SpatialBin *bin, float x, void *item);
+int ct_spbin_update(CT_SpatialBin *bin, float x1, float x2, void *item);
 size_t ct_spbin_select(CT_SpatialBin *bin, float x, float eps, void **results,
                        size_t len);
 
