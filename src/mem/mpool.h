@@ -7,7 +7,7 @@
 #include "config.h"
 
 #define CT_MP_ALLOC(mpool, type) \
-  (type *)((mpool) != NULL ? ct_mpool_alloc(mpool) : malloc(sizeof(type)))
+  ((mpool) != NULL ? ct_mpool_alloc(mpool) : malloc(sizeof(type)))
 
 #define CT_MP_FREE(mpool, ptr) \
   ((mpool) != NULL ? ct_mpool_free(mpool, (ptr)) : free(ptr))

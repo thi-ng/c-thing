@@ -61,10 +61,10 @@ CT_EXPORT CT_Vec2f *ct_circle2f_vertices(CT_Circle2f *c, CT_Vec2f *verts,
 CT_EXPORT CT_Triangle2f *ct_circle2f_tessellate(CT_Circle2f *c,
                                                 CT_Triangle2f *tris, size_t n) {
   CT_Vec2f *verts =
-      ct_circle2f_vertices(c, (CT_Vec2f *)malloc(sizeof(CT_Vec2f) * n), n);
+      ct_circle2f_vertices(c, malloc(sizeof(CT_Vec2f) * n), n);
   CT_Triangle2f *ptr = tris;
-  for (size_t i = 0; i <= n; i++) {
-    ct_triangle2f_init(ptr, &c->pos, &verts[i % n], &verts[(i + 1) % n]);
+  for (size_t i = 0; i < n; i++) {
+    ct_triangle2f_init(ptr, &c->pos, &verts[i], &verts[(i + 1) % n]);
     ptr++;
   }
   free(verts);

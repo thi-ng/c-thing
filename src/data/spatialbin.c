@@ -14,8 +14,8 @@ static size_t find_bin(const CT_SpatialBin *bin, float x) {
   return (size_t)((x - bin->offset) * bin->invBinWidth);
 }
 
-CT_EXPORT int ct_spbin_init(CT_SpatialBin *bin, float x1, float x2, size_t numBins,
-                  size_t poolSize) {
+CT_EXPORT int ct_spbin_init(CT_SpatialBin *bin, float x1, float x2,
+                            size_t numBins, size_t poolSize) {
   if (!ct_mpool_init(&bin->pool, MAX(numBins, poolSize), sizeof(CT_SPB))) {
     CT_CHECK_MEM(bin->bins = calloc(numBins, sizeof(CT_SPB *)));
     bin->numBins     = numBins;
@@ -71,7 +71,8 @@ fail:
   return 1;
 }
 
-CT_EXPORT int ct_spbin_update(CT_SpatialBin *bin, float x1, float x2, void *item) {
+CT_EXPORT int ct_spbin_update(CT_SpatialBin *bin, float x1, float x2,
+                              void *item) {
   size_t id1 = find_bin(bin, x1);
   size_t id2 = find_bin(bin, x2);
   if (id1 != id2) {
@@ -80,8 +81,8 @@ CT_EXPORT int ct_spbin_update(CT_SpatialBin *bin, float x1, float x2, void *item
   return 0;
 }
 
-CT_EXPORT size_t ct_spbin_select(CT_SpatialBin *bin, float x, float eps, void **results,
-                       size_t len) {
+CT_EXPORT size_t ct_spbin_select(CT_SpatialBin *bin, float x, float eps,
+                                 void **results, size_t len) {
   size_t i = 0;
   float x1 = x - eps;
   float x2 = x + eps;

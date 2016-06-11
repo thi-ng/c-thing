@@ -114,7 +114,7 @@ static void ct_object_free(const CT_Ref *ref) {
 }
 
 CT_Object *ct_object_raw(uint32_t type) {
-  CT_Object *o = (CT_Object *)malloc(sizeof(CT_Object));
+  CT_Object *o = malloc(sizeof(CT_Object));
   o->rc        = (CT_Ref){ct_object_free, 0};
   o->tag.tag   = 0;
   o->tag.type  = type;

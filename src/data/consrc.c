@@ -39,7 +39,7 @@ static void ct_consrc_free(const CT_Ref *ref) {
 }
 
 CT_Object *ct_object_cons(CT_Object *value) {
-  CT_Object *o    = (CT_Object *)malloc(sizeof(CT_Object));
+  CT_Object *o    = malloc(sizeof(CT_Object));
   CT_ConsRC *node = malloc(sizeof(CT_ConsRC));
   ct_object_assign(&node->value, value);
   node->next  = NULL;

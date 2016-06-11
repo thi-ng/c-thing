@@ -26,7 +26,7 @@ int test_vec2f() {
   ASSERT_VEC2F(b, 11, 12);
   CT_Vec2f *c = ct_add2fv(a, b, CT_MP_ALLOC(&pool, CT_Vec2f));
   ASSERT_VEC2F(c, 12, 14);
-  CT_Vec2f *d = ct_add2fv(a, b, (CT_Vec2f *)malloc(sizeof(CT_Vec2f)));
+  CT_Vec2f *d = ct_add2fv(a, b, malloc(sizeof(CT_Vec2f)));
   ASSERT_VEC2F(d, 12, 14);
   ct_add2fv_imm(d, a);
   ASSERT_VEC2F(d, 13, 16);
@@ -76,7 +76,7 @@ int test_vec3f() {
   ASSERT_VEC3F(b, 11, 12, 13);
   CT_Vec3f *c = ct_add3fv(a, b, CT_MP_ALLOC(&pool, CT_Vec3f));
   ASSERT_VEC3F(c, 12, 14, 16);
-  CT_Vec3f *d = ct_add3fv(a, b, (CT_Vec3f *)malloc(sizeof(CT_Vec3f)));
+  CT_Vec3f *d = ct_add3fv(a, b, malloc(sizeof(CT_Vec3f)));
   ASSERT_VEC3F(d, 12, 14, 16);
   ct_add3fv_imm(d, a);
   ASSERT_VEC3F(d, 13, 16, 19);
