@@ -1,0 +1,14 @@
+#!/bin/sh
+retest() {
+    echo "----------------------------------------"
+    date +%Y-%m-%d-%H:%M:%S
+    echo "----------------------------------------"
+    make config=test test && bin/test/test;
+}
+
+make clean
+retest
+
+while fswatch -1 src/ test/ ; do
+    retest
+done
