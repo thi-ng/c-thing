@@ -7,6 +7,8 @@ WIP
 - [[https://premake.github.io/][Premake5]]
 - [[http://www.gnu.org/software/make/][GNU Make]]
 - GCC / Clang
+- [[https://github.com/emcrisostomo/fswatch][fswatch]] (only needed for =./autotest= runner)
+- [[http://emscripten.org][emscripten]] (only needed for =./compile=)
 
 ** Build & test
 
