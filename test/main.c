@@ -16,7 +16,7 @@ extern int test_consrc();
 extern int test_hash_fns();
 extern int test_quadtree();
 extern int test_octree();
-extern int test_spatialbin();
+extern int test_spatialgrid1d();
 extern int test_hashtable_char();
 extern int test_hashtable_vec();
 extern int test_hashtable_edge();
@@ -55,7 +55,7 @@ int all_tests() {
   CT_RUN_TEST(test_hash_fns);
   CT_RUN_TEST(test_quadtree);
   CT_RUN_TEST(test_octree);
-  CT_RUN_TEST(test_spatialbin);
+  CT_RUN_TEST(test_spatialgrid1d);
   CT_RUN_TEST(test_hashtable_char);
   CT_RUN_TEST(test_hashtable_vec);
   CT_RUN_TEST(test_hashtable_edge);
