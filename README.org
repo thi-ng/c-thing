@@ -75,10 +75,11 @@ python3 -m http.server
 
 The following =defines= can be used to customize behavior:
 
-| =CT_FEATURE_LOG=    | enable logging (if =NDEBUG= is defined, the debug log level is disabled) |
-| =CT_FEATURE_ANSI=   | use ANSI colors in log messages                                          |
-| =CT_FEATURE_CHECKS= | enable runtime checks (the =CT_CHECK_MEM= macro is always enabled)       |
-| =CT_FEATURE_SSE=    | enable SSE version                                                       |
+| =CT_FEATURE_LOG=       | enable logging (if =NDEBUG= is defined, the debug log level is disabled) |
+| =CT_FEATURE_ANSI=      | use ANSI colors in log messages                                          |
+| =CT_FEATURE_CHECKS=    | enable runtime assertions (via =CT_CHECK= macro)                         |
+| =CT_FEATURE_CHECK_MEM= | enable runtime memory checks (via =CT_CHECK_MEM= macro)                  |
+| =CT_FEATURE_SSE=       | enable SSE version                                                       |
 
 ** Contributors
 

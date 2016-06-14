@@ -14,7 +14,7 @@ files { "src/**.h", "src/**.c", "test/**.c" }
 removefiles {"src/geom/mesh.c" }
 
 filter "configurations:test"
-defines { "NDEBUG", "CT_FEATURE_ANSI", "CT_FEATURE_CHECKS", "CT_FEATURE_SSE" }
+defines { "NDEBUG", "CT_FEATURE_ANSI", "CT_FEATURE_CHECKS", "CT_FEATURE_CHECK_MEM", "CT_FEATURE_SSE" }
 optimize "Size"
 
 ----- lib
@@ -43,7 +43,7 @@ includedirs { "examples/common", "examples/poisson" }
 links "lib"
 
 filter "configurations:debug"
-defines { "DEBUG", "CT_FEATURE_CHECKS", "CT_FEATURE_SSE" }
+defines { "DEBUG", "CT_FEATURE_CHECKS", "CT_FEATURE_CHECK_MEM", "CT_FEATURE_SSE" }
 
 filter "configurations:release"
 defines { "NDEBUG", "CT_FEATURE_LOG", "CT_FEATURE_SSE" }
