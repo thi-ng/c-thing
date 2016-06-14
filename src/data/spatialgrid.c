@@ -50,7 +50,8 @@ CT_EXPORT int ct_spgrid_init(CT_SpatialGrid *grid, const float *start,
   grid->find_cell =
       dims == 1 ? find_cell1d : dims == 2 ? find_cell2d : find_cell3d;
   if (!ct_mpool_init(&grid->pool, MAX(numCells, poolSize), sizeof(CT_SPCell))) {
-    CT_CHECK_MEM(grid->cells = calloc(numCells, sizeof(CT_SPCell *)));
+    grid->cells = calloc(numCells, sizeof(CT_SPCell *));
+    CT_CHECK_MEM(grid);
     return 0;
   }
 fail:
