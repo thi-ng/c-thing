@@ -63,7 +63,7 @@ make help
 ** Disassemble & list symbols
 
 #+BEGIN_SRC shell
-# display disassembly for test binary (OSX)
+# display disassembly (OSX)
 otool -jtV bin/release/libcthing.a | less
 
 # display global symbols defined in lib
