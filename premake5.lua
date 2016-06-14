@@ -1,9 +1,13 @@
 workspace "cthing"
 configurations { "debug", "release", "test" }
+platforms { "sse", "no_sse" }
 language "C"
 includedirs { "src" }
 targetdir "bin/%{cfg.buildcfg}"
 flags { "Symbols", "FatalWarnings", "C++11" }
+
+filter "platforms:sse"
+defines { "CT_FEATURE_SSE" }
 
 ----- test
 
@@ -14,7 +18,7 @@ files { "src/**.h", "src/**.c", "test/**.c" }
 removefiles {"src/geom/mesh.c" }
 
 filter "configurations:test"
-defines { "NDEBUG", "CT_FEATURE_ANSI", "CT_FEATURE_CHECKS", "CT_FEATURE_CHECK_MEM", "CT_FEATURE_SSE" }
+defines { "NDEBUG", "CT_FEATURE_ANSI", "CT_FEATURE_CHECKS", "CT_FEATURE_CHECK_MEM" }
 optimize "Size"
 
 ----- lib
@@ -27,10 +31,10 @@ kind "StaticLib"
 targetname "cthing"
 
 filter "configurations:debug"
-defines { "DEBUG", "CT_FEATURE_CHECKS", "CT_FEATURE_SSE" }
+defines { "DEBUG", "CT_FEATURE_CHECKS", "CT_FEATURE_CHECK_MEM" }
 
 filter "configurations:release"
-defines { "NDEBUG", "CT_FEATURE_LOG", "CT_FEATURE_SSE" }
+defines { "NDEBUG", "CT_FEATURE_LOG" }
 optimize "Size"
 
 ----- examples
@@ -43,8 +47,8 @@ includedirs { "examples/common", "examples/poisson" }
 links "lib"
 
 filter "configurations:debug"
-defines { "DEBUG", "CT_FEATURE_CHECKS", "CT_FEATURE_CHECK_MEM", "CT_FEATURE_SSE" }
+defines { "DEBUG", "CT_FEATURE_ANSI", "CT_FEATURE_CHECKS", "CT_FEATURE_CHECK_MEM" }
 
 filter "configurations:release"
-defines { "NDEBUG", "CT_FEATURE_LOG", "CT_FEATURE_SSE" }
+defines { "NDEBUG", "CT_FEATURE_LOG" }
 optimize "Size"

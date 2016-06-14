@@ -4,7 +4,7 @@ retest() {
     echo "----------------------------------------"
     date +%Y-%m-%d-%H:%M:%S
     echo "----------------------------------------"
-    make config=test test && bin/test/test;
+    make -j3 config=test_sse test && bin/test/test;
 }
 
 make clean
