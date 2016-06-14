@@ -1,5 +1,6 @@
 #!/bin/sh
 retest() {
+    printf "\033c"
     echo "----------------------------------------"
     date +%Y-%m-%d-%H:%M:%S
     echo "----------------------------------------"
@@ -9,6 +10,5 @@ retest() {
 make clean
 retest
 
-while fswatch -1 src/ test/ ; do
-    retest
-done
+export -f retest
+fswatch -o src test | xargs -n1 -I{} bash -c 'retest' _ {}
