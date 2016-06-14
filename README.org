@@ -1,6 +1,29 @@
 * c.thi.ng
 
-WIP
+** Overview
+*** Data structures
+- Cons list (with & without reference counting)
+- Hashset
+- Hashtable
+- Octree
+- Quadtree
+- Spatial grid (1D, 2D, 3D)
+
+*** Memory management
+
+- Memory pool (auto-growth, manual compacts)
+- Reference counting utils
+
+*** Math
+
+- Murmur Hash (32bit version)
+- Vec2/3/4 (w/ opt SSE impls)
+- Vector swizzling
+- Poisson disc sampling
+
+*** Geometry
+
+TBD
 
 ** Requirements
 
@@ -8,13 +31,19 @@ WIP
 - [[http://www.gnu.org/software/make/][GNU Make]]
 - GCC / Clang
 - [[https://github.com/emcrisostomo/fswatch][fswatch]] (only needed for =./autotest= runner)
-- [[http://emscripten.org][emscripten]] & [[http://nodejs.org][node]] (only needed for JS x-compilation via =./compile=)
+- [[http://emscripten.org][emscripten]] & [[http://nodejs.org][node]] (only needed for asm.js x-compilation via =./compile=)
 
 ** Build & test
 
 #+BEGIN_SRC shell
 premake5 gmake
+
+# build & run tests manually
 make config=test test && bin/test/test
+
+# ...or use auto test w/ file watcher
+# tests re-run automatically if files in /src or /test are changed
+./autotest
 #+END_SRC
 
 ** Build static library
@@ -46,14 +75,15 @@ bin/release/ex-poisson
 # Usage:	ex-poisson [options] image [ > out.svg ]
 # 	-b HEX		bg color (default: ffffff)
 # 	-f HEX		fg color (default: 0000ff)
-# 	-i		invert (also swaps fg/bg) (default: no)
+#   -g FLOAT  gamma (default: 3.00)
+# 	-i		    invert (also swaps fg/bg) (default: no)
 # 	-m FLOAT	min distance (default: 2.00)
 # 	-x FLOAT	max distance (default: 10.00)
 # 	-r FLOAT	dot radius (default: 1.00)
 # 	-q INT		quality (default: 100)
  
 # concrete example (for image size roughly 700x1000px)
-bin/release/ex-poisson -b 00ffff -f 0000ff -i -q 500 -m 1.5 -x 16 assets/iris.jpg > assets/iris.svg
+bin/release/ex-poisson -g 1.25 -q 500 -m 1.5 -x 16 assets/iris.jpg > assets/iris.svg
 #+END_SRC
 
 ** Compile with emscripten
