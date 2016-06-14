@@ -131,7 +131,7 @@ static void usage(const Config *config) {
   fprintf(stderr, "Usage:\tex-poisson [options] image [ > out.svg ]\n");
   fprintf(stderr, "\t-b HEX\t\tbg color (default: %06x)\n", config->bg);
   fprintf(stderr, "\t-f HEX\t\tfg color (default: %06x)\n", config->fg);
-  fprintf(stderr, "\t-g HEX\t\tgamma (default: %1.2f)\n", config->gamma);
+  fprintf(stderr, "\t-g FLOAT\tgamma (default: %1.2f)\n", config->gamma);
   fprintf(stderr, "\t-i\t\tinvert (also swaps fg/bg) (default: %s)\n",
           config->invert ? "yes" : "no");
   fprintf(stderr, "\t-m FLOAT\tmin distance (default: %1.2f)\n",
