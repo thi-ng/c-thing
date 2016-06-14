@@ -25,7 +25,20 @@
 
 #define MIN(a, b) ((a) < (b) ? (a) : (b))
 #define MAX(a, b) ((a) > (b) ? (a) : (b))
+#define MIN_LET(type, out, a, b)           \
+  {                                        \
+    type ta = (a);                         \
+    type tb = (b);                         \
+    out     = ((ta) < (tb) ? (ta) : (tb)); \
+  }
+#define MAX_LET(type, out, a, b)           \
+  {                                        \
+    type ta = (a);                         \
+    type tb = (b);                         \
+    out     = ((ta) > (tb) ? (ta) : (tb)); \
+  }
 #define CLAMP(a, b, c) MIN(MAX(a, b), c)
+#define IN_RANGE(x, a, b) ((x) >= (a) && (x) <= (b))
 #define SIGNUM(x, eps) (int)((x) < 0 ? -1 : ((x) > 0) ? 1 : 0)
 #define COMPARE(a, b) (int)((a) < (b) ? -1 : ((a) > (b) ? 1 : 0))
 
