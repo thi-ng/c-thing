@@ -22,6 +22,7 @@ typedef struct {
   float minDist;
   float maxDist;
   float dotRadius;
+  float gamma;
   uint32_t quality;
   uint32_t fg;
   uint32_t bg;
@@ -38,6 +39,7 @@ static Config config = {
   .maxDist = 10.0f,
   .dotRadius = 1.0f,
   .quality = 1e2,
+  .gamma = 3.0f,
   .invert = 0,
   .bg = 0xffffff,
   .fg = 0x0000ff
@@ -52,7 +54,8 @@ static float disc_gen(CT_Quadtree *t, CT_Circle2f *disc, void *state) {
   Config *config         = (Config *)state;
   float tt               = (float)config->image[y * config->width + x] / 255.f;
   if (config->invert) tt = 1.0f - tt;
-  return disc->r = ct_mixf(config->minDist, config->maxDist, powf(tt, 3.f));
+  return disc->r =
+             ct_mixf(config->minDist, config->maxDist, powf(tt, config->gamma));
 }
 
 static int poisson_svg(const Config *config) {
@@ -128,6 +131,7 @@ static void usage(const Config *config) {
   fprintf(stderr, "Usage:\tex-poisson [options] image [ > out.svg ]\n");
   fprintf(stderr, "\t-b HEX\t\tbg color (default: %06x)\n", config->bg);
   fprintf(stderr, "\t-f HEX\t\tfg color (default: %06x)\n", config->fg);
+  fprintf(stderr, "\t-g HEX\t\tgamma (default: %1.2f)\n", config->gamma);
   fprintf(stderr, "\t-i\t\tinvert (also swaps fg/bg) (default: %s)\n",
           config->invert ? "yes" : "no");
   fprintf(stderr, "\t-m FLOAT\tmin distance (default: %1.2f)\n",
@@ -142,7 +146,7 @@ static void usage(const Config *config) {
 int main(int argc, char **argv) {
   char c;
   uint8_t err = 0;
-  while (!err && (c = getopt(argc, argv, "b:f:im:q:r:x:")) != -1) {
+  while (!err && (c = getopt(argc, argv, "b:f:g:im:q:r:x:")) != -1) {
     switch (c) {
       case 'm':
         config.minDist = ct_parse_float(optarg, config.minDist);
@@ -152,6 +156,9 @@ int main(int argc, char **argv) {
         break;
       case 'r':
         config.dotRadius = ct_parse_float(optarg, config.dotRadius);
+        break;
+      case 'g':
+        config.gamma = ct_parse_float(optarg, config.gamma);
         break;
       case 'q':
         config.quality = (uint32_t)ct_parse_float(optarg, config.quality);
