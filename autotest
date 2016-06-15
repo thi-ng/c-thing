@@ -1,13 +1,15 @@
 #!/bin/sh
+readonly CONFIG=test_sse
+
 retest() {
     printf "\033c"
     echo "----------------------------------------"
     date +%Y-%m-%d-%H:%M:%S
     echo "----------------------------------------"
-    make -j3 config=test_sse test && bin/test/test;
+    make -j3 config=$CONFIG test && bin/test/test;
 }
 
-make clean
+make config=$CONFIG clean
 retest
 
 export -f retest

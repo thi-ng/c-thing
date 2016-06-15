@@ -52,3 +52,4 @@ defines { "DEBUG", "CT_FEATURE_ANSI", "CT_FEATURE_CHECKS", "CT_FEATURE_CHECK_MEM
 filter "configurations:release"
 defines { "NDEBUG", "CT_FEATURE_LOG" }
 optimize "Size"
+linkoptions { "-flto" }
