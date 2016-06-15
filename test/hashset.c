@@ -13,7 +13,7 @@ struct edge_t {
 
 static int dump_hs_char(const CT_HSEntry *e, void *state) {
   size_t *num = (size_t *)state;
-  CT_DEBUG("entry: %zu, %s", num, e->key);
+  CT_DEBUG("entry: %zu, %s", *num, e->key);
   *num = *num + 1;
   return 0;
 }
@@ -21,7 +21,7 @@ static int dump_hs_char(const CT_HSEntry *e, void *state) {
 static int dump_hs_vec(const CT_HSEntry *e, void *state) {
   size_t *num = (size_t *)state;
   CT_Vec3f *v = (CT_Vec3f *)e->key;
-  CT_DEBUG("entry: %zu, (%f,%f,%f)", num, v->x, v->y, v->z);
+  CT_DEBUG("entry: %zu, (%f,%f,%f)", *num, v->x, v->y, v->z);
   *num = *num + 1;
   return 0;
 }
