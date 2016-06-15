@@ -1,0 +1,4 @@
+#!/bin/sh
+find src -name '*.[ch]' > cscope.files
+cscope -b -q -k
+cscope -d

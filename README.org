@@ -1,7 +1,11 @@
 * c.thi.ng
 
 ** Overview
+
+WIP
+
 *** Data structures
+- Adjacency matrix (undirected graph)
 - Cons list (with & without reference counting)
 - Hashset
 - Hashtable
@@ -32,6 +36,7 @@ TBD
 - GCC / Clang
 - [[https://github.com/emcrisostomo/fswatch][fswatch]] (only needed for =./autotest= runner)
 - [[http://emscripten.org][emscripten]] & [[http://nodejs.org][node]] (only needed for asm.js x-compilation via =./compile=)
+- [[http://cscope.sourceforge.net/][cscope]] (only needed for =./browse=)
 
 ** Build & test
 
