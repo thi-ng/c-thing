@@ -24,8 +24,7 @@ typedef void (*CT_HTUpdater)(void** val, size_t* vs, void* state);
 
 typedef struct {
   uint32_t (*hash)(const void* key, size_t size);
-  int (*equiv_keys)(const void* a, const void* b, size_t sa,
-                    size_t sb);
+  int (*equiv_keys)(const void* a, const void* b, size_t sa, size_t sb);
   void* (*alloc_key)(const size_t size, void* state);
   void* (*alloc_val)(const size_t size, void* state);
   void (*free_key)(const void* key, void* state);
@@ -56,8 +55,8 @@ int ct_ht_init(CT_Hashtable* t, const CT_HTOps* ops, size_t num,
 void ct_ht_free(CT_Hashtable* t);
 void* ct_ht_get(CT_Hashtable* t, const void* key, size_t ks, size_t* vs);
 int ct_ht_contains(CT_Hashtable* t, const void* key, size_t ks);
-int ct_ht_assoc(CT_Hashtable* t, const void* key, const void* value,
-                size_t ks, size_t vs);
+int ct_ht_assoc(CT_Hashtable* t, const void* key, const void* value, size_t ks,
+                size_t vs);
 int ct_ht_dissoc(CT_Hashtable* t, const void* key, size_t ks);
 void* ct_ht_update(CT_Hashtable* t, const void* key, size_t ks,
                    CT_HTUpdater update, void* state);
