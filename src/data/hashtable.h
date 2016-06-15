@@ -23,9 +23,9 @@ typedef int (*CT_HTIterator)(const CT_HTEntry* e, void* state);
 typedef void (*CT_HTUpdater)(void** val, size_t* vs, void* state);
 
 typedef struct {
-  uint32_t (*hash)(const void* key, const size_t size);
-  int (*equiv_keys)(const void* a, const void* b, const size_t sa,
-                    const size_t sb);
+  uint32_t (*hash)(const void* key, size_t size);
+  int (*equiv_keys)(const void* a, const void* b, size_t sa,
+                    size_t sb);
   void* (*alloc_key)(const size_t size, void* state);
   void* (*alloc_val)(const size_t size, void* state);
   void (*free_key)(const void* key, void* state);
@@ -54,12 +54,12 @@ typedef struct CT_Hashtable {
 int ct_ht_init(CT_Hashtable* t, const CT_HTOps* ops, size_t num,
                const size_t poolSize, const CT_HTFlags flags);
 void ct_ht_free(CT_Hashtable* t);
-void* ct_ht_get(CT_Hashtable* t, const void* key, const size_t ks, size_t* vs);
-int ct_ht_contains(CT_Hashtable* t, const void* key, const size_t ks);
+void* ct_ht_get(CT_Hashtable* t, const void* key, size_t ks, size_t* vs);
+int ct_ht_contains(CT_Hashtable* t, const void* key, size_t ks);
 int ct_ht_assoc(CT_Hashtable* t, const void* key, const void* value,
-                const size_t ks, const size_t vs);
-int ct_ht_dissoc(CT_Hashtable* t, const void* key, const size_t ks);
-void* ct_ht_update(CT_Hashtable* t, const void* key, const size_t ks,
+                size_t ks, size_t vs);
+int ct_ht_dissoc(CT_Hashtable* t, const void* key, size_t ks);
+void* ct_ht_update(CT_Hashtable* t, const void* key, size_t ks,
                    CT_HTUpdater update, void* state);
 int ct_ht_iterate(const CT_Hashtable* t, CT_HTIterator iter, void* state);
 int ct_ht_into(CT_Hashtable* dest, const CT_Hashtable* src);
