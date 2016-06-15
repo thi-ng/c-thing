@@ -15,14 +15,12 @@
   }                                                                            \
                                                                                \
   CT_EXPORT ct_inline type *name##n_imm(type *v, ptype n) {                    \
-    __m128 b      = {n, n, n, 0.f};                                            \
-    v->mmval op## = b;                                                         \
+    v->mmval op## = _mm_load_ps1(&n);                                          \
     return v;                                                                  \
   }                                                                            \
                                                                                \
   CT_EXPORT ct_inline type *name##n(const type *v, ptype n, type *out) {       \
-    __m128 b   = {n, n, n, 0.f};                                               \
-    out->mmval = v->mmval op b;                                                \
+    out->mmval = v->mmval op _mm_load_ps1(&n);                                 \
     return out;                                                                \
   }                                                                            \
                                                                                \
@@ -105,8 +103,7 @@ CT_EXPORT ct_inline CT_Vec3f *ct_min3fv_imm(CT_Vec3f *a, CT_Vec3f *b) {
 
 CT_EXPORT ct_inline CT_Vec3f *ct_mix3fv_imm(CT_Vec3f *a, const CT_Vec3f *b,
                                             float t) {
-  __m128 mt = {t, t, t, 0.f};
-  a->mmval += (b->mmval - a->mmval) * mt;
+  a->mmval += (b->mmval - a->mmval) * _mm_load_ps1(&t);
   return a;
 }
 
@@ -121,6 +118,11 @@ CT_EXPORT ct_inline CT_Vec3f *ct_normalize3f_imm(CT_Vec3f *v, float len) {
 CT_EXPORT ct_inline CT_Vec3f *ct_set3fv(CT_Vec3f *a, const CT_Vec3f *b) {
   a->mmval = b->mmval;
   return a;
+}
+
+CT_EXPORT ct_inline CT_Vec3f *ct_set3fn(CT_Vec3f *v, float n) {
+  v->mmval = _mm_load_ps1(&n);
+  return v;
 }
 
 CT_EXPORT ct_inline CT_Vec3f *ct_set3fp(CT_Vec3f *v, const float *p) {

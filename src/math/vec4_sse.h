@@ -15,14 +15,12 @@
   }                                                                            \
                                                                                \
   CT_EXPORT ct_inline type *name##n_imm(type *v, ptype n) {                    \
-    __m128 b      = {n, n, n, n};                                              \
-    v->mmval op## = b;                                                         \
+    v->mmval op## = _mm_load_ps1(&n);                                          \
     return v;                                                                  \
   }                                                                            \
                                                                                \
   CT_EXPORT ct_inline type *name##n(const type *v, ptype n, type *out) {       \
-    __m128 b   = {n, n, n, n};                                                 \
-    out->mmval = v->mmval op b;                                                \
+    out->mmval = v->mmval op _mm_load_ps1(&n);                                 \
     return out;                                                                \
   }                                                                            \
                                                                                \
@@ -79,8 +77,7 @@ CT_EXPORT ct_inline float ct_magsq4f(const CT_Vec4f *v) {
 
 CT_EXPORT ct_inline CT_Vec4f *ct_mix4fv_imm(CT_Vec4f *a, const CT_Vec4f *b,
                                             float t) {
-  __m128 mt = {t, t, t, t};
-  a->mmval += (b->mmval - a->mmval) * mt;
+  a->mmval += (b->mmval - a->mmval) * _mm_load_ps1(&t);
   return a;
 }
 
@@ -95,6 +92,11 @@ CT_EXPORT ct_inline CT_Vec4f *ct_normalize4f_imm(CT_Vec4f *v, float len) {
 CT_EXPORT ct_inline CT_Vec4f *ct_set4fv(CT_Vec4f *a, const CT_Vec4f *b) {
   a->mmval = b->mmval;
   return a;
+}
+
+CT_EXPORT ct_inline CT_Vec4f *ct_set4fn(CT_Vec4f *v, float n) {
+  v->mmval = _mm_load_ps1(&n);
+  return v;
 }
 
 CT_EXPORT ct_inline CT_Vec4f *ct_set4fp(CT_Vec4f *v, const float *p) {
