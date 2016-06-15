@@ -7,33 +7,29 @@
 
 CT_TEST_DECLS
 
-struct htest_t {
-  size_t num;
-};
-
 struct edge_t {
   CT_Vec3f a, b;
 };
 
-static int dump_hs_char(CT_HSEntry *e, void *state) {
-  struct htest_t *s = (struct htest_t *)state;
-  CT_DEBUG("entry: %zd, %s", s->num, e->key);
-  s->num++;
+static int dump_hs_char(const CT_HSEntry *e, void *state) {
+  size_t *num = (size_t *)state;
+  CT_DEBUG("entry: %zu, %s", num, e->key);
+  *num = *num + 1;
   return 0;
 }
 
-static int dump_hs_vec(CT_HSEntry *e, void *state) {
-  struct htest_t *s = (struct htest_t *)state;
-  CT_Vec3f *v       = (CT_Vec3f *)e->key;
-  CT_DEBUG("entry: %zd, (%f,%f,%f)", s->num, v->x, v->y, v->z);
-  s->num++;
+static int dump_hs_vec(const CT_HSEntry *e, void *state) {
+  size_t *num = (size_t *)state;
+  CT_Vec3f *v = (CT_Vec3f *)e->key;
+  CT_DEBUG("entry: %zu, (%f,%f,%f)", num, v->x, v->y, v->z);
+  *num = *num + 1;
   return 0;
 }
 
 static size_t iter_count(CT_Hashset *s, CT_HSIterator iter) {
-  struct htest_t v = {.num = 0};
-  ct_hs_iterate(s, iter, &v);
-  return v.num;
+  size_t num = 0;
+  ct_hs_iterate(s, iter, &num);
+  return num;
 }
 
 static void *hs_alloc_mpool(size_t size, void *state) {
@@ -42,14 +38,14 @@ static void *hs_alloc_mpool(size_t size, void *state) {
   return key;
 }
 
-static void hs_free_mpool(void *key, void *state) {
+static void hs_free_mpool(const void *key, void *state) {
   CT_DEBUG("custom free vec: %p", key);
   ct_mpool_free((CT_MPool *)state, key);
 }
 
-static uint32_t hash_edge(const void *a, size_t _) {
-  const struct edge_t *e = (struct edge_t *)a;
-  return ct_murmur3_32(&e->a, 12) + ct_murmur3_32(&e->b, 12);
+static uint32_t hash_edge(const void *e, size_t _) {
+  const struct edge_t *ee = (struct edge_t *)e;
+  return ct_murmur3_32(&ee->a, 12) + ct_murmur3_32(&ee->b, 12);
 }
 
 static int equiv_edge(const void *a, const void *b, size_t as, size_t bs) {

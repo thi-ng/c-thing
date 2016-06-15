@@ -6,9 +6,10 @@
 #include "data/hashtable.h"
 #include "math/math.h"
 
-static int make_key(CT_Hashtable* t, CT_HTEntry* e, void* key, size_t ks) {
+static int make_key(const CT_Hashtable* t, CT_HTEntry* e, const void* key,
+                    const size_t ks) {
   if (t->flags & CT_HT_CONST_KEYS) {
-    e->key = key;
+    e->key = (void*)key;
   } else {
     if (t->ops.alloc_key != NULL) {
       e->key = t->ops.alloc_key(ks, t->ops.state);
@@ -22,9 +23,10 @@ static int make_key(CT_Hashtable* t, CT_HTEntry* e, void* key, size_t ks) {
   return 0;
 }
 
-static int make_val(CT_Hashtable* t, CT_HTEntry* e, void* val, size_t vs) {
+static int make_val(const CT_Hashtable* t, CT_HTEntry* e, const void* val,
+                    const size_t vs) {
   if (t->flags & CT_HT_CONST_VALS) {
-    e->val = val;
+    e->val = (void*)val;
   } else {
     void* p;
     if (t->ops.alloc_val != NULL) {
@@ -40,8 +42,8 @@ static int make_val(CT_Hashtable* t, CT_HTEntry* e, void* val, size_t vs) {
   return 0;
 }
 
-static CT_HTEntry* make_entry(CT_Hashtable* t, void* key, void* val, size_t ks,
-                              size_t vs) {
+static CT_HTEntry* make_entry(CT_Hashtable* t, const void* key, const void* val,
+                              const size_t ks, const size_t vs) {
   CT_HTEntry* e = ct_mpool_alloc(&t->pool);
   CT_CHECK_MEM(e);
   e->next = NULL;
@@ -53,7 +55,7 @@ fail:
   return NULL;
 }
 
-static void free_key(CT_Hashtable* t, CT_HTEntry* e) {
+static void free_key(const CT_Hashtable* t, const CT_HTEntry* e) {
   CT_DEBUG("free key: %p", e->key);
   if (t->ops.free_key != NULL) {
     t->ops.free_key(e->key, t->ops.state);
@@ -62,7 +64,7 @@ static void free_key(CT_Hashtable* t, CT_HTEntry* e) {
   }
 }
 
-static void free_val(CT_Hashtable* t, CT_HTEntry* e) {
+static void free_val(const CT_Hashtable* t, const CT_HTEntry* e) {
   CT_DEBUG("free val: %p", e->val);
   if (t->ops.free_val != NULL) {
     t->ops.free_val(e->val, t->ops.state);
@@ -71,7 +73,7 @@ static void free_val(CT_Hashtable* t, CT_HTEntry* e) {
   }
 }
 
-static void free_entry(CT_Hashtable* t, CT_HTEntry* e) {
+static void free_entry(CT_Hashtable* t, const CT_HTEntry* e) {
   CT_DEBUG("free HTEntry: %p", e);
   if (!(t->flags & CT_HT_CONST_KEYS)) {
     free_key(t, e);
@@ -82,12 +84,13 @@ static void free_entry(CT_Hashtable* t, CT_HTEntry* e) {
   ct_mpool_free(&t->pool, e);
 }
 
-static int equiv_keys(const void* a, const void* b, size_t sa, size_t sb) {
+static int equiv_keys(const void* a, const void* b, const size_t sa,
+                      const size_t sb) {
   return sa == sb ? !memcmp(a, b, sa) : 0;
 }
 
-static CT_HTEntry* find_entry(CT_Hashtable* t, CT_HTEntry* e, void* key,
-                              size_t ks) {
+static CT_HTEntry* find_entry(const CT_Hashtable* t, CT_HTEntry* e,
+                              const void* key, const size_t ks) {
   int (*equiv_keys)(const void*, const void*, size_t, size_t) =
       t->ops.equiv_keys;
   while (e != NULL) {
@@ -100,8 +103,8 @@ static CT_HTEntry* find_entry(CT_Hashtable* t, CT_HTEntry* e, void* key,
   return e;
 }
 
-static int cons_entry(CT_Hashtable* t, uint32_t bin, void* key, void* val,
-                      size_t ks, size_t vs) {
+static int cons_entry(CT_Hashtable* t, const uint32_t bin, const void* key,
+                      const void* val, const size_t ks, const size_t vs) {
   // TODO resize table?
   CT_HTEntry* e = make_entry(t, key, val, ks, vs);
   CT_CHECK_MEM(e);
@@ -111,7 +114,8 @@ fail:
   return e == NULL;
 }
 
-static void delete_entry(CT_Hashtable* t, uint32_t bin, CT_HTEntry* e) {
+static void delete_entry(CT_Hashtable* t, const uint32_t bin,
+                         const CT_HTEntry* e) {
   CT_HTEntry* first = t->bins[bin];
   CT_HTEntry* rest  = first->next;
   if (first == e) {
@@ -134,8 +138,8 @@ static void delete_entry(CT_Hashtable* t, uint32_t bin, CT_HTEntry* e) {
   }
 }
 
-CT_EXPORT int ct_ht_init(CT_Hashtable* t, CT_HTOps* ops, size_t num,
-                         size_t poolSize, CT_HTFlags flags) {
+CT_EXPORT int ct_ht_init(CT_Hashtable* t, const CT_HTOps* ops, size_t num,
+                         const size_t poolSize, const CT_HTFlags flags) {
   int mp = ct_mpool_init(&t->pool, poolSize, sizeof(CT_HTEntry));
   if (!mp) {
     num     = ct_ceil_pow2(num);
@@ -173,8 +177,8 @@ CT_EXPORT void ct_ht_free(CT_Hashtable* t) {
   t->bins = NULL;
 }
 
-CT_EXPORT int ct_ht_assoc(CT_Hashtable* t, void* key, void* val, size_t ks,
-                          size_t vs) {
+CT_EXPORT int ct_ht_assoc(CT_Hashtable* t, const void* key, const void* val,
+                          const size_t ks, const size_t vs) {
   uint32_t hash = t->ops.hash(key, ks);
   uint32_t bin  = hash & t->binMask;
   CT_HTEntry* e = t->bins[bin];
@@ -206,7 +210,8 @@ fail:
   return 1;
 }
 
-CT_EXPORT void* ct_ht_get(CT_Hashtable* t, void* key, size_t ks, size_t* vs) {
+CT_EXPORT void* ct_ht_get(CT_Hashtable* t, const void* key, const size_t ks,
+                          size_t* vs) {
   uint32_t bin  = t->ops.hash(key, ks) & t->binMask;
   CT_HTEntry* e = t->bins[bin];
   if (e != NULL) {
@@ -221,7 +226,8 @@ CT_EXPORT void* ct_ht_get(CT_Hashtable* t, void* key, size_t ks, size_t* vs) {
   return NULL;
 }
 
-CT_EXPORT int ct_ht_contains(CT_Hashtable* t, void* key, size_t ks) {
+CT_EXPORT int ct_ht_contains(CT_Hashtable* t, const void* key,
+                             const size_t ks) {
   uint32_t bin  = t->ops.hash(key, ks) & t->binMask;
   CT_HTEntry* e = t->bins[bin];
   if (e != NULL) {
@@ -230,7 +236,7 @@ CT_EXPORT int ct_ht_contains(CT_Hashtable* t, void* key, size_t ks) {
   return (e != NULL);
 }
 
-CT_EXPORT int ct_ht_dissoc(CT_Hashtable* t, void* key, size_t ks) {
+CT_EXPORT int ct_ht_dissoc(CT_Hashtable* t, const void* key, const size_t ks) {
   uint32_t bin  = t->ops.hash(key, ks) & t->binMask;
   CT_HTEntry* e = t->bins[bin];
   if (e != NULL) {
@@ -244,7 +250,7 @@ CT_EXPORT int ct_ht_dissoc(CT_Hashtable* t, void* key, size_t ks) {
   return 1;
 }
 
-CT_EXPORT void* ct_ht_update(CT_Hashtable* t, void* key, size_t ks,
+CT_EXPORT void* ct_ht_update(CT_Hashtable* t, const void* key, const size_t ks,
                              CT_HTUpdater update, void* state) {
   uint32_t bin  = t->ops.hash(key, ks) & t->binMask;
   CT_HTEntry* e = t->bins[bin];
@@ -259,7 +265,8 @@ CT_EXPORT void* ct_ht_update(CT_Hashtable* t, void* key, size_t ks,
   return NULL;
 }
 
-CT_EXPORT int ct_ht_iterate(CT_Hashtable* t, CT_HTIterator iter, void* state) {
+CT_EXPORT int ct_ht_iterate(const CT_Hashtable* t, CT_HTIterator iter,
+                            void* state) {
   for (size_t i = 0; i <= t->binMask; i++) {
     CT_HTEntry* e = t->bins[i];
     while (e != NULL) {
@@ -271,10 +278,10 @@ CT_EXPORT int ct_ht_iterate(CT_Hashtable* t, CT_HTIterator iter, void* state) {
   return 0;
 }
 
-static int ct_ht_into_iter(CT_HTEntry* e, void* t) {
+static int ct_ht_into_iter(const CT_HTEntry* e, void* t) {
   return ct_ht_assoc((CT_Hashtable*)t, e->key, e->val, e->keySize, e->valSize);
 }
 
-CT_EXPORT int ct_ht_into(CT_Hashtable* dest, CT_Hashtable* src) {
+CT_EXPORT int ct_ht_into(CT_Hashtable* dest, const CT_Hashtable* src) {
   return ct_ht_iterate(src, ct_ht_into_iter, dest);
 }

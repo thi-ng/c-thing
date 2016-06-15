@@ -65,7 +65,7 @@ fail:
   return NULL;
 }
 
-static int write_attrib(CT_HTEntry *e, void *state) {
+static int write_attrib(const CT_HTEntry *e, void *state) {
   FILE *out = (FILE *)state;
   if (!strcmp(e->key, "width")) {
     fprintf(out, "width=\"%zu\" ", *((size_t *)e->val));

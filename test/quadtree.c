@@ -17,7 +17,7 @@ struct isec_t {
   size_t num;
 };
 
-static int ct_qtree_bounds(CT_QTNode *node, void *state) {
+static int ct_qtree_bounds(const CT_QTNode *node, void *state) {
   struct bounds_t *bounds = (struct bounds_t *)state;
   ct_min2fv_imm(&bounds->min, node->point);
   ct_max2fv_imm(&bounds->max, node->point);
@@ -25,7 +25,7 @@ static int ct_qtree_bounds(CT_QTNode *node, void *state) {
   return 0;
 }
 
-static int ct_qtree_select(CT_QTNode *node, void *state) {
+static int ct_qtree_select(const CT_QTNode *node, void *state) {
   struct isec_t *isec = (struct isec_t *)state;
   CT_Vec2f p          = {node->x + node->w, node->y + node->h};
   int i = ct_intersect_rect_circle(&node->pos, &p, &isec->c, isec->r);

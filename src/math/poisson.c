@@ -3,7 +3,7 @@
 #include "geom/isec.h"
 #include "math/poisson.h"
 
-static int find_candidate(CT_QTNode *node, void *s) {
+static int find_candidate(const CT_QTNode *node, void *s) {
   CT_Circle2f *disc = (CT_Circle2f *)s;
   CT_Vec2f p        = {node->x + node->w, node->y + node->h};
   if (ct_intersect_rect_circle(&node->pos, &p, &disc->pos, disc->r)) {

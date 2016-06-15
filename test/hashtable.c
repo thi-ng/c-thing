@@ -25,14 +25,14 @@ static void ht_inc(void **val, size_t *vs, void *state) {
   *s      = *s + 1;
 }
 
-static int dump_ht_char(CT_HTEntry *e, void *state) {
+static int dump_ht_char(const CT_HTEntry *e, void *state) {
   struct htest_t *s = (struct htest_t *)state;
   CT_DEBUG("entry: %zd, [%s, %s]", s->num, e->key, e->val);
   s->num++;
   return 0;
 }
 
-static int dump_ht_vec(CT_HTEntry *e, void *state) {
+static int dump_ht_vec(const CT_HTEntry *e, void *state) {
   struct htest_t *s = (struct htest_t *)state;
   CT_Vec3f *v       = (CT_Vec3f *)e->key;
   CT_DEBUG("entry: %zd, [(%f,%f,%f), %s]", s->num, v->x, v->y, v->z, e->val);
@@ -52,7 +52,7 @@ static void *ht_alloc_mpool(size_t size, void *state) {
   return key;
 }
 
-static void ht_free_mpool(void *key, void *state) {
+static void ht_free_mpool(const void *key, void *state) {
   CT_DEBUG("custom free vec: %p", key);
   ct_mpool_free((CT_MPool *)state, key);
 }

@@ -43,9 +43,9 @@ typedef struct {
 CT_MPool *ct_mpool_new();
 size_t ct_mpool_init(CT_MPool *mpool, size_t num, size_t bsize);
 void *ct_mpool_alloc(CT_MPool *mpool);
-void ct_mpool_free(CT_MPool *mpool, void *block);
+void ct_mpool_free(CT_MPool *mpool, const void *block);
 void ct_mpool_free_all(CT_MPool *mpool);
 CT_MPCompactResult ct_mpool_compact(CT_MPool *mp);
-void ct_mpool_trace(CT_MPool *mpool);
+void ct_mpool_trace(const CT_MPool *mpool);
 
 CT_END_DECLS

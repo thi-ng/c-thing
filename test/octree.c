@@ -9,7 +9,7 @@ struct bounds_t {
   size_t num;
 };
 
-int ct_octree_bounds(CT_OTNode *node, void *state) {
+int ct_octree_bounds(const CT_OTNode *node, void *state) {
   struct bounds_t *bounds = (struct bounds_t *)state;
   ct_min3fv_imm(&bounds->min, node->point);
   ct_max3fv_imm(&bounds->max, node->point);

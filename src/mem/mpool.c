@@ -29,7 +29,7 @@ fail:
   return 1;
 }
 
-CT_EXPORT void ct_mpool_free(CT_MPool *mp, void *block) {
+CT_EXPORT void ct_mpool_free(CT_MPool *mp, const void *block) {
   // TODO add valid ptr check (see mpool_free)
   CT_DEBUG("pool: %zd, free block: %p", mp->poolID, block);
   CT_MPoolFreeList *fb = (CT_MPoolFreeList *)block;
@@ -118,11 +118,11 @@ CT_EXPORT void *ct_mpool_alloc(CT_MPool *mp) {
   if (mp->freeList != NULL) {
     ptr          = mp->freeList;
     mp->freeList = mp->freeList->next;
-    return ptr;
+    //return ptr;
   } else if (mp->head->nextID < mp->numBlocks) {
     ptr = mp->head->pool + mp->head->nextID * mp->blockSize;
     mp->head->nextID++;
-    return ptr;
+    //return ptr;
   } else {
     CT_MPoolList *head = malloc(sizeof(CT_MPoolList));
     CT_CHECK_MEM(head);
@@ -139,7 +139,7 @@ fail:
   return ptr;
 }
 
-CT_EXPORT void ct_mpool_trace(CT_MPool *mp) {
+CT_EXPORT void ct_mpool_trace(const CT_MPool *mp) {
   CT_INFO("pool: %zd, nextID: %zd, head: %p, free: %p, bsize: %zd, num: %zd",
           mp->poolID, mp->head->nextID, mp->head, mp->freeList, mp->blockSize,
           mp->numBlocks);

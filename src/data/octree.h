@@ -30,17 +30,17 @@ typedef struct {
   size_t size;
 } CT_Octree;
 
-typedef int (*CT_OTVisitor)(CT_OTNode *, void *);
+typedef int (*CT_OTVisitor)(const CT_OTNode *, void *);
 
 int ct_octree_init(CT_Octree *t, float x, float y, float z, float w, float h,
                    float d, size_t poolSize);
 void ct_octree_free(CT_Octree *t);
-int ct_octree_insert(CT_Octree *t, CT_Vec3f *p, void *data);
-int ct_octree_remove(CT_Octree *t, CT_Vec3f *p);
-CT_OTNode *ct_octree_find_leaf(CT_Octree *t, CT_Vec3f *p);
+int ct_octree_insert(CT_Octree *t, const CT_Vec3f *p, const void *data);
+int ct_octree_remove(CT_Octree *t, const CT_Vec3f *p);
+CT_OTNode *ct_octree_find_leaf(const CT_Octree *t, const CT_Vec3f *p);
 void ct_octree_trace_node(const CT_OTNode *t, size_t depth);
-void ct_octree_trace(CT_Octree *t);
-int ct_octree_visit_leaves(CT_Octree *t, CT_OTVisitor visit, void *state);
-void ct_octree_visit(CT_Octree *t, CT_OTVisitor visit, void *state);
+void ct_octree_trace(const CT_Octree *t);
+int ct_octree_visit_leaves(const CT_Octree *t, CT_OTVisitor visit, void *state);
+void ct_octree_visit(const CT_Octree *t, CT_OTVisitor visit, void *state);
 
 CT_END_DECLS
