@@ -82,6 +82,14 @@ make config=debug_sse lib
 make config=release_sse lib
 #+END_SRC
 
+** Build source x-ref
+
+#+BEGIN_SRC shell
+brew install cscope
+
+./browse
+#+END_SRC
+
 ** Disassemble & list symbols
 
 #+BEGIN_SRC shell
