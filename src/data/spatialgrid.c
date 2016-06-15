@@ -70,16 +70,16 @@ CT_EXPORT int ct_spgrid_insert(CT_SpatialGrid *grid, const float *p,
   CT_SPCell *cell = ct_mpool_alloc(&grid->pool);
   CT_CHECK_MEM(cell);
   CT_DEBUG("insert @ grid: %d new: (%p) -> %p", id, cell, grid->cells[id]);
-  cell->value  = (void *)item;
-  cell->next   = grid->cells[id];
-  cell->key[0] = p[0];
+  cell->value     = (void *)item;
+  cell->next      = grid->cells[id];
+  grid->cells[id] = cell;
+  cell->key[0]    = p[0];
   if (grid->dims > 1) {
     cell->key[1] = p[1];
     if (grid->dims > 2) {
       cell->key[2] = p[2];
     }
   }
-  grid->cells[id] = cell;
   return 0;
 fail:
   return 1;
@@ -140,15 +140,15 @@ CT_EXPORT size_t ct_spgrid_select1d(const CT_SpatialGrid *grid, float p,
   float x1 = p - eps;
   float x2 = p + eps;
   int s    = find_cell_idx(grid, &x1, 0);
-  int e    = find_cell_idx(grid, &x2, 0);
+  int tex  = find_cell_idx(grid, &x2, 0);
   s        = MAX(s, 0);
-  MIN_LET(int, e, e, grid->sizes[0] - 1);
-  CT_DEBUG("select range: %d,%d", s, e);
-  while (s <= e) {
+  MIN_LET(int, tex, tex, grid->sizes[0] - 1);
+  CT_DEBUG("select range: %d,%d", s, tex);
+  while (s <= tex) {
     CT_SPCell *cell = grid->cells[s];
     while (cell) {
       if (cell->key[0] >= x1 && cell->key[0] <= x2) {
-        CT_DEBUG("sel @ %zu: %p = %p / %p -> %p", s, &results[i], cell->value,
+        CT_DEBUG("sel @ %d: %p = %p / %p -> %p", s, &results[i], cell->value,
                  cell, cell->next);
         results[i] = cell->value;
         i++;
@@ -180,9 +180,9 @@ CT_EXPORT size_t ct_spgrid_select2d(const CT_SpatialGrid *grid, const float *p,
   MIN_LET(int, ey, ey, grid->sizes[1] - 1);
   CT_DEBUG("select range: [%d,%d] - [%d,%d]", sx, sy, ex, ey);
   while (sy <= ey) {
-    size_t s = sy * grid->strides[0] + sx;
-    size_t e = sy * grid->strides[0] + ex;
-    while (s <= e) {
+    size_t s   = sy * grid->strides[0] + sx;
+    size_t tex = sy * grid->strides[0] + ex;
+    while (s <= tex) {
       CT_SPCell *cell = grid->cells[s];
       while (cell) {
         if (cell->key[1] >= a.y && cell->key[1] <= b.y && cell->key[0] >= a.x &&
@@ -200,6 +200,71 @@ CT_EXPORT size_t ct_spgrid_select2d(const CT_SpatialGrid *grid, const float *p,
       s++;
     }
     sy++;
+  }
+  return i;
+}
+
+CT_EXPORT size_t ct_spgrid_select3d(const CT_SpatialGrid *grid, const float *p,
+                                    const float *eps, void **results,
+                                    size_t len) {
+  size_t i = 0;
+  CT_Vec3f a, b, veps;
+#ifdef CT_FEATURE_SSE
+  if ((size_t)p & 0xf || (size_t)eps & 0xf) {
+    ct_set3fpua(&veps, eps);
+    ct_set3fpua(&b, p);
+    ct_sub3fv(&b, &veps, &a);
+    ct_add3fv_imm(&b, &veps);
+  } else {
+    ct_sub3fv((CT_Vec3f *)p, (CT_Vec3f *)eps, &a);
+    ct_add3fv((CT_Vec3f *)p, (CT_Vec3f *)eps, &b);
+  }
+#else
+  ct_sub3fv((CT_Vec3f *)p, (CT_Vec3f *)eps, &a);
+  ct_add3fv((CT_Vec3f *)p, (CT_Vec3f *)eps, &b);
+#endif
+  int sx = find_cell_idx(grid, (float *)&a, 0);
+  int sy = find_cell_idx(grid, (float *)&a, 1);
+  int sz = find_cell_idx(grid, (float *)&a, 2);
+  int ex = find_cell_idx(grid, (float *)&b, 0);
+  int ey = find_cell_idx(grid, (float *)&b, 1);
+  int ez = find_cell_idx(grid, (float *)&b, 2);
+  sx     = MAX(sx, 0);
+  sy     = MAX(sy, 0);
+  sz     = MAX(sz, 0);
+  MIN_LET(int, ex, ex, grid->sizes[0] - 1);
+  MIN_LET(int, ey, ey, grid->sizes[1] - 1);
+  MIN_LET(int, ez, ez, grid->sizes[2] - 1);
+  CT_DEBUG("select range: [%d,%d,%d] - [%d,%d,%d]", sx, sy, sz, ex, ey, ez);
+  while (sz <= ez) {
+    size_t tsy = sz * grid->strides[1] + sy * grid->strides[0];
+    size_t tey = sz * grid->strides[1] + ey * grid->strides[0];
+    CT_DEBUG("z: %d tsy: %zd - %zd", sz, tsy, tey);
+    while (tsy <= tey) {
+      size_t tsx = tsy + sx;
+      size_t tex = tsy + ex;
+      while (tsx <= tex) {
+        CT_DEBUG("check cell: %zd", tsx);
+        CT_SPCell *cell = grid->cells[tsx];
+        while (cell) {
+          if (cell->key[2] >= a.z && cell->key[2] <= b.z &&
+              cell->key[1] >= a.y && cell->key[1] <= b.y &&
+              cell->key[0] >= a.x && cell->key[0] <= b.x) {
+            CT_DEBUG("sel @ %zu: %p = %p / %p -> %p", tsx, &results[i],
+                     cell->value, cell, cell->next);
+            results[i] = cell->value;
+            i++;
+            if (i == len) {
+              return i;
+            }
+          }
+          cell = cell->next;
+        }
+        tsx++;
+      }
+      tsy += grid->strides[0];
+    }
+    sz++;
   }
   return i;
 }

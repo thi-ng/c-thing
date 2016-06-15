@@ -33,6 +33,8 @@ size_t ct_spgrid_select1d(const CT_SpatialGrid *grid, float p, float eps,
                           void **results, size_t len);
 size_t ct_spgrid_select2d(const CT_SpatialGrid *grid, const float *p,
                           const float *eps, void **results, size_t len);
+size_t ct_spgrid_select3d(const CT_SpatialGrid *grid, const float *p,
+                          const float *eps, void **results, size_t len);
 
 void ct_spgrid_trace(const CT_SpatialGrid *grid);
 
