@@ -75,9 +75,9 @@ CT_EXPORT ct_inline CT_Vec2f *ct_set2fn(CT_Vec2f *v, float n) {
   return v;
 }
 
-CT_EXPORT ct_inline CT_Vec2f *ct_set2fp(CT_Vec2f *v, float *xy) {
-  v->x = *xy++;
-  v->y = *xy;
+CT_EXPORT ct_inline CT_Vec2f *ct_set2fp(CT_Vec2f *v, const float *p) {
+  v->x = p[0];
+  v->y = p[1];
   return v;
 }
 

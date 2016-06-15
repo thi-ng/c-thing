@@ -97,4 +97,9 @@ CT_EXPORT ct_inline CT_Vec4f *ct_set4fv(CT_Vec4f *a, const CT_Vec4f *b) {
   return a;
 }
 
+CT_EXPORT ct_inline CT_Vec4f *ct_set4fp(CT_Vec4f *v, const float *p) {
+  v->mmval = _mm_load_ps(p);
+  return v;
+}
+
 CT_END_DECLS
