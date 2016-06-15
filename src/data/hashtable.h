@@ -4,6 +4,7 @@
 #include <stdint.h>
 
 #include "config.h"
+#include "math/hashfn.h"
 #include "mem/mpool.h"
 
 CT_BEGIN_DECLS
@@ -23,7 +24,7 @@ typedef int (*CT_HTIterator)(const CT_HTEntry* e, void* state);
 typedef void (*CT_HTUpdater)(void** val, size_t* vs, void* state);
 
 typedef struct {
-  uint32_t (*hash)(const void* key, size_t size);
+  CT_HashFn32 hash;
   int (*equiv_keys)(const void* a, const void* b, size_t sa, size_t sb);
   void* (*alloc_key)(const size_t size, void* state);
   void* (*alloc_val)(const size_t size, void* state);
