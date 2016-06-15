@@ -54,6 +54,14 @@ CT_EXPORT ct_inline float ct_clampf(const float a, const float b,
   return CLAMP(a, b, c);
 }
 
+CT_EXPORT ct_inline size_t ct_clz8(uint8_t x) {
+#if defined(__GCC__) || defined(__clang__) || defined(__EMSCRIPTEN__)
+  return x == 0 ? 8 : __builtin_clz(x) - 24;
+#elif
+  return 0;  // FIXME
+#endif
+}
+
 CT_EXPORT ct_inline size_t ct_deltaeqf(const float a, const float b,
                                        const float eps) {
   return fabs(a - b) <= eps;
