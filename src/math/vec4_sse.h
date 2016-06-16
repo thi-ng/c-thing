@@ -1,6 +1,12 @@
 #pragma once
 
 #include <xmmintrin.h>
+#ifdef CT_FEATURE_SSE3
+#include <pmmintrin.h>
+#endif
+#ifdef CT_FEATURE_SSE4
+#include <smmintrin.h>
+#endif
 #include "math/vec.h"
 
 #define VEC4OP_SSE(type, ptype, name, op)                                      \
@@ -54,14 +60,28 @@ VEC4OP_SSE(CT_Vec4f, float, ct_mul4f, *)
 VEC4OP_SSE(CT_Vec4f, float, ct_div4f, /)
 
 CT_EXPORT ct_inline float ct_dot4fv(const CT_Vec4f *a, const CT_Vec4f *b) {
+#ifdef CT_FEATURE_SSE4
+  return _mm_dp_ps(a->mmval, b->mmval, 0xf1)[0];
+#else
   __m128 d = a->mmval * b->mmval;
+#ifdef CT_FEATURE_SSE3
+  d        = _mm_hadd_ps(d, d);
+  return d[0] + d[1];
+#else
   return d[0] + d[1] + d[2] + d[3];
+#endif
+#endif
 }
 
 CT_EXPORT ct_inline float ct_distsq4fv(const CT_Vec4f *a, const CT_Vec4f *b) {
   __m128 d = a->mmval - b->mmval;
   d *= d;
+#ifdef CT_FEATURE_SSE3
+  d = _mm_hadd_ps(d, d);
+  return d[0] + d[1];
+#else
   return d[0] + d[1] + d[2] + d[3];
+#endif
 }
 
 CT_EXPORT ct_inline CT_Vec4f *ct_madd4fv_imm(CT_Vec4f *a, const CT_Vec4f *b,
@@ -71,8 +91,7 @@ CT_EXPORT ct_inline CT_Vec4f *ct_madd4fv_imm(CT_Vec4f *a, const CT_Vec4f *b,
 }
 
 CT_EXPORT ct_inline float ct_magsq4f(const CT_Vec4f *v) {
-  __m128 d = v->mmval * v->mmval;
-  return d[0] + d[1] + d[2] + d[3];
+  return ct_dot4fv(v, v);
 }
 
 CT_EXPORT ct_inline CT_Vec4f *ct_mix4fv_imm(CT_Vec4f *a, const CT_Vec4f *b,

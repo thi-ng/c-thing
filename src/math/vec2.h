@@ -139,6 +139,18 @@ CT_EXPORT ct_inline float ct_dist2fv(const CT_Vec2f *a, const CT_Vec2f *b) {
   return sqrtf(ct_distsq2fv(a, b));
 }
 
+CT_EXPORT ct_inline CT_Vec2f *ct_ceil2f_imm(CT_Vec2f *v) {
+  v->x = ceilf(v->x);
+  v->y = ceilf(v->y);
+  return v;
+}
+
+CT_EXPORT ct_inline CT_Vec2f *ct_floor2f_imm(CT_Vec2f *v) {
+  v->x = floorf(v->x);
+  v->y = floorf(v->y);
+  return v;
+}
+
 CT_EXPORT ct_inline uint32_t ct_hash2f(const CT_Vec2f *v) {
   return ct_murmur3_32(v, 2 * sizeof(float));
 }

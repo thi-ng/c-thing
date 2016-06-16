@@ -8,6 +8,7 @@ flags { "Symbols", "FatalWarnings", "C++11" }
 
 filter "platforms:sse"
 defines { "CT_FEATURE_SSE" }
+buildoptions { "-msse", "-msse2", "-msse3", "-msse4.1" }
 
 filter "configurations:debug"
 defines { "DEBUG", "CT_FEATURE_CHECKS", "CT_FEATURE_CHECK_MEM" }
@@ -15,7 +16,7 @@ defines { "DEBUG", "CT_FEATURE_CHECKS", "CT_FEATURE_CHECK_MEM" }
 filter "configurations:release"
 defines { "NDEBUG", "CT_FEATURE_LOG" }
 optimize "Size"
-linkoptions { "-flto" }
+flags { "LinkTimeOptimization" }
 
 ----- test
 

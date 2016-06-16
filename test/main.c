@@ -7,6 +7,7 @@ extern int test_mpool_resize();
 extern int test_mpool_compact();
 extern int test_vec2f();
 extern int test_vec3f();
+extern int test_vec4f();
 extern int test_swizzle();
 extern int test_vec_hash();
 extern int test_circle();
@@ -45,11 +46,21 @@ int all_tests() {
 #ifdef CT_FEATURE_SSE
   CT_INFO("using SSE...");
 #endif
+#ifdef CT_FEATURE_SSE2
+  CT_INFO("using SSE2...");
+#endif
+#ifdef CT_FEATURE_SSE3
+  CT_INFO("using SSE3...");
+#endif
+#ifdef CT_FEATURE_SSE4
+  CT_INFO("using SSE4...");
+#endif
   CT_RUN_TEST(test_mpool);
   CT_RUN_TEST(test_mpool_resize);
   CT_RUN_TEST(test_mpool_compact);
   CT_RUN_TEST(test_vec2f);
   CT_RUN_TEST(test_vec3f);
+  CT_RUN_TEST(test_vec4f);
   CT_RUN_TEST(test_swizzle);
   CT_RUN_TEST(test_vec_hash);
   CT_RUN_TEST(test_circle);

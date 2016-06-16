@@ -148,36 +148,42 @@ int test_swizzle() {
   return 0;
 }
 
+int test_vec4f() {
+  CT_Vec4f a = {10, 20, 30, 40};
+  CT_IS(3000 == ct_dot4fv(&a, &a), "dp");
+  CT_IS(3000 == ct_magsq4f(&a), "magsq");
+  ct_normalize4f_imm(&a, 1);
+  CT_IS(ct_is_normalized4f(&a), "norm?");
+  return 0;
+}
+
 int test_vec_hash() {
-  CT_Vec2f *v2 = ct_vec2fn(0, NULL);
-  CT_Vec3f *v3 = ct_vec3fn(0, NULL);
-  CT_Vec4f *v4 = ct_vec4fn(0, NULL);
+  CT_Vec2f v2 = {};
+  CT_Vec3f v3 = {};
+  CT_Vec4f v4 = {};
   uint32_t h;
 
-  h = ct_hash2f(v2);
+  h = ct_hash2f(&v2);
   CT_IS(0x63852afc == h, "wrong hash: %x", h);
-  h = ct_hash2f(ct_set2fn(v2, 1));
+  h = ct_hash2f(ct_set2fn(&v2, 1));
   CT_IS(0x89be13c2 == h, "wrong hash: %x", h);
-  h = ct_hash2f(ct_set2fxy(v2, 1, 2));
+  h = ct_hash2f(ct_set2fxy(&v2, 1, 2));
   CT_IS(0x7674b75 == h, "wrong hash: %x", h);
 
-  h = ct_hash3f(v3);
+  h = ct_hash3f(&v3);
   CT_IS(0xd941144b == h, "wrong hash: %x", h);
-  h = ct_hash3f(ct_set3fn(v3, 1));
+  h = ct_hash3f(ct_set3fn(&v3, 1));
   CT_IS(0xebaa046c == h, "wrong hash: %x", h);
-  h = ct_hash3f(ct_set3fxyz(v3, 1, 2, 3));
+  h = ct_hash3f(ct_set3fxyz(&v3, 1, 2, 3));
   CT_IS(0xda0c2fbe == h, "wrong hash: %x", h);
 
-  h = ct_hash4f(v4);
+  h = ct_hash4f(&v4);
   CT_IS(0x8134cdf8 == h, "wrong hash: %x", h);
-  h = ct_hash4f(ct_set4fn(v4, 1));
+  h = ct_hash4f(ct_set4fn(&v4, 1));
   CT_IS(0xe6a11873 == h, "wrong hash: %x", h);
-  h = ct_hash4f(ct_set4fxyzw(v4, 1, 2, 3, 4));
+  h = ct_hash4f(ct_set4fxyzw(&v4, 1, 2, 3, 4));
   CT_IS(0x79740297 == h, "wrong hash: %x", h);
 
-  free(v2);
-  free(v3);
-  free(v4);
   return 0;
 }
 
@@ -186,8 +192,10 @@ int bench_vec3_create() {
   CT_MPool vpool;
   CT_IS(!ct_mpool_init(&vpool, num, sizeof(CT_Vec3f)), "init vpool");
   for (size_t i = 0; i < num; i++) {
-    ct_vec3f(ct_rand_norm() * 1000, ct_rand_norm() * 1000,
-             ct_rand_norm() * 1000, &vpool);
+    //ct_vec3f(ct_rand_norm() * 1000, ct_rand_norm() * 1000,
+    //         ct_rand_norm() * 1000, &vpool);
+    ct_mul3fn_imm(
+        ct_vec3f(ct_rand_norm(), ct_rand_norm(), ct_rand_norm(), &vpool), 1000);
   }
   ct_mpool_free_all(&vpool);
   return 0;

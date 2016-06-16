@@ -1,5 +1,9 @@
 #pragma once
 
+#ifdef CT_FEATURE_SSE4
+#include <smmintrin.h>
+#endif
+
 #include "math/vec.h"
 
 CT_BEGIN_DECLS
@@ -26,6 +30,28 @@ CT_EXPORT ct_inline size_t ct_deltaeq3fv(const CT_Vec3f *a, const CT_Vec3f *b,
 
 CT_EXPORT ct_inline float ct_dist3fv(const CT_Vec3f *a, const CT_Vec3f *b) {
   return sqrtf(ct_distsq3fv(a, b));
+}
+
+CT_EXPORT ct_inline CT_Vec3f *ct_ceil3f_imm(CT_Vec3f *v) {
+#ifdef CT_FEATURE_SSE4
+  v->mmval = _mm_ceil_ps(v->mmval);
+#else
+  v->x = ceilf(v->x);
+  v->y = ceilf(v->y);
+  v->z = ceilf(v->z);
+#endif
+  return v;
+}
+
+CT_EXPORT ct_inline CT_Vec3f *ct_floor3f_imm(CT_Vec3f *v) {
+#ifdef CT_FEATURE_SSE4
+  v->mmval = _mm_floor_ps(v->mmval);
+#else
+  v->x = floorf(v->x);
+  v->y = floorf(v->y);
+  v->z = floorf(v->z);
+#endif
+  return v;
 }
 
 CT_EXPORT ct_inline uint32_t ct_hash3f(const CT_Vec3f *v) {
