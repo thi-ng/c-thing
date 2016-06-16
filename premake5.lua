@@ -37,13 +37,32 @@ filter "configurations:release"
 defines { "NDEBUG", "CT_FEATURE_LOG" }
 optimize "Size"
 
------ examples
+----- examples -----
+
+----- poisson -----
 
 project "ex-poisson"
 removeconfigurations "test"
 kind "ConsoleApp"
 files { "examples/poisson/*.c" }
 includedirs { "examples/common", "examples/poisson" }
+links "lib"
+
+filter "configurations:debug"
+defines { "DEBUG", "CT_FEATURE_ANSI", "CT_FEATURE_CHECKS", "CT_FEATURE_CHECK_MEM" }
+
+filter "configurations:release"
+defines { "NDEBUG", "CT_FEATURE_LOG" }
+optimize "Size"
+linkoptions { "-flto" }
+
+----- dla -----
+
+project "ex-dla"
+removeconfigurations "test"
+kind "ConsoleApp"
+files { "examples/dla/*.c" }
+includedirs { "examples/common", "examples/dla" }
 links "lib"
 
 filter "configurations:debug"
