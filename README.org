@@ -128,6 +128,15 @@ bin/release/ex-poisson
 bin/release/ex-poisson -g 1.25 -q 500 -m 1.5 -x 16 assets/iris.jpg > assets/iris.svg
 #+END_SRC
 
+*** Diffusion-Limited Aggregation
+
+[[./assets/dla.png]]
+
+#+BEGIN_SRC shell
+# build library & example app
+make config=release_sse ex-poisson && bin/release/ex-dla > assets/dla.svg
+#+END_SRC
+
 ** Compile with emscripten
 
 #+BEGIN_SRC shell
