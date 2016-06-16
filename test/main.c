@@ -27,6 +27,7 @@ extern int test_hashset_vec();
 extern int test_hashset_edge();
 extern int test_adjmatrix();
 extern int test_poisson();
+extern int test_clipping();
 
 extern int bench_vec3_create();
 extern int bench_hashtable();
@@ -69,6 +70,7 @@ int all_tests() {
   CT_RUN_TEST(test_hashset_edge);
   CT_RUN_TEST(test_adjmatrix);
   CT_RUN_TEST(test_poisson);
+  CT_RUN_TEST(test_clipping);
 
 #ifndef __EMSCRIPTEN__
 #else

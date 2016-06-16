@@ -21,11 +21,13 @@ WIP
 *** Math
 
 - Murmur Hash (32bit version)
-- Vec2/3/4 (w/ opt SSE impls)
-- Vector swizzling
 - Poisson disc sampling
 
 *** Geometry
+
+- Vec2/3/4 (w/ opt SSE impls)
+- Vector swizzling
+- Line clipping
 
 TBD
 
