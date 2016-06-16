@@ -108,24 +108,24 @@ nm -g -j bin/release/libcthing.a | grep --color=never _ct_
 [[./assets/iris-poisson.png]]
 
 #+BEGIN_SRC shell
-# build library & example app
-make config=release_sse ex-poisson
+  # build library & example app
+  make config=release_sse ex-poisson
 
-# show usage
-bin/release/ex-poisson
-# Missing input file
-# Usage:	ex-poisson [options] image [ > out.svg ]
-# 	-b HEX		bg color (default: ffffff)
-# 	-f HEX		fg color (default: 0000ff)
-#   -g FLOAT  gamma (default: 3.00)
-# 	-i		    invert (also swaps fg/bg) (default: no)
-# 	-m FLOAT	min distance (default: 2.00)
-# 	-x FLOAT	max distance (default: 10.00)
-# 	-r FLOAT	dot radius (default: 1.00)
-# 	-q INT		quality (default: 100)
- 
-# concrete example (for image size roughly 700x1000px)
-bin/release/ex-poisson -g 1.25 -q 500 -m 1.5 -x 16 assets/iris.jpg > assets/iris.svg
+  # show usage
+  bin/release/ex-poisson
+  # Missing input file
+  # Usage:  ex-poisson [options] image [ > out.svg ]
+  #   -b HEX    bg color (default: ffffff)
+  #   -f HEX    fg color (default: 0000ff)
+  #   -g FLOAT  gamma (default: 3.00)
+  #   -i        invert (also swaps fg/bg) (default: no)
+  #   -m FLOAT  min distance (default: 2.00)
+  #   -x FLOAT  max distance (default: 10.00)
+  #   -r FLOAT  dot radius (default: 1.00)
+  #   -q INT    quality (default: 100)
+
+  # concrete example (for image size roughly 700x1000px)
+  bin/release/ex-poisson -g 1.25 -q 500 -m 1.5 -x 16 assets/iris.jpg > assets/iris.svg
 #+END_SRC
 
 *** Diffusion-Limited Aggregation
