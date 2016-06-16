@@ -1,6 +1,8 @@
 #include <stdlib.h>
 #include <time.h>
+
 #include "common/dbg.h"
+#include "config.h"
 
 #include "data/spatialgrid.h"
 #include "io/svg.h"
@@ -20,13 +22,6 @@ typedef struct {
   float eps[2];
 } DLA;
 
-typedef struct {
-  CT_Vec3f *c;
-  CT_Vec3f *p;
-  float minD;
-  float radius;
-} DLA_Sel;
-
 // clang-format off
 static DLA dla = {
   .width  = 600,
@@ -37,9 +32,9 @@ static DLA dla = {
 // clang-format on
 
 ct_inline CT_Vec3f *rand_particle(DLA *dla) {
-  return ct_set3fxyz(&dla->particles[dla->num++],
-                     ct_rand_normpos() * dla->width,
-                     ct_rand_normpos() * dla->height, 0);
+  return ct_floor3f_imm(ct_set3fxyz(&dla->particles[dla->num++],
+                                    ct_rand_normpos() * dla->width,
+                                    ct_rand_normpos() * dla->height, 0));
 }
 
 static void add_particle(DLA *dla) {
@@ -59,10 +54,16 @@ static void add_particle(DLA *dla) {
         }
       }
       if (c) {
+#ifdef CT_FEATURE_SSE4
+        p->mmval = (p->mmval - c->mmval) *
+                       _mm_rcp_ps(_mm_sqrt_ps(_mm_load1_ps(&minD))) +
+                   c->mmval;
+#else
         float t = 1.0f / sqrtf(minD);
         p->x    = c->x + t * (p->x - c->x);
         p->y    = c->y + t * (p->y - c->y);
-        p->z    = c->z;
+#endif
+        p->z = c->z;
         ct_spgrid_insert(&dla->accel, (float *)p, p);
         return;
       }
