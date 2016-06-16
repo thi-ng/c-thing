@@ -108,9 +108,21 @@ CT_EXPORT ct_inline CT_Vec2f *ct_madd2fv_imm(CT_Vec2f *a, const CT_Vec2f *b,
   return a;
 }
 
+CT_EXPORT ct_inline CT_Vec2f *ct_madd2fnv_imm(CT_Vec2f *a, float b,
+                                              const CT_Vec2f *c) {
+  a->x = a->x * b + c->x;
+  a->y = a->y * b + c->y;
+  return a;
+}
+
 CT_EXPORT ct_inline CT_Vec2f *ct_madd2fv(const CT_Vec2f *a, const CT_Vec2f *b,
                                          const CT_Vec2f *c, CT_Vec2f *out) {
   return ct_madd2fv_imm(ct_set2fv(out, a), b, c);
+}
+
+CT_EXPORT ct_inline CT_Vec2f *ct_madd2fnv(const CT_Vec2f *a, float b,
+                                          const CT_Vec2f *c, CT_Vec2f *out) {
+  return ct_madd2fnv_imm(ct_set2fv(out, a), b, c);
 }
 
 CT_EXPORT ct_inline float ct_dot2fv(const CT_Vec2f *a, const CT_Vec2f *b) {
