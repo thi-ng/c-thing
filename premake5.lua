@@ -49,3 +49,11 @@ kind "ConsoleApp"
 files { "examples/dla/*.c" }
 includedirs { "examples/common", "examples/dla" }
 links "lib"
+
+----- verlet -----
+
+project "ex-verlet"
+kind "ConsoleApp"
+files { "examples/verlet/*.c" }
+includedirs { "examples/common", "examples/verlet" }
+links "lib"
