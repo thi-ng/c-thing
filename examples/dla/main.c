@@ -32,22 +32,22 @@ static DLA dla = {
 // clang-format on
 
 ct_inline CT_Vec3f *rand_particle(DLA *dla) {
-  return ct_floor3f_imm(ct_set3fxyz(&dla->particles[dla->num++],
-                                    ct_rand_normpos() * dla->width,
-                                    ct_rand_normpos() * dla->height, 0));
+  return ct_set3fxyz(&dla->particles[dla->num++],
+                     ct_rand_normpos() * dla->width,
+                     ct_rand_normpos() * dla->height, 0);
 }
 
 static void add_particle(DLA *dla) {
-  CT_Vec3f *res[BUF_SIZE];
+  static CT_Vec3f *res[BUF_SIZE];
   CT_Vec3f *p = rand_particle(dla);
   while (1) {
-    size_t num = ct_spgrid_select2d(&dla->accel, (float *)p, dla->eps,
-                                    (void **)&res, BUF_SIZE);
+    const size_t num = ct_spgrid_select2d(&dla->accel, (float *)p, dla->eps,
+                                          (void **)&res, BUF_SIZE);
     if (num > 0) {
       float minD  = 1e9;
       CT_Vec3f *c = NULL;
       for (size_t i = 0; i < num; i++) {
-        float d = ct_distsq2fv((CT_Vec2f *)p, (CT_Vec2f *)res[i]);
+        const float d = ct_distsq2fv((CT_Vec2f *)p, (CT_Vec2f *)res[i]);
         if (d >= 1 && d < minD) {
           minD = d;
           c    = res[i];
@@ -55,11 +55,10 @@ static void add_particle(DLA *dla) {
       }
       if (c) {
 #ifdef CT_FEATURE_SSE4
-        p->mmval = (p->mmval - c->mmval) *
-                       _mm_rcp_ps(_mm_sqrt_ps(_mm_load1_ps(&minD))) +
-                   c->mmval;
+        const __m128 cmm = c->mmval;
+        p->mmval = (p->mmval - cmm) * _mm_rsqrt_ps(_mm_load1_ps(&minD)) + cmm;
 #else
-        float t = 1.0f / sqrtf(minD);
+        const float t = 1.0f / sqrtf(minD);
         p->x    = c->x + t * (p->x - c->x);
         p->y    = c->y + t * (p->y - c->y);
 #endif
@@ -75,7 +74,7 @@ static void add_particle(DLA *dla) {
 
 int main() {
   dla.length    = dla.width * dla.height >> 2;
-  dla.particles = calloc(dla.length, sizeof(CT_Vec3f));
+  dla.particles = malloc(dla.length * sizeof(CT_Vec3f));
   ct_spgrid_init(&dla.accel, (float[]){0, 0}, (float[]){dla.width, dla.height},
                  (size_t[]){60, 60}, 2, 0x8000);
   srand(time(0));
