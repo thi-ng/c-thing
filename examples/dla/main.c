@@ -59,8 +59,8 @@ static void add_particle(DLA *dla) {
         p->mmval = (p->mmval - cmm) * _mm_rsqrt_ps(_mm_load1_ps(&minD)) + cmm;
 #else
         const float t = 1.0f / sqrtf(minD);
-        p->x    = c->x + t * (p->x - c->x);
-        p->y    = c->y + t * (p->y - c->y);
+        p->x          = c->x + t * (p->x - c->x);
+        p->y          = c->y + t * (p->y - c->y);
 #endif
         p->z = c->z;
         ct_spgrid_insert(&dla->accel, (float *)p, p);
@@ -75,8 +75,8 @@ static void add_particle(DLA *dla) {
 int main() {
   dla.length    = dla.width * dla.height >> 2;
   dla.particles = malloc(dla.length * sizeof(CT_Vec3f));
-  ct_spgrid_init(&dla.accel, (float[]){0, 0}, (float[]){dla.width, dla.height},
-                 (size_t[]){60, 60}, 2, 0x8000);
+  ct_spgrid_init(&dla.accel, FVEC(0, 0), FVEC(dla.width, dla.height),
+                 IVEC(120, 120), 2, 0x8000);
   srand(time(0));
   int cols[50];
   for (int i = 0; i < dla.seeds; i++) {

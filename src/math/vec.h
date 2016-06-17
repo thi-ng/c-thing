@@ -1,5 +1,14 @@
 #pragma once
 
+#define IVEC(...) \
+  (size_t[]) {    \
+    __VA_ARGS__   \
+  }
+#define FVEC(...) \
+  (float[]) {     \
+    __VA_ARGS__   \
+  }
+
 #include <math.h>
 #include <stddef.h>
 #include <stdint.h>
