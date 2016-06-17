@@ -4,6 +4,7 @@
 #include "common/dbg.h"
 #include "data/spatialgrid.h"
 #include "math/vec.h"
+#include "mem/mem.h"
 
 struct CT_SPCell {
   void *value;
@@ -179,14 +180,15 @@ CT_EXPORT size_t ct_spgrid_select2d(const CT_SpatialGrid *grid, const float *p,
   MIN_LET(int, ex, ex, grid->sizes[0] - 1);
   MIN_LET(int, ey, ey, grid->sizes[1] - 1);
   CT_DEBUG("select range: [%d,%d] - [%d,%d]", sx, sy, ex, ey);
+  const size_t stride = grid->strides[0];
   while (sy <= ey) {
-    size_t s   = sy * grid->strides[0] + sx;
-    size_t tex = sy * grid->strides[0] + ex;
+    size_t s         = sy * stride + sx;
+    const size_t tex = sy * stride + ex;
     while (s <= tex) {
       CT_SPCell *cell = grid->cells[s];
       while (cell) {
-        if (cell->key[1] >= a.y && cell->key[1] <= b.y && cell->key[0] >= a.x &&
-            cell->key[0] <= b.x) {
+        const float *key = cell->key;
+        if (key[1] >= a.y && key[1] <= b.y && key[0] >= a.x && key[0] <= b.x) {
           CT_DEBUG("sel @ %zu: %p = %p / %p -> %p", s + sx, &results[i],
                    cell->value, cell, cell->next);
           results[i] = cell->value;
@@ -210,14 +212,14 @@ CT_EXPORT size_t ct_spgrid_select3d(const CT_SpatialGrid *grid, const float *p,
   size_t i = 0;
   CT_Vec3f a, b, veps;
 #ifdef CT_FEATURE_SSE
-  if ((size_t)p & 0xf || (size_t)eps & 0xf) {
+  if (CT_ALIGNED16(p) && CT_ALIGNED16(eps)) {
+    ct_sub3fv((CT_Vec3f *)p, (CT_Vec3f *)eps, &a);
+    ct_add3fv((CT_Vec3f *)p, (CT_Vec3f *)eps, &b);
+  } else {
     ct_set3fpua(&veps, eps);
     ct_set3fpua(&b, p);
     ct_sub3fv(&b, &veps, &a);
     ct_add3fv_imm(&b, &veps);
-  } else {
-    ct_sub3fv((CT_Vec3f *)p, (CT_Vec3f *)eps, &a);
-    ct_add3fv((CT_Vec3f *)p, (CT_Vec3f *)eps, &b);
   }
 #else
   ct_sub3fv((CT_Vec3f *)p, (CT_Vec3f *)eps, &a);
@@ -236,20 +238,22 @@ CT_EXPORT size_t ct_spgrid_select3d(const CT_SpatialGrid *grid, const float *p,
   MIN_LET(int, ey, ey, grid->sizes[1] - 1);
   MIN_LET(int, ez, ez, grid->sizes[2] - 1);
   CT_DEBUG("select range: [%d,%d,%d] - [%d,%d,%d]", sx, sy, sz, ex, ey, ez);
+  const size_t stridex = grid->strides[0];
+  const size_t stridey = grid->strides[1];
   while (sz <= ez) {
-    size_t tsy = sz * grid->strides[1] + sy * grid->strides[0];
-    size_t tey = sz * grid->strides[1] + ey * grid->strides[0];
+    size_t tsy       = sz * stridey + sy * stridex;
+    const size_t tey = sz * stridey + ey * stridex;
     CT_DEBUG("z: %d tsy: %zd - %zd", sz, tsy, tey);
     while (tsy <= tey) {
-      size_t tsx = tsy + sx;
-      size_t tex = tsy + ex;
+      size_t tsx       = tsy + sx;
+      const size_t tex = tsy + ex;
       while (tsx <= tex) {
         CT_DEBUG("check cell: %zd", tsx);
         CT_SPCell *cell = grid->cells[tsx];
         while (cell) {
-          if (cell->key[2] >= a.z && cell->key[2] <= b.z &&
-              cell->key[1] >= a.y && cell->key[1] <= b.y &&
-              cell->key[0] >= a.x && cell->key[0] <= b.x) {
+          const float *key = cell->key;
+          if (key[2] >= a.z && key[2] <= b.z && key[1] >= a.y &&
+              key[1] <= b.y && key[0] >= a.x && key[0] <= b.x) {
             CT_DEBUG("sel @ %zu: %p = %p / %p -> %p", tsx, &results[i],
                      cell->value, cell, cell->next);
             results[i] = cell->value;
@@ -262,7 +266,7 @@ CT_EXPORT size_t ct_spgrid_select3d(const CT_SpatialGrid *grid, const float *p,
         }
         tsx++;
       }
-      tsy += grid->strides[0];
+      tsy += stridex;
     }
     sz++;
   }

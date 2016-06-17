@@ -106,7 +106,7 @@ int test_spatialgrid3d() {
   CT_IS(!ct_spgrid_insert(&grid, (float *)b, b), "insert b");
   CT_IS(!ct_spgrid_insert(&grid, (float *)c, c), "insert c");
   CT_IS(!ct_spgrid_insert(&grid, (float *)d, d), "insert d");
-  ct_spgrid_trace(&grid);
+  //ct_spgrid_trace(&grid);
   CT_Vec3f *results[8];
   size_t num = ct_spgrid_select3d(&grid, (float *)a, (float[]){2, 2, 2},
                                   (void **)&results, 8);
