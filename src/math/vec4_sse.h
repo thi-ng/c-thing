@@ -8,6 +8,7 @@
 #include <smmintrin.h>
 #endif
 #include "math/vec.h"
+#include "mem/mem.h"
 
 #define VEC4OP_SSE(type, ptype, name, op)                                      \
   CT_EXPORT ct_inline type *name##v_imm(type *a, const type *b) {              \
@@ -46,13 +47,13 @@
 
 CT_BEGIN_DECLS
 
-__attribute__((aligned(16))) typedef union {
+typedef union {
   struct {
     float x, y, z, w;
   };
   float buf[4];
   __m128 mmval;
-} CT_Vec4f;
+} CT_Vec4f CT_ALIGN(16);
 
 VEC4OP_SSE(CT_Vec4f, float, ct_add4f, +)
 VEC4OP_SSE(CT_Vec4f, float, ct_sub4f, -)
