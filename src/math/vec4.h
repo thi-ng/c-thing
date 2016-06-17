@@ -137,4 +137,12 @@ CT_EXPORT ct_inline CT_Vec4f *ct_set4fp(CT_Vec4f *v, const float *p) {
   return v;
 }
 
+CT_EXPORT ct_inline CT_Vec4f *ct_set4fpua(CT_Vec4f *v, const float *p) {
+  v->x = p[0];
+  v->y = p[1];
+  v->z = p[2];
+  v->w = p[3];
+  return v;
+}
+
 CT_END_DECLS

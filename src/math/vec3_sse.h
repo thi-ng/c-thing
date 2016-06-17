@@ -130,4 +130,9 @@ CT_EXPORT ct_inline CT_Vec3f *ct_set3fp(CT_Vec3f *v, const float *p) {
   return v;
 }
 
+CT_EXPORT ct_inline CT_Vec3f *ct_set3fpua(CT_Vec3f *v, const float *p) {
+  v->mmval = _mm_loadu_ps(p);
+  return v;
+}
+
 CT_END_DECLS
