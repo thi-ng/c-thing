@@ -22,25 +22,25 @@
   }                                                                            \
                                                                                \
   CT_EXPORT ct_inline type *name##n_imm(type *v, ptype n) {                    \
-    v->mmval op## = _mm_load_ps1(&n);                                          \
+    v->mmval op## = _mm_set1_ps(n);                                            \
     return v;                                                                  \
   }                                                                            \
                                                                                \
   CT_EXPORT ct_inline type *name##n(const type *v, ptype n, type *out) {       \
-    out->mmval = v->mmval op _mm_load_ps1(&n);                                 \
+    out->mmval = v->mmval op _mm_set1_ps(n);                                   \
     return out;                                                                \
   }                                                                            \
                                                                                \
   CT_EXPORT ct_inline type *name##xyzw_imm(type *v, ptype x, ptype y, ptype z, \
                                            ptype w) {                          \
-    __m128 b      = {x, y, z, w};                                              \
+    __m128 b      = _mm_set_ps(w, z, y, x);                                    \
     v->mmval op## = b;                                                         \
     return v;                                                                  \
   }                                                                            \
                                                                                \
   CT_EXPORT ct_inline type *name##xyzw(const type *v, ptype x, ptype y,        \
                                        ptype z, ptype w, type *out) {          \
-    __m128 b   = {x, y, z, w};                                                 \
+    __m128 b   = _mm_set_ps(w, z, y, x);                                       \
     out->mmval = v->mmval op b;                                                \
     return out;                                                                \
   }
