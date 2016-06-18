@@ -49,7 +49,7 @@ int test_cons() {
       ct_cons("CCC", ct_cons("BBB", ct_cons("AAA", NULL, NULL), NULL), NULL);
   ConsTestState cs = {.count = 0, .err = 0};
   ct_cons_iterate(c, count_cons, &cs);
-  CT_IS(cs.count == 3, "c length != 3 (%zd)", cs.count);
+  CT_IS(cs.count == 3, "c length != 3 (%zu)", cs.count);
   ct_cons_free_all(c, 0);
 
   CT_MPool pool;
@@ -57,32 +57,32 @@ int test_cons() {
   c = ct_cons("CCC", ct_cons("BBB", ct_cons("AAA", NULL, &pool), &pool), &pool);
   reset_state(&cs, NULL);
   ct_cons_iterate(c, count_cons, &cs);
-  CT_IS(cs.count == 3, "c mpool length != 3 (%zd)", cs.count);
+  CT_IS(cs.count == 3, "c mpool length != 3 (%zu)", cs.count);
 
   char *vals[] = {"DDD", "EEE", "FFF"};
   CT_Cons *c2  = ct_cons_from_parray((void **)vals, 3, NULL, &pool);
   ct_cons_iterate(c2, verify_cons_char, reset_state(&cs, vals));
-  CT_IS(!cs.err, "cons != src array (%zd errors)", cs.err);
-  CT_IS(cs.count == 3, "c2 length != 3 (%zd)", cs.count);
+  CT_IS(!cs.err, "cons != src array (%zu errors)", cs.err);
+  CT_IS(cs.count == 3, "c2 length != 3 (%zu)", cs.count);
 
   float fvals[] = {23, 24, 25};
   CT_Cons *cf   = ct_cons_from_array(fvals, 3, sizeof(float), NULL, &pool);
   reset_state(&cs, fvals);
   ct_cons_iterate(cf, verify_cons_float, &cs);
-  CT_IS(!cs.err, "cons != src array (%zd errors)", cs.err);
-  CT_IS(cs.count == 3, "c2 length != 3 (%zd)", cs.count);
+  CT_IS(!cs.err, "cons != src array (%zu errors)", cs.err);
+  CT_IS(cs.count == 3, "c2 length != 3 (%zu)", cs.count);
 
   ct_cons_iterate(ct_cons_concat_imm(c, c2), count_cons,
                   reset_state(&cs, NULL));
-  CT_IS(cs.count == 6, "concat_imm(c,c2) length != 6 (%zd)", cs.count);
+  CT_IS(cs.count == 6, "concat_imm(c,c2) length != 6 (%zu)", cs.count);
 
   CT_Cons *c3 = ct_cons_concat(c, c, &pool);
   ct_cons_iterate(c3, count_cons, reset_state(&cs, NULL));
-  CT_IS(cs.count == 12, "concat(c,c) length != 12 (%zd)", cs.count);
+  CT_IS(cs.count == 12, "concat(c,c) length != 12 (%zu)", cs.count);
 
   ct_cons_iterate(c2, verify_cons_char, reset_state(&cs, vals));
-  CT_IS(!cs.err, "cons != src array (%zd errors)", cs.err);
-  CT_IS(cs.count == 3, "c2 length != 3 (%zd)", cs.count);
+  CT_IS(!cs.err, "cons != src array (%zu errors)", cs.err);
+  CT_IS(cs.count == 3, "c2 length != 3 (%zu)", cs.count);
 
   ct_cons_iterate(ct_cons_take(ct_cons_concat_imm(c, c), 20, &pool), count_cons,
                   reset_state(&cs, NULL));

@@ -199,9 +199,9 @@ fail:
 CT_EXPORT void ct_octree_trace_node(const CT_OTNode *node, size_t depth) {
   if (node->point) {
     CT_INFO(
-        "d: %zd: %p b: [%f,%f,%f,%f,%f,%f] [%f,%f,%f] c: "
+        "d: %zu: %p b: [%f,%f,%f,%f,%f,%f] [%f,%f,%f] c: "
         "[%p,%p,%p,%p,%p,%p,%p,%p] node: "
-        "%zd, p: (%f,%f, %f)",
+        "%zu, p: (%f,%f, %f)",
         depth, node, node->x, node->y, node->z, node->x + node->w,
         node->y + node->h, node->z + node->d, node->cx, node->cy, node->cz,
         node->children[0], node->children[1], node->children[2],
@@ -210,9 +210,9 @@ CT_EXPORT void ct_octree_trace_node(const CT_OTNode *node, size_t depth) {
         node->point->y, node->point->z);
   } else {
     CT_INFO(
-        "d: %zd: %p b: [%f,%f,%f,%f,%f,%f] [%f,%f,%f] c: "
+        "d: %zu: %p b: [%f,%f,%f,%f,%f,%f] [%f,%f,%f] c: "
         "[%p,%p,%p,%p,%p,%p,%p,%p] node: "
-        "%zd",
+        "%zu",
         depth, node, node->x, node->y, node->z, node->x + node->w,
         node->y + node->h, node->z + node->d, node->cx, node->cy, node->cz,
         node->children[0], node->children[1], node->children[2],

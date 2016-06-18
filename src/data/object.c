@@ -20,23 +20,23 @@ void ct_object_free_nop(const CT_Ref *ref) {
 void ct_object_trace(CT_Object *o) {
   switch (o->tag.type) {
     case I32:
-      CT_DEBUG("i32: %p = %zd (refs: %zd, tag: %x)", o, o->atom.i,
+      CT_DEBUG("i32: %p = %zu (refs: %zu, tag: %x)", o, o->atom.i,
                o->rc.count, o->tag.tag);
       break;
     case F32:
-      CT_DEBUG("f32: %p = %f (refs: %zd, tag: %x)", o, o->atom.f, o->rc.count,
+      CT_DEBUG("f32: %p = %f (refs: %zu, tag: %x)", o, o->atom.f, o->rc.count,
                o->tag.tag);
       break;
     case STRING:
-      CT_DEBUG("str: %p = \"%s\" (refs: %zd, tag: %x)", o, (char *)o->atom.p,
+      CT_DEBUG("str: %p = \"%s\" (refs: %zu, tag: %x)", o, (char *)o->atom.p,
                o->rc.count, o->tag.tag);
       break;
     case NIL:
-      CT_DEBUG("nil: %p = NIL (refs: %zd, tag: %x)", o, o->rc.count,
+      CT_DEBUG("nil: %p = NIL (refs: %zu, tag: %x)", o, o->rc.count,
                o->tag.tag);
       break;
     case CONS:
-      CT_DEBUG("cons: %p (refs: %zd, tag: %x) ", o, o->rc.count, o->tag.tag);
+      CT_DEBUG("cons: %p (refs: %zu, tag: %x) ", o, o->rc.count, o->tag.tag);
       CT_DEBUG("(");
       while (o) {
         ct_object_trace(ct_object_cons_ptr(o)->value);
@@ -45,7 +45,7 @@ void ct_object_trace(CT_Object *o) {
       CT_DEBUG(")");
       break;
     default:
-      CT_DEBUG("???: %p (refs: %zd, tag: %05x)", o, o->rc.count, o->tag.tag);
+      CT_DEBUG("???: %p (refs: %zu, tag: %05x)", o, o->rc.count, o->tag.tag);
   }
 }
 */
@@ -84,7 +84,7 @@ static CT_IToString __impls_itostring[CT_MAX_TYPES] = {
 int32_t ct_object_tostring(CT_Object *o, char *buf, int32_t bsize) {
   CT_CHECK(bsize > 0, "buffer full");
   CT_CHECK(__impls_itostring[o->tag.type].tostring != NULL,
-           "missing impl for type: %zd", o->tag.type);
+           "missing impl for type: %u", o->tag.type);
   return __impls_itostring[o->tag.type].tostring(o, buf, bsize);
 fail:
   return -1;

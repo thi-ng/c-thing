@@ -21,7 +21,7 @@
     clock_t begin   = clock();                                             \
     int res         = test();                                              \
     double measured = (double)(clock() - begin) / CLOCKS_PER_SEC * 1000.0; \
-    CT_INFO("%zd assertions (%1.3fms)", __testAsserts - t, measured);      \
+    CT_INFO("%zu assertions (%1.3fms)", __testAsserts - t, measured);      \
     __testsRun++;                                                          \
     if (res) {                                                             \
       return res;                                                          \
@@ -32,7 +32,7 @@
   int main() {                                                                \
     CT_INFO("----- RUN TESTS: %s -----", "" #name);                           \
     int result = name();                                                      \
-    CT_INFO("Tests run: %zd, total asserts: %zd", __testsRun, __testAsserts); \
+    CT_INFO("Tests run: %zu, total asserts: %zu", __testsRun, __testAsserts); \
     if (!result) {                                                            \
       CT_SUCCESS("ALL TESTS PASSED");                                         \
     }                                                                         \

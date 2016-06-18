@@ -18,8 +18,8 @@ int ct_octree_bounds(const CT_OTNode *node, void *state) {
 }
 
 int test_octree() {
-  CT_INFO("CT_Octree size: %zd", sizeof(CT_Octree));
-  CT_INFO("CT_OTNode size: %zd", sizeof(CT_OTNode));
+  CT_INFO("CT_Octree size: %zu", sizeof(CT_Octree));
+  CT_INFO("CT_OTNode size: %zu", sizeof(CT_OTNode));
   CT_Octree t;
   CT_MPool vpool;
   ct_octree_init(&t, 0, 0, 0, 100, 100, 100, 0x10000);
@@ -44,7 +44,7 @@ int test_octree() {
   ct_octree_remove(&t, c);
   CT_IS(!ct_octree_find_leaf(&t, c), "shouldn't find c");
   CT_IS(ct_octree_remove(&t, c), "remove c again");
-  CT_IS(CT_TREE_EMPTY == t.root.type, "root is not empty: %zd", t.root.type);
+  CT_IS(CT_TREE_EMPTY == t.root.type, "root is not empty: %zu", t.root.type);
   //srand(time(0));
   int num = 1e5;
   for (int i = 0; i < num; i++) {
@@ -54,8 +54,8 @@ int test_octree() {
   }
   struct bounds_t bounds = {{1000, 1000, 1000}, {-1000, -1000, -1000}, 0};
   ct_octree_visit_leaves(&t, ct_octree_bounds, &bounds);
-  CT_IS(num == bounds.num, "wrong leaf count: %zd", bounds.num);
-  CT_INFO("%f,%f,%f -> %f,%f,%f %zd", bounds.min.x, bounds.min.y, bounds.min.z,
+  CT_IS(num == bounds.num, "wrong leaf count: %zu", bounds.num);
+  CT_INFO("%f,%f,%f -> %f,%f,%f %zu", bounds.min.x, bounds.min.y, bounds.min.z,
           bounds.max.x, bounds.max.y, bounds.max.z, bounds.num);
   //ct_octree_trace(&t);
   ct_mpool_free_all(&vpool);

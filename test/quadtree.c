@@ -43,13 +43,13 @@ static int ct_qtree_select(const CT_QTNode *node, void *state) {
 
 static void print_isec_results(struct isec_t *isec) {
   for (size_t i = 0; i < isec->num; i++) {
-    CT_INFO("isec %zd: (%f, %f)", i, isec->sel[i]->x, isec->sel[i]->y);
+    CT_INFO("isec %zu: (%f, %f)", i, isec->sel[i]->x, isec->sel[i]->y);
   }
 }
 
 int test_quadtree() {
-  CT_INFO("CT_Quadtree size: %zd", sizeof(CT_Quadtree));
-  CT_INFO("CT_QTNode size: %zd", sizeof(CT_QTNode));
+  CT_INFO("CT_Quadtree size: %zu", sizeof(CT_Quadtree));
+  CT_INFO("CT_QTNode size: %zu", sizeof(CT_QTNode));
   CT_Quadtree t;
   CT_MPool vpool;
   ct_qtree_init(&t, 0, 0, 100, 100, 0x10000);
@@ -64,14 +64,14 @@ int test_quadtree() {
   //ct_qtree_trace(&t);
   struct isec_t isec = {{50, 50}, 70.f, {NULL, NULL, NULL, NULL}, 0};
   ct_qtree_visit(&t, ct_qtree_select, &isec);
-  CT_IS(3 == isec.num, "wrong isec count: %zd", isec.num);
+  CT_IS(3 == isec.num, "wrong isec count: %zu", isec.num);
   //print_isec_results(&isec);
   struct isec_t isec2 = {{10, 10}, 0.9f, {NULL, NULL, NULL, NULL}, 0};
   ct_qtree_visit(&t, ct_qtree_select, &isec2);
-  CT_IS(1 == isec2.num, "wrong isec2 count: %zd", isec2.num);
+  CT_IS(1 == isec2.num, "wrong isec2 count: %zu", isec2.num);
   struct isec_t isec3 = {{52, 12}, 5.f, {NULL, NULL, NULL, NULL}, 0};
   ct_qtree_visit(&t, ct_qtree_select, &isec3);
-  CT_IS(1 == isec3.num, "wrong isec3 count: %zd", isec3.num);
+  CT_IS(1 == isec3.num, "wrong isec3 count: %zu", isec3.num);
   CT_IS(ct_qtree_find_leaf(&t, a), "can't find a");
   CT_IS(ct_qtree_find_leaf(&t, b), "can't find b");
   CT_IS(!ct_qtree_find_leaf(&t, b2), "shouldn't find b2");
@@ -84,7 +84,7 @@ int test_quadtree() {
   ct_qtree_remove(&t, c);
   CT_IS(!ct_qtree_find_leaf(&t, c), "shouldn't find c");
   CT_IS(ct_qtree_remove(&t, c), "remove c again");
-  CT_IS(CT_TREE_EMPTY == t.root.type, "root is not empty: %zd", t.root.type);
+  CT_IS(CT_TREE_EMPTY == t.root.type, "root is not empty: %zu", t.root.type);
   //srand(time(0));
   int num = 1e5;
   for (int i = 0; i < num; i++) {
@@ -94,8 +94,8 @@ int test_quadtree() {
   }
   struct bounds_t bounds = {{1000, 1000}, {-1000, -1000}, 0};
   ct_qtree_visit_leaves(&t, ct_qtree_bounds, &bounds);
-  CT_IS(num == bounds.num, "wrong leaf count: %zd", bounds.num);
-  CT_INFO("%f,%f -> %f, %f, %zd", bounds.min.x, bounds.min.y, bounds.max.x,
+  CT_IS(num == bounds.num, "wrong leaf count: %zu", bounds.num);
+  CT_INFO("%f,%f -> %f, %f, %zu", bounds.min.x, bounds.min.y, bounds.max.x,
           bounds.max.y, bounds.num);
   ct_mpool_free_all(&vpool);
   //ct_mpool_trace(&t.pool);

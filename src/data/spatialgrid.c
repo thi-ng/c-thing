@@ -243,12 +243,12 @@ CT_EXPORT size_t ct_spgrid_select3d(const CT_SpatialGrid *grid, const float *p,
   while (sz <= ez) {
     size_t tsy       = sz * stridey + sy * stridex;
     const size_t tey = sz * stridey + ey * stridex;
-    CT_DEBUG("z: %d tsy: %zd - %zd", sz, tsy, tey);
+    CT_DEBUG("z: %d tsy: %zu - %zu", sz, tsy, tey);
     while (tsy <= tey) {
       size_t tsx       = tsy + sx;
       const size_t tex = tsy + ex;
       while (tsx <= tex) {
-        CT_DEBUG("check cell: %zd", tsx);
+        CT_DEBUG("check cell: %zu", tsx);
         CT_SPCell *cell = grid->cells[tsx];
         while (cell) {
           const float *key = cell->key;
