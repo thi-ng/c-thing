@@ -68,9 +68,9 @@ fail:
 static int write_attrib(const CT_HTEntry *e, void *state) {
   FILE *out = (FILE *)state;
   if (!strcmp(e->key, "width")) {
-    fprintf(out, "width=\"%zu\" ", *((size_t *)e->val));
+    fprintf(out, "width=\"%d\" ", *((int *)e->val));
   } else if (!strcmp(e->key, "height")) {
-    fprintf(out, "height=\"%zu\" ", *((size_t *)e->val));
+    fprintf(out, "height=\"%d\" ", *((int *)e->val));
   } else if (!strcmp(e->key, "fill")) {
     fprintf(out, "fill=\"%s\" ", (char *)e->val);
   } else if (!strcmp(e->key, "stroke")) {
