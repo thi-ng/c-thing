@@ -5,6 +5,7 @@ language "C"
 includedirs { "src" }
 targetdir "bin/%{cfg.buildcfg}"
 flags { "Symbols", "FatalWarnings", "C++11" }
+links "m"
 
 filter "platforms:sse"
 defines { "CT_FEATURE_SSE" }
