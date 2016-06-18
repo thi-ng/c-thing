@@ -13,7 +13,7 @@ struct edge_t {
 
 static int dump_hs_char(const CT_HSEntry *e, void *state) {
   size_t *num = (size_t *)state;
-  CT_DEBUG("entry: %zu, %s", *num, e->key);
+  CT_DEBUG("entry: %zu, %s", *num, (char *)e->key);
   *num = *num + 1;
   return 0;
 }

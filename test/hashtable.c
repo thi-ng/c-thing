@@ -23,7 +23,7 @@ static void ht_inc(void **val, size_t *vs, void *state) {
 
 static int dump_ht_char(const CT_HTEntry *e, void *state) {
   size_t *num = (size_t *)state;
-  CT_DEBUG("entry: %zu, [%s, %s]", *num, e->key, e->val);
+  CT_DEBUG("entry: %zu, [%s, %s]", *num, (char *)e->key, (char *)e->val);
   *num = *num + 1;
   return 0;
 }
@@ -31,7 +31,8 @@ static int dump_ht_char(const CT_HTEntry *e, void *state) {
 static int dump_ht_vec(const CT_HTEntry *e, void *state) {
   size_t *num = (size_t *)state;
   CT_Vec3f *v = (CT_Vec3f *)e->key;
-  CT_DEBUG("entry: %zu, [(%f,%f,%f), %s]", *num, v->x, v->y, v->z, e->val);
+  CT_DEBUG("entry: %zu, [(%f,%f,%f), %s]", *num, v->x, v->y, v->z,
+           (char *)e->val);
   *num = *num + 1;
   return 0;
 }
