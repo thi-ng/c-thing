@@ -29,8 +29,8 @@ CT_EXPORT uint32_t ct_murmur3_32(const void *data, size_t numBytes) {
   if (data == NULL || numBytes == 0) return 0;
 
   const size_t numBlocks = numBytes >> 2;
-  const uint32_t *blocks = (const uint32_t *)(data);
-  const uint8_t *tail    = (const uint8_t *)&data[numBlocks << 2];
+  const uint32_t *blocks = (const uint32_t *)data;
+  const uint8_t *tail    = (const uint8_t *)&blocks[numBlocks];
 
   uint32_t h = 0, k = 0;
   for (size_t i = 0; i < numBlocks; i++) {
