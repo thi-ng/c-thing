@@ -21,7 +21,7 @@ static void apply_friction2d(CT_Verlet2f *verlet) {
   const __m128 f    = _mm_set1_ps(verlet->friction);
   for (size_t i = 0, num = verlet->num * 2; i < num; i += 4) {
     const __m128 p       = _mm_load_ps(&prev[i]);
-    *((__m128 *)&pos[i]) = (_mm_load_ps(&pos[i]) - p) * f + p;
+    *((__m128 *)&pos[i]) = p + (_mm_load_ps(&pos[i]) - p) * f;
   }
 }
 
@@ -35,7 +35,7 @@ static void update2d(CT_Verlet2f *verlet) {
   for (size_t num = verlet->num, x = 0, y = num; x < num; x += 4, y += 4) {
     __m128 p              = _mm_load_ps(&pos[x]);
     __m128 q              = _mm_load_ps(&prev[x]);
-    __m128 m              = _mm_load_ps(&mass[x]);
+    const __m128 m        = _mm_load_ps(&mass[x]);
     *((__m128 *)&prev[x]) = p;
     *((__m128 *)&pos[x])  = p * two - q + _mm_load_ps(&force[x]) * dtsq * m;
     p                     = _mm_load_ps(&pos[y]);
@@ -62,20 +62,23 @@ static void apply_friction2d(CT_Verlet2f *verlet) {
   const float *prev = verlet->prev;
   const float fr    = verlet->friction;
   for (size_t i = 0, num = verlet->num * 2; i < num; i++) {
-    p[i] = (p[i] - prev[i]) * fr + prev[i];
+    p[i] = prev[i] + (p[i] - prev[i]) * fr;
   }
 }
 
 static void update2d(CT_Verlet2f *verlet) {
-  float dt    = verlet->dt * verlet->dt;
-  float *p    = verlet->pos;
-  float *prev = verlet->prev;
-  float *f    = verlet->force;
-  float *m    = verlet->mass;
-  for (size_t i = 0, num = verlet->num * 2; i < num; i++) {
-    float x = p[i] * 2 - prev[i] + f[i] * dt * m[i & num];
-    prev[i] = p[i];
-    p[i]    = x;
+  const float dt = verlet->dt * verlet->dt;
+  float *pos     = verlet->pos;
+  float *prev    = verlet->prev;
+  float *f       = verlet->force;
+  float *m       = verlet->mass;
+  for (size_t num = verlet->num, x = 0, y = num; x < num; x++, y++) {
+    float p = pos[x] * 2 - prev[x] + f[x] * dt * m[x];
+    prev[x] = pos[x];
+    pos[x]  = p;
+    p       = pos[y] * 2 - prev[y] + f[y] * dt * m[x];
+    prev[y] = pos[y];
+    pos[y]  = p;
   }
 }
 #endif  // CT_FEATURE_SSE
