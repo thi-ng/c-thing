@@ -17,8 +17,6 @@ defines { "DEBUG", "CT_FEATURE_CHECKS", "CT_FEATURE_CHECK_MEM" }
 filter "configurations:release"
 defines { "NDEBUG", "CT_FEATURE_LOG" }
 optimize "Size"
--- TODO LTO seems to break things under GCC
--- flags { "LinkTimeOptimization" }
 
 ----- test
 
@@ -45,6 +43,7 @@ files { "examples/poisson/*.c" }
 includedirs { "examples/common", "examples/poisson" }
 links "lib"
 dependson "lib"
+flags { "LinkTimeOptimization" }
 
 ----- dla -----
 
@@ -54,6 +53,7 @@ files { "examples/dla/*.c" }
 includedirs { "examples/common", "examples/dla" }
 links "lib"
 dependson "lib"
+flags { "LinkTimeOptimization" }
 
 ----- verlet -----
 
@@ -63,3 +63,4 @@ files { "examples/verlet/*.c" }
 includedirs { "examples/common", "examples/verlet" }
 links "lib"
 dependson "lib"
+flags { "LinkTimeOptimization" }
