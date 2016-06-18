@@ -75,6 +75,10 @@ ct_inline float ct_mixf(const float a, const float b, const float t) {
   return a + (b - a) * t;
 }
 
+ct_inline size_t ct_ceil_multiple_pow2(const size_t x, const size_t y) {
+  return (x + (y - 1)) & ~(y - 1);
+}
+
 ct_inline float ct_rand_norm() {
   return rand() * INV_RAND_MAX2 - 1.0f;
 }

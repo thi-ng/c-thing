@@ -11,6 +11,7 @@ ct_inline size_t cell_index(const CT_AdjMatrix *mat, const size_t x,
 }
 
 CT_EXPORT int ct_adjmat_init(CT_AdjMatrix *mat, size_t width) {
+  width         = ct_ceil_multiple_pow2(width, 8);
   mat->stride   = width >> 3;
   mat->numBytes = width * mat->stride;
   mat->bits     = calloc(mat->numBytes, 1);
