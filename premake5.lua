@@ -4,8 +4,8 @@ platforms { "sse", "no_sse" }
 language "C"
 includedirs { "src" }
 targetdir "bin/%{cfg.buildcfg}"
-flags { "Symbols", "FatalWarnings", "C++11" }
-links "m"
+flags { "Symbols", "C++11" }
+linkoptions "-lm"
 
 filter "platforms:sse"
 defines { "CT_FEATURE_SSE" }
@@ -17,7 +17,8 @@ defines { "DEBUG", "CT_FEATURE_CHECKS", "CT_FEATURE_CHECK_MEM" }
 filter "configurations:release"
 defines { "NDEBUG", "CT_FEATURE_LOG" }
 optimize "Size"
-flags { "LinkTimeOptimization" }
+-- TODO LTO seems to break things under GCC
+-- flags { "LinkTimeOptimization" }
 
 ----- test
 
@@ -26,6 +27,7 @@ kind "ConsoleApp"
 files { "src/**.h", "src/**.c", "test/**.c" }
 removefiles {"src/geom/mesh.c" }
 defines { "CT_FEATURE_ANSI" }
+flags { "FatalWarnings" }
 
 ----- lib
 
@@ -42,6 +44,7 @@ kind "ConsoleApp"
 files { "examples/poisson/*.c" }
 includedirs { "examples/common", "examples/poisson" }
 links "lib"
+dependson "lib"
 
 ----- dla -----
 
@@ -50,6 +53,7 @@ kind "ConsoleApp"
 files { "examples/dla/*.c" }
 includedirs { "examples/common", "examples/dla" }
 links "lib"
+dependson "lib"
 
 ----- verlet -----
 
@@ -58,3 +62,4 @@ kind "ConsoleApp"
 files { "examples/verlet/*.c" }
 includedirs { "examples/common", "examples/verlet" }
 links "lib"
+dependson "lib"
