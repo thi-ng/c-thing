@@ -151,7 +151,7 @@ CT_EXPORT void ct_verlet_trace(CT_Verlet2f *v) {
 CT_EXPORT void ct_verlet_update2d(CT_Verlet2f *verlet) {
   clear_forces2d(verlet);
   separate2d(verlet);
-  apply_friction2d(verlet);
   constrain2d(verlet);
+  apply_friction2d(verlet);
   update2d(verlet);
 }

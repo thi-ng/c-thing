@@ -11,7 +11,7 @@
 #include "math/vec.h"
 #include "math/verlet.h"
 
-#define NUM 800
+#define NUM 2048
 
 static CT_SVGAttribs *attribs;
 
@@ -40,7 +40,7 @@ int main() {
     .bounds   = {10, 10, 590, 590},
     .gravity  = {0, 0.1},
     .friction = 0.95,
-    .minD     = 20,
+    .minD     = 15,
     .timeStep = 1
   };
   // clang-format off

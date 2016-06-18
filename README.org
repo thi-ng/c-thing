@@ -5,29 +5,32 @@
 WIP
 
 *** Data structures
-- Adjacency matrix (undirected graph)
-- Cons list (with & without reference counting)
-- Hashset
-- Hashtable
-- Octree
-- Quadtree
-- Spatial grid (1D, 2D, 3D)
+- [[./src/data/adjacency.h][Adjacency matrix]] (undirected graph)
+- Cons list ([[./src/data/consrc.h][with]] & [[./src/data/cons.h][without]] reference counting)
+- [[./src/data/hashset.h][Hashset]] (generic)
+- [[./src/data/hashtable.h][Hashtable]] (generic)
+- [[./src/data/object.h][Object wrapper]]
+- [[./src/data/octree.h][Octree]]
+- [[./src/data/quadtree.h][Quadtree]]
+- [[./src/data/spatialgrid.h][Spatial grid]] (1D, 2D, 3D)
 
 *** Memory management
 
-- Memory pool (auto-growth, manual compacts)
-- Reference counting utils
+- [[./src/mem/mpool.h][Memory pool]] (auto-growth, manual compacts)
+- [[./src/mem/ref.h][Reference counting]] utils
 
 *** Math
 
-- Murmur Hash (32bit version)
-- Poisson disc sampling
+- [[./src/math/hashfn.h][Murmur Hash]] (32bit version)
+- [[./src/math/poisson.h][Poisson disc sampling]]
+- [[./src/math/verlet.h][Verlet physics]] (particles)
 
 *** Geometry
 
-- Vec2/3/4 (w/ opt SSE impls)
-- Vector swizzling
-- Line clipping
+- [[./src/math/vec.h][Vec2/3/4]] (w/ opt SSE impls)
+- [[./src/math/swizzle.h][Vector swizzling]]
+- [[./src/geom/clip.h][Line clipping]]
+...
 
 TBD
 
