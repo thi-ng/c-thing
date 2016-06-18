@@ -19,23 +19,23 @@ CT_SVGAttribs *ct_svg_attribs(size_t flags, size_t num, ...) {
       char *key = va_arg(args, char *);
       char type = (char)va_arg(args, int);
       size_t ks = strlen(key) + 1;
-      CT_DEBUG("attrib: %s", key);
+      CT_DEBUG("attrib: %s (%p)", key, key);
       switch (type) {
         case 's': {
           char *val = va_arg(args, char *);
-          CT_DEBUG("val: %s", val);
+          CT_DEBUG("val: %s (%p)", val, val);
           ct_ht_assoc(&a->attribs, key, val, ks, strlen(val) + 1);
           break;
         }
         case 'f': {
           float val = (float)va_arg(args, double);
-          CT_DEBUG("val: %f", val);
+          CT_DEBUG("val: %f (%p)", val, &val);
           ct_ht_assoc(&a->attribs, key, &val, ks, sizeof(float));
           break;
         }
         case 'd': {
           int val = va_arg(args, int);
-          CT_DEBUG("val: %d", val);
+          CT_DEBUG("val: %d (%p)", val, &val);
           ct_ht_assoc(&a->attribs, key, &val, ks, sizeof(int));
           break;
         }
@@ -43,8 +43,8 @@ CT_SVGAttribs *ct_svg_attribs(size_t flags, size_t num, ...) {
           uint32_t val = va_arg(args, uint32_t);
           char buf[8];
           snprintf(buf, 8, "#%06x", val);
-          CT_DEBUG("val: %s", buf);
-          ct_ht_assoc(&a->attribs, key, &buf, ks, 8);
+          CT_DEBUG("val: %s (%p)", buf, buf);
+          ct_ht_assoc(&a->attribs, key, buf, ks, 8);
           break;
         }
         default:

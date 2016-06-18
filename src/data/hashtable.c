@@ -34,7 +34,7 @@ static int make_val(const CT_Hashtable* t, CT_HTEntry* e, const void* val,
     } else {
       p = malloc(vs);
     }
-    if (p == NULL) return 1;
+    if (!p) return 1;
     memcpy(p, val, vs);
     e->val = p;
   }
