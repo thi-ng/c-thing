@@ -7,15 +7,14 @@
 typedef struct {
   float *pos, *prev, *force, *mass;
   size_t num;
-  float dt;
+  float timeStep;
   float friction;
   float minD;
   float gravity[2];
   float bounds[4];
 } CT_Verlet2f;
 
-int ct_verlet_init(CT_Verlet2f *verlet, size_t num, float dt, float friction,
-                   float minD, const float *gravity, const float *bounds);
+int ct_verlet_init(CT_Verlet2f *verlet, size_t num);
 void ct_verlet_update2d(CT_Verlet2f *verlet);
 void ct_verlet_trace(CT_Verlet2f *v);
 

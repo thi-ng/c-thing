@@ -1,7 +1,5 @@
-#include <string.h>
-
-#include "common/dbg.h"
 #include "math/verlet.h"
+#include "common/dbg.h"
 
 #ifdef CT_FEATURE_SSE
 
@@ -31,7 +29,7 @@ static void update2d(CT_Verlet2f *verlet) {
   const float *force = verlet->force;
   const float *mass  = verlet->mass;
   const __m128 two   = _mm_set1_ps(2.0f);
-  const __m128 dtsq  = _mm_set1_ps(verlet->dt * verlet->dt);
+  const __m128 dtsq  = _mm_set1_ps(verlet->timeStep * verlet->timeStep);
   for (size_t num = verlet->num, x = 0, y = num; x < num; x += 4, y += 4) {
     __m128 p              = _mm_load_ps(&pos[x]);
     __m128 q              = _mm_load_ps(&prev[x]);
@@ -67,7 +65,7 @@ static void apply_friction2d(CT_Verlet2f *verlet) {
 }
 
 static void update2d(CT_Verlet2f *verlet) {
-  const float dt = verlet->dt * verlet->dt;
+  const float dt = verlet->timeStep * verlet->timeStep;
   float *pos     = verlet->pos;
   float *prev    = verlet->prev;
   float *f       = verlet->force;
@@ -128,23 +126,15 @@ static void constrain2d(CT_Verlet2f *verlet) {
   }
 }
 
-CT_EXPORT int ct_verlet_init(CT_Verlet2f *verlet, size_t num, float dt,
-                             float friction, float minD, const float *gravity,
-                             const float *bounds) {
+CT_EXPORT int ct_verlet_init(CT_Verlet2f *verlet, size_t num) {
   CT_CHECK(0 == (num & 3), "num must be multiple of 4");
   float *buf = malloc(7 * num * sizeof(float));
   CT_CHECK_MEM(buf);
-  verlet->pos        = buf;
-  verlet->prev       = buf + num * 2;
-  verlet->force      = buf + num * 4;
-  verlet->mass       = buf + num * 6;
-  verlet->num        = num;
-  verlet->dt         = dt;
-  verlet->friction   = friction;
-  verlet->minD       = minD;
-  verlet->gravity[0] = gravity[0];
-  verlet->gravity[1] = gravity[1];
-  memcpy(verlet->bounds, bounds, 4 * sizeof(float));
+  verlet->pos   = buf;
+  verlet->prev  = buf + num * 2;
+  verlet->force = buf + num * 4;
+  verlet->mass  = buf + num * 6;
+  verlet->num   = num;
   return 0;
 fail:
   return 1;
@@ -154,7 +144,8 @@ CT_EXPORT void ct_verlet_trace(CT_Verlet2f *v) {
   CT_INFO(
       "pos: %p, prev: %p, force: %p,mass: %p, num: %zu, dt: %1.3f, friction: "
       "%1.3f, mind: %1.3f",
-      v->pos, v->prev, v->force, v->mass, v->num, v->dt, v->friction, v->minD);
+      v->pos, v->prev, v->force, v->mass, v->num, v->timeStep, v->friction,
+      v->minD);
 }
 
 CT_EXPORT void ct_verlet_update2d(CT_Verlet2f *verlet) {

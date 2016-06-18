@@ -138,6 +138,19 @@ nm -g -j bin/release/libcthing.a | grep --color=never _ct_
 make config=release_sse ex-poisson && bin/release/ex-dla > assets/dla.svg
 #+END_SRC
 
+*** Verlet physics
+
+[[./assets/verlet.png]]
+
+#+BEGIN_SRC shell
+# build library & example app
+make config=release_sse ex-verlet && bin/release/ex-verlet
+
+# ouputs are stored as SVG sequence in /assets
+# use script below to convert to mp4 (OSX only) -> out.mp4
+./makevideo verlet
+#+END_SRC
+
 ** Compile with emscripten
 
 #+BEGIN_SRC shell
