@@ -116,6 +116,8 @@ nm -g -j bin/release/libcthing.a | grep --color=never _ct_
 ** Examples
 *** Poisson disc sampling image conversion
 
+[[./examples/poisson/main.c][Source]]
+
 [[./assets/iris-poisson.png]]
 
 #+BEGIN_SRC shell
@@ -141,6 +143,8 @@ nm -g -j bin/release/libcthing.a | grep --color=never _ct_
 
 *** Diffusion-Limited Aggregation
 
+[[./examples/dla/main.c][Source]]
+
 [[./assets/dla.png]]
 
 #+BEGIN_SRC shell
@@ -149,6 +153,8 @@ make config=release_sse ex-poisson && bin/release/ex-dla > assets/dla.svg
 #+END_SRC
 
 *** Verlet physics
+
+[[./examples/verlet/main.c][Source]]
 
 [[./assets/verlet.png]]
 
