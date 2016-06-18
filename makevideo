@@ -1,0 +1,16 @@
+#!/bin/sh
+qlmanage -r cache
+for i in `ls assets/$1*.svg`; do
+    echo "converting $i"
+    qlmanage -t -s 600 -o assets $i > /dev/null
+done
+ffmpeg \
+    -framerate 30 \
+    -i assets/$1-%04d.svg.png \
+    -s:v 600x600 \
+    -c:v libx264 \
+    -profile:v high \
+    -crf 23 \
+    -pix_fmt yuv420p \
+    -y \
+    out.mp4
