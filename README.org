@@ -38,7 +38,7 @@ TBD
 
 - [[https://premake.github.io/][Premake5]]
 - [[http://www.gnu.org/software/make/][GNU Make]]
-- GCC / Clang
+- GCC / Clang (w/ C11 support)
 - [[https://github.com/emcrisostomo/fswatch][fswatch]] (only needed for =./autotest= runner)
 - [[http://emscripten.org][emscripten]] & [[http://nodejs.org][node]] (only needed for asm.js x-compilation via =./compile=)
 - [[http://cscope.sourceforge.net/][cscope]] (only needed for =./browse=)

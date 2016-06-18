@@ -1,4 +1,4 @@
-/* stb.h - v2.26 - Sean's Tool Box -- public domain -- http://nothings.org/stb.h
+/* stb.h - v2.27 - Sean's Tool Box -- public domain -- http://nothings.org/stb.h
           no warranty is offered or implied; use this code at your own risk
 
    This is a single header file with a bunch of useful utilities
@@ -9,29 +9,29 @@
 
 
  ============================================================================
-   You MUST
-
-      #define STB_DEFINE
-
+   You MUST                                                                  
+                                                                             
+      #define STB_DEFINE                                                     
+                                                                             
    in EXACTLY _one_ C or C++ file that includes this header, BEFORE the
-   include, like this:
-
-      #define STB_DEFINE
+   include, like this:                                                                
+                                                                             
+      #define STB_DEFINE                                                     
       #include "stb.h"
-
+      
    All other files should just #include "stb.h" without the #define.
  ============================================================================
 
 
 Version History
 
-   2.26   various warning & buffixes
+   2.27   test _WIN32 not WIN32 in STB_THREADS
+   2.26   various warning & bugfixes
    2.25   various warning & bugfixes
    2.24   various warning & bugfixes
    2.23   fix 2.22
    2.22   64-bit fixes from '!='; fix stb_sdict_copy() to have preferred name
-   2.21   utf-8 decoder rejects "overlong" encodings; attempted 64-bit
-improvements
+   2.21   utf-8 decoder rejects "overlong" encodings; attempted 64-bit improvements
    2.20   fix to hash "copy" function--reported by someone with handle "!="
    2.19   ???
    2.18   stb_readdir_subdirs_mask
@@ -172,9 +172,9 @@ Parenthesized items have since been removed.
 
 LICENSE
 
-This software is in the public domain. Where that dedication is not
-recognized, you are granted a perpetual, irrevocable license to copy,
-distribute, and modify this file as you see fit.
+This software is dual-licensed to the public domain and under the following
+license: you are granted a perpetual, irrevocable license to copy, modify,
+publish, and distribute this file as you see fit.
 
 CREDITS
 
@@ -736,8 +736,7 @@ int stb_vsnprintf(char *s, size_t n, const char *fmt, va_list v) {
   res = vsnprintf(s, n, fmt, v);
 #endif
   if (n) s[n - 1] = 0;
-  // Unix returns length output would require, Windows returns negative when
-  // truncated.
+  // Unix returns length output would require, Windows returns negative when truncated.
   return (res >= (int)n || res < 0) ? -1 : res;
 }
 
@@ -1802,8 +1801,7 @@ int stb_suffixi(char *s, char *t) {
 }
 
 // originally I was using this table so that I could create known sentinel
-// values--e.g. change whitetable[0] to be true if I was scanning for
-// whitespace,
+// values--e.g. change whitetable[0] to be true if I was scanning for whitespace,
 // and false if I was scanning for nonwhite. I don't appear to be using that
 // functionality anymore (I do for tokentable, though), so just replace it
 // with isspace()
@@ -2610,8 +2608,7 @@ static void *stb__alloc_chunk(stb__alloc *src, int size, int align,
       }
 
       // put the bigger chunk first, since the second will get buried
-      // the upshot of this is that, until it gets allocated from, chunk
-      // #2
+      // the upshot of this is that, until it gets allocated from, chunk #2
       // is always the largest remaining chunk. (could formalize
       // this with a heap!)
       stb__sort_chunks(src);
@@ -3519,8 +3516,8 @@ int stb_perfect_create(stb_perfect *p, unsigned int *v, int n) {
               break;
             }
           }
-          if (j == size) break;  // no match for i'th entry, so break out in
-                                 // failure
+          if (j == size)
+            break;  // no match for i'th entry, so break out in failure
         }
       }
       if (i == bsize) {
@@ -4342,9 +4339,10 @@ void *stb_sdict_change(stb_sdict *d, char *str, void *p) {
           tree->STB_(N, right)->STB_(N, level) = tree->STB_(N, level);       \
         tree = STB_(N, skew)(tree);                                          \
         STB_(N, setright)(tree, STB_(N, skew)(tree->STB_(N, right)));        \
-        if (tree->STB_(N, right)) STB_(N, setright)                          \
-        (tree->STB_(N, right),                                               \
-         STB_(N, skew)(tree->STB_(N, right)->STB_(N, right)));               \
+        if (tree->STB_(N, right))                                            \
+          STB_(N, setright)                                                  \
+          (tree->STB_(N, right),                                             \
+           STB_(N, skew)(tree->STB_(N, right)->STB_(N, right)));             \
         tree = STB_(N, split)(tree);                                         \
         if (tree->STB_(N, right))                                            \
           STB_(N, setright)(tree, STB_(N, split)(tree->STB_(N, right)));     \
@@ -4525,10 +4523,10 @@ STB_EXTERN void stb_nptr_recache(void);  // recache all known pointers
   (((x) >> STB__NPTR_NODE_SHIFT) & STB__NPTR_NODE_MASK)
 
 typedef struct stb__st_nptr {
-  void *ptr;                   // address of actual pointer
-  struct stb__st_nptr *next;   // next pointer with same target
-  struct stb__st_nptr **prev;  // prev pointer with same target, address of
-                               // 'next' field (or first)
+  void *ptr;                  // address of actual pointer
+  struct stb__st_nptr *next;  // next pointer with same target
+  struct stb__st_nptr **
+      prev;  // prev pointer with same target, address of 'next' field (or first)
   struct stb__st_nptr *next_in_block;
 } stb__nptr;
 
@@ -4778,8 +4776,7 @@ static void stb__nptr_delete_targets(stb__memory_leaf *f, int offset,
 void stb_nptr_didfree(void *address_being_freed, int len) {
   // step one: delete all pointers in this block
   stb__nptr_block(address_being_freed, len, stb__nptr_delete_pointers, 0);
-  // step two: NULL all pointers to this block; do this second to avoid
-  // NULLing deleted pointers
+  // step two: NULL all pointers to this block; do this second to avoid NULLing deleted pointers
   stb__nptr_block(address_being_freed, len, stb__nptr_delete_targets, 0);
 }
 
@@ -4838,8 +4835,7 @@ void stb_nptr_realloc(void *new_address, void *old_address, int len) {
   if (new_address == old_address) return;
 
   // have to move the pointers first, because moving the targets
-  //      requires writing to the pointers-to-the-targets, and if some of
-  //      those moved too,
+  //      requires writing to the pointers-to-the-targets, and if some of those moved too,
   //      we need to make sure we don't write to the old memory
 
   // step one: move all pointers within the block
@@ -5802,8 +5798,7 @@ static char **readdir_raw(char *dir, int return_subdirs, char *mask) {
 #else
         char *name = data->d_name;
         if (!stb_strscpy(buffer + n, name, sizeof(buffer) - n)) break;
-        // Could follow DT_LNK, but would need to check for recursive
-        // links.
+        // Could follow DT_LNK, but would need to check for recursive links.
         is_subdir = !!(data->d_type & DT_DIR);
 #endif
 
@@ -5940,8 +5935,7 @@ stb_dirtree2 *stb_dirtree2_from_files_relative(char *src, char **filelist,
   char **files       = NULL;
   char *s;
   if (!count) return NULL;
-  // first find all the ones that belong here... note this is will take O(NM)
-  // with N files and M subdirs
+  // first find all the ones that belong here... note this is will take O(NM) with N files and M subdirs
   for (i = 0; i < count; ++i) {
     if (stb_dir_is_prefix(src, dlen, filelist[i])) {
       stb_arr_push(descendents, filelist[i]);
@@ -6280,8 +6274,7 @@ void stb_sha1_readable(char display[27], unsigned char sha[20]) {
 #if defined(_WIN32)
 
 STB_EXTERN void *stb_reg_open(
-    char *mode,
-    char *where);  // mode: "rHKLM" or "rHKCU" or "w.."
+    char *mode, char *where);  // mode: "rHKLM" or "rHKCU" or "w.."
 STB_EXTERN void stb_reg_close(void *reg);
 STB_EXTERN int stb_reg_read(void *zreg, char *str, void *data,
                             unsigned long len);
@@ -6628,8 +6621,7 @@ static void stb__dirtree_save_db(char *filename, stb_dirtree *data,
 
   fwrite(stb__signature, sizeof(stb__signature), 1, f);
   fwrite(root, strlen(root) + 1, 1, f);
-  // need to be slightly tricky and not write out NULLed directories, nor the
-  // root
+  // need to be slightly tricky and not write out NULLed directories, nor the root
 
   // build remapping table of all dirs we'll be writing out
   remap = (int *)malloc(sizeof(remap[0]) * stb_arr_len(data->dirs));
@@ -6805,8 +6797,7 @@ static int stb__dirtree_update_db(stb_dirtree *db, stb_dirtree *active) {
         }
       } else {
         // this path used to refer to a directory, but now it's a file!
-        // assume that the parent directory is going to be forced to
-        // rescan anyway
+        // assume that the parent directory is going to be forced to rescan anyway
         goto delete_entry;
       }
     } else {
@@ -6821,10 +6812,8 @@ static int stb__dirtree_update_db(stb_dirtree *db, stb_dirtree *active) {
 
   // at this point, we have:
   //
-  //   <rescan> holds a list of directory indices that need to be scanned due
-  //   to being out of date
-  //   <remap> holds the directory index in <active> for each dir in <db>, if
-  //   it exists; -1 if not
+  //   <rescan> holds a list of directory indices that need to be scanned due to being out of date
+  //   <remap> holds the directory index in <active> for each dir in <db>, if it exists; -1 if not
   //           directories in <rescan> are not in <active> yet
 
   // so we can go ahead and remap all the known files right now
@@ -6889,12 +6878,9 @@ stb_dirtree *stb_dirtree_get_with_file(char *dir, char *cache_file) {
                        &active);  // no last_modified time available for root
 
   // done with the DB; write it back out if any changes, i.e. either
-  //      1. any inconsistency found between cached information and actual
-  //      disk
-  //   or 2. if scanning the root found any new directories--which we detect
-  //   because
-  //         more than one directory got added to the active db during that
-  //         scan
+  //      1. any inconsistency found between cached information and actual disk
+  //   or 2. if scanning the root found any new directories--which we detect because
+  //         more than one directory got added to the active db during that scan
   if (cache_mismatch || stb_arr_len(active.dirs) > prev_dir_count + 1)
     stb__dirtree_save_db(cache_file, &active, stripped_dir);
 
@@ -6962,8 +6948,7 @@ void stb_dirtree_free(stb_dirtree *d) {
 //    or define STB_MALLOC_WRAPPER project-wide to have
 //    malloc/free/realloc/strdup all get vectored to it
 
-// this has too many very specific error messages you could google for and find
-// in stb.h,
+// this has too many very specific error messages you could google for and find in stb.h,
 // so don't use it if they don't want any stb.h-identifiable strings
 #if defined(STB_DEFINE) && !defined(STB_NO_STB_STRINGS)
 
@@ -7112,8 +7097,7 @@ void stb_wrapper_check(void *p) {
   for (n = 0; n < stb__alloc_size; ++n)
     if (stb__allocations[n].p == p)
       stb_fatal(
-          "Internal error: pointer %p was allocated, but hash "
-          "search failed",
+          "Internal error: pointer %p was allocated, but hash search failed",
           p);
 
   // tried to free something that wasn't allocated!
@@ -7141,8 +7125,8 @@ void stb_wrapper_realloc(void *p, void *q, int sz, char *file, int line) {
     assert(0); /* NOTREACHED */
     if (n >= 0)
       stb_fatal(
-          "Attempted to realloc %d-byte block %p at %s:%d "
-          "previously freed/realloced at %s:%d",
+          "Attempted to realloc %d-byte block %p at %s:%d previously "
+          "freed/realloced at %s:%d",
           stb__alloc_history[n].size, p, file, line, stb__alloc_history[n].file,
           stb__alloc_history[n].line);
     else
@@ -8129,8 +8113,7 @@ void stb_dupe_finish(stb_dupe *sd) {
     void **list = sd->hash_table[i];
     if (list != NULL) {
       int n = stb_arr_len(list);
-      // @TODO: measure to find good numbers instead of just making them
-      // up!
+      // @TODO: measure to find good numbers instead of just making them up!
       int thresh = (sd->ineq ? 200 : 20);
       // if n is large enough to be worth it, and n is smaller than
       // before (so we can guarantee we'll use a smaller hash table);
@@ -9839,8 +9822,7 @@ static stb_uchar *stb_decompress_token(stb_uchar *i) {
       stb__match(stb__dout - (stb__in2(0) - 0x4000 + 1), i[2] + 1), i += 3;
     else /* *i >= 0x20 */
       stb__lit(i + 1, i[0] - 0x20 + 1), i += 1 + (i[0] - 0x20 + 1);
-  } else {  // more ifs for cases that expand large, since overhead is
-            // amortized
+  } else {  // more ifs for cases that expand large, since overhead is amortized
     if (*i >= 0x18)
       stb__match(stb__dout - (stb__in3(0) - 0x180000 + 1), i[3] + 1), i += 4;
     else if (*i >= 0x10)
@@ -10231,9 +10213,9 @@ stb_uint stb_compress(stb_uchar *out, stb_uchar *input, stb_uint length) {
 }
 
 int stb_compress_tofile(char *filename, char *input, unsigned int length) {
-  // int maxlen = length + 512 + (length >> 2); // total guess
-  // char *buffer = (char *) malloc(maxlen);
-  // int blen = stb_compress((stb_uchar*)buffer, (stb_uchar*)input, length);
+  //int maxlen = length + 512 + (length >> 2); // total guess
+  //char *buffer = (char *) malloc(maxlen);
+  //int blen = stb_compress((stb_uchar*)buffer, (stb_uchar*)input, length);
 
   stb__out     = NULL;
   stb__outfile = fopen(filename, "wb");
@@ -10249,9 +10231,9 @@ int stb_compress_tofile(char *filename, char *input, unsigned int length) {
 }
 
 int stb_compress_intofile(FILE *f, char *input, unsigned int length) {
-  // int maxlen = length + 512 + (length >> 2); // total guess
-  // char *buffer = (char*)malloc(maxlen);
-  // int blen = stb_compress((stb_uchar*)buffer, (stb_uchar*)input, length);
+  //int maxlen = length + 512 + (length >> 2); // total guess
+  //char *buffer = (char*)malloc(maxlen);
+  //int blen = stb_compress((stb_uchar*)buffer, (stb_uchar*)input, length);
 
   stb__out     = NULL;
   stb__outfile = f;
@@ -10872,8 +10854,7 @@ void stb_arith_decode_advance_log2(stb_arith *a, unsigned int totalfreq2,
 }
 
 stbfile *stb_arith_encode_close(stb_arith *a) {
-  // put exactly as many bytes as we'll read, so we can turn on/off arithmetic
-  // coding in a stream
+  // put exactly as many bytes as we'll read, so we can turn on/off arithmetic coding in a stream
   stb__arith_putbyte(a, a->range_low >> 24);
   stb__arith_putbyte(a, a->range_low >> 16);
   stb__arith_putbyte(a, a->range_low >> 8);
@@ -10961,8 +10942,9 @@ static void stb_arith_state_rescale(stb_arith_symstate *s) {
       s->data[i].samples = 1;
       cf_next += 1;
     }
-    assert(cf == (1 << s->pow2));  // this isn't necessarily true, due to
-                                   // rounding down!
+    assert(
+        cf ==
+        (1 << s->pow2));  // this isn't necessarily true, due to rounding down!
     s->countdown = (2 << s->pow2) - cf - cf_next;
   }
 }
@@ -10980,7 +10962,7 @@ int stb_arith_decode_byte(stb_arith *a) {
 //                         Threads
 //
 
-#ifndef WIN32
+#ifndef _WIN32
 #ifdef STB_THREADS
 #error "threads not implemented except for Windows"
 #endif
@@ -11003,8 +10985,7 @@ typedef struct stb__sync *stb_sync;
 #define STB_MUTEX_NULL NULL
 #define STB_SYNC_NULL NULL
 
-// get the number of processors (limited to those in the affinity mask for this
-// process).
+// get the number of processors (limited to those in the affinity mask for this process).
 STB_EXTERN int stb_processor_count(void);
 // force to run on a single core -- needed for RDTSC to work, e.g. for iprof
 STB_EXTERN void stb_force_uniprocessor(void);
@@ -11015,11 +10996,9 @@ STB_EXTERN void stb_force_uniprocessor(void);
 // but if you decrease it, it won't decrease until things currently on the
 // queue are finished
 STB_EXTERN void stb_work_numthreads(int n);
-// set maximum number of units in the queue; you can only set this BEFORE
-// running any work functions
+// set maximum number of units in the queue; you can only set this BEFORE running any work functions
 STB_EXTERN int stb_work_maxunits(int n);
-// enqueue some work to be done (can do this from any thread, or even from a
-// piece of work);
+// enqueue some work to be done (can do this from any thread, or even from a piece of work);
 // return value of f is stored in *return_code if non-NULL
 STB_EXTERN int stb_work(stb_thread_func f, void *d,
                         volatile void **return_code);
@@ -11348,8 +11327,7 @@ struct stb__sync {
   stb_mutex mutex;  // mutex while tweaking state
   stb_semaphore release;  // semaphore wake up waiting threads
   // we have to wake them up one at a time, rather than using a single release
-  // call, because win32 semaphores don't let you dynamically change the max
-  // count!
+  // call, because win32 semaphores don't let you dynamically change the max count!
 };
 
 stb_sync stb_sync_new(void) {
@@ -11416,8 +11394,7 @@ int stb_sync_reach(stb_sync s) {
   int n;
   stb_mutex_begin(s->mutex);
   assert(s->sofar < s->target);
-  n = ++s->sofar;  // record this value to avoid possible race if we did
-                   // 'return s->sofar';
+  n = ++s->sofar;  // record this value to avoid possible race if we did 'return s->sofar';
   if (s->sofar == s->target) stb__sync_release(s);
   stb_mutex_end(s->mutex);
   return n;
@@ -11448,8 +11425,7 @@ void stb_sync_reach_and_wait(stb_sync s) {
 struct stb__threadqueue {
   stb_mutex add, remove;
   stb_semaphore nonempty, nonfull;
-  int head_blockers;  // number of threads blocking--used to know whether to
-                      // release(avail)
+  int head_blockers;  // number of threads blocking--used to know whether to release(avail)
   int tail_blockers;
   int head, tail, array_size, growable;
   int item_size;
@@ -11647,7 +11623,7 @@ typedef struct {
   stb_sync sync;
 } stb__workinfo;
 
-// static volatile stb__workinfo *stb__work;
+//static volatile stb__workinfo *stb__work;
 
 struct stb__workqueue {
   int numthreads;
@@ -12645,8 +12621,7 @@ char *stb__string_constant(char *file, int line, char *x) {
 //      traverse the tree; support for 'break/continue/return' is tricky
 //
 //   garbage collection:
-//      stu__mark and sweep; explicit stack with non-stu__compile_global_scope
-//      roots
+//      stu__mark and sweep; explicit stack with non-stu__compile_global_scope roots
 
 typedef stb_int32 stua_obj;
 
@@ -12689,8 +12664,7 @@ STB_EXTERN void stua_poproot(void);
 // INTERPRETER
 
 // 31-bit floating point implementation
-//   force the (1 << 30) bit (2nd highest bit) to be zero by re-biasing the
-//   exponent;
+//   force the (1 << 30) bit (2nd highest bit) to be zero by re-biasing the exponent;
 //   then shift and set the bottom bit
 
 static stua_obj stu__floatp(float *f) {
@@ -12898,7 +12872,7 @@ static void stua_gc(int force) {
   int i;
   if (!force && stu__num_allocs == 0 && stu__size_allocs == 0) return;
   stu__num_allocs = stu__size_allocs = 0;
-  // printf("[gc]\n");
+  //printf("[gc]\n");
 
   // clear marks
   for (i                        = 0; i < stb_arr_len(stu__gc_ptrlist); ++i)
@@ -13417,8 +13391,7 @@ static stua_obj stu__funceval(stua_obj fo, stua_obj co) {
         if (stb_idict_add(context, e->table[i].k, e->table[i].v))
           stu__size_allocs += 8;
     // use add so if it's already defined, we don't override it; that way
-    // explicit parameters win over applied ones, and most recent
-    // applications
+    // explicit parameters win over applied ones, and most recent applications
     // win over previous ones
     f = stu__pf(f->closure_source);
   }
@@ -13429,8 +13402,7 @@ static stua_obj stu__funceval(stua_obj fo, stua_obj co) {
                       stu__get(context, stu__int(j), stua_nil)))
       ++j;
 
-  // @TODO: if (stu__get(context, stu__int(f->num_param+1)) != STUA_NO_VALUE)
-  // // error: too many parameters
+  // @TODO: if (stu__get(context, stu__int(f->num_param+1)) != STUA_NO_VALUE) // error: too many parameters
   // @TODO: ditto too few parameters
 
   if (f->closure_source == 4)
