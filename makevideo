@@ -1,8 +1,7 @@
 #!/bin/sh
-qlmanage -r cache
 for i in `ls assets/$1*.svg`; do
     echo "converting $i"
-    qlmanage -t -s 600 -o assets $i &> /dev/null
+    rsvg-convert -b "#fff" -f png -o $i.png $i
 done
 ffmpeg \
     -framerate 30 \
