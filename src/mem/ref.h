@@ -3,9 +3,7 @@
 #include <stddef.h>
 
 #include "config.h"
-
-#define container_of(ptr, type, member) \
-  ((type *)((char *)(ptr)-offsetof(type, member)))
+#include "mem/mem.h"
 
 CT_BEGIN_DECLS
 
