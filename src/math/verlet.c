@@ -32,7 +32,7 @@ static void collide2d(CT_Verlet *v, size_t preserve) {
     if (res) {
       for (size_t k = 0; k < res; k++) {
         const size_t id = (size_t)sel[k] << 1;
-        if (id != i) {
+        if (id < num && id != i) {
           CT_Vec2f *q = (CT_Vec2f *)&pos[id];
           CT_Vec2f delta;
           ct_sub2fv(p, q, &delta);
@@ -40,6 +40,7 @@ static void collide2d(CT_Verlet *v, size_t preserve) {
           if (d < mind_sq) {
             float l = sqrtf(d);
             l       = (l - v->minD) / l * 0.5f;
+            //l = CLAMP(l, -1, 1);
             CT_Vec2f delta_scaled, np, nq;
             ct_mul2fn(&delta, l, &delta_scaled);
             ct_sub2fv(p, &delta_scaled, &np);
