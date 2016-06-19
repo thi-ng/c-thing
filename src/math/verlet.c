@@ -167,6 +167,11 @@ fail:
   return 1;
 }
 
+void ct_verlet_free(CT_Verlet *v) {
+  free(v->pos);
+  ct_spgrid_free(&v->accel);
+}
+
 void ct_verlet_update2d(CT_Verlet *v) {
   for (size_t i = 0; i < v->iter; i++) {
     //attract2f(v);

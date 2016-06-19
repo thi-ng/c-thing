@@ -43,7 +43,7 @@ int main() {
     .iter = 2
   };
   // clang-format off
-  if (ct_verlet_init(&phys, NUM, 20, IVEC(120, 120, 120))) {
+  if (ct_verlet_init(&phys, NUM, 10, IVEC(120, 120, 120))) {
     return 1;
   }
   ct_spgrid_trace(&phys.accel);
@@ -65,5 +65,6 @@ int main() {
     CT_TIMED(ct_verlet_update2d(&phys));
     outputFrame(&phys, i);
   }
+  ct_verlet_free(&phys);
   return 0;
 }

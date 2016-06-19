@@ -18,6 +18,7 @@ typedef struct {
 } CT_Verlet;
 
 int ct_verlet_init(CT_Verlet *v, size_t max, float margin, size_t *grid);
+void ct_verlet_free(CT_Verlet *v);
 void ct_verlet_update2d(CT_Verlet *v);
 void ct_verlet_trace(CT_Verlet *v);
 void ct_verlet_set2f(CT_Verlet *v, size_t i, const float *pos);
