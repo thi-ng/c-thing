@@ -155,7 +155,7 @@ make config=release_sse ex-dla && bin/release/ex-dla > assets/dla.svg
 
 *** Verlet physics
 
-[[./examples/verlet/main.c][Source]]
+[[./examples/verlet/main.c][Source]] | [[https://www.instagram.com/p/BG2W1NHEGdk][Video example 1]] | [[https://www.instagram.com/p/BG2jR9jkGXi][Video example 2]]
 
 [[./assets/verlet.png]]
 
