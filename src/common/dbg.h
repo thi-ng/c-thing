@@ -3,6 +3,8 @@
 #pragma once
 
 #include <errno.h>
+#include <time.h>
+
 #include "config.h"
 
 #if defined(CT_FEATURE_CHECKS) || defined(CT_FEATURE_LOG)
@@ -82,4 +84,11 @@
     CT_ERROR(M, ##__VA_ARGS__); \
     errno = 0;                  \
     goto fail;                  \
+  }
+
+#define CT_TIMED(...)                                                   \
+  {                                                                     \
+    clock_t t0 = clock();                                               \
+    __VA_ARGS__;                                                        \
+    CT_INFO("time: %f", (double)(clock() - t0) / CLOCKS_PER_SEC * 1e3); \
   }

@@ -2,7 +2,6 @@
 #include <stdlib.h>
 #include <time.h>
 
-#include <time.h>
 #include "common/dbg.h"
 #include "config.h"
 
@@ -54,10 +53,7 @@ int main() {
   attribs = ct_svg_attribs(0, 2, SVG_INT("width", 600), SVG_INT("height", 600));
   outputFrame(&phys, 0);
   for (size_t i = 1; i < 200; i++) {
-    clock_t begin = clock();
-    ct_verlet_update2d(&phys);
-    double measured = (double)(clock() - begin) / CLOCKS_PER_SEC * 1000.0;
-    CT_INFO("time: %f", measured);
+    CT_TIMED(ct_verlet_update2d(&phys));
     outputFrame(&phys, i);
   }
   return 0;
