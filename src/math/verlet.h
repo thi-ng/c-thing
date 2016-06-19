@@ -2,7 +2,10 @@
 
 #include <stddef.h>
 
+#include "config.h"
 #include "data/spatialgrid.h"
+
+CT_BEGIN_DECLS
 
 typedef struct {
   float *pos, *prev, *force, *radius;
@@ -29,3 +32,5 @@ CT_EXPORT ct_inline void ct_verlet_pos2f(const CT_Verlet *v, size_t i,
   out[0] = v->pos[i];
   out[1] = v->pos[i + 1];
 }
+
+CT_END_DECLS
