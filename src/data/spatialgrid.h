@@ -15,10 +15,11 @@ struct CT_SpatialGrid {
   CT_SPCell **cells;
   size_t numCells;
   size_t dims;
-  size_t strides[3];
-  size_t sizes[3];
-  float offsets[3];
-  float invWidths[3];
+  size_t stride[3];
+  size_t size[3];
+  float offset[3];
+  float limit[3];
+  float invWidth[3];
   int (*find_cell)(const CT_SpatialGrid *, const float *);
 };
 

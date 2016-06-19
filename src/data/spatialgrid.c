@@ -14,7 +14,7 @@ struct CT_SPCell {
 
 ct_inline int find_cell_idx(const CT_SpatialGrid *grid, const float *p,
                             size_t idx) {
-  return (int)((p[idx] - grid->offsets[idx]) * grid->invWidths[idx]);
+  return (int)((p[idx] - grid->offset[idx]) * grid->invWidth[idx]);
 }
 
 static int find_cell1d(const CT_SpatialGrid *grid, const float *p) {
@@ -22,35 +22,37 @@ static int find_cell1d(const CT_SpatialGrid *grid, const float *p) {
 }
 
 static int find_cell2d(const CT_SpatialGrid *grid, const float *p) {
-  return find_cell_idx(grid, p, 1) * grid->strides[0] +
+  return find_cell_idx(grid, p, 1) * grid->stride[0] +
          find_cell_idx(grid, p, 0);
 }
 
 static int find_cell3d(const CT_SpatialGrid *grid, const float *p) {
-  return find_cell_idx(grid, p, 2) * grid->strides[1] +
-         find_cell_idx(grid, p, 1) * grid->strides[0] +
+  return find_cell_idx(grid, p, 2) * grid->stride[1] +
+         find_cell_idx(grid, p, 1) * grid->stride[0] +
          find_cell_idx(grid, p, 0);
 }
 
 CT_EXPORT int ct_spgrid_init(CT_SpatialGrid *grid, const float *start,
-                             const float *end, const size_t *strides,
+                             const float *end, const size_t *stride,
                              size_t dims, size_t poolSize) {
   CT_CHECK(dims > 0 && dims < 4, "wrong dimension: %zu", dims);
-  size_t numCells = strides[0];
+  size_t numCells = stride[0];
   for (size_t i = 0; i < dims; i++) {
-    grid->offsets[i]   = start[i];
-    grid->sizes[i]     = strides[i];
-    grid->invWidths[i] = (float)strides[i] / (end[i] - start[i]);
+    grid->offset[i]   = start[i];
+    grid->limit[i]    = end[i];
+    grid->size[i]     = stride[i];
+    grid->invWidth[i] = (float)stride[i] / (end[i] - start[i]);
     if (i > 0) {
-      numCells *= strides[i];
+      numCells *= stride[i];
     }
-    grid->strides[i] = numCells;
+    grid->stride[i] = numCells;
   }
   grid->numCells = numCells;
   grid->dims     = dims;
   grid->find_cell =
       dims == 1 ? find_cell1d : dims == 2 ? find_cell2d : find_cell3d;
-  if (!ct_mpool_init(&grid->pool, MAX(numCells, poolSize), sizeof(CT_SPCell))) {
+  if (!ct_mpool_init(&grid->pool, MAX(numCells >> 1, poolSize),
+                     sizeof(CT_SPCell))) {
     grid->cells = calloc(numCells, sizeof(CT_SPCell *));
     CT_CHECK_MEM(grid);
     return 0;
@@ -143,7 +145,7 @@ CT_EXPORT size_t ct_spgrid_select1d(const CT_SpatialGrid *grid, float p,
   int s    = find_cell_idx(grid, &x1, 0);
   int tex  = find_cell_idx(grid, &x2, 0);
   s        = MAX(s, 0);
-  MIN_LET(int, tex, tex, grid->sizes[0] - 1);
+  MIN_LET(int, tex, tex, grid->size[0] - 1);
   CT_DEBUG("select range: %d,%d", s, tex);
   while (s <= tex) {
     CT_SPCell *cell = grid->cells[s];
@@ -177,10 +179,10 @@ CT_EXPORT size_t ct_spgrid_select2d(const CT_SpatialGrid *grid, const float *p,
   int ey = find_cell_idx(grid, (float *)&b, 1);
   sx     = MAX(sx, 0);
   sy     = MAX(sy, 0);
-  MIN_LET(int, ex, ex, grid->sizes[0] - 1);
-  MIN_LET(int, ey, ey, grid->sizes[1] - 1);
+  MIN_LET(int, ex, ex, grid->size[0] - 1);
+  MIN_LET(int, ey, ey, grid->size[1] - 1);
   CT_DEBUG("select range: [%d,%d] - [%d,%d]", sx, sy, ex, ey);
-  const size_t stride = grid->strides[0];
+  const size_t stride = grid->stride[0];
   while (sy <= ey) {
     size_t s         = sy * stride + sx;
     const size_t tex = sy * stride + ex;
@@ -234,12 +236,12 @@ CT_EXPORT size_t ct_spgrid_select3d(const CT_SpatialGrid *grid, const float *p,
   sx     = MAX(sx, 0);
   sy     = MAX(sy, 0);
   sz     = MAX(sz, 0);
-  MIN_LET(int, ex, ex, grid->sizes[0] - 1);
-  MIN_LET(int, ey, ey, grid->sizes[1] - 1);
-  MIN_LET(int, ez, ez, grid->sizes[2] - 1);
+  MIN_LET(int, ex, ex, grid->size[0] - 1);
+  MIN_LET(int, ey, ey, grid->size[1] - 1);
+  MIN_LET(int, ez, ez, grid->size[2] - 1);
   CT_DEBUG("select range: [%d,%d,%d] - [%d,%d,%d]", sx, sy, sz, ex, ey, ez);
-  const size_t stridex = grid->strides[0];
-  const size_t stridey = grid->strides[1];
+  const size_t stridex = grid->stride[0];
+  const size_t stridey = grid->stride[1];
   while (sz <= ez) {
     size_t tsy       = sz * stridey + sy * stridex;
     const size_t tey = sz * stridey + ey * stridex;
@@ -276,19 +278,26 @@ CT_EXPORT size_t ct_spgrid_select3d(const CT_SpatialGrid *grid, const float *p,
 CT_EXPORT void ct_spgrid_trace(const CT_SpatialGrid *grid) {
   switch (grid->dims) {
     case 1:
-      CT_INFO("size: %zu, stride: %zu, inv: %f", grid->sizes[0],
-              grid->strides[0], grid->invWidths[0]);
+      CT_INFO("size: %zu, stride: %zu, inv: %f bounds: [%f, %f]", grid->size[0],
+              grid->stride[0], grid->invWidth[0], grid->offset[0],
+              grid->limit[0]);
       break;
     case 2:
-      CT_INFO("size: [%zu, %zu], stride: [%zu, %zu], inv: [%f, %f]",
-              grid->sizes[0], grid->sizes[1], grid->strides[0],
-              grid->strides[1], grid->invWidths[0], grid->invWidths[1]);
+      CT_INFO(
+          "size: [%zu, %zu], stride: [%zu, %zu], inv: [%f, %f], bounds: [%f,%f "
+          "%f,%f]",
+          grid->size[0], grid->size[1], grid->stride[0], grid->stride[1],
+          grid->invWidth[0], grid->invWidth[1], grid->offset[0],
+          grid->offset[1], grid->limit[0], grid->limit[1]);
       break;
     case 3:
       CT_INFO(
-          "size: [%zu, %zu, %zu], stride: [%zu, %zu, %zu], inv: [%f, %f, %f]",
-          grid->sizes[0], grid->sizes[1], grid->sizes[2], grid->strides[0],
-          grid->strides[1], grid->strides[2], grid->invWidths[0],
-          grid->invWidths[1], grid->invWidths[2]);
+          "size: [%zu, %zu, %zu], stride: [%zu, %zu, %zu], inv: [%f, %f, %f], "
+          "bounds: [%f,%f,%f %f,%f,%f]",
+          grid->size[0], grid->size[1], grid->size[2], grid->stride[0],
+          grid->stride[1], grid->stride[2], grid->invWidth[0],
+          grid->invWidth[1], grid->invWidth[2], grid->offset[0],
+          grid->offset[1], grid->offset[2], grid->limit[0], grid->limit[1],
+          grid->limit[2]);
   }
 }

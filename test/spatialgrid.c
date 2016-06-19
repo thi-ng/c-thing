@@ -14,7 +14,7 @@ int test_spatialgrid1d() {
   CT_IS(!ct_spgrid_insert(&grid, (float *)&a, &a), "insert a");
   CT_IS(!ct_spgrid_insert(&grid, (float *)&b, &b), "insert b");
   CT_IS(!ct_spgrid_insert(&grid, (float *)&c, &c), "insert c");
-  //ct_spgrid_trace(&grid);
+  ct_spgrid_trace(&grid);
   CT_Vec2f *results[4];
   size_t num = ct_spgrid_select1d(&grid, a.x, 1, (void **)&results, 4);
   CT_IS(3 == num, "count: %zu", num);
@@ -55,7 +55,7 @@ int test_spatialgrid2d() {
   CT_IS(!ct_spgrid_insert(&grid, (float *)&b, &b), "insert b");
   CT_IS(!ct_spgrid_insert(&grid, (float *)&c, &c), "insert c");
   CT_IS(!ct_spgrid_insert(&grid, (float *)&d, &d), "insert d");
-  //ct_spgrid_trace(&grid);
+  ct_spgrid_trace(&grid);
   CT_Vec2f *results[4];
   size_t num =
       ct_spgrid_select2d(&grid, (float *)&a, FVEC(2, 2), (void **)&results, 4);
@@ -95,7 +95,7 @@ int test_spatialgrid3d() {
   CT_IS(!ct_spgrid_insert(&grid, (float *)&b, &b), "insert b");
   CT_IS(!ct_spgrid_insert(&grid, (float *)&c, &c), "insert c");
   CT_IS(!ct_spgrid_insert(&grid, (float *)&d, &d), "insert d");
-  //ct_spgrid_trace(&grid);
+  ct_spgrid_trace(&grid);
   CT_Vec3f *results[8];
   size_t num = ct_spgrid_select3d(&grid, (float *)&a, FVEC(2, 2, 2),
                                   (void **)&results, 8);
