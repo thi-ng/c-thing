@@ -66,9 +66,8 @@ CT_EXPORT void ct_spgrid_free(CT_SpatialGrid *grid) {
   ct_mpool_free(&grid->pool);
 }
 
-CT_EXPORT int ct_spgrid_insert(CT_SpatialGrid *grid, const float *p,
-                               const void *item) {
-  int id = grid->find_cell(grid, p);
+static int do_insert(CT_SpatialGrid *grid, int id, const float *p,
+                     const void *item) {
   CT_CHECK(id >= 0 && id < grid->numCells, "p out of bounds");
   CT_SPCell *cell = ct_mpool_alloc(&grid->pool);
   CT_CHECK_MEM(cell);
@@ -88,9 +87,12 @@ fail:
   return 1;
 }
 
-CT_EXPORT int ct_spgrid_remove(CT_SpatialGrid *grid, const float *p,
+CT_EXPORT int ct_spgrid_insert(CT_SpatialGrid *grid, const float *p,
                                const void *item) {
-  int id = grid->find_cell(grid, p);
+  return do_insert(grid, grid->find_cell(grid, p), p, item);
+}
+
+static int do_remove(CT_SpatialGrid *grid, int id, const void *item) {
   CT_CHECK(id >= 0 && id < grid->numCells, "p out of bounds");
   CT_SPCell *cell = grid->cells[id], *prev = NULL;
   while (cell) {
@@ -112,12 +114,17 @@ fail:
   return 1;
 }
 
+CT_EXPORT int ct_spgrid_remove(CT_SpatialGrid *grid, const float *p,
+                               const void *item) {
+  return do_remove(grid, grid->find_cell(grid, p), item);
+}
+
 CT_EXPORT int ct_spgrid_update(CT_SpatialGrid *grid, const float *p,
                                const float *q, const void *item) {
   int id  = grid->find_cell(grid, p);
   int id2 = grid->find_cell(grid, q);
   if (id != id2) {
-    return !ct_spgrid_remove(grid, p, item) && ct_spgrid_insert(grid, q, item);
+    return !do_remove(grid, id, item) && do_insert(grid, id2, q, item);
   }
   CT_SPCell *cell = grid->cells[id];
   while (cell) {
