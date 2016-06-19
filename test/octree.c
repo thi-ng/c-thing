@@ -58,7 +58,7 @@ int test_octree() {
   CT_INFO("%f,%f,%f -> %f,%f,%f %zu", bounds.min.x, bounds.min.y, bounds.min.z,
           bounds.max.x, bounds.max.y, bounds.max.z, bounds.num);
   //ct_octree_trace(&t);
-  ct_mpool_free_all(&vpool);
+  ct_mpool_free(&vpool);
   //ct_mpool_trace(&t.pool);
   ct_octree_free(&t);
   return 0;

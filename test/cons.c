@@ -87,6 +87,6 @@ int test_cons() {
   ct_cons_iterate(ct_cons_take(ct_cons_concat_imm(c, c), 20, &pool), count_cons,
                   reset_state(&cs, NULL));
 
-  ct_mpool_free_all(&pool);
+  ct_mpool_free(&pool);
   return 0;
 }

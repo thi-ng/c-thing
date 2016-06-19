@@ -55,7 +55,7 @@ CT_EXPORT int ct_hemesh_init(CT_HEMesh *mesh, size_t numV, size_t numF) {
 }
 
 CT_EXPORT void ct_hemesh_free(CT_HEMesh *mesh) {
-  ct_mpool_free_all(&mesh->mpoolV);
-  ct_mpool_free_all(&mesh->mpoolF);
-  ct_mpool_free_all(&mesh->mpoolE);
+  ct_mpool_free(&mesh->mpoolV);
+  ct_mpool_free(&mesh->mpoolF);
+  ct_mpool_free(&mesh->mpoolE);
 }

@@ -81,7 +81,7 @@ static void free_entry(CT_Hashtable* t, const CT_HTEntry* e) {
   if (!(t->flags & CT_HT_CONST_VALS)) {
     free_val(t, e);
   }
-  ct_mpool_free(&t->pool, e);
+  ct_mpool_free_block(&t->pool, e);
 }
 
 static int equiv_keys(const void* a, const void* b, const size_t sa,
@@ -171,7 +171,7 @@ CT_EXPORT void ct_ht_free(CT_Hashtable* t) {
       }
     }
   }
-  ct_mpool_free_all(&t->pool);
+  ct_mpool_free(&t->pool);
   CT_DEBUG("free HT bins: %p", t->bins);
   free(t->bins);
   t->bins = NULL;

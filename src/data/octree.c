@@ -83,7 +83,7 @@ CT_EXPORT int ct_octree_init(CT_Octree *t, float x, float y, float z, float w,
 }
 
 CT_EXPORT void ct_octree_free(CT_Octree *t) {
-  ct_mpool_free_all(&t->pool);
+  ct_mpool_free(&t->pool);
 }
 
 static int insert_node(CT_OTNode *node, const CT_Vec3f *p, const void *data,
@@ -156,7 +156,7 @@ CT_EXPORT int ct_octree_remove(CT_Octree *t, const CT_Vec3f *p) {
       break;
     default:
       while (d > 0) {
-        ct_mpool_free(&t->pool, path[d]);
+        ct_mpool_free_block(&t->pool, path[d]);
         d--;
         node = path[d];
         node->children[child_index(node, p)] = NULL;

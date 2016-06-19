@@ -21,7 +21,7 @@ int test_mpool() {
         pool.head->pool + 8);
   CT_IS(*b == 42, "b = %f", *b);
 
-  ct_mpool_free(&pool, a);
+  ct_mpool_free_block(&pool, a);
   CT_IS((uint8_t *)pool.freeList == pool.head->pool, "block not freed");
 
   a  = (float *)ct_mpool_alloc(&pool);
@@ -36,14 +36,14 @@ int test_mpool() {
         pool.head->pool + 16);
   CT_IS(*c == -1, "c = %f", *c);
 
-  ct_mpool_free(&pool, c);
-  ct_mpool_free(&pool, a);
-  ct_mpool_free(&pool, b);
+  ct_mpool_free_block(&pool, c);
+  ct_mpool_free_block(&pool, a);
+  ct_mpool_free_block(&pool, b);
   CT_IS((uint8_t *)pool.freeList == (uint8_t *)b, "b not 1st free block");
   CT_IS((uint8_t *)pool.freeList->next == (uint8_t *)a, "a not 2nd free block");
 
   //ct_mpool_trace(&pool);
-  ct_mpool_free_all(&pool);
+  ct_mpool_free(&pool);
   return 0;
 }
 
@@ -60,7 +60,7 @@ int test_mpool_resize() {
   CT_IS(pool.freeList == NULL, "should have no free list");
   CT_IS(pool.head->next->pool == blocks[4], "2nd pool != blocks[4]");
   for (int i = 0; i < 5; i++) {
-    ct_mpool_free(&pool, blocks[i]);
+    ct_mpool_free_block(&pool, blocks[i]);
   }
   CT_IS(pool.freeList == blocks[4], "free list != blocks[4]");
   for (int i = 0; i < 4; i++) {
@@ -70,7 +70,7 @@ int test_mpool_resize() {
   ct_mpool_alloc(&pool);
   ct_mpool_alloc(&pool);
   //ct_mpool_trace(&pool);
-  ct_mpool_free_all(&pool);
+  ct_mpool_free(&pool);
   return 0;
 }
 
@@ -83,12 +83,12 @@ int test_mpool_compact() {
   uint32_t *b = ct_mpool_alloc(&pool);
   uint32_t *c = ct_mpool_alloc(&pool);
   uint32_t *d = ct_mpool_alloc(&pool);
-  ct_mpool_free(&pool, a);
-  ct_mpool_free(&pool, b);
-  ct_mpool_free(&pool, c);
+  ct_mpool_free_block(&pool, a);
+  ct_mpool_free_block(&pool, b);
+  ct_mpool_free_block(&pool, c);
   CT_MPCompactResult res = ct_mpool_compact(&pool);
   CT_IS(2 == res.blocks, "blocks: %zu", res.blocks);
   CT_IS(1 == res.pools, "pools: %zu", res.pools);
-  ct_mpool_free_all(&pool);
+  ct_mpool_free(&pool);
   return 0;
 }

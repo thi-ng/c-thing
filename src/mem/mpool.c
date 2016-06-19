@@ -29,7 +29,7 @@ fail:
   return 1;
 }
 
-CT_EXPORT void ct_mpool_free(CT_MPool *mp, const void *block) {
+CT_EXPORT void ct_mpool_free_block(CT_MPool *mp, const void *block) {
   // TODO add valid ptr check (see mpool_free)
   CT_DEBUG("pool: %zu, free block: %p", mp->poolID, block);
   CT_MPoolFreeList *fb = (CT_MPoolFreeList *)block;
@@ -39,7 +39,17 @@ fail:
   return;
 }
 
-CT_EXPORT void ct_mpool_free_all(CT_MPool *mp) {
+CT_EXPORT void ct_mpool_free_all_blocks(CT_MPool *mp) {
+  mp->freeList    = NULL;
+  CT_MPoolList *p = mp->head;
+  while (p != NULL) {
+    CT_DEBUG("reset sub-pool: %p", p->pool);
+    p->nextID = 0;
+    p         = p->next;
+  }
+}
+
+CT_EXPORT void ct_mpool_free(CT_MPool *mp) {
   CT_CHECK(mp->head, "pool already freed");
   CT_DEBUG("pool: %zu, freeing all...", mp->poolID);
   CT_MPoolList *p = mp->head, *q;

@@ -4339,10 +4339,9 @@ void *stb_sdict_change(stb_sdict *d, char *str, void *p) {
           tree->STB_(N, right)->STB_(N, level) = tree->STB_(N, level);       \
         tree = STB_(N, skew)(tree);                                          \
         STB_(N, setright)(tree, STB_(N, skew)(tree->STB_(N, right)));        \
-        if (tree->STB_(N, right))                                            \
-          STB_(N, setright)                                                  \
-          (tree->STB_(N, right),                                             \
-           STB_(N, skew)(tree->STB_(N, right)->STB_(N, right)));             \
+        if (tree->STB_(N, right)) STB_(N, setright)                          \
+        (tree->STB_(N, right),                                               \
+         STB_(N, skew)(tree->STB_(N, right)->STB_(N, right)));               \
         tree = STB_(N, split)(tree);                                         \
         if (tree->STB_(N, right))                                            \
           STB_(N, setright)(tree, STB_(N, split)(tree->STB_(N, right)));     \

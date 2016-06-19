@@ -25,7 +25,7 @@ int test_poisson() {
     }
   }
   CT_IS(2000 < count, "count: %zu", count);
-  ct_mpool_free_all(&vpool);
+  ct_mpool_free(&vpool);
   ct_qtree_free(&t);
   return 0;
 }

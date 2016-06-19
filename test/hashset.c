@@ -40,7 +40,7 @@ static void *hs_alloc_mpool(size_t size, void *state) {
 
 static void hs_free_mpool(const void *key, void *state) {
   CT_DEBUG("custom free vec: %p", key);
-  ct_mpool_free((CT_MPool *)state, key);
+  ct_mpool_free_block((CT_MPool *)state, key);
 }
 
 static uint32_t hash_edge(const void *e, size_t _) {
@@ -129,7 +129,7 @@ int test_hashset_vec() {
   CT_IS(!ct_hs_contains(&s2, a, 12), "get a mod");
   ct_hs_free(&s);
   ct_hs_free(&s2);
-  ct_mpool_free_all(&vpool);
+  ct_mpool_free(&vpool);
   return 0;
 }
 
@@ -167,6 +167,6 @@ int bench_hashset() {
   CT_INFO("collisions: %u", s.collisions);
   CT_IS(num == iter_count(&s, dump_hs_vec), "count");
   ct_hs_free(&s);
-  ct_mpool_free_all(&vpool);
+  ct_mpool_free(&vpool);
   return 0;
 }

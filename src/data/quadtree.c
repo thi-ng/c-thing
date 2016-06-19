@@ -74,7 +74,7 @@ CT_EXPORT int ct_qtree_init(CT_Quadtree *t, float x, float y, float w, float h,
 }
 
 CT_EXPORT void ct_qtree_free(CT_Quadtree *t) {
-  ct_mpool_free_all(&t->pool);
+  ct_mpool_free(&t->pool);
 }
 
 static int insert_node(CT_QTNode *node, const CT_Vec2f *p, const void *data,
@@ -149,7 +149,7 @@ CT_EXPORT int ct_qtree_remove(CT_Quadtree *t, const CT_Vec2f *p) {
       break;
     default:
       while (d > 0) {
-        ct_mpool_free(&t->pool, path[d]);
+        ct_mpool_free_block(&t->pool, path[d]);
         d--;
         node = path[d];
         node->children[child_index(node, p)] = NULL;

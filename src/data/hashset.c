@@ -49,7 +49,7 @@ static void free_entry(CT_Hashset* s, const CT_HSEntry* e) {
   if (!(s->flags & CT_HS_CONST_KEYS)) {
     free_key(s, e);
   }
-  ct_mpool_free(&s->pool, e);
+  ct_mpool_free_block(&s->pool, e);
 }
 
 static int equiv_keys(const void* a, const void* b, const size_t sa,
@@ -136,7 +136,7 @@ CT_EXPORT void ct_hs_free(CT_Hashset* s) {
       }
     }
   }
-  ct_mpool_free_all(&s->pool);
+  ct_mpool_free(&s->pool);
   CT_DEBUG("free HS bins: %p", s->bins);
   free(s->bins);
   s->bins = NULL;

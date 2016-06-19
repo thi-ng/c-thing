@@ -1,5 +1,5 @@
-#include <stdlib.h>
 #include <float.h>
+#include <stdlib.h>
 #include <time.h>
 
 #include "common/dbg.h"

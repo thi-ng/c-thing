@@ -97,7 +97,7 @@ int test_quadtree() {
   CT_IS(num == bounds.num, "wrong leaf count: %zu", bounds.num);
   CT_INFO("%f,%f -> %f, %f, %zu", bounds.min.x, bounds.min.y, bounds.max.x,
           bounds.max.y, bounds.num);
-  ct_mpool_free_all(&vpool);
+  ct_mpool_free(&vpool);
   //ct_mpool_trace(&t.pool);
   ct_qtree_free(&t);
   return 0;

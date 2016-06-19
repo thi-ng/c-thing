@@ -39,10 +39,10 @@ int test_vec2f() {
   CT_Vec2f *e = ct_add2fxy(a, 10, 20, CT_MP_ALLOC(&pool, CT_Vec2f));
   ASSERT_VEC2F(e, 11, 22);
   CT_IS(11 * 11 + 22 * 22 == ct_dot2fv(e, e), "dot2fv");
-  ct_mpool_free(&pool, e);
-  ct_mpool_free(&pool, c);
-  ct_mpool_free(&pool, b);
-  ct_mpool_free(&pool, a);
+  ct_mpool_free_block(&pool, e);
+  ct_mpool_free_block(&pool, c);
+  ct_mpool_free_block(&pool, b);
+  ct_mpool_free_block(&pool, a);
   ct_mpool_trace(&pool);
   free(d);
   a = ct_vec2f(1, 2, &pool);
@@ -53,7 +53,7 @@ int test_vec2f() {
   CT_IS(-1 == ct_compare2fv(b, a), "b < a");
   CT_IS(-1 == ct_compare2fv(a, c), "a < c");
   CT_IS(1 == ct_compare2fv(c, a), "c > a");
-  ct_mpool_free_all(&pool);
+  ct_mpool_free(&pool);
   return 0;
 }
 
@@ -95,10 +95,10 @@ int test_vec3f() {
   ct_set3fxyz(b, 0, 1, 0);
   ct_cross3fv_imm(a, b);
   ASSERT_VEC3F(a, 0, 0, 1);
-  ct_mpool_free(&pool, e);
-  ct_mpool_free(&pool, c);
-  ct_mpool_free(&pool, b);
-  ct_mpool_free(&pool, a);
+  ct_mpool_free_block(&pool, e);
+  ct_mpool_free_block(&pool, c);
+  ct_mpool_free_block(&pool, b);
+  ct_mpool_free_block(&pool, a);
   ct_mpool_trace(&pool);
   free(d);
   a = ct_vec3f(1, 2, 3, &pool);
@@ -113,7 +113,7 @@ int test_vec3f() {
   CT_IS(-1 == ct_compare3fv(a, d), "a < d");
   CT_IS(1 == ct_compare3fv(d, a), "d > a");
   bench_sse(a, b);
-  ct_mpool_free_all(&pool);
+  ct_mpool_free(&pool);
   return 0;
 }
 
@@ -197,6 +197,6 @@ int bench_vec3_create() {
     ct_mul3fn_imm(
         ct_vec3f(ct_rand_norm(), ct_rand_norm(), ct_rand_norm(), &vpool), 1000);
   }
-  ct_mpool_free_all(&vpool);
+  ct_mpool_free(&vpool);
   return 0;
 }

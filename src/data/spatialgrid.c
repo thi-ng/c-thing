@@ -61,7 +61,7 @@ fail:
 
 CT_EXPORT void ct_spgrid_free(CT_SpatialGrid *grid) {
   free(grid->cells);
-  ct_mpool_free_all(&grid->pool);
+  ct_mpool_free(&grid->pool);
 }
 
 CT_EXPORT int ct_spgrid_insert(CT_SpatialGrid *grid, const float *p,
@@ -100,7 +100,7 @@ CT_EXPORT int ct_spgrid_remove(CT_SpatialGrid *grid, const float *p,
       } else {
         prev->next = cell->next;
       }
-      ct_mpool_free(&grid->pool, cell);
+      ct_mpool_free_block(&grid->pool, cell);
       return 0;
     }
     prev = cell;
