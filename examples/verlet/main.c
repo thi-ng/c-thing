@@ -10,15 +10,15 @@
 #include "math/vec.h"
 #include "math/verlet.h"
 
-#define NUM 2048
+#define NUM 4096
 
 static CT_SVGAttribs *attribs;
 
-void outputFrame(CT_Verlet2f *phys, size_t frame) {
+void outputFrame(CT_Verlet *phys, size_t frame) {
   char fname[64];
   float p[2];
   snprintf(fname, 64, "assets/verlet-%04zd.svg", frame);
-  CT_DEBUG("writing: %s", fname);
+  CT_INFO("---------- writing: %s", fname);
   FILE *out = fopen(fname, "w");
   ct_svg_write_header(out, attribs);
   fprintf(out,
@@ -26,7 +26,7 @@ void outputFrame(CT_Verlet2f *phys, size_t frame) {
           "font-size=\"9px\" text-anchor=\"middle\">\n");
   for (size_t i = 0; i < phys->num; i++) {
     ct_verlet_pos2f(phys, i, p);
-    ct_svg_write_circle(out, p[0], p[1], 5, NULL);
+    ct_svg_write_circle(out, p[0], p[1], 3, NULL);
     //fprintf(out, "<text x=\"%d\" y=\"%d\">%zu</text>", (int)p[0], (int)p[1], i);
   }
   fprintf(out, "</g></svg>");
@@ -35,20 +35,23 @@ void outputFrame(CT_Verlet2f *phys, size_t frame) {
 
 int main() {
   // clang-format off
-  CT_Verlet2f phys = {
+  CT_Verlet phys = {
     .bounds   = {10, 10, 590, 590},
-    .gravity  = {0, 0.1},
+    .gravity  = {0.05, 0.2},
     .friction = 0.95,
-    .minD     = 15,
-    .timeStep = 1
+    .minD     = 8,
+    .iter = 2
   };
   // clang-format off
-  if (ct_verlet_init(&phys, NUM)) {
+  if (ct_verlet_init(&phys, NUM, 20, IVEC(120, 120, 120))) {
     return 1;
   }
+  ct_spgrid_trace(&phys.accel);
+  phys.num = NUM;
+  srand(time(0));
   for (size_t i = 0; i < NUM; i++) {
     ct_verlet_set2f(&phys, i,
-                    FVEC(ct_rand_normpos() * 600, ct_rand_normpos() * 600), 1);
+                    FVEC(ct_rand_normpos() * 600, ct_rand_normpos() * 600));
   }
   attribs = ct_svg_attribs(0, 2, SVG_INT("width", 600), SVG_INT("height", 600));
   outputFrame(&phys, 0);

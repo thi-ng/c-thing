@@ -2,31 +2,29 @@
 
 #include <stddef.h>
 
-#include "math/vec.h"
+#include "data/spatialgrid.h"
 
 typedef struct {
-  float *pos, *prev, *force, *mass;
+  float *pos, *prev, *force, *radius;
+  CT_SpatialGrid accel;
   size_t num;
-  float timeStep;
+  size_t stride;
+  size_t iter;
+  float dt;
   float friction;
   float minD;
-  float gravity[2];
-  float bounds[4];
-} CT_Verlet2f;
+  float gravity[3];
+  float bounds[8];
+} CT_Verlet;
 
-int ct_verlet_init(CT_Verlet2f *verlet, size_t num);
-void ct_verlet_update2d(CT_Verlet2f *verlet);
-void ct_verlet_trace(CT_Verlet2f *v);
+int ct_verlet_init(CT_Verlet *v, size_t max, float margin, size_t *grid);
+void ct_verlet_update2d(CT_Verlet *v);
+void ct_verlet_trace(CT_Verlet *v);
+void ct_verlet_set2f(CT_Verlet *v, size_t i, const float *pos);
 
-CT_EXPORT ct_inline void ct_verlet_set2f(CT_Verlet2f *verlet, size_t i,
-                                         const float *pos, float m) {
-  verlet->pos[i] = verlet->prev[i] = pos[0];
-  verlet->pos[i + verlet->num] = verlet->prev[i + verlet->num] = pos[1];
-  verlet->mass[i]                                              = 1.0 / m;
-}
-
-CT_EXPORT ct_inline void ct_verlet_pos2f(const CT_Verlet2f *verlet, size_t i,
+CT_EXPORT ct_inline void ct_verlet_pos2f(const CT_Verlet *v, size_t i,
                                          float *out) {
-  out[0] = verlet->pos[i];
-  out[1] = verlet->pos[i + verlet->num];
+  i <<= 1;
+  out[0] = v->pos[i];
+  out[1] = v->pos[i + 1];
 }
