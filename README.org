@@ -149,7 +149,7 @@ nm -g -j bin/release/libcthing.a | grep --color=never _ct_
 
 #+BEGIN_SRC shell
 # build library & example app
-make config=release_sse ex-poisson && bin/release/ex-dla > assets/dla.svg
+make config=release_sse ex-dla && bin/release/ex-dla > assets/dla.svg
 #+END_SRC
 
 *** Verlet physics
