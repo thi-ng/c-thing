@@ -87,6 +87,10 @@ ct_inline float ct_rand_normpos() {
   return rand() * INV_RAND_MAX;
 }
 
+ct_inline float ct_rand_minmax(const float min, const float max) {
+  return ct_rand_normpos() * (max - min) + min;
+}
+
 ct_inline int ct_signumf(const float x, const float eps) {
   if (ct_deltaeqf(x, 0.f, eps)) {
     return 0;
