@@ -32,13 +32,16 @@ typedef struct {
 } CT_CAMatrix;
 
 int ct_carule1d_init(CT_CARule1D *rule);
+void ct_carule1d_free(CT_CARule1D *rule);
 void ct_carule1d_evolve(const CT_CARule1D *rule, CT_CAMatrix *mat);
 
 int ct_carule2d_init(CT_CARule2D *rule);
+void ct_carule2d_free(CT_CARule2D *rule);
 void ct_carule2d_evolve(const CT_CARule2D *rule, CT_CAMatrix *mat);
 
 int ct_camatrix_init(CT_CAMatrix *mat);
-void ct_camatrix_reset(CT_CAMatrix *mat);
+void ct_camatrix_free(CT_CAMatrix *mat);
+void ct_camatrix_clear(CT_CAMatrix *mat);
 void ct_camatrix_seed1d(CT_CAMatrix *mat, size_t seed);
 void ct_camatrix_seed2d(CT_CAMatrix *mat, size_t x, size_t y, size_t w,
                         size_t h, const char *cells);
