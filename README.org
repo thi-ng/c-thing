@@ -26,7 +26,7 @@ WIP
 
 *** Simulation
 - [[./src/sim/ca.h][Cellular Automata]] (1D/2D, w/ adjustable kernel sizes)
-- [[./src/math/verlet.h][Verlet physics]] (2dparticles)
+- [[./src/math/verlet.h][Verlet physics]] (2D particles)
 
 *** Geometry
 
@@ -51,6 +51,9 @@ make config=release_sse ex-ca1d
 # 1D sample invocation w/ Wolfram Rule 105
 # Result will be written to /assets/ca-105.svg
 bin/release/ex-ca1d 105 2 1
+
+# Output all 255 wolfram rules
+for i in {1..255}; do bin/release/ex-ca1d $i 2 1 128; done
 
 # Another example w/ bigger kernel size
 bin/release/ex-ca1d 522530942 32 3 128
