@@ -50,23 +50,71 @@ void ct_object_trace(CT_Object *o) {
 }
 */
 
-static int32_t ct_obj_tostring_nil(CT_Object *o, char *buf, int32_t bsize) {
+static int ct_obj_print_nil(CT_Object *o, FILE *out) {
+  return fprintf(out, "nil");
+}
+
+static int ct_obj_print_int(CT_Object *o, FILE *out) {
+  return fprintf(out, "%zd", o->atom.i);
+}
+
+static int ct_obj_print_float(CT_Object *o, FILE *out) {
+  return fprintf(out, "%f", o->atom.f);
+}
+
+static int ct_obj_print_str(CT_Object *o, FILE *out) {
+  return fprintf(out, "\"%s\"", (char *)o->atom.p);
+}
+
+static int ct_obj_print_ptr(CT_Object *o, FILE *out) {
+  return fprintf(out, "%p", o->atom.p);
+}
+
+// clang-format off
+static CT_IPrint __impls_iprint[CT_MAX_TYPES] = {
+    {.print = ct_obj_print_nil},
+    {.print = ct_obj_print_int},
+    {.print = ct_obj_print_int},
+    {.print = ct_obj_print_float},
+    {.print = ct_obj_print_ptr},
+    {.print = ct_obj_print_str}
+};
+// clang-format on
+
+int ct_object_print(CT_Object *o, FILE *out) {
+  CT_CHECK(__impls_iprint[o->tag.type].print, "missing impl for type: %u",
+           o->tag.type);
+  return __impls_iprint[o->tag.type].print(o, out);
+fail:
+  return -1;
+}
+
+int ct_register_print(size_t type, int impl(CT_Object *, FILE *)) {
+  CT_CHECK(type < CT_MAX_TYPES, "invalid type id");
+  CT_IPrint i = {.print = impl};
+  __impls_iprint[type]  = i;
+  return 0;
+fail:
+  return 1;
+}
+
+static int ct_obj_tostring_nil(CT_Object *o, char *buf, int bsize) {
   return snprintf(buf, bsize, "nil");
 }
 
-static int32_t ct_obj_tostring_int(CT_Object *o, char *buf, int32_t bsize) {
+static int ct_obj_tostring_int(CT_Object *o, char *buf, int bsize) {
   return snprintf(buf, bsize, "%zd", o->atom.i);
 }
 
-static int32_t ct_obj_tostring_float(CT_Object *o, char *buf, int32_t bsize) {
+static int ct_obj_tostring_float(CT_Object *o, char *buf, int bsize) {
   return snprintf(buf, bsize, "%f", o->atom.f);
 }
 
-static int32_t ct_obj_tostring_str(CT_Object *o, char *buf, int32_t bsize) {
+static int ct_obj_tostring_str(CT_Object *o, char *buf, int bsize) {
   return snprintf(buf, bsize, "\"%s\"", (char *)o->atom.p);
 }
 
-static int32_t ct_obj_tostring_ptr(CT_Object *o, char *buf, int32_t bsize) {
+static int ct_obj_tostring_ptr(CT_Object *o, char *buf, int bsize) {
   return snprintf(buf, bsize, "%p", o->atom.p);
 }
 
@@ -81,17 +129,16 @@ static CT_IToString __impls_itostring[CT_MAX_TYPES] = {
 };
 // clang-format on
 
-int32_t ct_object_tostring(CT_Object *o, char *buf, int32_t bsize) {
+int ct_object_tostring(CT_Object *o, char *buf, int bsize) {
   CT_CHECK(bsize > 0, "buffer full");
-  CT_CHECK(__impls_itostring[o->tag.type].tostring != NULL,
-           "missing impl for type: %u", o->tag.type);
+  CT_CHECK(__impls_itostring[o->tag.type].tostring, "missing impl for type: %u",
+           o->tag.type);
   return __impls_itostring[o->tag.type].tostring(o, buf, bsize);
 fail:
   return -1;
 }
 
-size_t ct_register_tostring(uint32_t type,
-                            int32_t impl(CT_Object *, char *, int32_t)) {
+int ct_register_tostring(size_t type, int impl(CT_Object *, char *, int)) {
   CT_CHECK(type < CT_MAX_TYPES, "invalid type id");
   CT_IToString i = {.tostring = impl};
   __impls_itostring[type]     = i;
@@ -113,7 +160,7 @@ static void ct_object_free(const CT_Ref *ref) {
   free(o);
 }
 
-CT_Object *ct_object_raw(uint32_t type) {
+CT_Object *ct_object_raw(size_t type) {
   CT_Object *o = malloc(sizeof(CT_Object));
   o->rc        = (CT_Ref){ct_object_free, 0};
   o->tag.tag   = 0;

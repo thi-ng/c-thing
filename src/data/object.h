@@ -2,6 +2,7 @@
 
 #include <stddef.h>
 #include <stdint.h>
+#include <stdio.h>
 
 #include "config.h"
 #include "mem/ref.h"
@@ -22,10 +23,10 @@ typedef union {
 } CT_Atom;
 
 typedef union {
-  uint32_t tag;
+  size_t tag;
   struct {
-    uint32_t type : 24;
-    uint32_t free : 1;
+    size_t type : 24;
+    size_t free : 1;
   };
 } CT_Tag;
 
@@ -40,15 +41,17 @@ typedef struct {
   CT_Object *next;
 } CT_ConsRC;
 
-typedef struct {
-  int32_t (*tostring)(CT_Object *, char *, int32_t);
-} CT_IToString;
+typedef struct { int (*print)(CT_Object *, FILE *); } CT_IPrint;
 
-int32_t ct_object_tostring(CT_Object *o, char *buf, int32_t bsize);
-size_t ct_register_tostring(uint32_t type,
-                            int32_t impl(CT_Object *, char *, int32_t));
+typedef struct { int (*tostring)(CT_Object *, char *, int); } CT_IToString;
 
-CT_Object *ct_object_raw(uint32_t type);
+int ct_object_print(CT_Object *o, FILE *out);
+int ct_register_print(size_t type, int impl(CT_Object *, FILE *));
+
+int ct_object_tostring(CT_Object *o, char *buf, int bsize);
+int ct_register_tostring(size_t type, int impl(CT_Object *, char *, int));
+
+CT_Object *ct_object_raw(size_t type);
 CT_Object *ct_object_str(char *x, size_t free);
 CT_Object *ct_object_i32(int32_t x);
 CT_Object *ct_object_f32(float x);
@@ -56,7 +59,7 @@ CT_Object *ct_object_f32(float x);
 void ct_object_free_nop(const CT_Ref *ref);
 void ct_object_trace(CT_Object *o);
 
-static inline size_t ct_object_is(CT_Object *o, uint32_t type) {
+static inline int ct_object_is(CT_Object *o, size_t type) {
   return o->tag.type == type;
 }
 

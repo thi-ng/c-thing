@@ -8,10 +8,26 @@
 #include "data/consrc.h"
 #include "data/object.h"
 
-static int32_t ct_obj_tostring_cons(CT_Object *o, char *buf, int32_t bsize) {
-  int32_t w = snprintf(buf, bsize, "(");
+static int ct_obj_print_cons(CT_Object *o, FILE *out) {
+  int res = fprintf(out, "(");
+  while (o && res >= 0) {
+    res = ct_object_print(ct_object_cons_ptr(o)->value, out);
+    if (res >= 0) {
+      o = ct_object_cons_ptr(o)->next;
+      if (o) {
+        res = fprintf(out, " ");
+      } else {
+        return fprintf(out, ")");
+      }
+    }
+  }
+  return res;
+}
+
+static int ct_obj_tostring_cons(CT_Object *o, char *buf, int bsize) {
+  int w = snprintf(buf, bsize, "(");
   while (o) {
-    int32_t res =
+    int res =
         ct_object_tostring(ct_object_cons_ptr(o)->value, &buf[w], bsize - w);
     if (res <= 0) {
       return res;
@@ -75,5 +91,6 @@ fail:
 }
 
 void ct_consrc_init_protocols() {
+  ct_register_print(CONS, ct_obj_print_cons);
   ct_register_tostring(CONS, ct_obj_tostring_cons);
 }
