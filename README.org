@@ -1,5 +1,29 @@
 * c.thi.ng
 
+* Contents                                                         :toc_3_gh:
+ - [[#cthing][c.thi.ng]]
+     - [[#overview][Overview]]
+         - [[#data-structures][Data structures]]
+         - [[#memory-management][Memory management]]
+         - [[#math][Math]]
+         - [[#simulation][Simulation]]
+         - [[#geometry][Geometry]]
+     - [[#examples][Examples]]
+         - [[#1d2d-cellular-automata][1D/2D Cellular automata]]
+         - [[#diffusion-limited-aggregation][Diffusion-Limited Aggregation]]
+         - [[#poisson-disc-sampling-image-conversion][Poisson disc sampling image conversion]]
+         - [[#verlet-physics][Verlet physics]]
+     - [[#requirements][Requirements]]
+     - [[#dependencies][Dependencies]]
+     - [[#build--test][Build & test]]
+     - [[#build-static-library][Build static library]]
+     - [[#build-source-x-ref][Build source x-ref]]
+     - [[#disassemble--list-symbols][Disassemble & list symbols]]
+     - [[#compile-with-emscripten][Compile with emscripten]]
+     - [[#build-customization][Build customization]]
+     - [[#contributors][Contributors]]
+     - [[#license][License]]
+
 ** Overview
 
 WIP
@@ -200,16 +224,26 @@ nm -g -j bin/release/libcthing.a | grep --color=never _ct_
 ** Compile with emscripten
 
 #+BEGIN_SRC shell
-# help / usage
-./compile -h
+  # help / usage
+  ./compile -h
+  # Usage:
+  #   -a     : separate asm.js output
+  #   -c     : enable Closure compiler step
+  #   -d     : remove duplicate functions
+  #   -D SYM : add define
+  #   -h     : show this help
+  #   -k     : enable runtime checks
+  #   -m     : enable memory checks
+  #   -s     : enable SSE (SIMD.js)
+  #   -t     : include tests
 
-# compile with tests, closure pass & remove duplicate fns
-./compile -tdc
+  # compile with tests, closure pass & remove duplicate fns
+  ./compile -tdc
 
-python3 -m http.server
+  python3 -m http.server
 
-# in browser dev console - http://localhost:8000/
-# geom(); geom._main()
+  # in browser dev console - http://localhost:8000/
+  cthing(); cthing._main()
 #+END_SRC
 
 ** Build customization

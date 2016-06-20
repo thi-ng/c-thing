@@ -7,8 +7,8 @@ SRC="src/data/adjacency.c src/data/cons.c src/data/consrc.c src/data/hashset.c s
 TESTS=
 CFLAGS="-std=c11 -Os -Isrc"
 EMFLAGS="-s ASM_JS=1 -s ASSERTIONS=0 -s INVOKE_RUN=0 -s AGGRESSIVE_VARIABLE_ELIMINATION=1 -s MODULARIZE=1 -s NO_EXIT_RUNTIME=1 -s TOTAL_MEMORY='48*1024*1024'"
-OUT=geom.js
-MIN=geom.min.js
+OUT=cthing.js
+MIN=cthing.min.js
 
 usage()
 {
@@ -70,7 +70,7 @@ time emcc $CFLAGS \
      --emit-symbol-map \
      $EMFLAGS \
      -s "TOTAL_STACK=1*1024*1024" \
-     -s "EXPORT_NAME='geom'" \
+     -s "EXPORT_NAME='cthing'" \
      -o $OUT \
      $SRC \
      $TESTS
