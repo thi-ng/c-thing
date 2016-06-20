@@ -26,6 +26,10 @@ int test_consrc() {
   ct_object_assign(&b, ct_object_i32(-42));
   ct_object_assign(&c, ct_object_str(strdup("foo"), 1));
   ct_object_assign(&l, ct_object_cons(c));
+  CT_IS(ct_object_is(a, CT_TYPE_F32), "f32");
+  CT_IS(ct_object_is(b, CT_TYPE_I32), "i32");
+  CT_IS(ct_object_is(c, CT_TYPE_STR), "str");
+  CT_IS(ct_object_is(l, CT_TYPE_CONS), "cons");
   ct_object_tostring(l, buf, BUF_SIZE);
   CT_IS(0 == strcmp("(\"foo\")", buf), "l: %s", buf);
   ct_consrc_push(&l, b);

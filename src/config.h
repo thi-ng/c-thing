@@ -49,6 +49,10 @@
 #define CT_END_DECLS
 #endif
 
+#ifndef CT_MAX_TYPES
+#define CT_MAX_TYPES 16
+#endif
+
 #ifndef CT_POOLSIZE_OBJECT
 #define CT_POOLSIZE_OBJECT 0x1000
 #endif

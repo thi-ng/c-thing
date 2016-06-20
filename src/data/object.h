@@ -7,13 +7,17 @@
 #include "config.h"
 #include "mem/ref.h"
 
-#ifndef CT_MAX_TYPES
-#define CT_MAX_TYPES 16
-#endif
-
 CT_BEGIN_DECLS
 
-typedef enum { NIL = 0, I32, U32, F32, PTR, STRING, CONS } CT_PrimType;
+typedef enum {
+  CT_TYPE_NIL = 0,
+  CT_TYPE_I32,
+  CT_TYPE_U32,
+  CT_TYPE_F32,
+  CT_TYPE_PTR,
+  CT_TYPE_STR,
+  CT_TYPE_CONS
+} CT_PrimType;
 
 typedef union {
   uintptr_t u;

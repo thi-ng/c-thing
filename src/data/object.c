@@ -183,20 +183,20 @@ CT_Object *ct_object_raw(size_t type) {
 }
 
 CT_Object *ct_object_str(char *x, size_t free) {
-  CT_Object *o = ct_object_raw(STRING);
+  CT_Object *o = ct_object_raw(CT_TYPE_STR);
   o->atom.p    = x;
   o->tag.free  = free;
   return o;
 }
 
 CT_Object *ct_object_i32(int32_t x) {
-  CT_Object *o = ct_object_raw(I32);
+  CT_Object *o = ct_object_raw(CT_TYPE_I32);
   o->atom.i    = x;
   return o;
 }
 
 CT_Object *ct_object_f32(float x) {
-  CT_Object *o = ct_object_raw(F32);
+  CT_Object *o = ct_object_raw(CT_TYPE_F32);
   o->atom.f    = x;
   return o;
 }
