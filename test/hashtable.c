@@ -1,6 +1,7 @@
 #include <string.h>
 
-#include "common/test.h"
+#include "test/test.h"
+
 #include "data/hashtable.h"
 #include "math/hashfn.h"
 #include "math/vec.h"

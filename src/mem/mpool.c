@@ -1,5 +1,4 @@
 #include "mem/mpool.h"
-#include "common/dbg.h"
 
 static size_t _mpool_id = 0;
 

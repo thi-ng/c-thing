@@ -1,5 +1,6 @@
+#include "test/test.h"
+
 #include "data/adjacency.h"
-#include "common/test.h"
 
 CT_TEST_DECLS
 

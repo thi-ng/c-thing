@@ -2,7 +2,7 @@
 
 #include <stddef.h>
 
-#include "common/dbg.h"
+#include "cthing.h"
 #include "data/quadtree.h"
 #include "geom/circle.h"
 #include "math/vec.h"

@@ -2,7 +2,6 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "common/dbg.h"
 #include "io/svg.h"
 #include "math/hashfn.h"
 

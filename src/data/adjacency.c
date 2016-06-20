@@ -1,7 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#include "common/dbg.h"
 #include "data/adjacency.h"
 #include "math/math.h"
 

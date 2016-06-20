@@ -1,6 +1,6 @@
 #pragma once
 
-#include "config.h"
+#include "cthing.h"
 #include "math/vec.h"
 
 CT_BEGIN_DECLS

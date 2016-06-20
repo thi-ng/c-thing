@@ -5,7 +5,7 @@
 #include <stdint.h>
 #include <stdlib.h>
 
-#include "config.h"
+#include "cthing.h"
 
 #ifndef EPS
 #define EPS 1e-6f

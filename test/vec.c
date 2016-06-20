@@ -1,8 +1,5 @@
-#include <assert.h>
-#include <stdio.h>
+#include "test/test.h"
 
-#include "common/dbg.h"
-#include "common/test.h"
 #include "math/vec.h"
 #include "mem/mpool.h"
 
@@ -88,7 +85,7 @@ int test_vec3f() {
   ASSERT_VEC3F(d, 23, 36, 49);
   CT_Vec3f *e = ct_add3fxyz(a, 10, 20, 30, CT_MP_ALLOC(&pool, CT_Vec3f));
   ASSERT_VEC3F(e, 11, 22, 33);
-  assert(11 * 11 + 22 * 22 + 33 * 33 == ct_dot3fv(e, e));
+  CT_IS(11 * 11 + 22 * 22 + 33 * 33 == ct_dot3fv(e, e), "dot3");
   ct_set3fv(b, e);
   ASSERT_VEC3F(b, 11, 22, 33);
   ct_set3fxyz(a, 1, 0, 0);

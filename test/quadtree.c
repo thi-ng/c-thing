@@ -1,6 +1,6 @@
+#include "test/test.h"
+
 #include "data/quadtree.h"
-#include "common/dbg.h"
-#include "common/test.h"
 #include "geom/isec.h"
 
 CT_TEST_DECLS

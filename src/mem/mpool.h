@@ -4,7 +4,7 @@
 #include <stdint.h>
 #include <stdlib.h>
 
-#include "config.h"
+#include "cthing.h"
 
 #define CT_MP_ALLOC(mpool, type) \
   ((mpool) != NULL ? ct_mpool_alloc(mpool) : malloc(sizeof(type)))

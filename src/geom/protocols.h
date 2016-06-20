@@ -1,6 +1,6 @@
 #pragma once
 
-#include "config.h"
+#include "cthing.h"
 #include "geom/aabb.h"
 #include "geom/circle.h"
 #include "geom/rect.h"

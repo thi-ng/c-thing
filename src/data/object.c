@@ -2,8 +2,6 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "common/dbg.h"
-#include "config.h"
 #include "data/object.h"
 #include "mem/mpool.h"
 
@@ -28,23 +26,23 @@ void ct_object_free_nop(const CT_Ref *ref) {
 /*
 void ct_object_trace(const CT_Object *o) {
   switch (o->tag.type) {
-    case I32:
+    case CT_TYPE_I32:
       CT_DEBUG("i32: %p = %zu (refs: %zu, tag: %x)", o, o->atom.i,
                o->rc.count, o->tag.tag);
       break;
-    case F32:
+    case CT_TYPE_F32:
       CT_DEBUG("f32: %p = %f (refs: %zu, tag: %x)", o, o->atom.f, o->rc.count,
                o->tag.tag);
       break;
-    case STRING:
+    case CT_TYPE_STR:
       CT_DEBUG("str: %p = \"%s\" (refs: %zu, tag: %x)", o, (char *)o->atom.p,
                o->rc.count, o->tag.tag);
       break;
-    case NIL:
+    case CT_TYPE_NIL:
       CT_DEBUG("nil: %p = NIL (refs: %zu, tag: %x)", o, o->rc.count,
                o->tag.tag);
       break;
-    case CONS:
+    case CT_TYPE_CONS:
       CT_DEBUG("cons: %p (refs: %zu, tag: %x) ", o, o->rc.count, o->tag.tag);
       CT_DEBUG("(");
       while (o) {

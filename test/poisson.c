@@ -1,6 +1,6 @@
+#include "test/test.h"
+
 #include "math/poisson.h"
-#include "common/dbg.h"
-#include "common/test.h"
 
 CT_TEST_DECLS
 

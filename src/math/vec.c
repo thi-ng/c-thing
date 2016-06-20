@@ -1,5 +1,6 @@
-#include "math/vec.h"
 #include <float.h>
+
+#include "math/vec.h"
 
 CT_EXPORT CT_Vec2f *ct_vec2f(float x, float y, CT_MPool *mpool) {
   CT_Vec2f *v = CT_MP_ALLOC(mpool, CT_Vec2f);

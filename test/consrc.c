@@ -1,8 +1,8 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "common/dbg.h"
-#include "common/test.h"
+#include "test/test.h"
+
 #include "data/consrc.h"
 #include "data/object.h"
 

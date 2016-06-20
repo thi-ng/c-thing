@@ -3,7 +3,7 @@
 #include <stddef.h>
 #include <stdint.h>
 
-#include "config.h"
+#include "cthing.h"
 
 CT_BEGIN_DECLS
 

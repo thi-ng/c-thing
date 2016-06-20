@@ -2,7 +2,6 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "common/dbg.h"
 #include "data/hashtable.h"
 #include "math/math.h"
 

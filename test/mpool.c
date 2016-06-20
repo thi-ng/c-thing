@@ -1,7 +1,5 @@
-#include <stdio.h>
+#include "test/test.h"
 
-#include "common/dbg.h"
-#include "common/test.h"
 #include "mem/mpool.h"
 
 CT_TEST_DECLS

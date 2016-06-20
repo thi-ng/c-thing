@@ -1,6 +1,6 @@
 #pragma once
 
-#include "config.h"
+#include "cthing.h"
 //#include "geom/protocols.h"
 #include "geom/triangle.h"
 #include "math/vec.h"

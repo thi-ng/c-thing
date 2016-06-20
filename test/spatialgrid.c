@@ -1,6 +1,6 @@
+#include "test/test.h"
+
 #include "data/spatialgrid.h"
-#include "common/dbg.h"
-#include "common/test.h"
 #include "math/vec.h"
 
 CT_TEST_DECLS

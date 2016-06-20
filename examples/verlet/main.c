@@ -1,10 +1,3 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <time.h>
-
-#include "common/dbg.h"
-#include "config.h"
-
 #include "io/svg.h"
 #include "math/math.h"
 #include "math/vec.h"

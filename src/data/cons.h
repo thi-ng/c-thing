@@ -1,6 +1,6 @@
 #pragma once
 
-#include "config.h"
+#include "cthing.h"
 #include "mem/mpool.h"
 
 CT_BEGIN_DECLS

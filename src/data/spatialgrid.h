@@ -1,6 +1,6 @@
 #pragma once
 
-#include "config.h"
+#include "cthing.h"
 #include "math/math.h"
 #include "mem/mpool.h"
 

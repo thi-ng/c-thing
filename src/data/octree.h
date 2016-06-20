@@ -2,7 +2,7 @@
 
 #include <stddef.h>
 
-#include "config.h"
+#include "cthing.h"
 #include "data/tree.h"
 #include "math/vec.h"
 #include "mem/mpool.h"

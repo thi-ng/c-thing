@@ -4,7 +4,7 @@
 #include <stdint.h>
 #include <stdio.h>
 
-#include "config.h"
+#include "cthing.h"
 #include "mem/ref.h"
 
 CT_BEGIN_DECLS

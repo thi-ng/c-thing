@@ -1,5 +1,4 @@
 #include "geom/clip.h"
-#include "common/dbg.h"
 
 #define CLIP_LB(pp, qq)         \
   p = (pp);                     \

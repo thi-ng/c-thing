@@ -1,7 +1,6 @@
 #pragma once
 
-#include <time.h>
-#include "common/dbg.h"
+#include "cthing.h"
 
 #define CT_TEST_DECLS       \
   extern size_t __testsRun; \

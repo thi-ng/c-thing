@@ -3,7 +3,7 @@
 #include <stddef.h>
 #include <stdint.h>
 
-#include "config.h"
+#include "cthing.h"
 #include "math/hashfn.h"
 #include "mem/mpool.h"
 

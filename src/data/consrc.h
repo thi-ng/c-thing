@@ -1,6 +1,6 @@
 #pragma once
 
-#include "config.h"
+#include "cthing.h"
 #include "data/object.h"
 
 CT_BEGIN_DECLS

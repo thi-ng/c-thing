@@ -1,9 +1,4 @@
 #include <float.h>
-#include <stdlib.h>
-#include <time.h>
-
-#include "common/dbg.h"
-#include "config.h"
 
 #include "data/spatialgrid.h"
 #include "io/svg.h"

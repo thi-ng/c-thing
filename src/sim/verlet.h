@@ -2,7 +2,7 @@
 
 #include <stddef.h>
 
-#include "config.h"
+#include "cthing.h"
 #include "data/spatialgrid.h"
 
 CT_BEGIN_DECLS

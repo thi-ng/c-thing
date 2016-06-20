@@ -1,6 +1,6 @@
 #pragma once
 
-#include "config.h"
+#include "cthing.h"
 #include "math/vec.h"
 
 #define CT_SWIZZLE_ID(d, c, b, a) (size_t)((d << 6) | (c << 4) | (b << 2) | a)

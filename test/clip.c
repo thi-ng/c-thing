@@ -1,5 +1,6 @@
+#include "test/test.h"
+
 #include "geom/clip.h"
-#include "common/test.h"
 
 CT_TEST_DECLS
 

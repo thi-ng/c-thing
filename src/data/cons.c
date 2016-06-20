@@ -1,7 +1,6 @@
 #include <stdlib.h>
 
-#include "common/dbg.h"
-#include "cons.h"
+#include "data/cons.h"
 
 typedef struct {
   CT_Cons* head;

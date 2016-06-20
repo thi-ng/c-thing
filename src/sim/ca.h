@@ -3,6 +3,8 @@
 #include <stddef.h>
 #include <stdint.h>
 
+#include "cthing.h"
+
 enum { CT_CA_TILING = 1, CT_CA_AUTO_EXPIRE = 2 };
 
 typedef struct {

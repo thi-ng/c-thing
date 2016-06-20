@@ -1,4 +1,4 @@
-#include "common/dbg.h"
+#include "cthing.h"
 #include "geom/quadedge.h"
 
 void trace_edge(CT_QuadEdgeRef e, void* _) {

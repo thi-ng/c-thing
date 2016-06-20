@@ -1,3 +1,5 @@
+#pragma once
+
 #include "math/vec.h"
 
 #define VEC_ARRAYOP(name, type, ptype, fn)                                   \

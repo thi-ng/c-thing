@@ -4,8 +4,6 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "common/dbg.h"
-#include "config.h"
 #include "data/consrc.h"
 #include "data/object.h"
 #include "mem/mpool.h"

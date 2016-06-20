@@ -3,6 +3,7 @@
 #include <stddef.h>
 #include <stdio.h>
 
+#include "cthing.h"
 #include "data/hashtable.h"
 
 #define SVG_STR(k, v) (k), 's', (v)

@@ -1,10 +1,7 @@
-#include <math.h>
-#include <stddef.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
-#include "common/dbg.h"
 #include "math/math.h"
 #include "sim/ca.h"
 
