@@ -3,7 +3,7 @@
 # compile with SIMD:
 # ./compile.sh -asd
 
-SRC="src/data/adjacency.c src/data/cons.c src/data/consrc.c src/data/hashset.c src/data/hashtable.c src/data/object.c src/data/octree.c src/data/quadtree.c src/data/spatialgrid.c src/geom/circle.c src/geom/clip.c src/geom/halfedge.c src/geom/isec.c src/geom/quadedge.c src/geom/triangle.c src/io/svg.c src/math/math.c src/math/hashfn.c src/math/poisson.c src/math/vec.c src/mem/mpool.c"
+SRC="src/data/adjacency.c src/data/cons.c src/data/consrc.c src/data/hashset.c src/data/hashtable.c src/data/object.c src/data/octree.c src/data/quadtree.c src/data/spatialgrid.c src/geom/circle.c src/geom/clip.c src/geom/halfedge.c src/geom/isec.c src/geom/quadedge.c src/geom/triangle.c src/io/svg.c src/math/math.c src/math/hashfn.c src/math/poisson.c src/math/vec.c src/mem/mpool.c src/sim/ca.c src/sim/verlet.c"
 TESTS=
 CFLAGS="-std=c11 -Os -Isrc"
 EMFLAGS="-s ASM_JS=1 -s ASSERTIONS=0 -s INVOKE_RUN=0 -s AGGRESSIVE_VARIABLE_ELIMINATION=1 -s MODULARIZE=1 -s NO_EXIT_RUNTIME=1 -s TOTAL_MEMORY='48*1024*1024'"
@@ -45,7 +45,7 @@ while getopts acdhkmstD: opt; do
         m) CFLAGS="$CFLAGS -DCT_FEATURE_CHECK_MEM"
            ;;
         t) CFLAGS="$CFLAGS -DNDEBUG -DCT_FEATURE_LOG"
-           TESTS="src/common/test.c test/main.c test/adjacency.c test/circle.c test/clip.c test/cons.c test/consrc.c test/hash.c test/hashset.c test/hashtable.c test/mpool.c test/octree.c test/poisson.c test/quadtree.c test/qedge.c test/spatialgrid.c test/vec.c"
+           TESTS="src/test/test.c test/main.c test/adjacency.c test/circle.c test/clip.c test/cons.c test/consrc.c test/hash.c test/hashset.c test/hashtable.c test/mpool.c test/octree.c test/poisson.c test/quadtree.c test/qedge.c test/spatialgrid.c test/vec.c"
            ;;
         h) usage
            ;;
