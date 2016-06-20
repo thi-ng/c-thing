@@ -48,3 +48,11 @@
 #define CT_BEGIN_DECLS
 #define CT_END_DECLS
 #endif
+
+#ifndef CT_POOLSIZE_OBJECT
+#define CT_POOLSIZE_OBJECT 0x1000
+#endif
+
+#ifndef CT_POOLSIZE_CONSRC
+#define CT_POOLSIZE_CONSRC 0x1000
+#endif

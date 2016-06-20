@@ -51,25 +51,27 @@ int ct_register_print(size_t type, int impl(CT_Object *, FILE *));
 int ct_object_tostring(CT_Object *o, char *buf, int bsize);
 int ct_register_tostring(size_t type, int impl(CT_Object *, char *, int));
 
+int ct_object_init();
 CT_Object *ct_object_raw(size_t type);
 CT_Object *ct_object_str(char *x, size_t free);
 CT_Object *ct_object_i32(int32_t x);
 CT_Object *ct_object_f32(float x);
 
 void ct_object_free_nop(const CT_Ref *ref);
-void ct_object_trace(CT_Object *o);
+void ct_object_free_box(const CT_Object *o);
+void ct_object_trace(const CT_Object *o);
 
-static inline int ct_object_is(CT_Object *o, size_t type) {
+ct_inline int ct_object_is(const CT_Object *o, size_t type) {
   return o->tag.type == type;
 }
 
-static inline CT_Object *ct_object_assign(CT_Object **dest, CT_Object *src) {
+ct_inline CT_Object *ct_object_assign(CT_Object **dest, CT_Object *src) {
   ct_ref_inc(&src->rc);
   *dest = src;
   return *dest;
 }
 
-static inline void ct_object_unassign(CT_Object **o) {
+ct_inline void ct_object_unassign(CT_Object **o) {
   ct_ref_dec(&(*o)->rc);
   *o = NULL;
 }

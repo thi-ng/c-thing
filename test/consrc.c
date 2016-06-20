@@ -21,7 +21,7 @@ char *strdup(const char *s) {
 
 int test_consrc() {
   CT_Object *a, *b, *c, *l, *l2;
-  ct_consrc_init_protocols();
+  CT_IS(!ct_consrc_init(), "init");
   ct_object_assign(&a, ct_object_f32(23));
   ct_object_assign(&b, ct_object_i32(-42));
   ct_object_assign(&c, ct_object_str(strdup("foo"), 1));

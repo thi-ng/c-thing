@@ -3,7 +3,16 @@
 #include <string.h>
 
 #include "common/dbg.h"
+#include "config.h"
 #include "data/object.h"
+#include "mem/mpool.h"
+
+typedef struct {
+  CT_MPool pool;
+  size_t inited;
+} CT_Object_private;
+
+static CT_Object_private __ct_object = {.inited = 0};
 
 // clang-format off
 CT_Object CT_NIL = {
@@ -17,7 +26,7 @@ void ct_object_free_nop(const CT_Ref *ref) {
 }
 
 /*
-void ct_object_trace(CT_Object *o) {
+void ct_object_trace(const CT_Object *o) {
   switch (o->tag.type) {
     case I32:
       CT_DEBUG("i32: %p = %zu (refs: %zu, tag: %x)", o, o->atom.i,
@@ -157,11 +166,16 @@ static void ct_object_free(const CT_Ref *ref) {
   } else {
     CT_DEBUG("not freeing val");
   }
-  free(o);
+  ct_mpool_free_block(&__ct_object.pool, o);
+}
+
+void ct_object_free_box(const CT_Object *o) {
+  CT_DEBUG("free obj (box only): %p", o);
+  ct_mpool_free_block(&__ct_object.pool, o);
 }
 
 CT_Object *ct_object_raw(size_t type) {
-  CT_Object *o = malloc(sizeof(CT_Object));
+  CT_Object *o = ct_mpool_alloc(&__ct_object.pool);
   o->rc        = (CT_Ref){ct_object_free, 0};
   o->tag.tag   = 0;
   o->tag.type  = type;
@@ -185,4 +199,15 @@ CT_Object *ct_object_f32(float x) {
   CT_Object *o = ct_object_raw(F32);
   o->atom.f    = x;
   return o;
+}
+
+int ct_object_init() {
+  if (!__ct_object.inited) {
+    if (ct_mpool_init(&__ct_object.pool, CT_POOLSIZE_OBJECT,
+                      sizeof(CT_Object))) {
+      return 1;
+    }
+    __ct_object.inited = 1;
+  }
+  return 0;
 }

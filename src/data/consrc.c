@@ -5,8 +5,17 @@
 #include <string.h>
 
 #include "common/dbg.h"
+#include "config.h"
 #include "data/consrc.h"
 #include "data/object.h"
+#include "mem/mpool.h"
+
+typedef struct {
+  CT_MPool pool;
+  size_t inited;
+} CT_ConsRC_private;
+
+static CT_ConsRC_private __ct_consrc = {.inited = 0};
 
 static int ct_obj_print_cons(CT_Object *o, FILE *out) {
   int res = fprintf(out, "(");
@@ -50,19 +59,17 @@ static void ct_consrc_free(const CT_Ref *ref) {
   CT_DEBUG("free cons: %p->%p val: %p", o, next, c->value);
   if (c->value) ct_ref_dec(&c->value->rc);
   if (next) ct_ref_dec(&next->rc);
-  free(c);
-  free(o);
+  ct_mpool_free_block(&__ct_consrc.pool, c);
+  ct_object_free_box(o);
 }
 
 CT_Object *ct_object_cons(CT_Object *value) {
-  CT_Object *o    = malloc(sizeof(CT_Object));
-  CT_ConsRC *node = malloc(sizeof(CT_ConsRC));
+  CT_Object *o    = ct_object_raw(CONS);
+  CT_ConsRC *node = ct_mpool_alloc(&__ct_consrc.pool);
   ct_object_assign(&node->value, value);
-  node->next  = NULL;
-  o->atom.p   = node;
-  o->rc       = (CT_Ref){ct_consrc_free, 0};
-  o->tag.tag  = 0;
-  o->tag.type = CONS;
+  node->next = NULL;
+  o->atom.p  = node;
+  o->rc      = (CT_Ref){ct_consrc_free, 0};
   CT_DEBUG("new cons obj: %p %d %d", o, node == o->atom.p,
            node->value == value);
   return o;
@@ -90,7 +97,15 @@ fail:
   return NULL;
 }
 
-void ct_consrc_init_protocols() {
-  ct_register_print(CONS, ct_obj_print_cons);
-  ct_register_tostring(CONS, ct_obj_tostring_cons);
+int ct_consrc_init() {
+  if (!__ct_consrc.inited) {
+    if (ct_object_init() || ct_mpool_init(&__ct_consrc.pool, CT_POOLSIZE_CONSRC,
+                                          sizeof(CT_ConsRC))) {
+      return 1;
+    }
+    ct_register_print(CONS, ct_obj_print_cons);
+    ct_register_tostring(CONS, ct_obj_tostring_cons);
+    __ct_consrc.inited = 1;
+  }
+  return 0;
 }
