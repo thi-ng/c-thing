@@ -35,12 +35,23 @@ removefiles {"src/geom/mesh.c", "src/common/test.c" }
 kind "StaticLib"
 targetname "cthing"
 
------ poisson -----
 
-project "ex-poisson"
+----- ca1d -----
+
+project "ex-ca1d"
 kind "ConsoleApp"
-files { "examples/poisson/*.c" }
-includedirs { "examples/common", "examples/poisson" }
+files { "examples/ca/ca1d.c" }
+includedirs { "examples/common", "examples/ca" }
+links "lib"
+dependson "lib"
+flags { "LinkTimeOptimization" }
+
+----- ca2d -----
+
+project "ex-ca2d"
+kind "ConsoleApp"
+files { "examples/ca/ca2d.c" }
+includedirs { "examples/common", "examples/ca" }
 links "lib"
 dependson "lib"
 flags { "LinkTimeOptimization" }
@@ -51,6 +62,16 @@ project "ex-dla"
 kind "ConsoleApp"
 files { "examples/dla/*.c" }
 includedirs { "examples/common", "examples/dla" }
+links "lib"
+dependson "lib"
+flags { "LinkTimeOptimization" }
+
+----- poisson -----
+
+project "ex-poisson"
+kind "ConsoleApp"
+files { "examples/poisson/*.c" }
+includedirs { "examples/common", "examples/poisson" }
 links "lib"
 dependson "lib"
 flags { "LinkTimeOptimization" }

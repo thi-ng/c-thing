@@ -23,7 +23,10 @@ WIP
 
 - [[./src/math/hashfn.h][Murmur Hash]] (32bit version)
 - [[./src/math/poisson.h][Poisson disc sampling]]
-- [[./src/math/verlet.h][Verlet physics]] (particles)
+
+*** Simulation
+- [[./src/sim/ca.h][Cellular Automata]] (1D/2D, w/ adjustable kernel sizes)
+- [[./src/math/verlet.h][Verlet physics]] (2dparticles)
 
 *** Geometry
 
@@ -35,6 +38,40 @@ WIP
 TBD
 
 ** Examples
+*** 1D/2D Cellular automata
+
+[[./examples/ca/ca1d.c][Source (1D)]] | [[./examples/ca/ca2d.c][Source (2D)]]
+
+[[./assets/ca1d.png]]
+
+#+BEGIN_SRC shell
+# build library & example app
+make config=release_sse ex-ca1d
+
+# 1D sample invocation w/ Wolfram Rule 105
+# Result will be written to /assets/ca-105.svg
+bin/release/ex-ca1d 105 2 1
+
+# Another example w/ bigger kernel size
+bin/release/ex-ca1d 522530942 32 3 128
+
+# build 2D example app
+make config=release_sse ex-ca2d
+
+# Result will be written to /assets/ca2d.svg
+bin/release/ex-ca2d
+#+END_SRC
+
+*** Diffusion-Limited Aggregation
+
+[[./examples/dla/main.c][Source]]
+
+[[./assets/dla.png]]
+
+#+BEGIN_SRC shell
+# build library & example app
+make config=release_sse ex-dla && bin/release/ex-dla > assets/dla.svg
+#+END_SRC
 *** Poisson disc sampling image conversion
 
 [[./examples/poisson/main.c][Source]]
@@ -60,17 +97,6 @@ TBD
 
   # concrete example (for image size roughly 700x1000px)
   bin/release/ex-poisson -g 1.25 -q 500 -m 1.5 -x 16 assets/iris.jpg > assets/iris.svg
-#+END_SRC
-
-*** Diffusion-Limited Aggregation
-
-[[./examples/dla/main.c][Source]]
-
-[[./assets/dla.png]]
-
-#+BEGIN_SRC shell
-# build library & example app
-make config=release_sse ex-dla && bin/release/ex-dla > assets/dla.svg
 #+END_SRC
 
 *** Verlet physics
