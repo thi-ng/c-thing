@@ -1,7 +1,7 @@
 #include "common/dbg.h"
 
 #include "math/vec.h"
-#include "math/verlet.h"
+#include "sim/verlet.h"
 
 static void accelerate2d(CT_Verlet *v) {
   float *pos     = v->pos;

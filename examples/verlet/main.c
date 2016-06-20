@@ -8,7 +8,7 @@
 #include "io/svg.h"
 #include "math/math.h"
 #include "math/vec.h"
-#include "math/verlet.h"
+#include "sim/verlet.h"
 
 #define NUM 8192
 

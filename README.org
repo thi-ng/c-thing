@@ -26,7 +26,7 @@ WIP
 
 *** Simulation
 - [[./src/sim/ca.h][Cellular Automata]] (1D/2D, w/ adjustable kernel sizes)
-- [[./src/math/verlet.h][Verlet physics]] (2D particles)
+- [[./src/sim/verlet.h][Verlet physics]] (2D particles)
 
 *** Geometry
 
