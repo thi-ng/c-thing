@@ -9,7 +9,7 @@ static void accelerate2d(CT_Verlet *v) {
   for (size_t num = v->num << 1, i = 0; i < num; i += 2) {
     const float x = pos[i] + gx;
     const float y = pos[i + 1] + gy;
-    ct_spgrid_update(&v->accel, &pos[i], FVEC(x, y), (void *)(i >> 1));
+    ct_spgrid_update(&v->accel, &pos[i], FVEC(x, y), (void *)i);
     pos[i]     = x;
     pos[i + 1] = y;
   }
@@ -29,7 +29,7 @@ static void collide2d(CT_Verlet *v, size_t preserve) {
         ct_spgrid_select2d(&v->accel, &pos[i], eps, (void **)&sel, 0x100);
     if (res) {
       for (size_t k = 0; k < res; k++) {
-        const size_t id = (size_t)sel[k] << 1;
+        const size_t id = (size_t)sel[k];
         if (id < num && id != i) {
           CT_Vec2f *q = (CT_Vec2f *)&pos[id];
           CT_Vec2f delta;
@@ -42,8 +42,7 @@ static void collide2d(CT_Verlet *v, size_t preserve) {
             CT_Vec2f delta_scaled, np, nq;
             ct_mul2fn(&delta, l, &delta_scaled);
             ct_sub2fv(p, &delta_scaled, &np);
-            ct_spgrid_update(&v->accel, &pos[i], (float *)&np,
-                             (void *)(i >> 1));
+            ct_spgrid_update(&v->accel, &pos[i], (float *)&np, (void *)i);
             *p = np;
             ct_add2fv(q, &delta_scaled, &nq);
             if (preserve) {
@@ -58,8 +57,7 @@ static void collide2d(CT_Verlet *v, size_t preserve) {
               ct_sub2fxy_imm(&qvel, fx, fy);
               ct_sub2fv(&nq, &qvel, (CT_Vec2f *)&prev[id]);
             }
-            ct_spgrid_update(&v->accel, &pos[id], (float *)&nq,
-                             (void *)(id >> 1));
+            ct_spgrid_update(&v->accel, &pos[id], (float *)&nq, (void *)id);
             *q = nq;
           }
         }
@@ -79,7 +77,7 @@ static void inertia2d(CT_Verlet *v) {
     const float y = pos[i + 1] * 2.0f - prev[i + 1];
     prev[i]       = pos[i];
     prev[i + 1]   = pos[i + 1];
-    ct_spgrid_update(&v->accel, &pos[i], FVEC(x, y), (void *)(i >> 1));
+    ct_spgrid_update(&v->accel, &pos[i], FVEC(x, y), (void *)i);
     pos[i]     = x;
     pos[i + 1] = y;
   }
@@ -93,19 +91,17 @@ static void border2d(CT_Verlet *v) {
   const float by2 = v->bounds[3];
   for (size_t num = v->num << 1, i = 0; i < num; i += 2) {
     if (pos[i] < bx1) {
-      ct_spgrid_update(&v->accel, &pos[i], FVEC(bx1, pos[i + 1]),
-                       (void *)(i >> 1));
+      ct_spgrid_update(&v->accel, &pos[i], FVEC(bx1, pos[i + 1]), (void *)i);
       pos[i] = bx1;
     } else if (pos[i] > bx2) {
-      ct_spgrid_update(&v->accel, &pos[i], FVEC(bx2, pos[i + 1]),
-                       (void *)(i >> 1));
+      ct_spgrid_update(&v->accel, &pos[i], FVEC(bx2, pos[i + 1]), (void *)i);
       pos[i] = bx2;
     }
     if (pos[i + 1] < by1) {
-      ct_spgrid_update(&v->accel, &pos[i], FVEC(pos[i], by1), (void *)(i >> 1));
+      ct_spgrid_update(&v->accel, &pos[i], FVEC(pos[i], by1), (void *)i);
       pos[i + 1] = by1;
     } else if (pos[i + 1] > by2) {
-      ct_spgrid_update(&v->accel, &pos[i], FVEC(pos[i], by2), (void *)(i >> 1));
+      ct_spgrid_update(&v->accel, &pos[i], FVEC(pos[i], by2), (void *)i);
       pos[i + 1] = by2;
     }
   }
@@ -124,22 +120,20 @@ static void border2d_impulse(CT_Verlet *v) {
     float y = pos[i + 1];
     if (x < bx1) {
       prev[i] = bx1 - (prev[i] - x) * friction;
-      ct_spgrid_update(&v->accel, &pos[i], FVEC(bx1, pos[i + 1]),
-                       (void *)(i >> 1));
+      ct_spgrid_update(&v->accel, &pos[i], FVEC(bx1, pos[i + 1]), (void *)i);
       pos[i] = bx1;
     } else if (x > bx2) {
       prev[i] = bx2 - (prev[i] - x) * friction;
-      ct_spgrid_update(&v->accel, &pos[i], FVEC(bx2, pos[i + 1]),
-                       (void *)(i >> 1));
+      ct_spgrid_update(&v->accel, &pos[i], FVEC(bx2, pos[i + 1]), (void *)i);
       pos[i] = bx2;
     }
     if (y < by1) {
       prev[i + 1] = by1 - (prev[i + 1] - y) * friction;
-      ct_spgrid_update(&v->accel, &pos[i], FVEC(pos[i], by1), (void *)(i >> 1));
+      ct_spgrid_update(&v->accel, &pos[i], FVEC(pos[i], by1), (void *)i);
       pos[i + 1] = by1;
     } else if (y > by2) {
       prev[i + 1] = by2 - (prev[i + 1] - y) * friction;
-      ct_spgrid_update(&v->accel, &pos[i], FVEC(pos[i], by2), (void *)(i >> 1));
+      ct_spgrid_update(&v->accel, &pos[i], FVEC(pos[i], by2), (void *)i);
       pos[i + 1] = by2;
     }
   }
@@ -186,5 +180,5 @@ CT_EXPORT void ct_verlet_set2f(CT_Verlet *v, size_t i, const float *pos) {
   size_t j  = i << 1;
   v->pos[j] = v->prev[j] = pos[0];
   v->pos[j + 1] = v->prev[j + 1] = pos[1];
-  ct_spgrid_insert(&v->accel, pos, (void *)i);
+  ct_spgrid_insert(&v->accel, pos, (void *)j);
 }
