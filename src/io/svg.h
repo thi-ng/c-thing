@@ -20,7 +20,11 @@ typedef struct {
 
 CT_SVGAttribs *ct_svg_attribs(size_t flags, size_t num, ...);
 
-int ct_svg_write_header(FILE *out, CT_SVGAttribs *attribs);
+int ct_svg_start_doc(FILE *out, CT_SVGAttribs *attribs);
+int ct_svg_end_doc(FILE *out);
+
+int ct_svg_start_group(FILE *out, CT_SVGAttribs *attribs);
+int ct_svg_end_group(FILE *out);
 
 int ct_svg_write_circle(FILE *out, float x, float y, float r,
                         CT_SVGAttribs *attribs);

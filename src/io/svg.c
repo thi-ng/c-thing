@@ -90,12 +90,28 @@ static void write_attribs(FILE *out, CT_SVGAttribs *a, char *suffix) {
   fputs(suffix, out);
 }
 
-int ct_svg_write_header(FILE *out, CT_SVGAttribs *attribs) {
+int ct_svg_start_doc(FILE *out, CT_SVGAttribs *attribs) {
   fprintf(out,
           "<?xml version=\"1.0\"?>\n<svg version=\"1.1\" "
           "xmlns:xlink=\"http://www.w3.org/1999/xlink\" "
           "xmlns=\"http://www.w3.org/2000/svg\" ");
   write_attribs(out, attribs, ">");
+  return 0;
+}
+
+int ct_svg_end_doc(FILE *out) {
+  fprintf(out, "</svg>");
+  return 0;
+}
+
+int ct_svg_start_group(FILE *out, CT_SVGAttribs *attribs) {
+  fprintf(out, "<g ");
+  write_attribs(out, attribs, ">");
+  return 0;
+}
+
+int ct_svg_end_group(FILE *out) {
+  fprintf(out, "</g>");
   return 0;
 }
 
