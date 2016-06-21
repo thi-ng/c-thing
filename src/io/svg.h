@@ -32,4 +32,7 @@ int ct_svg_write_circle(FILE *out, float x, float y, float r,
 int ct_svg_write_rect(FILE *out, float x, float y, float w, float h,
                       CT_SVGAttribs *attribs);
 
+int ct_svg_write_line(FILE *out, float x1, float y1, float x2, float y2,
+                      CT_SVGAttribs *attribs);
+
 CT_END_DECLS

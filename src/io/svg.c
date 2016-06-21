@@ -129,3 +129,11 @@ int ct_svg_write_rect(FILE *out, float x, float y, float w, float h,
   write_attribs(out, attribs, "/>");
   return 0;
 }
+
+int ct_svg_write_line(FILE *out, float x1, float y1, float x2, float y2,
+                      CT_SVGAttribs *attribs) {
+  fprintf(out, "<line x1=\"%f\" y1=\"%f\" x2=\"%f\" y2=\"%f\" ", x1, y1, x2,
+          y2);
+  write_attribs(out, attribs, "/>");
+  return 0;
+}
