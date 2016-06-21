@@ -17,16 +17,17 @@ static void accelerate2d(CT_Verlet *v) {
 
 static void collide2d(CT_Verlet *v, size_t preserve) {
   static size_t sel[0x100];
-  float *pos    = v->pos;
-  float *prev   = v->prev;
-  float *eps    = FVEC(v->minD, v->minD);
-  float mind_sq = v->minD * v->minD;
+  float *pos            = v->pos;
+  float *prev           = v->prev;
+  const float repulsion = 0.5 * v->repulsion;
+  const float maxl      = v->maxForce;
   for (size_t num = v->num << 1, i = 0; i < num; i += 2) {
     CT_Vec2f *p = (CT_Vec2f *)&pos[i];
     CT_Vec2f pvel;
     ct_sub2fv(p, (CT_Vec2f *)&prev[i], &pvel);
-    const size_t res =
-        ct_spgrid_select2d(&v->accel, &pos[i], eps, (void **)&sel, 0x100);
+    const float pr   = v->radius[i >> 1];
+    const size_t res = ct_spgrid_select2d(
+        &v->accel, &pos[i], FVEC(pr * 2, pr * 2), (void **)&sel, 0x100);
     if (res) {
       for (size_t k = 0; k < res; k++) {
         const size_t id = (size_t)sel[k];
@@ -34,13 +35,14 @@ static void collide2d(CT_Verlet *v, size_t preserve) {
           CT_Vec2f *q = (CT_Vec2f *)&pos[id];
           CT_Vec2f delta;
           ct_sub2fv(p, q, &delta);
-          float d = ct_magsq2f(&delta);
-          if (d < mind_sq) {
+          float d    = ct_magsq2f(&delta);
+          float mind = pr + v->radius[id >> 1];
+          if (d < mind * mind) {
             float l = sqrtf(d);
-            l       = (l - v->minD) / l * 0.5f;
-            //l = CLAMP(l, -1, 1);
+            l       = (l - mind) / l * repulsion;
             CT_Vec2f delta_scaled, np, nq;
             ct_mul2fn(&delta, l, &delta_scaled);
+            ct_limit2f_imm(&delta_scaled, maxl);
             ct_sub2fv(p, &delta_scaled, &np);
             ct_spgrid_update(&v->accel, &pos[i], (float *)&np, (void *)i);
             *p = np;
@@ -139,7 +141,7 @@ static void border2d_impulse(CT_Verlet *v) {
   }
 }
 
-int ct_verlet_init(CT_Verlet *v, size_t max, float margin, size_t *grid) {
+int ct_verlet_init(CT_Verlet *v, size_t max, size_t *grid) {
   max        = ct_ceil_multiple_pow2(max, 4);
   float *buf = calloc((3 * 2 + 1) * max, sizeof(float));
   CT_CHECK_MEM(buf);
@@ -152,8 +154,8 @@ int ct_verlet_init(CT_Verlet *v, size_t max, float margin, size_t *grid) {
   v->dt     = 1.0f / v->iter;
   v->dt *= v->dt;
   CT_Vec2f a, b;
-  ct_sub2fn((CT_Vec2f *)v->bounds, margin, &a);
-  ct_add2fn((CT_Vec2f *)&v->bounds[2], margin, &b);
+  ct_sub2fn((CT_Vec2f *)v->bounds, v->maxForce, &a);
+  ct_add2fn((CT_Vec2f *)&v->bounds[2], v->maxForce, &b);
   return ct_spgrid_init(&v->accel, (float *)&a, (float *)&b, grid, 2, 0x100);
 fail:
   return 1;
@@ -166,7 +168,6 @@ void ct_verlet_free(CT_Verlet *v) {
 
 void ct_verlet_update2d(CT_Verlet *v) {
   for (size_t i = 0; i < v->iter; i++) {
-    //attract2f(v);
     accelerate2d(v);
     collide2d(v, 0);
     border2d(v);
@@ -176,9 +177,11 @@ void ct_verlet_update2d(CT_Verlet *v) {
   }
 }
 
-CT_EXPORT void ct_verlet_set2f(CT_Verlet *v, size_t i, const float *pos) {
-  size_t j  = i << 1;
-  v->pos[j] = v->prev[j] = pos[0];
-  v->pos[j + 1] = v->prev[j + 1] = pos[1];
-  ct_spgrid_insert(&v->accel, pos, (void *)j);
+CT_EXPORT void ct_verlet_set2f(CT_Verlet *v, size_t i, const float *pos,
+                               float radius) {
+  v->radius[i] = radius;
+  i <<= 1;
+  v->pos[i] = v->prev[i] = pos[0];
+  v->pos[i + 1] = v->prev[i + 1] = pos[1];
+  ct_spgrid_insert(&v->accel, pos, (void *)i);
 }
