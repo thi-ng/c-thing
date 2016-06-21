@@ -84,15 +84,16 @@ int main() {
   while (dla.num < dla.length) {
     add_particle(&dla);
   }
-  ct_svg_write_header(stdout, ct_svg_attribs(1, 2, SVG_INT("width", dla.width),
-                                             SVG_INT("height", dla.height)));
-  fprintf(stdout, "<g stroke=\"none\">\n");
+  ct_svg_start_doc(stdout, ct_svg_attribs(1, 2, SVG_INT("width", dla.width),
+                                          SVG_INT("height", dla.height)));
+  ct_svg_start_group(stdout, ct_svg_attribs(1, 1, SVG_STR("stroke", "none")));
   for (size_t i = 0; i < dla.num; i++) {
     CT_Vec3f *p = &dla.particles[i];
     ct_svg_write_circle(stdout, p->x, p->y, 1,
                         ct_svg_attribs(1, 1, SVG_HEX("fill", cols[(int)p->z])));
   }
-  fprintf(stdout, "</g></svg>");
+  ct_svg_end_group(stdout);
+  ct_svg_end_doc(stdout);
   fprintf(stderr, "%zu particles", dla.num);
   return 0;
 }

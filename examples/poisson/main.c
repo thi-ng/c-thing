@@ -59,12 +59,12 @@ static int poisson_svg(const Config *config) {
   CT_MPool vpool;
   ct_qtree_init(&t, 0, 0, config->width, config->height, 0x4000);
   ct_mpool_init(&vpool, 0x4000, sizeof(CT_Vec2f));
-  ct_svg_write_header(stdout,
-                      ct_svg_attribs(1, 2, SVG_INT("width", config->width),
-                                     SVG_INT("height", config->height)));
+  ct_svg_start_doc(stdout, ct_svg_attribs(1, 2, SVG_INT("width", config->width),
+                                          SVG_INT("height", config->height)));
   ct_svg_write_rect(stdout, 0, 0, config->width, config->height,
                     ct_svg_attribs(1, 1, SVG_HEX("fill", config->bg)));
-  fprintf(stdout, "<g stroke=\"none\" fill=\"#%06x\">\n", config->fg);
+  ct_svg_start_group(stdout, ct_svg_attribs(1, 2, SVG_STR("stroke", "none"),
+                                            SVG_HEX("fill", config->fg)));
   srand(time(0));
   size_t count  = 0;
   size_t failed = 0;
@@ -79,7 +79,8 @@ static int poisson_svg(const Config *config) {
       break;
     }
   }
-  fprintf(stdout, "</g></svg>");
+  ct_svg_end_group(stdout);
+  ct_svg_end_doc(stdout);
   fprintf(stderr, "%zu points", count);
   ct_mpool_free(&vpool);
   ct_qtree_free(&t);

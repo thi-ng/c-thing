@@ -21,9 +21,10 @@ int main(int argc, char** argv) {
   char fname[64];
   snprintf(fname, 64, "assets/ca-%zu.svg", rule_id);
   FILE* out = fopen(fname, "w");
-  ct_svg_write_header(
+  ct_svg_start_doc(
       out, ct_svg_attribs(1, 2, SVG_INT("width", 600), SVG_INT("height", 600)));
-  fprintf(out, "<g stroke=\"none\" fill=\"#0000ff\">");
+  ct_svg_start_group(out, ct_svg_attribs(1, 2, SVG_STR("stroke", "none"),
+                                         SVG_HEX("fill", 0x0000ff)));
   for (size_t i = 0; i < width; i++) {
     for (size_t j = 0; j < width; j++) {
       if (mat.matrix[j]) {
@@ -32,7 +33,7 @@ int main(int argc, char** argv) {
     }
     ct_carule1d_evolve(&rule, &mat);
   }
-  fprintf(out, "</g></svg>");
-  fclose(out);
+  ct_svg_end_group(out);
+  ct_svg_end_doc(out);
   return 0;
 }
