@@ -141,6 +141,7 @@ CT_EXPORT int ct_spgrid_update(CT_SpatialGrid *grid, const float *p,
     }
     cell = cell->next;
   }
+fail:
   return 1;
 }
 
