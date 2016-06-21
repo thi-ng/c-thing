@@ -17,25 +17,28 @@ int main(int argc, char** argv) {
   ct_carule2d_init(&rule);
   ct_camatrix_init(&mat);
   ct_camatrix_seed_noise(&mat, 0.5f);
-  char fname[64];
-  snprintf(fname, 64, "assets/ca2d.svg");
-  FILE* out = fopen(fname, "w");
-  ct_svg_write_header(
-      out, ct_svg_attribs(1, 2, SVG_INT("width", 600), SVG_INT("height", 600)));
-  fprintf(out, "<g stroke=\"none\" fill=\"#0000ff\">");
-  for (size_t i = 0; i < 100; i++) {
+  for (size_t gen = 0; gen < 300; gen++) {
+    char fname[64];
+    snprintf(fname, 64, "assets/ca2d-%04zu.svg", gen);
+    CT_INFO("---------- writing: %s", fname);
+    FILE* out = fopen(fname, "w");
+    ct_svg_start_doc(out, ct_svg_attribs(1, 2, SVG_INT("width", 600),
+                                         SVG_INT("height", 600)));
+    ct_svg_start_group(out, ct_svg_attribs(1, 2, SVG_STR("stroke", "none"),
+                                           SVG_HEX("fill", 0x0000ff)));
+    uint8_t* cell = mat.matrix;
+    for (size_t i = 0; i < width; i++) {
+      for (size_t j = 0; j < width; j++) {
+        if (*cell) {
+          ct_svg_write_circle(out, j * d + r, i * d + r, r, NULL);
+        }
+        cell++;
+      }
+    }
+    ct_svg_end_group(out);
+    ct_svg_end_doc(out);
+    fclose(out);
     ct_carule2d_evolve(&rule, &mat);
   }
-  uint8_t* cell = mat.matrix;
-  for (size_t i = 0; i < width; i++) {
-    for (size_t j = 0; j < width; j++) {
-      if (*cell) {
-        ct_svg_write_circle(out, j * d + r, i * d + r, r, NULL);
-      }
-      cell++;
-    }
-  }
-  fprintf(out, "</g></svg>");
-  fclose(out);
   return 0;
 }
