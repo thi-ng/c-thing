@@ -6,7 +6,7 @@ static void accelerate2d(CT_Verlet *v) {
   const float dt = v->dt;
   const float gx = v->gravity[0] * dt;
   const float gy = v->gravity[1] * dt;
-  for (size_t num = v->num << 1, i = 0; i < num; i += 2) {
+  for (size_t num = v->numP << 1, i = 0; i < num; i += 2) {
     const float x = pos[i] + gx;
     const float y = pos[i + 1] + gy;
     ct_spgrid_update(&v->accel, &pos[i], FVEC(x, y), (void *)i);
@@ -20,8 +20,8 @@ static void collide2d(CT_Verlet *v, size_t preserve) {
   float *pos            = v->pos;
   float *prev           = v->prev;
   const float repulsion = 0.5 * v->repulsion;
-  const float maxl      = v->maxForce;
-  for (size_t num = v->num << 1, i = 0; i < num; i += 2) {
+  const float maxf      = v->maxForce;
+  for (size_t num = v->numP << 1, i = 0; i < num; i += 2) {
     CT_Vec2f *p = (CT_Vec2f *)&pos[i];
     CT_Vec2f pvel;
     ct_sub2fv(p, (CT_Vec2f *)&prev[i], &pvel);
@@ -38,11 +38,11 @@ static void collide2d(CT_Verlet *v, size_t preserve) {
           float d    = ct_magsq2f(&delta);
           float mind = pr + v->radius[id >> 1];
           if (d < mind * mind) {
-            float l = sqrtf(d);
+            float l = sqrtf(d) + EPS;
             l       = (l - mind) / l * repulsion;
             CT_Vec2f delta_scaled, np, nq;
             ct_mul2fn(&delta, l, &delta_scaled);
-            ct_limit2f_imm(&delta_scaled, maxl);
+            ct_limit2f_imm(&delta_scaled, maxf);
             ct_sub2fv(p, &delta_scaled, &np);
             ct_spgrid_update(&v->accel, &pos[i], (float *)&np, (void *)i);
             *p = np;
@@ -74,7 +74,7 @@ static void collide2d(CT_Verlet *v, size_t preserve) {
 static void inertia2d(CT_Verlet *v) {
   float *pos  = v->pos;
   float *prev = v->prev;
-  for (size_t num = v->num << 1, i = 0; i < num; i += 2) {
+  for (size_t num = v->numP << 1, i = 0; i < num; i += 2) {
     const float x = pos[i] * 2.0f - prev[i];
     const float y = pos[i + 1] * 2.0f - prev[i + 1];
     prev[i]       = pos[i];
@@ -91,7 +91,7 @@ static void border2d(CT_Verlet *v) {
   const float by1 = v->bounds[1];
   const float bx2 = v->bounds[2];
   const float by2 = v->bounds[3];
-  for (size_t num = v->num << 1, i = 0; i < num; i += 2) {
+  for (size_t num = v->numP << 1, i = 0; i < num; i += 2) {
     if (pos[i] < bx1) {
       ct_spgrid_update(&v->accel, &pos[i], FVEC(bx1, pos[i + 1]), (void *)i);
       pos[i] = bx1;
@@ -117,7 +117,7 @@ static void border2d_impulse(CT_Verlet *v) {
   const float bx2      = v->bounds[2];
   const float by2      = v->bounds[3];
   const float friction = v->friction;
-  for (size_t num = v->num << 1, i = 0; i < num; i += 2) {
+  for (size_t num = v->numP << 1, i = 0; i < num; i += 2) {
     float x = pos[i];
     float y = pos[i + 1];
     if (x < bx1) {
@@ -141,21 +141,52 @@ static void border2d_impulse(CT_Verlet *v) {
   }
 }
 
-int ct_verlet_init(CT_Verlet *v, size_t max, size_t *grid) {
-  max        = ct_ceil_multiple_pow2(max, 4);
-  float *buf = calloc((3 * 2 + 1) * max, sizeof(float));
+static void springs2d(CT_Verlet *v) {
+  float *pos           = v->pos;
+  CT_VPSpring *springs = v->springs;
+  const float maxf     = v->maxForce;
+  for (size_t num = v->numS, i = 0; i < num; i++) {
+    CT_VPSpring *s = &springs[i];
+    CT_Vec2f *a    = (CT_Vec2f *)&pos[s->a];
+    CT_Vec2f *b    = (CT_Vec2f *)&pos[s->b];
+    CT_Vec2f delta;
+    ct_sub2fv(a, b, &delta);
+    float d = ct_mag2f(&delta) + EPS;
+    ct_mul2fn_imm(&delta, (d - s->restLen) / d * s->strength);
+    ct_limit2f_imm(&delta, maxf);
+    float ax = a->x - delta.x;
+    float ay = a->y - delta.y;
+    float bx = b->x + delta.x;
+    float by = b->y + delta.y;
+    ct_spgrid_update(&v->accel, (float *)a, FVEC(ax, ay), (void *)s->a);
+    ct_spgrid_update(&v->accel, (float *)b, FVEC(bx, by), (void *)s->b);
+    a->x = ax;
+    a->y = ay;
+    b->x = bx;
+    b->y = by;
+  }
+}
+
+int ct_verlet_init(CT_Verlet *v, size_t maxP, size_t maxS, size_t *grid) {
+  maxP       = ct_ceil_multiple_pow2(maxP, 4);
+  float *buf = calloc((3 * 2 + 1) * maxP, sizeof(float));
   CT_CHECK_MEM(buf);
-  v->pos    = buf;
-  v->prev   = buf + max * 2;
-  v->force  = buf + max * 4;
-  v->radius = buf + max * 6;
-  v->stride = max;
-  v->num    = 0;
-  v->dt     = 1.0f / v->iter;
+  v->pos               = buf;
+  v->prev              = buf + maxP * 2;
+  v->force             = buf + maxP * 4;
+  v->radius            = buf + maxP * 6;
+  CT_VPSpring *springs = calloc(maxS, sizeof(CT_VPSpring));
+  CT_CHECK_MEM(springs);
+  v->springs = springs;
+  v->strideP = maxP;
+  v->strideS = maxS;
+  v->numP    = 0;
+  v->numS    = 0;
+  v->dt      = 1.0f / v->iter;
   v->dt *= v->dt;
   CT_Vec2f a, b;
-  ct_sub2fn((CT_Vec2f *)v->bounds, v->maxForce, &a);
-  ct_add2fn((CT_Vec2f *)&v->bounds[2], v->maxForce, &b);
+  ct_sub2fn((CT_Vec2f *)v->bounds, v->maxForce * 10, &a);
+  ct_add2fn((CT_Vec2f *)&v->bounds[2], v->maxForce * 10, &b);
   return ct_spgrid_init(&v->accel, (float *)&a, (float *)&b, grid, 2, 0x100);
 fail:
   return 1;
@@ -169,6 +200,7 @@ void ct_verlet_free(CT_Verlet *v) {
 void ct_verlet_update2d(CT_Verlet *v) {
   for (size_t i = 0; i < v->iter; i++) {
     accelerate2d(v);
+    springs2d(v);
     collide2d(v, 0);
     border2d(v);
     inertia2d(v);
@@ -184,4 +216,15 @@ CT_EXPORT void ct_verlet_set2f(CT_Verlet *v, size_t i, const float *pos,
   v->pos[i] = v->prev[i] = pos[0];
   v->pos[i + 1] = v->prev[i + 1] = pos[1];
   ct_spgrid_insert(&v->accel, pos, (void *)i);
+}
+
+CT_EXPORT void ct_verlet_set_spring(CT_Verlet *v, size_t i, size_t a, size_t b,
+                                    float len, float strength) {
+  CT_VPSpring *s = &v->springs[i];
+  s->a           = a << 1;
+  s->b           = b << 1;
+  s->restLen     = len;
+  s->strength    = strength;
+  CT_INFO("add spring: %zu, a: %zu, b: %zu, rl: %f, str: %f", i, a, b, len,
+          strength);
 }
