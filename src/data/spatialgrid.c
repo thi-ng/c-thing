@@ -125,6 +125,7 @@ CT_EXPORT int ct_spgrid_update(CT_SpatialGrid *grid, const float *p,
   if (id != id2) {
     return !do_remove(grid, id, item) && do_insert(grid, id2, q, item);
   }
+  CT_CHECK(id >= 0 && id < grid->numCells, "p out of bounds");
   CT_SPCell *cell = grid->cells[id];
   while (cell) {
     if (cell->value == item) {
