@@ -81,6 +81,16 @@ CT_EXPORT ct_inline size_t ct_is_normalized3f(const CT_Vec3f *v) {
   return ct_deltaeqf(ct_mag3f(v), 1.f, EPS);
 }
 
+CT_EXPORT ct_inline CT_Vec3f *ct_limit3f_imm(CT_Vec3f *v, float len) {
+  float m = ct_mag3f(v);
+  if (m > len) {
+    len /= m;
+    v->x *= len;
+    v->y *= len;
+  }
+  return v;
+}
+
 CT_EXPORT ct_inline CT_Vec3f *ct_set3fxyz(CT_Vec3f *v, float x, float y,
                                           float z) {
   v->x = x;

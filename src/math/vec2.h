@@ -216,6 +216,16 @@ CT_EXPORT ct_inline size_t ct_is_normalized2f(const CT_Vec2f *v) {
   return ct_deltaeqf(ct_mag2f(v), 1.f, EPS);
 }
 
+CT_EXPORT ct_inline CT_Vec2f *ct_limit2f_imm(CT_Vec2f *v, float len) {
+  float m = ct_mag2f(v);
+  if (m > len) {
+    len /= m;
+    v->x *= len;
+    v->y *= len;
+  }
+  return v;
+}
+
 CT_EXPORT ct_inline CT_Vec2f *ct_cartesian2f_imm(CT_Vec2f *v) {
   float x = v->x * cosf(v->y);
   v->y    = v->x * sinf(v->y);
