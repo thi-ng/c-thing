@@ -51,7 +51,7 @@ void spawn_particle(CT_Verlet *phys, CT_Vec2f *p, size_t id) {
   } while (!ok);
   ct_verlet_set2f(phys, id, (float *)&q, r);
   if (id > 0) {
-    ct_verlet_set_spring(phys, phys->numS, id - 1, id, 16, 0.5);
+    ct_verlet_set_spring2d(phys, phys->numS, id - 1, id, 16, 0.5);
     phys->numS++;
   }
 }
@@ -67,7 +67,7 @@ int main() {
     .iter      = 2
   };
   // clang-format off
-  if (ct_verlet_init(&phys, NUM, NUM, IVEC(120, 120, 120))) {
+  if (ct_verlet_init2d(&phys, NUM, NUM, IVEC(120, 120, 120))) {
     return 1;
   }
   ct_spgrid_trace(&phys.accel);
