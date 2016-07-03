@@ -32,6 +32,11 @@ extern int bench_vec3_create();
 extern int bench_hashtable();
 extern int bench_hashset();
 
+#ifdef __EMSCRIPTEN__
+extern int ct_js_test_call();
+#else
+#endif
+
 CT_TEST_DECLS
 
 int all_tests() {
@@ -81,13 +86,15 @@ int all_tests() {
   CT_RUN_TEST(test_poisson);
   CT_RUN_TEST(test_clipping);
 
-#ifndef __EMSCRIPTEN__
+#ifdef __EMSCRIPTEN__
+  CT_INFO("JS test_call: %d", ct_js_test_call());
 #else
 #endif
 
   //CT_RUN_TEST(bench_vec3_create);
   //CT_RUN_TEST(bench_hashtable);
   //CT_RUN_TEST(bench_hashset);
+
   return 0;
 }
 
