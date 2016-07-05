@@ -14,6 +14,7 @@
 
 CT_BEGIN_DECLS
 
+int ct_tostringfp(char* buf, int bufsz, const float* p, size_t num);
 void ct_translate2f(float* ptr, CT_Vec2f* t, size_t num, size_t fstride);
 void ct_scale2f(float* ptr, CT_Vec2f* t, size_t num, size_t fstride);
 void ct_translate3f(float* ptr, CT_Vec3f* t, size_t num, size_t fstride);

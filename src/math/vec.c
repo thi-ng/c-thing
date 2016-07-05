@@ -1,4 +1,5 @@
 #include <float.h>
+#include <string.h>
 
 #include "math/vec.h"
 
@@ -86,4 +87,27 @@ CT_EXPORT CT_Vec3f *ct_closest_point3f(float *ptr, CT_Vec3f *p, size_t num,
     }
   }
   return closest;
+}
+
+int ct_tostringfp(char *buf, int bufsz, const float *p, size_t num) {
+  if (snprintf(buf, bufsz, "[") > 0) {
+    size_t j = 1;
+    bufsz -= j;
+    for (size_t i = 0; i < num && bufsz > 0; i++) {
+      int res = snprintf(&buf[j], bufsz, "%1.4f", p[i]);
+      if (res < 0) return -1;
+      if (i < num - 1) {
+        buf[j + res] = ' ';
+        res++;
+      }
+      bufsz -= res;
+      j += res;
+    }
+    if (bufsz > 1) {
+      buf[j]     = ']';
+      buf[j + 1] = 0;
+      return j + 1;
+    }
+  }
+  return -1;
 }

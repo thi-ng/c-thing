@@ -5,32 +5,109 @@
 
 #ifdef CT_FEATURE_SSE
 
+#include <xmmintrin.h>
+#ifdef CT_FEATURE_SSE4
+#include <smmintrin.h>
+#else
+#endif
+
 CT_Mat4f *ct_mat4f_set_identity(CT_Mat4f *m) {
-  return NULL;
+  _mm_store_ps(&m->m00, (__m128){1, 0, 0, 0});
+  _mm_store_ps(&m->m10, (__m128){0, 1, 0, 0});
+  _mm_store_ps(&m->m20, (__m128){0, 0, 1, 0});
+  _mm_store_ps(&m->m30, (__m128){0, 0, 0, 1});
+  return m;
+}
+
+CT_Mat4f *ct_mat4f_transpose_imm(CT_Mat4f *m) {
+  __m128 a  = _mm_load_ps(&m->m00);
+  __m128 b  = _mm_load_ps(&m->m10);
+  __m128 c  = _mm_load_ps(&m->m20);
+  __m128 d  = _mm_load_ps(&m->m30);
+  __m128 ta = _mm_unpacklo_ps(a, b);
+  __m128 tb = _mm_unpacklo_ps(c, d);
+  _mm_store_ps(&m->m00, _mm_movelh_ps(ta, tb));
+  _mm_store_ps(&m->m10, _mm_movehl_ps(tb, ta));
+  ta = _mm_unpackhi_ps(a, b);
+  tb = _mm_unpackhi_ps(c, d);
+  _mm_store_ps(&m->m20, _mm_movelh_ps(ta, tb));
+  _mm_store_ps(&m->m30, _mm_movehl_ps(tb, ta));
+  return m;
 }
 
 CT_Mat4f *ct_mat4f_mul_imm(CT_Mat4f *a, const CT_Mat4f *b) {
-  return NULL;
+  __m128 a0 = _mm_load_ps(&a->m00);
+  __m128 a1 = _mm_load_ps(&a->m10);
+  __m128 a2 = _mm_load_ps(&a->m20);
+  __m128 a3 = _mm_load_ps(&a->m30);
+  _mm_store_ps(&a->m00, a0 * _mm_set1_ps(b->m00) + a1 * _mm_set1_ps(b->m01) +
+                            a2 * _mm_set1_ps(b->m02) +
+                            a3 * _mm_set1_ps(b->m03));
+  _mm_store_ps(&a->m10, a0 * _mm_set1_ps(b->m10) + a1 * _mm_set1_ps(b->m11) +
+                            a2 * _mm_set1_ps(b->m12) +
+                            a3 * _mm_set1_ps(b->m13));
+  _mm_store_ps(&a->m20, a0 * _mm_set1_ps(b->m20) + a1 * _mm_set1_ps(b->m21) +
+                            a2 * _mm_set1_ps(b->m22) +
+                            a3 * _mm_set1_ps(b->m23));
+  _mm_store_ps(&a->m30, a0 * _mm_set1_ps(b->m30) + a1 * _mm_set1_ps(b->m31) +
+                            a2 * _mm_set1_ps(b->m32) +
+                            a3 * _mm_set1_ps(b->m33));
+  return a;
+}
+
+CT_Vec4f *ct_mat4f_transform4fv_imm(const CT_Mat4f *m, CT_Vec4f *v) {
+  v->mmval = _mm_set1_ps(v->x) * _mm_load_ps(&m->m00) +
+             _mm_set1_ps(v->y) * _mm_load_ps(&m->m10) +
+             _mm_set1_ps(v->z) * _mm_load_ps(&m->m20) +
+             _mm_set1_ps(v->w) * _mm_load_ps(&m->m30);
+  return v;
 }
 
 CT_Mat4f *ct_mat4f_scalen_imm(CT_Mat4f *m, float n) {
-  return NULL;
+  __m128 nn = _mm_set_ps(1, n, n, n);
+  _mm_store_ps(&m->m00, _mm_load_ps(&m->m00) * nn);
+  _mm_store_ps(&m->m10, _mm_load_ps(&m->m10) * nn);
+  _mm_store_ps(&m->m20, _mm_load_ps(&m->m20) * nn);
+  _mm_store_ps(&m->m30, _mm_load_ps(&m->m30) * nn);
+  return m;
 }
 
 CT_Mat4f *ct_mat4f_translate3fp_imm(CT_Mat4f *m, const float *t) {
-  return NULL;
+  _mm_store_ps(&m->m30, _mm_load_ps(&m->m00) * _mm_set1_ps(t[0]) +
+                            _mm_load_ps(&m->m10) * _mm_set1_ps(t[1]) +
+                            _mm_load_ps(&m->m20) * _mm_set1_ps(t[2]) +
+                            _mm_load_ps(&m->m30));
+  return m;
 }
 
 CT_Mat4f *ct_mat4f_rotatex_imm(CT_Mat4f *m, float theta) {
-  return NULL;
+  __m128 s  = _mm_set1_ps(sinf(theta));
+  __m128 c  = _mm_set1_ps(cosf(theta));
+  __m128 t1 = _mm_load_ps(&m->m10);
+  __m128 t2 = _mm_load_ps(&m->m20);
+  _mm_store_ps(&m->m10, t1 * c + t2 * s);
+  _mm_store_ps(&m->m20, t2 * c - t1 * s);
+  return m;
 }
 
 CT_Mat4f *ct_mat4f_rotatey_imm(CT_Mat4f *m, float theta) {
-  return NULL;
+  __m128 s  = _mm_set1_ps(sinf(theta));
+  __m128 c  = _mm_set1_ps(cosf(theta));
+  __m128 t1 = _mm_load_ps(&m->m00);
+  __m128 t2 = _mm_load_ps(&m->m20);
+  _mm_store_ps(&m->m00, t1 * c - t2 * s);
+  _mm_store_ps(&m->m20, t2 * c + t1 * s);
+  return m;
 }
 
 CT_Mat4f *ct_mat4f_rotatez_imm(CT_Mat4f *m, float theta) {
-  return NULL;
+  __m128 s  = _mm_set1_ps(sinf(theta));
+  __m128 c  = _mm_set1_ps(cosf(theta));
+  __m128 t1 = _mm_load_ps(&m->m00);
+  __m128 t2 = _mm_load_ps(&m->m10);
+  _mm_store_ps(&m->m00, t1 * c + t2 * s);
+  _mm_store_ps(&m->m10, t2 * c - t1 * s);
+  return m;
 }
 
 #else
@@ -124,7 +201,7 @@ CT_Mat4f *ct_mat4f_rotatey_imm(CT_Mat4f *m, float theta) {
   return m;
 }
 
-CTCT_Mat4f *ct_mat4f_rotatez_imm(CT_Mat4f *m, float theta) {
+CT_Mat4f *ct_mat4f_rotatez_imm(CT_Mat4f *m, float theta) {
   float s = sinf(theta);
   float c = cosf(theta);
   float i = m->m00, j = m->m01, k = m->m02, l = m->m03;
@@ -140,3 +217,21 @@ CTCT_Mat4f *ct_mat4f_rotatez_imm(CT_Mat4f *m, float theta) {
 }
 
 #endif
+
+void ct_mat4f_trace(const CT_Mat4f *m) {
+  CT_INFO("%1.3f %1.3f %1.3f %1.3f", m->m00, m->m10, m->m20, m->m30);
+  CT_INFO("%1.3f %1.3f %1.3f %1.3f", m->m01, m->m11, m->m21, m->m31);
+  CT_INFO("%1.3f %1.3f %1.3f %1.3f", m->m02, m->m12, m->m22, m->m32);
+  CT_INFO("%1.3f %1.3f %1.3f %1.3f", m->m03, m->m13, m->m23, m->m33);
+}
+
+int ct_mat4f_compare(const CT_Mat4f *a, const CT_Mat4f *b) {
+  for (size_t i = 0; i < 16; i++) {
+    float delta = a->mat[i] - b->mat[i];
+    if (delta < -EPS)
+      return -1;
+    else if (delta > EPS)
+      return 1;
+  }
+  return 0;
+}

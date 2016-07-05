@@ -1,6 +1,8 @@
 #pragma once
 
 #include "cthing.h"
+
+#include "math/vec.h"
 #include "mem/mem.h"
 
 typedef union {
@@ -14,9 +16,13 @@ typedef union {
 } CT_Mat4f CT_ALIGN(16);
 
 CT_Mat4f *ct_mat4f_set_identity(CT_Mat4f *m);
+CT_Mat4f *ct_mat4f_transpose_imm(CT_Mat4f *m);
 CT_Mat4f *ct_mat4f_mul_imm(CT_Mat4f *a, const CT_Mat4f *b);
 CT_Mat4f *ct_mat4f_scalen_imm(CT_Mat4f *m, float n);
 CT_Mat4f *ct_mat4f_translate3fp_imm(CT_Mat4f *m, const float *t);
 CT_Mat4f *ct_mat4f_rotatex_imm(CT_Mat4f *m, float theta);
 CT_Mat4f *ct_mat4f_rotatey_imm(CT_Mat4f *m, float theta);
 CT_Mat4f *ct_mat4f_rotatez_imm(CT_Mat4f *m, float theta);
+CT_Vec4f *ct_mat4f_transform4fv_imm(const CT_Mat4f *m, CT_Vec4f *v);
+int ct_mat4f_compare(const CT_Mat4f *a, const CT_Mat4f *b);
+void ct_mat4f_trace(const CT_Mat4f *m);
