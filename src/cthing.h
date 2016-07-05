@@ -34,9 +34,9 @@
 #endif
 
 #ifdef __EMSCRIPTEN__
-#define CT_EXPORT __attribute__((used))
+#define ct_export __attribute__((used))
 #else
-#define CT_EXPORT
+#define ct_export
 #endif
 
 #define ct_inline static inline

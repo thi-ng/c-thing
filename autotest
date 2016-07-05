@@ -5,9 +5,11 @@ retest() {
     date +%Y-%m-%d-%H:%M:%S
     echo "----------------------------------------"
     make -j3 config=release_sse test && bin/release/test;
+#    make -j3 config=release_no_sse test && bin/release/test;
 }
 
 make config=release_sse clean
+#make config=release_no_sse clean
 retest
 
 export -f retest

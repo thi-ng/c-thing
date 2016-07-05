@@ -30,6 +30,8 @@ extern int test_poisson();
 extern int test_clipping();
 
 extern int bench_vec3_create();
+extern int bench_mat4_mul();
+extern int bench_mat4_rotate_axis();
 extern int bench_hashtable();
 extern int bench_hashset();
 
@@ -94,6 +96,8 @@ int all_tests() {
 #endif
 
   //CT_RUN_TEST(bench_vec3_create);
+  //CT_RUN_TEST(bench_mat4_mul);
+  //CT_RUN_TEST(bench_mat4_rotate_axis);
   //CT_RUN_TEST(bench_hashtable);
   //CT_RUN_TEST(bench_hashset);
 
