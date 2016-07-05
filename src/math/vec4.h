@@ -3,7 +3,7 @@
 #include "math/vec.h"
 
 #define VEC4OP(type, ptype, name, op)                                          \
-  CT_EXPORT ct_inline type *name##v_imm(type *a, const type *b) {              \
+  ct_export ct_inline type *name##v_imm(type *a, const type *b) {              \
     a->x op## = b->x;                                                          \
     a->y op## = b->y;                                                          \
     a->z op## = b->z;                                                          \
@@ -11,7 +11,7 @@
     return a;                                                                  \
   }                                                                            \
                                                                                \
-  CT_EXPORT ct_inline type *name##v(const type *a, const type *b, type *out) { \
+  ct_export ct_inline type *name##v(const type *a, const type *b, type *out) { \
     out->x = a->x op b->x;                                                     \
     out->y = a->y op b->y;                                                     \
     out->z = a->z op b->z;                                                     \
@@ -19,7 +19,7 @@
     return out;                                                                \
   }                                                                            \
                                                                                \
-  CT_EXPORT ct_inline type *name##n_imm(type *v, ptype n) {                    \
+  ct_export ct_inline type *name##n_imm(type *v, ptype n) {                    \
     v->x op## = n;                                                             \
     v->y op## = n;                                                             \
     v->z op## = n;                                                             \
@@ -27,7 +27,7 @@
     return v;                                                                  \
   }                                                                            \
                                                                                \
-  CT_EXPORT ct_inline type *name##n(const type *v, ptype n, type *out) {       \
+  ct_export ct_inline type *name##n(const type *v, ptype n, type *out) {       \
     out->x = v->x op n;                                                        \
     out->y = v->y op n;                                                        \
     out->z = v->z op n;                                                        \
@@ -35,7 +35,7 @@
     return out;                                                                \
   }                                                                            \
                                                                                \
-  CT_EXPORT ct_inline type *name##xyzw_imm(type *v, ptype x, ptype y, ptype z, \
+  ct_export ct_inline type *name##xyzw_imm(type *v, ptype x, ptype y, ptype z, \
                                            ptype w) {                          \
     v->x op## = x;                                                             \
     v->y op## = y;                                                             \
@@ -44,7 +44,7 @@
     return v;                                                                  \
   }                                                                            \
                                                                                \
-  CT_EXPORT ct_inline type *name##xyzw(const type *v, ptype x, ptype y,        \
+  ct_export ct_inline type *name##xyzw(const type *v, ptype x, ptype y,        \
                                        ptype z, ptype w, type *out) {          \
     out->x = v->x op x;                                                        \
     out->y = v->y op y;                                                        \
@@ -67,11 +67,11 @@ VEC4OP(CT_Vec4f, float, ct_sub4f, -)
 VEC4OP(CT_Vec4f, float, ct_mul4f, *)
 VEC4OP(CT_Vec4f, float, ct_div4f, /)
 
-CT_EXPORT ct_inline float ct_dot4fv(const CT_Vec4f *a, const CT_Vec4f *b) {
+ct_export ct_inline float ct_dot4fv(const CT_Vec4f *a, const CT_Vec4f *b) {
   return a->x * b->x + a->y * b->y + a->z * b->z + a->w * b->w;
 }
 
-CT_EXPORT ct_inline float ct_distsq4fv(const CT_Vec4f *a, const CT_Vec4f *b) {
+ct_export ct_inline float ct_distsq4fv(const CT_Vec4f *a, const CT_Vec4f *b) {
   float dx = a->x - b->x;
   float dy = a->y - b->y;
   float dz = a->z - b->z;
@@ -79,7 +79,7 @@ CT_EXPORT ct_inline float ct_distsq4fv(const CT_Vec4f *a, const CT_Vec4f *b) {
   return dx * dx + dy * dy + dz * dz + dw * dw;
 }
 
-CT_EXPORT ct_inline CT_Vec4f *ct_madd4fv_imm(CT_Vec4f *a, const CT_Vec4f *b,
+ct_export ct_inline CT_Vec4f *ct_madd4fv_imm(CT_Vec4f *a, const CT_Vec4f *b,
                                              const CT_Vec4f *c) {
   a->x = a->x * b->x + c->x;
   a->y = a->y * b->y + c->y;
@@ -88,11 +88,11 @@ CT_EXPORT ct_inline CT_Vec4f *ct_madd4fv_imm(CT_Vec4f *a, const CT_Vec4f *b,
   return a;
 }
 
-CT_EXPORT ct_inline float ct_magsq4f(const CT_Vec4f *v) {
+ct_export ct_inline float ct_magsq4f(const CT_Vec4f *v) {
   return v->x * v->x + v->y * v->y + v->z * v->z + v->w * v->w;
 }
 
-CT_EXPORT ct_inline CT_Vec4f *ct_mix4fv_imm(CT_Vec4f *a, const CT_Vec4f *b,
+ct_export ct_inline CT_Vec4f *ct_mix4fv_imm(CT_Vec4f *a, const CT_Vec4f *b,
                                             float t) {
   a->x = ct_mixf(a->x, b->x, t);
   a->y = ct_mixf(a->y, b->y, t);
@@ -101,7 +101,7 @@ CT_EXPORT ct_inline CT_Vec4f *ct_mix4fv_imm(CT_Vec4f *a, const CT_Vec4f *b,
   return a;
 }
 
-CT_EXPORT ct_inline CT_Vec4f *ct_normalize4f_imm(CT_Vec4f *v, float len) {
+ct_export ct_inline CT_Vec4f *ct_normalize4f_imm(CT_Vec4f *v, float len) {
   float m = sqrt(ct_magsq4f(v));
   if (m > 0.0) {
     len /= m;
@@ -113,7 +113,7 @@ CT_EXPORT ct_inline CT_Vec4f *ct_normalize4f_imm(CT_Vec4f *v, float len) {
   return v;
 }
 
-CT_EXPORT ct_inline CT_Vec4f *ct_set4fv(CT_Vec4f *a, const CT_Vec4f *b) {
+ct_export ct_inline CT_Vec4f *ct_set4fv(CT_Vec4f *a, const CT_Vec4f *b) {
   a->x = b->x;
   a->y = b->y;
   a->z = b->z;
@@ -121,7 +121,7 @@ CT_EXPORT ct_inline CT_Vec4f *ct_set4fv(CT_Vec4f *a, const CT_Vec4f *b) {
   return a;
 }
 
-CT_EXPORT ct_inline CT_Vec4f *ct_set4fn(CT_Vec4f *v, float n) {
+ct_export ct_inline CT_Vec4f *ct_set4fn(CT_Vec4f *v, float n) {
   v->x = n;
   v->y = n;
   v->z = n;
@@ -129,7 +129,7 @@ CT_EXPORT ct_inline CT_Vec4f *ct_set4fn(CT_Vec4f *v, float n) {
   return v;
 }
 
-CT_EXPORT ct_inline CT_Vec4f *ct_set4fp(CT_Vec4f *v, const float *p) {
+ct_export ct_inline CT_Vec4f *ct_set4fp(CT_Vec4f *v, const float *p) {
   v->x = p[0];
   v->y = p[1];
   v->z = p[2];
@@ -137,7 +137,7 @@ CT_EXPORT ct_inline CT_Vec4f *ct_set4fp(CT_Vec4f *v, const float *p) {
   return v;
 }
 
-CT_EXPORT ct_inline CT_Vec4f *ct_set4fpua(CT_Vec4f *v, const float *p) {
+ct_export ct_inline CT_Vec4f *ct_set4fpua(CT_Vec4f *v, const float *p) {
   v->x = p[0];
   v->y = p[1];
   v->z = p[2];

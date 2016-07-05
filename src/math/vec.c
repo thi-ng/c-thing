@@ -3,7 +3,7 @@
 
 #include "math/vec.h"
 
-CT_EXPORT CT_Vec2f *ct_vec2f(float x, float y, CT_MPool *mpool) {
+ct_export CT_Vec2f *ct_vec2f(float x, float y, CT_MPool *mpool) {
   CT_Vec2f *v = CT_MP_ALLOC(mpool, CT_Vec2f);
   if (v != NULL) {
     v->x = x;
@@ -12,38 +12,62 @@ CT_EXPORT CT_Vec2f *ct_vec2f(float x, float y, CT_MPool *mpool) {
   return v;
 }
 
-CT_EXPORT CT_Vec2f *ct_vec2fn(float n, CT_MPool *mpool) {
+ct_export CT_Vec2f *ct_vec2fn(float n, CT_MPool *mpool) {
   return ct_vec2f(n, n, mpool);
 }
 
-CT_EXPORT CT_Vec3f *ct_vec3f(float x, float y, float z, CT_MPool *mpool) {
+ct_export CT_Vec3f *ct_vec3f(float x, float y, float z, CT_MPool *mpool) {
   CT_Vec3f *v = CT_MP_ALLOC(mpool, CT_Vec3f);
   if (v != NULL) {
+#ifdef CT_FEATURE_SSE
+    v->mmval = _mm_set_ps(0, z, y, x);
+#else
     v->x = x;
     v->y = y;
     v->z = z;
+#endif
   }
   return v;
 }
 
-CT_EXPORT CT_Vec3f *ct_vec3fn(float n, CT_MPool *mpool) {
-  return ct_vec3f(n, n, n, mpool);
+ct_export CT_Vec3f *ct_vec3fn(float n, CT_MPool *mpool) {
+  CT_Vec3f *v = CT_MP_ALLOC(mpool, CT_Vec3f);
+  if (v != NULL) {
+#ifdef CT_FEATURE_SSE
+    v->mmval = _mm_set1_ps(n);
+#else
+    v->x = v->y = v->z = n;
+#endif
+  }
+  return v;
 }
 
-CT_EXPORT CT_Vec4f *ct_vec4f(float x, float y, float z, float w,
+ct_export CT_Vec4f *ct_vec4f(float x, float y, float z, float w,
                              CT_MPool *mpool) {
   CT_Vec4f *v = CT_MP_ALLOC(mpool, CT_Vec4f);
   if (v != NULL) {
-    v->x = x;
-    v->y = y;
-    v->z = z;
-    v->w = w;
+#ifdef CT_FEATURE_SSE
+    v->mmval = _mm_set_ps(w, z, y, x);
+#else
+    v->x               = x;
+    v->y               = y;
+    v->z               = z;
+    v->w               = w;
+#endif
   }
   return v;
 }
 
-CT_EXPORT CT_Vec4f *ct_vec4fn(float n, CT_MPool *mpool) {
-  return ct_vec4f(n, n, n, n, mpool);
+ct_export CT_Vec4f *ct_vec4fn(float n, CT_MPool *mpool) {
+  CT_Vec4f *v = CT_MP_ALLOC(mpool, CT_Vec4f);
+  if (v != NULL) {
+#ifdef CT_FEATURE_SSE
+    v->mmval = _mm_set1_ps(n);
+#else
+    v->x = v->y = v->z = v->w = n;
+#endif
+  }
+  return v;
 }
 
 // ---------- array ops
@@ -55,7 +79,7 @@ VEC_ARRAYOP(scale3f, CT_Vec3f, float, ct_mul3fv_imm)
 VEC_ARRAYOP(translate4f, CT_Vec4f, float, ct_add4fv_imm)
 VEC_ARRAYOP(scale4f, CT_Vec4f, float, ct_mul4fv_imm)
 
-CT_EXPORT CT_Vec2f *ct_closest_point2f(float *ptr, CT_Vec2f *p, size_t num,
+ct_export CT_Vec2f *ct_closest_point2f(float *ptr, CT_Vec2f *p, size_t num,
                                        size_t fstride) {
   float minD        = FLT_MAX;
   CT_Vec2f *closest = NULL;
@@ -72,7 +96,7 @@ CT_EXPORT CT_Vec2f *ct_closest_point2f(float *ptr, CT_Vec2f *p, size_t num,
   return closest;
 }
 
-CT_EXPORT CT_Vec3f *ct_closest_point3f(float *ptr, CT_Vec3f *p, size_t num,
+ct_export CT_Vec3f *ct_closest_point3f(float *ptr, CT_Vec3f *p, size_t num,
                                        size_t fstride) {
   float minD        = FLT_MAX;
   CT_Vec3f *closest = NULL;
@@ -87,6 +111,24 @@ CT_EXPORT CT_Vec3f *ct_closest_point3f(float *ptr, CT_Vec3f *p, size_t num,
     }
   }
   return closest;
+}
+
+int ct_deltaeqfp(const float *a, const float *b, float eps, size_t num) {
+  for (size_t i = 0; i < num; i++) {
+    if (!ct_deltaeqf(a[i], b[i], eps)) return 0;
+  }
+  return 0;
+}
+
+int ct_comparefp(const float *a, const float *b, float eps, size_t num) {
+  for (size_t i = 0; i < num; i++) {
+    float delta = a[i] - b[i];
+    if (delta < -eps)
+      return -1;
+    else if (delta > eps)
+      return 1;
+  }
+  return 0;
 }
 
 int ct_tostringfp(char *buf, int bufsz, const float *p, size_t num) {
