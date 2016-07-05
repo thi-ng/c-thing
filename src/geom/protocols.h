@@ -6,12 +6,12 @@
 #include "geom/rect.h"
 
 #define PROTO_FN1(proto, rtype, name)                            \
-  CT_EXPORT ct_inline rtype ct_##name(const proto *p, void *i) { \
+  ct_export ct_inline rtype ct_##name(const proto *p, void *i) { \
     return p->name(i);                                           \
   }
 
 #define PROTO_FN2(proto, rtype, name, atype)                               \
-  CT_EXPORT ct_inline rtype ct_##name(const proto *p, void *i, atype *a) { \
+  ct_export ct_inline rtype ct_##name(const proto *p, void *i, atype *a) { \
     return p->name(i, a);                                                  \
   }
 

@@ -2,7 +2,7 @@
 
 #include "geom/quadedge.h"
 
-CT_EXPORT CT_QuadEdgeRef ct_qedge() {
+ct_export CT_QuadEdgeRef ct_qedge() {
   CT_QuadEdgeRef e = (CT_QuadEdgeRef)malloc(sizeof(CT_QuadEdge));
   ONEXT(e)         = e;
   SYMDNEXT(e)      = SYM(e);
@@ -14,7 +14,7 @@ CT_EXPORT CT_QuadEdgeRef ct_qedge() {
 
 /* Delete an edge: */
 
-CT_EXPORT void ct_qedge_destroy(CT_QuadEdgeRef e) {
+ct_export void ct_qedge_destroy(CT_QuadEdgeRef e) {
   CT_QuadEdgeRef f = SYM(e);
   if (ONEXT(e) != e) ct_qedge_splice(e, OPREV(e));
   if (ONEXT(f) != f) ct_qedge_splice(f, OPREV(f));
@@ -23,7 +23,7 @@ CT_EXPORT void ct_qedge_destroy(CT_QuadEdgeRef e) {
 
 /* Splice primitive: */
 
-CT_EXPORT void ct_qedge_splice(CT_QuadEdgeRef a, CT_QuadEdgeRef b) {
+ct_export void ct_qedge_splice(CT_QuadEdgeRef a, CT_QuadEdgeRef b) {
   CT_QuadEdgeRef ta, tb;
   CT_QuadEdgeRef alpha = ROT(ONEXT(a));
   CT_QuadEdgeRef beta  = ROT(ONEXT(b));
@@ -52,7 +52,7 @@ static void ct_qedge_do_iter(CT_QuadEdgeRef e, CT_QuadEdgeVisitor visit,
 
 static size_t next_mark = 1;
 
-CT_EXPORT void ct_qedge_iterate(CT_QuadEdgeRef a, CT_QuadEdgeVisitor visit,
+ct_export void ct_qedge_iterate(CT_QuadEdgeRef a, CT_QuadEdgeVisitor visit,
                                 void *state) {
   size_t mark = next_mark;
   next_mark++;

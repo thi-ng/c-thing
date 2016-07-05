@@ -25,7 +25,7 @@ ct_inline uint32_t fmix(uint32_t h, size_t len) {
   return h;
 }
 
-CT_EXPORT uint32_t ct_murmur3_32(const void *data, size_t numBytes) {
+ct_export uint32_t ct_murmur3_32(const void *data, size_t numBytes) {
   if (data == NULL || numBytes == 0) return 0;
 
   const size_t numBlocks = numBytes >> 2;

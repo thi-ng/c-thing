@@ -18,7 +18,7 @@ CT_IClassify __ct_iclassify_circle2 = {
 */
 // clang-format off
 
-CT_EXPORT CT_Circle2f *ct_circle2f_init(CT_Circle2f *c, float x, float y,
+ct_export CT_Circle2f *ct_circle2f_init(CT_Circle2f *c, float x, float y,
                                         float r) {
   c->pos.x = x;
   c->pos.y = y;
@@ -26,28 +26,28 @@ CT_EXPORT CT_Circle2f *ct_circle2f_init(CT_Circle2f *c, float x, float y,
   return c;
 }
 
-CT_EXPORT CT_Circle2f *ct_circle2f_initvr(CT_Circle2f *c, CT_Vec2f *p,
+ct_export CT_Circle2f *ct_circle2f_initvr(CT_Circle2f *c, CT_Vec2f *p,
                                           float r) {
   return ct_circle2f_init(c, p->x, p->y, r);
 }
 
-CT_EXPORT CT_Circle2f *ct_circle2f_initr(CT_Circle2f *c, float r) {
+ct_export CT_Circle2f *ct_circle2f_initr(CT_Circle2f *c, float r) {
   return ct_circle2f_init(c, 0, 0, r);
 }
 
-CT_EXPORT float ct_circle2f_area(CT_Circle2f *c) {
+ct_export float ct_circle2f_area(CT_Circle2f *c) {
   return PI * c->r * c->r;
 }
 
-CT_EXPORT float ct_circle2f_circumference(CT_Circle2f *c) {
+ct_export float ct_circle2f_circumference(CT_Circle2f *c) {
   return TAU * c->r;
 }
 
-CT_EXPORT int ct_circle2f_classify_point(CT_Circle2f *c, CT_Vec2f *p) {
+ct_export int ct_circle2f_classify_point(CT_Circle2f *c, CT_Vec2f *p) {
   return ct_signumf(c->r - ct_dist2fv(&c->pos, p), EPS);
 }
 
-CT_EXPORT CT_Vec2f *ct_circle2f_vertices(CT_Circle2f *c, CT_Vec2f *verts,
+ct_export CT_Vec2f *ct_circle2f_vertices(CT_Circle2f *c, CT_Vec2f *verts,
                                          size_t n) {
   CT_Vec2f *ptr = verts;
   float t = TAU / n;
@@ -58,7 +58,7 @@ CT_EXPORT CT_Vec2f *ct_circle2f_vertices(CT_Circle2f *c, CT_Vec2f *verts,
   return verts;
 }
 
-CT_EXPORT CT_Triangle2f *ct_circle2f_tessellate(CT_Circle2f *c,
+ct_export CT_Triangle2f *ct_circle2f_tessellate(CT_Circle2f *c,
                                                 CT_Triangle2f *tris, size_t n) {
   CT_Vec2f *verts =
       ct_circle2f_vertices(c, malloc(sizeof(CT_Vec2f) * n), n);

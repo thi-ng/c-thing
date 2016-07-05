@@ -49,12 +49,12 @@ uint32_t ct_floor_pow2(uint32_t x);
 float ct_parse_float(char *src, float err);
 uint32_t ct_parse_hex32(char *src, uint32_t err);
 
-CT_EXPORT ct_inline float ct_clampf(const float a, const float b,
+ct_export ct_inline float ct_clampf(const float a, const float b,
                                     const float c) {
   return CLAMP(a, b, c);
 }
 
-CT_EXPORT ct_inline size_t ct_clz8(uint8_t x) {
+ct_export ct_inline size_t ct_clz8(uint8_t x) {
 #if defined(__GCC__) || defined(__clang__) || defined(__EMSCRIPTEN__)
   return x == 0 ? 8 : __builtin_clz(x) - 24;
 #else
@@ -62,8 +62,8 @@ CT_EXPORT ct_inline size_t ct_clz8(uint8_t x) {
 #endif
 }
 
-CT_EXPORT ct_inline size_t ct_deltaeqf(const float a, const float b,
-                                       const float eps) {
+ct_export ct_inline int ct_deltaeqf(const float a, const float b,
+                                    const float eps) {
   return fabs(a - b) <= eps;
 }
 

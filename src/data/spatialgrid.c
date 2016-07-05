@@ -31,7 +31,7 @@ static int find_cell3d(const CT_SpatialGrid *grid, const float *p) {
          find_cell_idx(grid, p, 0);
 }
 
-CT_EXPORT int ct_spgrid_init(CT_SpatialGrid *grid, const float *start,
+ct_export int ct_spgrid_init(CT_SpatialGrid *grid, const float *start,
                              const float *end, const size_t *stride,
                              size_t dims, size_t poolSize) {
   CT_CHECK(dims > 0 && dims < 4, "wrong dimension: %zu", dims);
@@ -60,7 +60,7 @@ fail:
   return 1;
 }
 
-CT_EXPORT void ct_spgrid_free(CT_SpatialGrid *grid) {
+ct_export void ct_spgrid_free(CT_SpatialGrid *grid) {
   free(grid->cells);
   ct_mpool_free(&grid->pool);
 }
@@ -86,7 +86,7 @@ fail:
   return 1;
 }
 
-CT_EXPORT int ct_spgrid_insert(CT_SpatialGrid *grid, const float *p,
+ct_export int ct_spgrid_insert(CT_SpatialGrid *grid, const float *p,
                                const void *item) {
   return do_insert(grid, grid->find_cell(grid, p), p, item);
 }
@@ -113,12 +113,12 @@ fail:
   return 1;
 }
 
-CT_EXPORT int ct_spgrid_remove(CT_SpatialGrid *grid, const float *p,
+ct_export int ct_spgrid_remove(CT_SpatialGrid *grid, const float *p,
                                const void *item) {
   return do_remove(grid, grid->find_cell(grid, p), item);
 }
 
-CT_EXPORT int ct_spgrid_update(CT_SpatialGrid *grid, const float *p,
+ct_export int ct_spgrid_update(CT_SpatialGrid *grid, const float *p,
                                const float *q, const void *item) {
   int id  = grid->find_cell(grid, p);
   int id2 = grid->find_cell(grid, q);
@@ -145,7 +145,7 @@ fail:
   return 1;
 }
 
-CT_EXPORT size_t ct_spgrid_select1d(const CT_SpatialGrid *grid, float p,
+ct_export size_t ct_spgrid_select1d(const CT_SpatialGrid *grid, float p,
                                     float eps, void **results, size_t len) {
   size_t i = 0;
   float x1 = p - eps;
@@ -174,7 +174,7 @@ CT_EXPORT size_t ct_spgrid_select1d(const CT_SpatialGrid *grid, float p,
   return i;
 }
 
-CT_EXPORT size_t ct_spgrid_select2d(const CT_SpatialGrid *grid, const float *p,
+ct_export size_t ct_spgrid_select2d(const CT_SpatialGrid *grid, const float *p,
                                     const float *eps, void **results,
                                     size_t len) {
   size_t i = 0;
@@ -216,7 +216,7 @@ CT_EXPORT size_t ct_spgrid_select2d(const CT_SpatialGrid *grid, const float *p,
   return i;
 }
 
-CT_EXPORT size_t ct_spgrid_select3d(const CT_SpatialGrid *grid, const float *p,
+ct_export size_t ct_spgrid_select3d(const CT_SpatialGrid *grid, const float *p,
                                     const float *eps, void **results,
                                     size_t len) {
   size_t i = 0;
@@ -283,7 +283,7 @@ CT_EXPORT size_t ct_spgrid_select3d(const CT_SpatialGrid *grid, const float *p,
   return i;
 }
 
-CT_EXPORT void ct_spgrid_trace(const CT_SpatialGrid *grid) {
+ct_export void ct_spgrid_trace(const CT_SpatialGrid *grid) {
   switch (grid->dims) {
     case 1:
       CT_INFO("size: %zu, stride: %zu, inv: %f bounds: [%f, %f]", grid->size[0],

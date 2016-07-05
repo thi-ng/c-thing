@@ -61,7 +61,7 @@ fail:
   return 1;
 }
 
-CT_EXPORT int ct_octree_init(CT_Octree *t, float x, float y, float z, float w,
+ct_export int ct_octree_init(CT_Octree *t, float x, float y, float z, float w,
                              float h, float d, size_t poolSize) {
   if (!ct_mpool_init(&t->pool, poolSize, sizeof(CT_OTNode))) {
     CT_OTNode *root = &t->root;
@@ -81,7 +81,7 @@ CT_EXPORT int ct_octree_init(CT_Octree *t, float x, float y, float z, float w,
   return 1;
 }
 
-CT_EXPORT void ct_octree_free(CT_Octree *t) {
+ct_export void ct_octree_free(CT_Octree *t) {
   ct_mpool_free(&t->pool);
 }
 
@@ -124,7 +124,7 @@ fail:
   return 1;
 }
 
-CT_EXPORT int ct_octree_insert(CT_Octree *t, const CT_Vec3f *p,
+ct_export int ct_octree_insert(CT_Octree *t, const CT_Vec3f *p,
                                const void *data) {
   CT_CHECK(t != NULL, "tree is NULL");
   CT_CHECK(p != NULL, "point is NULL");
@@ -140,7 +140,7 @@ fail:
   return 1;
 }
 
-CT_EXPORT int ct_octree_remove(CT_Octree *t, const CT_Vec3f *p) {
+ct_export int ct_octree_remove(CT_Octree *t, const CT_Vec3f *p) {
   CT_CHECK(t != NULL, "tree is NULL");
   CT_CHECK(p != NULL, "point is NULL");
   CT_OTNode *path[24];
@@ -174,7 +174,7 @@ fail:
   return 1;
 }
 
-CT_EXPORT CT_OTNode *ct_octree_find_leaf(const CT_Octree *t,
+ct_export CT_OTNode *ct_octree_find_leaf(const CT_Octree *t,
                                          const CT_Vec3f *p) {
   CT_CHECK(t != NULL, "tree is NULL");
   CT_CHECK(p != NULL, "point is NULL");
@@ -195,7 +195,7 @@ fail:
   return NULL;
 }
 
-CT_EXPORT void ct_octree_trace_node(const CT_OTNode *node, size_t depth) {
+ct_export void ct_octree_trace_node(const CT_OTNode *node, size_t depth) {
   if (node->point) {
     CT_INFO(
         "d: %zu: %p b: [%f,%f,%f,%f,%f,%f] [%f,%f,%f] c: "
@@ -229,7 +229,7 @@ static void trace_node_recursive(const CT_OTNode *node, size_t depth) {
   }
 }
 
-CT_EXPORT void ct_octree_trace(const CT_Octree *t) {
+ct_export void ct_octree_trace(const CT_Octree *t) {
   trace_node_recursive(&t->root, 0);
 }
 
@@ -251,7 +251,7 @@ static int visit_leaves(const CT_OTNode *node, CT_OTVisitor visit,
   return 0;
 }
 
-CT_EXPORT int ct_octree_visit_leaves(const CT_Octree *t, CT_OTVisitor visit,
+ct_export int ct_octree_visit_leaves(const CT_Octree *t, CT_OTVisitor visit,
                                      void *state) {
   return visit_leaves(&t->root, visit, state);
 }
@@ -266,7 +266,7 @@ static void visit_all(const CT_OTNode *node, CT_OTVisitor visit, void *state) {
   }
 }
 
-CT_EXPORT void ct_octree_visit(const CT_Octree *t, CT_OTVisitor visit,
+ct_export void ct_octree_visit(const CT_Octree *t, CT_OTVisitor visit,
                                void *state) {
   visit_all(&t->root, visit, state);
 }

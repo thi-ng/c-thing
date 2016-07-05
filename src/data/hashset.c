@@ -105,7 +105,7 @@ static void delete_entry(CT_Hashset* s, const uint32_t bin,
   }
 }
 
-CT_EXPORT int ct_hs_init(CT_Hashset* s, const CT_HSOps* ops, size_t num,
+ct_export int ct_hs_init(CT_Hashset* s, const CT_HSOps* ops, size_t num,
                          const size_t poolSize, const CT_HSFlags flags) {
   int mp = ct_mpool_init(&s->pool, poolSize, sizeof(CT_HSEntry));
   if (!mp) {
@@ -125,7 +125,7 @@ fail:
   return mp || s->bins == NULL;
 }
 
-CT_EXPORT void ct_hs_free(CT_Hashset* s) {
+ct_export void ct_hs_free(CT_Hashset* s) {
   if (!(s->flags & CT_HS_CONST_KEYS)) {
     for (size_t i = 0; i <= s->binMask; i++) {
       CT_HSEntry* e = s->bins[i];
@@ -141,7 +141,7 @@ CT_EXPORT void ct_hs_free(CT_Hashset* s) {
   s->bins = NULL;
 }
 
-CT_EXPORT int ct_hs_assoc(CT_Hashset* s, const void* key, const size_t ks) {
+ct_export int ct_hs_assoc(CT_Hashset* s, const void* key, const size_t ks) {
   uint32_t hash = s->ops.hash(key, ks);
   uint32_t bin  = hash & s->binMask;
   CT_HSEntry* e = s->bins[bin];
@@ -167,7 +167,7 @@ fail:
   return 1;
 }
 
-CT_EXPORT int ct_hs_contains(CT_Hashset* s, const void* key, const size_t ks) {
+ct_export int ct_hs_contains(CT_Hashset* s, const void* key, const size_t ks) {
   uint32_t bin  = s->ops.hash(key, ks) & s->binMask;
   CT_HSEntry* e = s->bins[bin];
   if (e != NULL) {
@@ -176,7 +176,7 @@ CT_EXPORT int ct_hs_contains(CT_Hashset* s, const void* key, const size_t ks) {
   return (e != NULL);
 }
 
-CT_EXPORT int ct_hs_dissoc(CT_Hashset* s, const void* key, const size_t ks) {
+ct_export int ct_hs_dissoc(CT_Hashset* s, const void* key, const size_t ks) {
   uint32_t bin  = s->ops.hash(key, ks) & s->binMask;
   CT_HSEntry* e = s->bins[bin];
   if (e != NULL) {
@@ -190,7 +190,7 @@ CT_EXPORT int ct_hs_dissoc(CT_Hashset* s, const void* key, const size_t ks) {
   return 1;
 }
 
-CT_EXPORT int ct_hs_iterate(const CT_Hashset* s, CT_HSIterator iter,
+ct_export int ct_hs_iterate(const CT_Hashset* s, CT_HSIterator iter,
                             void* state) {
   for (size_t i = 0; i <= s->binMask; i++) {
     CT_HSEntry* e = s->bins[i];
@@ -207,6 +207,6 @@ static int _hs_into_iter(const CT_HSEntry* e, void* s) {
   return ct_hs_assoc((CT_Hashset*)s, e->key, e->keySize);
 }
 
-CT_EXPORT int ct_hs_into(CT_Hashset* dest, const CT_Hashset* src) {
+ct_export int ct_hs_into(CT_Hashset* dest, const CT_Hashset* src) {
   return ct_hs_iterate(src, _hs_into_iter, dest);
 }

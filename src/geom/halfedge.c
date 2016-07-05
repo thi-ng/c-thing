@@ -44,7 +44,7 @@ fail:
   return v;
 }
 
-CT_EXPORT int ct_hemesh_init(CT_HEMesh *mesh, size_t numV, size_t numF) {
+ct_export int ct_hemesh_init(CT_HEMesh *mesh, size_t numV, size_t numF) {
   ct_mpool_init(&mesh->mpoolV, numV, sizeof(CT_HEVertex));
   ct_mpool_init(&mesh->mpoolF, numF, sizeof(CT_HEFace));
   ct_mpool_init(&mesh->mpoolE, numF * 2, sizeof(CT_HalfEdge));
@@ -54,7 +54,7 @@ CT_EXPORT int ct_hemesh_init(CT_HEMesh *mesh, size_t numV, size_t numF) {
   return 0;
 }
 
-CT_EXPORT void ct_hemesh_free(CT_HEMesh *mesh) {
+ct_export void ct_hemesh_free(CT_HEMesh *mesh) {
   ct_mpool_free(&mesh->mpoolV);
   ct_mpool_free(&mesh->mpoolF);
   ct_mpool_free(&mesh->mpoolE);

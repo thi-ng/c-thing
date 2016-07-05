@@ -9,7 +9,7 @@ ct_inline size_t cell_index(const CT_AdjMatrix *mat, const size_t x,
   return x * mat->stride + (y >> 3);
 }
 
-CT_EXPORT int ct_adjmat_init(CT_AdjMatrix *mat, size_t width) {
+ct_export int ct_adjmat_init(CT_AdjMatrix *mat, size_t width) {
   width         = ct_ceil_multiple_pow2(width, 8);
   mat->stride   = width >> 3;
   mat->numBytes = width * mat->stride;
@@ -17,11 +17,11 @@ CT_EXPORT int ct_adjmat_init(CT_AdjMatrix *mat, size_t width) {
   return mat->bits == NULL;
 }
 
-CT_EXPORT void ct_adjmat_free(CT_AdjMatrix *mat) {
+ct_export void ct_adjmat_free(CT_AdjMatrix *mat) {
   free(mat->bits);
 }
 
-CT_EXPORT int ct_adjmat_join(CT_AdjMatrix *mat, const size_t x,
+ct_export int ct_adjmat_join(CT_AdjMatrix *mat, const size_t x,
                              const size_t y) {
   CT_CHECK(x < mat->stride << 3, "x out of bounds");
   CT_CHECK(y < mat->stride << 3, "y out of bounds");
@@ -36,7 +36,7 @@ fail:
   return 1;
 }
 
-CT_EXPORT int ct_adjmat_disjoin(CT_AdjMatrix *mat, const size_t x,
+ct_export int ct_adjmat_disjoin(CT_AdjMatrix *mat, const size_t x,
                                 const size_t y) {
   CT_CHECK(x < mat->stride << 3, "x out of bounds");
   CT_CHECK(y < mat->stride << 3, "y out of bounds");
@@ -51,7 +51,7 @@ fail:
   return 1;
 }
 
-CT_EXPORT int ct_adjmat_is_join(CT_AdjMatrix *mat, const size_t x,
+ct_export int ct_adjmat_is_join(CT_AdjMatrix *mat, const size_t x,
                                 const size_t y) {
   CT_CHECK(x < mat->stride << 3, "x out of bounds");
   CT_CHECK(y < mat->stride << 3, "y out of bounds");
@@ -62,7 +62,7 @@ fail:
   return -1;
 }
 
-CT_EXPORT void ct_adjmat_trace(const CT_AdjMatrix *mat) {
+ct_export void ct_adjmat_trace(const CT_AdjMatrix *mat) {
   uint8_t *ptr = mat->bits;
   for (size_t y = 0, w = mat->stride << 3; y < w; y++) {
     fprintf(stderr, "%04zx: ", y);
@@ -78,7 +78,7 @@ CT_EXPORT void ct_adjmat_trace(const CT_AdjMatrix *mat) {
   }
 }
 
-CT_EXPORT int ct_adjmat_iterate(const CT_AdjMatrix *mat, CT_AdjMatIterator iter,
+ct_export int ct_adjmat_iterate(const CT_AdjMatrix *mat, CT_AdjMatIterator iter,
                                 void *state) {
   uint8_t *ptr = mat->bits;
   for (size_t y = 0, w = mat->stride << 3; y < w; y++) {

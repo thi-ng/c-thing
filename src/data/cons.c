@@ -8,7 +8,7 @@ typedef struct {
   CT_MPool* pool;
 } CT_ConsCloneState;
 
-CT_EXPORT CT_Cons* ct_cons(void* x, CT_Cons* head, CT_MPool* mpool) {
+ct_export CT_Cons* ct_cons(void* x, CT_Cons* head, CT_MPool* mpool) {
   CT_Cons* cell = CT_MP_ALLOC(mpool, CT_Cons);
   CT_CHECK_MEM(cell);
   cell->value = x;
@@ -29,7 +29,7 @@ static void ct_cons_iterate_clone(CT_Cons* c, void* cstate) {
   }
 }
 
-CT_EXPORT void ct_cons_free(CT_Cons* cell, size_t freeVal) {
+ct_export void ct_cons_free(CT_Cons* cell, size_t freeVal) {
   if (cell != NULL) {
     if (freeVal) {
       CT_INFO("free cons value: %p", cell->value);
@@ -39,7 +39,7 @@ CT_EXPORT void ct_cons_free(CT_Cons* cell, size_t freeVal) {
   }
 }
 
-CT_EXPORT void ct_cons_free_all(CT_Cons* cell, size_t freeVal) {
+ct_export void ct_cons_free_all(CT_Cons* cell, size_t freeVal) {
   CT_Cons* next = NULL;
   while (cell != NULL) {
     next = cell->next;
@@ -48,7 +48,7 @@ CT_EXPORT void ct_cons_free_all(CT_Cons* cell, size_t freeVal) {
   }
 }
 
-CT_EXPORT void* ct_cons_iterate(CT_Cons* cell, CT_ConsVisitor visit,
+ct_export void* ct_cons_iterate(CT_Cons* cell, CT_ConsVisitor visit,
                                 void* state) {
   while (cell != NULL) {
     visit(cell, state);
@@ -57,7 +57,7 @@ CT_EXPORT void* ct_cons_iterate(CT_Cons* cell, CT_ConsVisitor visit,
   return state;
 }
 
-CT_EXPORT void* ct_cons_iterate_n(CT_Cons* cell, CT_ConsVisitor visit,
+ct_export void* ct_cons_iterate_n(CT_Cons* cell, CT_ConsVisitor visit,
                                   void* state, size_t num) {
   while (cell != NULL && num--) {
     visit(cell, state);
@@ -66,7 +66,7 @@ CT_EXPORT void* ct_cons_iterate_n(CT_Cons* cell, CT_ConsVisitor visit,
   return state;
 }
 
-CT_EXPORT CT_Cons* ct_cons_from_array(void* values, size_t num, size_t stride,
+ct_export CT_Cons* ct_cons_from_array(void* values, size_t num, size_t stride,
                                       CT_Cons* head, CT_MPool* mpool) {
   if (num > 0) {
     values += (num - 1) * stride;
@@ -78,7 +78,7 @@ CT_EXPORT CT_Cons* ct_cons_from_array(void* values, size_t num, size_t stride,
   return head;
 }
 
-CT_EXPORT CT_Cons* ct_cons_from_parray(void** values, size_t num, CT_Cons* head,
+ct_export CT_Cons* ct_cons_from_parray(void** values, size_t num, CT_Cons* head,
                                        CT_MPool* mpool) {
   if (num > 0) {
     values += num - 1;
@@ -89,7 +89,7 @@ CT_EXPORT CT_Cons* ct_cons_from_parray(void** values, size_t num, CT_Cons* head,
   return head;
 }
 
-CT_EXPORT CT_Cons* ct_cons_concat_imm(CT_Cons* head, CT_Cons* rest) {
+ct_export CT_Cons* ct_cons_concat_imm(CT_Cons* head, CT_Cons* rest) {
   if (head != NULL) {
     CT_Cons* hd = head;
     while (1) {
@@ -105,7 +105,7 @@ CT_EXPORT CT_Cons* ct_cons_concat_imm(CT_Cons* head, CT_Cons* rest) {
   return head;
 }
 
-CT_EXPORT CT_Cons* ct_cons_concat(CT_Cons* head, CT_Cons* rest,
+ct_export CT_Cons* ct_cons_concat(CT_Cons* head, CT_Cons* rest,
                                   CT_MPool* mpool) {
   CT_ConsCloneState state = {.head = NULL, .pool = mpool};
   ct_cons_iterate(head, ct_cons_iterate_clone,
@@ -113,7 +113,7 @@ CT_EXPORT CT_Cons* ct_cons_concat(CT_Cons* head, CT_Cons* rest,
   return state.head;
 }
 
-CT_EXPORT CT_Cons* ct_cons_take(CT_Cons* head, size_t num, CT_MPool* mpool) {
+ct_export CT_Cons* ct_cons_take(CT_Cons* head, size_t num, CT_MPool* mpool) {
   CT_ConsCloneState state = {.head = NULL, .pool = mpool};
   ct_cons_iterate_n(head, ct_cons_iterate_clone, &state, num);
   return state.head;

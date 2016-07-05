@@ -18,7 +18,7 @@ static int find_candidate(const CT_QTNode *node, void *s) {
   return 1;
 }
 
-CT_EXPORT int ct_poisson_sample2f(CT_Quadtree *t, float radius, size_t num,
+ct_export int ct_poisson_sample2f(CT_Quadtree *t, float radius, size_t num,
                                   CT_Vec2f *out) {
   float maxD = 0;
   float w    = t->root.w;
@@ -40,7 +40,7 @@ CT_EXPORT int ct_poisson_sample2f(CT_Quadtree *t, float radius, size_t num,
   return 1;
 }
 
-CT_EXPORT int ct_poisson_sample2f_with(CT_Quadtree *t, CT_PoissonDiskGen gen,
+ct_export int ct_poisson_sample2f_with(CT_Quadtree *t, CT_PoissonDiskGen gen,
                                        void *state, size_t num, CT_Vec2f *out) {
   float maxD = 0;
   float radius;

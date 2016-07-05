@@ -52,7 +52,7 @@ static void add_particle(DLA *dla) {
       if (c) {
 #ifdef CT_FEATURE_SSE4
         const __m128 cmm = c->mmval;
-        p->mmval = (p->mmval - cmm) * _mm_rsqrt_ps(_mm_load1_ps(&minD)) + cmm;
+        p->mmval = (p->mmval - cmm) * _mm_rsqrt_ps(_mm_set1_ps(minD)) + cmm;
 #else
         const float t = 1.0f / sqrtf(minD);
         p->x          = c->x + t * (p->x - c->x);

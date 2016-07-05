@@ -377,7 +377,7 @@ static void springs3d(CT_Verlet *v) {
   }
 }
 
-CT_EXPORT int ct_verlet_init2d(CT_Verlet *v, size_t maxP, size_t maxS,
+ct_export int ct_verlet_init2d(CT_Verlet *v, size_t maxP, size_t maxS,
                                size_t *grid) {
   maxP       = ct_ceil_multiple_pow2(maxP, 4);
   float *buf = calloc((3 * 2 + 1) * maxP, sizeof(float));
@@ -403,7 +403,7 @@ fail:
   return 1;
 }
 
-CT_EXPORT int ct_verlet_init3d(CT_Verlet *v, size_t maxP, size_t maxS,
+ct_export int ct_verlet_init3d(CT_Verlet *v, size_t maxP, size_t maxS,
                                size_t *grid) {
   maxP       = ct_ceil_multiple_pow2(maxP, 4);
   float *buf = calloc((3 * 4 + 1) * maxP, sizeof(float));
@@ -429,12 +429,12 @@ fail:
   return 1;
 }
 
-CT_EXPORT void ct_verlet_free(CT_Verlet *v) {
+ct_export void ct_verlet_free(CT_Verlet *v) {
   free(v->pos);
   ct_spgrid_free(&v->accel);
 }
 
-CT_EXPORT void ct_verlet_update2d(CT_Verlet *v) {
+ct_export void ct_verlet_update2d(CT_Verlet *v) {
   for (size_t i = 0; i < v->iter; i++) {
     accelerate2d(v);
     springs2d(v);
@@ -446,7 +446,7 @@ CT_EXPORT void ct_verlet_update2d(CT_Verlet *v) {
   }
 }
 
-CT_EXPORT void ct_verlet_update3d(CT_Verlet *v) {
+ct_export void ct_verlet_update3d(CT_Verlet *v) {
   for (size_t i = 0; i < v->iter; i++) {
     accelerate3d(v);
     springs3d(v);
@@ -458,7 +458,7 @@ CT_EXPORT void ct_verlet_update3d(CT_Verlet *v) {
   }
 }
 
-CT_EXPORT void ct_verlet_set2f(CT_Verlet *v, size_t i, const float *pos,
+ct_export void ct_verlet_set2f(CT_Verlet *v, size_t i, const float *pos,
                                float radius) {
   v->radius[i] = radius;
   i <<= 1;
@@ -467,7 +467,7 @@ CT_EXPORT void ct_verlet_set2f(CT_Verlet *v, size_t i, const float *pos,
   ct_spgrid_insert(&v->accel, pos, (void *)i);
 }
 
-CT_EXPORT void ct_verlet_set3f(CT_Verlet *v, size_t i, const float *pos,
+ct_export void ct_verlet_set3f(CT_Verlet *v, size_t i, const float *pos,
                                float radius) {
   v->radius[i] = radius;
   i <<= 2;
@@ -477,7 +477,7 @@ CT_EXPORT void ct_verlet_set3f(CT_Verlet *v, size_t i, const float *pos,
   ct_spgrid_insert(&v->accel, pos, (void *)i);
 }
 
-CT_EXPORT void ct_verlet_set_spring2d(CT_Verlet *v, size_t i, size_t a,
+ct_export void ct_verlet_set_spring2d(CT_Verlet *v, size_t i, size_t a,
                                       size_t b, float len, float strength) {
   CT_VPSpring *s = &v->springs[i];
   s->a           = a << 1;
@@ -488,7 +488,7 @@ CT_EXPORT void ct_verlet_set_spring2d(CT_Verlet *v, size_t i, size_t a,
           strength);
 }
 
-CT_EXPORT void ct_verlet_set_spring3d(CT_Verlet *v, size_t i, size_t a,
+ct_export void ct_verlet_set_spring3d(CT_Verlet *v, size_t i, size_t a,
                                       size_t b, float len, float strength) {
   CT_VPSpring *s = &v->springs[i];
   s->a           = a << 2;

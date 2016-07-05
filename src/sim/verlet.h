@@ -44,7 +44,7 @@ void ct_verlet_set_spring2d(CT_Verlet *v, size_t i, size_t a, size_t b,
 void ct_verlet_set_spring3d(CT_Verlet *v, size_t i, size_t a, size_t b,
                             float len, float strength);
 
-CT_EXPORT ct_inline void ct_verlet_pos2f(const CT_Verlet *v, size_t i,
+ct_export ct_inline void ct_verlet_pos2f(const CT_Verlet *v, size_t i,
                                          float *out) {
   out[2] = v->radius[i];
   i <<= 1;
@@ -52,7 +52,7 @@ CT_EXPORT ct_inline void ct_verlet_pos2f(const CT_Verlet *v, size_t i,
   out[1] = v->pos[i + 1];
 }
 
-CT_EXPORT ct_inline void ct_verlet_pos3f(const CT_Verlet *v, size_t i,
+ct_export ct_inline void ct_verlet_pos3f(const CT_Verlet *v, size_t i,
                                          float *out) {
   out[2] = v->radius[i];
   i <<= 2;

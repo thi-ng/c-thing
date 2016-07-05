@@ -55,7 +55,7 @@ fail:
   return 1;
 }
 
-CT_EXPORT int ct_qtree_init(CT_Quadtree *t, float x, float y, float w, float h,
+ct_export int ct_qtree_init(CT_Quadtree *t, float x, float y, float w, float h,
                             size_t poolSize) {
   if (!ct_mpool_init(&t->pool, poolSize, sizeof(CT_QTNode))) {
     CT_QTNode *root = &t->root;
@@ -72,7 +72,7 @@ CT_EXPORT int ct_qtree_init(CT_Quadtree *t, float x, float y, float w, float h,
   return 1;
 }
 
-CT_EXPORT void ct_qtree_free(CT_Quadtree *t) {
+ct_export void ct_qtree_free(CT_Quadtree *t) {
   ct_mpool_free(&t->pool);
 }
 
@@ -118,7 +118,7 @@ fail:
   return 1;
 }
 
-CT_EXPORT int ct_qtree_insert(CT_Quadtree *t, const CT_Vec2f *p,
+ct_export int ct_qtree_insert(CT_Quadtree *t, const CT_Vec2f *p,
                               const void *data) {
   CT_CHECK(t != NULL, "tree is NULL");
   CT_CHECK(p != NULL, "point is NULL");
@@ -133,7 +133,7 @@ fail:
   return 1;
 }
 
-CT_EXPORT int ct_qtree_remove(CT_Quadtree *t, const CT_Vec2f *p) {
+ct_export int ct_qtree_remove(CT_Quadtree *t, const CT_Vec2f *p) {
   CT_CHECK(t != NULL, "tree is NULL");
   CT_CHECK(p != NULL, "point is NULL");
   CT_QTNode *path[24];
@@ -165,7 +165,7 @@ fail:
   return 1;
 }
 
-CT_EXPORT CT_QTNode *ct_qtree_find_leaf(const CT_Quadtree *t,
+ct_export CT_QTNode *ct_qtree_find_leaf(const CT_Quadtree *t,
                                         const CT_Vec2f *p) {
   CT_CHECK(t != NULL, "tree is NULL");
   CT_CHECK(p != NULL, "point is NULL");
@@ -186,7 +186,7 @@ fail:
   return NULL;
 }
 
-CT_EXPORT void ct_qtree_trace_node(const CT_QTNode *node, size_t depth) {
+ct_export void ct_qtree_trace_node(const CT_QTNode *node, size_t depth) {
   if (node->point) {
     CT_INFO(
         "d: %zu, %p b: [%f,%f,%f,%f] [%f,%f] c: [%p,%p,%p,%p] t: %zu, p: "
@@ -212,7 +212,7 @@ static void trace_node_recursive(const CT_QTNode *node, size_t depth) {
   }
 }
 
-CT_EXPORT void ct_qtree_trace(const CT_Quadtree *t) {
+ct_export void ct_qtree_trace(const CT_Quadtree *t) {
   trace_node_recursive(&t->root, 0);
 }
 
@@ -234,7 +234,7 @@ static int visit_leaves(const CT_QTNode *node, CT_QTVisitor visit,
   return 0;
 }
 
-CT_EXPORT int ct_qtree_visit_leaves(const CT_Quadtree *t, CT_QTVisitor visit,
+ct_export int ct_qtree_visit_leaves(const CT_Quadtree *t, CT_QTVisitor visit,
                                     void *state) {
   return visit_leaves(&t->root, visit, state);
 }
@@ -249,7 +249,7 @@ static void visit_all(const CT_QTNode *node, CT_QTVisitor visit, void *state) {
   }
 }
 
-CT_EXPORT void ct_qtree_visit(const CT_Quadtree *t, CT_QTVisitor visit,
+ct_export void ct_qtree_visit(const CT_Quadtree *t, CT_QTVisitor visit,
                               void *state) {
   visit_all(&t->root, visit, state);
 }

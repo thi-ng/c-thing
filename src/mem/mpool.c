@@ -2,11 +2,11 @@
 
 static size_t _mpool_id = 0;
 
-CT_EXPORT CT_MPool *ct_mpool_new() {
+ct_export CT_MPool *ct_mpool_new() {
   return malloc(sizeof(CT_MPool));
 }
 
-CT_EXPORT size_t ct_mpool_init(CT_MPool *mp, size_t num, size_t blockSize) {
+ct_export size_t ct_mpool_init(CT_MPool *mp, size_t num, size_t blockSize) {
   CT_CHECK(blockSize >= sizeof(CT_MPoolFreeList),
            "blocksize must be >= %zu, was %zu", sizeof(CT_MPoolFreeList),
            blockSize);
@@ -28,7 +28,7 @@ fail:
   return 1;
 }
 
-CT_EXPORT void ct_mpool_free_block(CT_MPool *mp, const void *block) {
+ct_export void ct_mpool_free_block(CT_MPool *mp, const void *block) {
   // TODO add valid ptr check (see mpool_free)
   CT_DEBUG("pool: %zu, free block: %p", mp->poolID, block);
   CT_MPoolFreeList *fb = (CT_MPoolFreeList *)block;
@@ -38,7 +38,7 @@ fail:
   return;
 }
 
-CT_EXPORT void ct_mpool_free_all_blocks(CT_MPool *mp) {
+ct_export void ct_mpool_free_all_blocks(CT_MPool *mp) {
   mp->freeList    = NULL;
   CT_MPoolList *p = mp->head;
   while (p != NULL) {
@@ -48,7 +48,7 @@ CT_EXPORT void ct_mpool_free_all_blocks(CT_MPool *mp) {
   }
 }
 
-CT_EXPORT void ct_mpool_free(CT_MPool *mp) {
+ct_export void ct_mpool_free(CT_MPool *mp) {
   CT_CHECK(mp->head, "pool already freed");
   CT_DEBUG("pool: %zu, freeing all...", mp->poolID);
   CT_MPoolList *p = mp->head, *q;
@@ -65,7 +65,7 @@ fail:
   return;
 }
 
-CT_EXPORT CT_MPCompactResult ct_mpool_compact(CT_MPool *mp) {
+ct_export CT_MPCompactResult ct_mpool_compact(CT_MPool *mp) {
   CT_MPoolList *head     = mp->head;
   CT_MPoolList *prevHead = NULL;
   CT_MPCompactResult res = {.blocks = 0, .pools = 0};
@@ -122,7 +122,7 @@ CT_EXPORT CT_MPCompactResult ct_mpool_compact(CT_MPool *mp) {
   return res;
 }
 
-CT_EXPORT void *ct_mpool_alloc(CT_MPool *mp) {
+ct_export void *ct_mpool_alloc(CT_MPool *mp) {
   void *ptr = NULL;
   if (mp->freeList != NULL) {
     ptr          = mp->freeList;
@@ -148,7 +148,7 @@ fail:
   return ptr;
 }
 
-CT_EXPORT void ct_mpool_trace(const CT_MPool *mp) {
+ct_export void ct_mpool_trace(const CT_MPool *mp) {
   CT_INFO("pool: %zu, nextID: %zu, head: %p, free: %p, bsize: %zu, num: %zu",
           mp->poolID, mp->head->nextID, mp->head, mp->freeList, mp->blockSize,
           mp->numBlocks);

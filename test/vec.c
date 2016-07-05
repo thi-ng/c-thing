@@ -54,7 +54,7 @@ int test_vec2f() {
   return 0;
 }
 
-CT_EXPORT void bench_sse(CT_Vec3f *a, CT_Vec3f *b) {
+ct_export void bench_sse(CT_Vec3f *a, CT_Vec3f *b) {
   clock_t begin = clock();
   for (size_t i = 0; i < 1e6; i++) {
     ct_add3fv_imm(a, b);

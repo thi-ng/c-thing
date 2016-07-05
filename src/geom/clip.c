@@ -23,7 +23,7 @@
 
 // https://en.wikipedia.org/wiki/Liang%E2%80%93Barsky_algorithm
 
-CT_EXPORT int ct_clip2f_liangbarsky(const CT_Vec2f *tl, const CT_Vec2f *br,
+ct_export int ct_clip2f_liangbarsky(const CT_Vec2f *tl, const CT_Vec2f *br,
                                     const CT_Vec2f *la, const CT_Vec2f *lb,
                                     CT_Vec2f *ca, CT_Vec2f *cb) {
   const float dx = lb->x - la->x;
