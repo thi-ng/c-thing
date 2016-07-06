@@ -193,11 +193,12 @@ make config=release_sse test && bin/release/test
 
 # ...or use auto test w/ file watcher
 # tests re-run automatically if files in /src or /test are changed
-# if no args given, compiles w/ clang & address analyzer enabled
+# if no args given, compiles w/ address sanitizer enabled
 ./autotest
 # ...or provide build config (target config profile)
-# (only test_ana requires clang, other profiles also build w/ gcc etc.)
-./autotest test_ana debug
+# (only test_msan requires linux & clang, other profiles also build w/ gcc etc.)
+./autotest test_msan
+./autotest test_asan debug
 ./autotest test release no_sse
 #+END_SRC
 

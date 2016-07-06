@@ -1,6 +1,6 @@
 #!/bin/sh
 
-readonly target=${1:-test_ana}
+readonly target=${1:-test_asan}
 readonly config=${2:-release}
 readonly qualifier=${3:-sse}
 
