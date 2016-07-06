@@ -148,6 +148,14 @@ ct_export ct_inline CT_Vec3f *ct_set3fn(CT_Vec3f *v, float n) {
   return v;
 }
 
+ct_export ct_inline CT_Vec3f *ct_set3fxyz(CT_Vec3f *v, float x, float y,
+                                          float z) {
+  v->x = x;
+  v->y = y;
+  v->z = z;
+  return v;
+}
+
 ct_export ct_inline CT_Vec3f *ct_set3fp(CT_Vec3f *v, const float *p) {
   v->x = p[0];
   v->y = p[1];

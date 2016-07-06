@@ -119,6 +119,12 @@ ct_export ct_inline CT_Vec4f *ct_set4fn(CT_Vec4f *v, float n) {
   return v;
 }
 
+ct_export ct_inline CT_Vec4f *ct_set4fxyzw(CT_Vec4f *v, float x, float y,
+                                           float z, float w) {
+  v->mmval = _mm_set_ps(w,z,y,x);
+  return v;
+}
+
 ct_export ct_inline CT_Vec4f *ct_set4fp(CT_Vec4f *v, const float *p) {
   v->mmval = _mm_load_ps(p);
   return v;

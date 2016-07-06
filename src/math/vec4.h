@@ -129,6 +129,15 @@ ct_export ct_inline CT_Vec4f *ct_set4fn(CT_Vec4f *v, float n) {
   return v;
 }
 
+ct_export ct_inline CT_Vec4f *ct_set4fxyzw(CT_Vec4f *v, float x, float y,
+                                           float z, float w) {
+  v->x = x;
+  v->y = y;
+  v->z = z;
+  v->w = w;
+  return v;
+}
+
 ct_export ct_inline CT_Vec4f *ct_set4fp(CT_Vec4f *v, const float *p) {
   v->x = p[0];
   v->y = p[1];

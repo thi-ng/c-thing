@@ -91,12 +91,4 @@ ct_export ct_inline CT_Vec3f *ct_limit3f_imm(CT_Vec3f *v, float len) {
   return v;
 }
 
-ct_export ct_inline CT_Vec3f *ct_set3fxyz(CT_Vec3f *v, float x, float y,
-                                          float z) {
-  v->x = x;
-  v->y = y;
-  v->z = z;
-  return v;
-}
-
 CT_END_DECLS
