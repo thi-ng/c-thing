@@ -165,28 +165,28 @@ ct_export CT_Mat4f *ct_mat4f_transpose_imm(CT_Mat4f *m) {
 ct_export CT_Mat4f *ct_mat4f_mul_imm(CT_Mat4f *a, const CT_Mat4f *b) {
   CT_Mat4f t = *a;
   float i = b->m00, j = b->m01, k = b->m02, l = b->m03;
-  a->mat[0] = t.m00 * i + t.m10 * j + t.m20 * k + t.m30 * l;
-  a->mat[1] = t.m01 * i + t.m11 * j + t.m21 * k + t.m31 * l;
-  a->mat[2] = t.m02 * i + t.m12 * j + t.m22 * k + t.m32 * l;
-  a->mat[3] = t.m03 * i + t.m13 * j + t.m23 * k + t.m33 * l;
+  a->m00 = t.m00 * i + t.m10 * j + t.m20 * k + t.m30 * l;
+  a->m01 = t.m01 * i + t.m11 * j + t.m21 * k + t.m31 * l;
+  a->m02 = t.m02 * i + t.m12 * j + t.m22 * k + t.m32 * l;
+  a->m03 = t.m03 * i + t.m13 * j + t.m23 * k + t.m33 * l;
 
   i = b->m10, j = b->m11, k = b->m12, l = b->m13;
-  a->mat[4] = t.m00 * i + t.m10 * j + t.m20 * k + t.m30 * l;
-  a->mat[5] = t.m01 * i + t.m11 * j + t.m21 * k + t.m31 * l;
-  a->mat[6] = t.m02 * i + t.m12 * j + t.m22 * k + t.m32 * l;
-  a->mat[7] = t.m03 * i + t.m13 * j + t.m23 * k + t.m33 * l;
+  a->m10 = t.m00 * i + t.m10 * j + t.m20 * k + t.m30 * l;
+  a->m11 = t.m01 * i + t.m11 * j + t.m21 * k + t.m31 * l;
+  a->m12 = t.m02 * i + t.m12 * j + t.m22 * k + t.m32 * l;
+  a->m13 = t.m03 * i + t.m13 * j + t.m23 * k + t.m33 * l;
 
   i = b->m20, j = b->m21, k = b->m22, l = b->m23;
-  a->mat[8]  = t.m00 * i + t.m10 * j + t.m20 * k + t.m30 * l;
-  a->mat[9]  = t.m01 * i + t.m11 * j + t.m21 * k + t.m31 * l;
-  a->mat[10] = t.m02 * i + t.m12 * j + t.m22 * k + t.m32 * l;
-  a->mat[11] = t.m03 * i + t.m13 * j + t.m23 * k + t.m33 * l;
+  a->m20 = t.m00 * i + t.m10 * j + t.m20 * k + t.m30 * l;
+  a->m21 = t.m01 * i + t.m11 * j + t.m21 * k + t.m31 * l;
+  a->m22 = t.m02 * i + t.m12 * j + t.m22 * k + t.m32 * l;
+  a->m23 = t.m03 * i + t.m13 * j + t.m23 * k + t.m33 * l;
 
   i = b->m30, j = b->m31, k = b->m32, l = b->m33;
-  a->mat[12] = t.m00 * i + t.m10 * j + t.m20 * k + t.m30 * l;
-  a->mat[13] = t.m01 * i + t.m11 * j + t.m21 * k + t.m31 * l;
-  a->mat[14] = t.m02 * i + t.m12 * j + t.m22 * k + t.m32 * l;
-  a->mat[15] = t.m03 * i + t.m13 * j + t.m23 * k + t.m33 * l;
+  a->m30 = t.m00 * i + t.m10 * j + t.m20 * k + t.m30 * l;
+  a->m31 = t.m01 * i + t.m11 * j + t.m21 * k + t.m31 * l;
+  a->m32 = t.m02 * i + t.m12 * j + t.m22 * k + t.m32 * l;
+  a->m33 = t.m03 * i + t.m13 * j + t.m23 * k + t.m33 * l;
   return a;
 }
 
@@ -357,6 +357,66 @@ ct_export CT_Mat4f *ct_mat4f_rotate_axis(const CT_Mat4f *m,
                                          CT_Mat4f *out) {
   *out = *m;
   return ct_mat4f_rotate_axis_imm(out, axis, theta);
+}
+
+ct_export CT_Mat4f *ct_mat4f_set_ortho(CT_Mat4f *m, float l, float t, float r,
+                                       float b, float n, float f) {
+  float dx = 1.0f / (l - r);
+  float dy = 1.0f / (b - t);
+  float dz = 1.0f / (n - f);
+  m->m01 = m->m02 = m->m03 = 0;
+  m->m10 = m->m12 = m->m13 = 0;
+  m->m20 = m->m21 = m->m23 = 0;
+  m->m00                   = -2.0f * dx;
+  m->m11                   = -2.0f * dy;
+  m->m22                   = 2.0f * dz;
+  m->m30                   = (l + r) * dx;
+  m->m31                   = (t + b) * dy;
+  m->m32                   = (n + f) * dz;
+  m->m33                   = 1;
+  return m;
+}
+
+ct_export CT_Mat4f *ct_mat4f_set_perspective(CT_Mat4f *m, float fovy,
+                                             float aspect, float near,
+                                             float far) {
+  float f  = 1.0f / tanf(0.5 * fovy * RADIANS);
+  float nf = 1.0f / (near - far);
+  m->m01 = m->m02 = m->m03 = 0;
+  m->m10 = m->m12 = m->m13 = 0;
+  m->m20 = m->m21 = 0;
+  m->m30 = m->m31 = m->m33 = 0;
+  m->m00                   = f / aspect;
+  m->m11                   = f;
+  m->m22                   = (near + far) * nf;
+  m->m23                   = -1;
+  m->m32                   = 2 * near * far * nf;
+  return m;
+}
+
+ct_export int ct_mat4f_set_lookat(CT_Mat4f *m, const CT_Vec3f *eye,
+                                  const CT_Vec3f *target, const CT_Vec3f *up) {
+  CT_Vec3f x, y, z;
+  ct_sub3fv(eye, target, &z);
+  if (ct_magsq3f(&z) < EPS) return 1;
+  ct_normalize3f_imm(&z, 1);
+  ct_normalize3f_imm(ct_cross3fv(up, &z, &x), 1);
+  ct_normalize3f_imm(ct_cross3fv(&z, &x, &y), 1);
+  m->m03 = m->m13 = m->m23 = 0;
+  m->m00                   = x.x;
+  m->m01                   = y.x;
+  m->m02                   = z.x;
+  m->m10                   = x.y;
+  m->m11                   = y.y;
+  m->m12                   = z.y;
+  m->m20                   = x.z;
+  m->m21                   = y.z;
+  m->m22                   = z.z;
+  m->m30                   = -ct_dot3fv(&x, eye);
+  m->m31                   = -ct_dot3fv(&y, eye);
+  m->m32                   = -ct_dot3fv(&z, eye);
+  m->m33                   = 1;
+  return 0;
 }
 
 ct_export void ct_mat4f_trace(const CT_Mat4f *m) {

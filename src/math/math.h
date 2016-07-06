@@ -19,6 +19,8 @@
 #define INV_TAU (1.0f / TAU)
 #define INV_PI (1.0f / PI)
 #define INV_HALF_PI (1.0f / HALF_PI)
+#define DEGREES (180.0 / PI)
+#define RADIANS (PI / 180.0)
 
 #define INV_RAND_MAX (float)(1.0 / RAND_MAX)
 #define INV_RAND_MAX2 (float)(2.0 / RAND_MAX)

@@ -36,5 +36,12 @@ CT_Mat4f *ct_mat4f_rotate_axis_imm(CT_Mat4f *m, const CT_Vec3f *axis,
 CT_Mat4f *ct_mat4f_rotate_axis(const CT_Mat4f *m, const CT_Vec3f *axis,
                                float theta, CT_Mat4f *out);
 CT_Vec4f *ct_mat4f_transform4fv_imm(const CT_Mat4f *m, CT_Vec4f *v);
-int ct_mat4f_compare(const CT_Mat4f *a, const CT_Mat4f *b);
+
+CT_Mat4f *ct_mat4f_set_ortho(CT_Mat4f *m, float l, float t, float r, float b,
+                             float n, float f);
+CT_Mat4f *ct_mat4f_set_perspective(CT_Mat4f *m, float fovy, float aspect,
+                                   float near, float far);
+int ct_mat4f_set_lookat(CT_Mat4f *m, const CT_Vec3f *eye,
+                        const CT_Vec3f *target, const CT_Vec3f *up);
+
 void ct_mat4f_trace(const CT_Mat4f *m);
