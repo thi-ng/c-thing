@@ -222,15 +222,10 @@ ct_export size_t ct_spgrid_select3d(const CT_SpatialGrid *grid, const float *p,
   size_t i = 0;
   CT_Vec3f a, b, veps;
 #ifdef CT_FEATURE_SSE
-  if (CT_ALIGNED16(p) && CT_ALIGNED16(eps)) {
-    ct_sub3fv((CT_Vec3f *)p, (CT_Vec3f *)eps, &a);
-    ct_add3fv((CT_Vec3f *)p, (CT_Vec3f *)eps, &b);
-  } else {
-    ct_set3fpua(&veps, eps);
-    ct_set3fpua(&b, p);
-    ct_sub3fv(&b, &veps, &a);
-    ct_add3fv_imm(&b, &veps);
-  }
+  ct_set3fxyz(&veps, eps[0], eps[1], eps[2]);
+  ct_set3fxyz(&b, p[0], p[1], p[2]);
+  ct_sub3fv(&b, &veps, &a);
+  ct_add3fv_imm(&b, &veps);
 #else
   ct_sub3fv((CT_Vec3f *)p, (CT_Vec3f *)eps, &a);
   ct_add3fv((CT_Vec3f *)p, (CT_Vec3f *)eps, &b);
