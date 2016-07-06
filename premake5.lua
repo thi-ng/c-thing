@@ -27,6 +27,18 @@ removefiles {"src/geom/mesh.c" }
 defines { "CT_FEATURE_ANSI" }
 flags { "FatalWarnings" }
 
+----- test w/ analyzer
+
+project "test_ana"
+kind "ConsoleApp"
+files { "src/**.h", "src/**.c", "test/**.c" }
+removefiles {"src/geom/mesh.c" }
+defines { "CT_FEATURE_ANSI" }
+flags { "FatalWarnings" }
+toolset "clang"
+buildoptions { "-fsanitize=address" }
+linkoptions { "-fsanitize=address" }
+
 ----- lib
 
 project "lib"
@@ -34,7 +46,6 @@ files { "src/**.h", "src/**.c" }
 removefiles {"src/geom/mesh.c", "src/common/test.c" }
 kind "StaticLib"
 targetname "cthing"
-
 
 ----- ca1d -----
 
