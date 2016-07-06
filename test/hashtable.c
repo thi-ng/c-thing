@@ -17,7 +17,7 @@ static int val_is(CT_Hashtable *t, char *k, char *v) {
   return res ? !strcmp(res, v) : 0;
 }
 
-static void ht_inc(void **val, size_t *vs, void *state) {
+static void ht_inc(void **val, uint32_t *vs, void *state) {
   char *s = (char *)(*val);
   *s      = *s + 1;
 }
@@ -44,7 +44,7 @@ static size_t iter_count(CT_Hashtable *t, CT_HTIterator iter) {
   return num;
 }
 
-static void *ht_alloc_mpool(size_t size, void *state) {
+static void *ht_alloc_mpool(uint32_t size, void *state) {
   void *key = ct_mpool_alloc((CT_MPool *)state);
   CT_DEBUG("custom alloc vec: %p", key);
   return key;
@@ -60,7 +60,7 @@ static uint32_t hash_edge(const void *a, size_t _) {
   return ct_murmur3_32(&e->a, 12) + ct_murmur3_32(&e->b, 12);
 }
 
-static int equiv_edge(const void *a, const void *b, size_t as, size_t bs) {
+static int equiv_edge(const void *a, const void *b, uint32_t as, uint32_t bs) {
   struct edge_t *ea = (struct edge_t *)a;
   struct edge_t *eb = (struct edge_t *)b;
   if (!memcmp(&ea->a, &eb->a, 12)) {
@@ -166,23 +166,32 @@ int test_hashtable_edge() {
   return 0;
 }
 
-int bench_hashtable() {
-  CT_Hashtable t;
-  CT_MPool vpool;
-  CT_HTOps ops = {.hash = ct_murmur3_32};
-  uint32_t num = 1e6;
-  char *a      = "a";
-  CT_IS(!ct_ht_init(&t, &ops, num, 0x10000, CT_HT_CONST_ALL), "init ht");
-  CT_IS(!ct_mpool_init(&vpool, num, sizeof(CT_Vec3f)), "init vpool");
-  for (size_t i = 0; i < num; i++) {
-    ct_ht_assoc(&t, ct_vec3f(ct_rand_norm() * 1000, ct_rand_norm() * 1000,
-                             ct_rand_norm() * 1000, &vpool),
-                a, 12, 2);
+ct_export int bench_hashtable() {
+  double tscale = 1000.0 / CLOCKS_PER_SEC;
+  for (size_t k = 0; k < 20; k++) {
+    clock_t begin = clock();
+    CT_Hashtable t;
+    CT_MPool vpool;
+    CT_HTOps ops = {.hash = ct_murmur3_32};
+    uint32_t num = 1e6;
+    char *a      = "a";
+    CT_IS(!ct_ht_init(&t, &ops, num, 0x10000, CT_HT_CONST_ALL), "init ht");
+    CT_IS(!ct_mpool_init(&vpool, num, sizeof(CT_Vec3f)), "init vpool");
+    for (size_t i = 0; i < num; i++) {
+      ct_ht_assoc(&t, ct_vec3f(ct_rand_norm() * 1000, ct_rand_norm() * 1000,
+                               ct_rand_norm() * 1000, &vpool),
+                  a, 12, 2);
+    }
+    clock_t t1 = clock();
+    //CT_IS(num == t.size, "size: %u", t.size);
+    //CT_INFO("collisions: %u", t.collisions);
+    //CT_IS(num == iter_count(&t, dump_ht_vec), "count");
+    ct_ht_free(&t);
+    clock_t t2 = clock();
+    ct_mpool_free(&vpool);
+    clock_t t3 = clock();
+    CT_INFO("t1: %1.3f, t2: %1.3f, t3: %1.3f", (double)(t1 - begin) * tscale,
+            (double)(t2 - begin) * tscale, (double)(t3 - begin) * tscale);
   }
-  CT_IS(num == t.size, "size: %u", t.size);
-  CT_INFO("collisions: %u", t.collisions);
-  CT_IS(num == iter_count(&t, dump_ht_vec), "count");
-  ct_ht_free(&t);
-  ct_mpool_free(&vpool);
   return 0;
 }

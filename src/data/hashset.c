@@ -6,7 +6,7 @@
 #include "math/math.h"
 
 static int make_key(const CT_Hashset* s, CT_HSEntry* e, const void* key,
-                    const size_t ks) {
+                    const uint32_t ks) {
   if (s->flags & CT_HS_CONST_KEYS) {
     e->key = (void*)key;
   } else {
@@ -22,7 +22,8 @@ static int make_key(const CT_Hashset* s, CT_HSEntry* e, const void* key,
   return 0;
 }
 
-static CT_HSEntry* make_entry(CT_Hashset* s, const void* key, const size_t ks) {
+static CT_HSEntry* make_entry(CT_Hashset* s, const void* key,
+                              const uint32_t ks) {
   CT_HSEntry* e = ct_mpool_alloc(&s->pool);
   CT_CHECK_MEM(e);
   e->next = NULL;
@@ -51,14 +52,14 @@ static void free_entry(CT_Hashset* s, const CT_HSEntry* e) {
   ct_mpool_free_block(&s->pool, e);
 }
 
-static int equiv_keys(const void* a, const void* b, const size_t sa,
-                      const size_t sb) {
+static int equiv_keys(const void* a, const void* b, const uint32_t sa,
+                      const uint32_t sb) {
   return sa == sb ? !memcmp(a, b, sa) : 0;
 }
 
 static CT_HSEntry* find_entry(const CT_Hashset* s, CT_HSEntry* e,
-                              const void* key, const size_t ks) {
-  int (*equiv_keys)(const void*, const void*, size_t, size_t) =
+                              const void* key, const uint32_t ks) {
+  int (*equiv_keys)(const void*, const void*, uint32_t, uint32_t) =
       s->ops.equiv_keys;
   while (e != NULL) {
     CT_DEBUG("find e: %p", e);
@@ -71,7 +72,7 @@ static CT_HSEntry* find_entry(const CT_Hashset* s, CT_HSEntry* e,
 }
 
 static int cons_entry(CT_Hashset* s, const uint32_t bin, const void* key,
-                      const size_t ks) {
+                      const uint32_t ks) {
   // TODO resize?
   CT_HSEntry* e = make_entry(s, key, ks);
   CT_CHECK_MEM(e);
@@ -141,7 +142,7 @@ ct_export void ct_hs_free(CT_Hashset* s) {
   s->bins = NULL;
 }
 
-ct_export int ct_hs_assoc(CT_Hashset* s, const void* key, const size_t ks) {
+ct_export int ct_hs_assoc(CT_Hashset* s, const void* key, const uint32_t ks) {
   uint32_t hash = s->ops.hash(key, ks);
   uint32_t bin  = hash & s->binMask;
   CT_HSEntry* e = s->bins[bin];
@@ -167,7 +168,8 @@ fail:
   return 1;
 }
 
-ct_export int ct_hs_contains(CT_Hashset* s, const void* key, const size_t ks) {
+ct_export int ct_hs_contains(CT_Hashset* s, const void* key,
+                             const uint32_t ks) {
   uint32_t bin  = s->ops.hash(key, ks) & s->binMask;
   CT_HSEntry* e = s->bins[bin];
   if (e != NULL) {
@@ -176,7 +178,7 @@ ct_export int ct_hs_contains(CT_Hashset* s, const void* key, const size_t ks) {
   return (e != NULL);
 }
 
-ct_export int ct_hs_dissoc(CT_Hashset* s, const void* key, const size_t ks) {
+ct_export int ct_hs_dissoc(CT_Hashset* s, const void* key, const uint32_t ks) {
   uint32_t bin  = s->ops.hash(key, ks) & s->binMask;
   CT_HSEntry* e = s->bins[bin];
   if (e != NULL) {

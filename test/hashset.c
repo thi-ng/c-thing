@@ -33,7 +33,7 @@ static size_t iter_count(CT_Hashset *s, CT_HSIterator iter) {
   return num;
 }
 
-static void *hs_alloc_mpool(size_t size, void *state) {
+static void *hs_alloc_mpool(uint32_t size, void *state) {
   void *key = ct_mpool_alloc((CT_MPool *)state);
   CT_DEBUG("custom alloc vec: %p", key);
   return key;
@@ -49,7 +49,7 @@ static uint32_t hash_edge(const void *e, size_t _) {
   return ct_murmur3_32(&ee->a, 12) + ct_murmur3_32(&ee->b, 12);
 }
 
-static int equiv_edge(const void *a, const void *b, size_t as, size_t bs) {
+static int equiv_edge(const void *a, const void *b, uint32_t as, uint32_t bs) {
   struct edge_t *ea = (struct edge_t *)a;
   struct edge_t *eb = (struct edge_t *)b;
   if (!memcmp(&ea->a, &eb->a, 12)) {
@@ -153,21 +153,30 @@ int test_hashset_edge() {
 }
 
 int bench_hashset() {
-  CT_Hashset s;
-  CT_MPool vpool;
-  CT_HSOps ops = {.hash = ct_murmur3_32};
-  uint32_t num = 1e6;
-  CT_IS(!ct_hs_init(&s, &ops, num, 0x10000, CT_HS_CONST_KEYS), "init hs");
-  CT_IS(!ct_mpool_init(&vpool, num, sizeof(CT_Vec3f)), "init vpool");
-  for (size_t i = 0; i < num; i++) {
-    ct_hs_assoc(&s, ct_vec3f(ct_rand_norm() * 1000, ct_rand_norm() * 1000,
-                             ct_rand_norm() * 1000, &vpool),
-                12);
+  double tscale = 1000.0 / CLOCKS_PER_SEC;
+  for (size_t k = 0; k < 20; k++) {
+    clock_t begin = clock();
+    CT_Hashset s;
+    CT_MPool vpool;
+    CT_HSOps ops = {.hash = ct_murmur3_32};
+    uint32_t num = 1e6;
+    CT_IS(!ct_hs_init(&s, &ops, num, 0x10000, CT_HS_CONST_KEYS), "init hs");
+    CT_IS(!ct_mpool_init(&vpool, num, sizeof(CT_Vec3f)), "init vpool");
+    for (size_t i = 0; i < num; i++) {
+      ct_hs_assoc(&s, ct_vec3f(ct_rand_norm() * 1000, ct_rand_norm() * 1000,
+                               ct_rand_norm() * 1000, &vpool),
+                  12);
+    }
+    clock_t t1 = clock();
+    //CT_IS(num == s.size, "size: %u", s.size);
+    //CT_INFO("collisions: %u", s.collisions);
+    //CT_IS(num == iter_count(&s, dump_hs_vec), "count");
+    ct_hs_free(&s);
+    clock_t t2 = clock();
+    ct_mpool_free(&vpool);
+    clock_t t3 = clock();
+    CT_INFO("t1: %1.3f, t2: %1.3f, t3: %1.3f", (double)(t1 - begin) * tscale,
+            (double)(t2 - begin) * tscale, (double)(t3 - begin) * tscale);
   }
-  CT_IS(num == s.size, "size: %u", s.size);
-  CT_INFO("collisions: %u", s.collisions);
-  CT_IS(num == iter_count(&s, dump_hs_vec), "count");
-  ct_hs_free(&s);
-  ct_mpool_free(&vpool);
   return 0;
 }
