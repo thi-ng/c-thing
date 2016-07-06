@@ -1,16 +1,19 @@
 #!/bin/sh
+
+readonly config=${1:-release}
+readonly qualifier=${2:-sse}
+
 retest() {
     printf "\033c"
     echo "----------------------------------------"
     date +%Y-%m-%d-%H:%M:%S
     echo "----------------------------------------"
-    make -j3 config=release_sse test && bin/release/test;
-#    make -j3 config=release_no_sse test && bin/release/test;
+    echo "config: $1_$2"
+    make -j3 config=$1_$2 test && bin/$1/test;
 }
 
-make config=release_sse clean
-#make config=release_no_sse clean
-retest
+make config=$config_$qualifier clean
+retest $config $qualifier
 
 export -f retest
-fswatch -o src test | xargs -n1 -I{} bash -c 'retest' _ {}
+fswatch -o src test | xargs -n1 -I{} bash -c "retest $config $qualifier" _ {}
