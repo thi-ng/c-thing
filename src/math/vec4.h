@@ -59,6 +59,8 @@ typedef union {
   struct {
     float x, y, z, w;
   };
+  CT_Vec2f xy;
+  CT_Vec3f xyz;
   float buf[4];
 } CT_Vec4f;
 

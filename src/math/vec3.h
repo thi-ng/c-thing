@@ -53,6 +53,7 @@ typedef union {
   struct {
     float x, y, z;
   };
+  CT_Vec2f xy;
   float buf[3];
 } CT_Vec3f;
 

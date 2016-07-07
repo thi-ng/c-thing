@@ -51,6 +51,8 @@ typedef union {
   struct {
     float x, y, z, w;
   };
+  CT_Vec2f xy;
+  CT_Vec3f xyz;
   float buf[4];
   __m128 mmval;
 } CT_Vec4f CT_ALIGN(16);
@@ -121,7 +123,7 @@ ct_export ct_inline CT_Vec4f *ct_set4fn(CT_Vec4f *v, float n) {
 
 ct_export ct_inline CT_Vec4f *ct_set4fxyzw(CT_Vec4f *v, float x, float y,
                                            float z, float w) {
-  v->mmval = _mm_set_ps(w,z,y,x);
+  v->mmval = _mm_set_ps(w, z, y, x);
   return v;
 }
 
