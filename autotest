@@ -3,6 +3,7 @@
 readonly target=${1:-test_asan}
 readonly config=${2:-release}
 readonly qualifier=${3:-sse}
+readonly profile=${config}_${qualifier}
 
 retest() {
     printf "\033c"
@@ -12,7 +13,7 @@ retest() {
     make -j3 config=$2_$3 $1 && bin/$2/$1;
 }
 
-make config=$config_$qualifier clean
+make verbose=1 config=$profile clean
 retest $target $config $qualifier
 
 export -f retest
