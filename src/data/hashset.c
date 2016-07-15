@@ -168,14 +168,19 @@ fail:
   return 1;
 }
 
-ct_export int ct_hs_contains(CT_Hashset* s, const void* key,
-                             const uint32_t ks) {
+ct_export void* ct_hs_get(const CT_Hashset* s, const void* key,
+                          const uint32_t ks) {
   uint32_t bin  = s->ops.hash(key, ks) & s->binMask;
   CT_HSEntry* e = s->bins[bin];
   if (e != NULL) {
     e = find_entry(s, e, key, ks);
   }
-  return (e != NULL);
+  return (e ? e->key : NULL);
+}
+
+ct_export int ct_hs_contains(const CT_Hashset* s, const void* key,
+                             const uint32_t ks) {
+  return (ct_hs_get(s, key, ks) != NULL);
 }
 
 ct_export int ct_hs_dissoc(CT_Hashset* s, const void* key, const uint32_t ks) {

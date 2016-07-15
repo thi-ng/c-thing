@@ -8,9 +8,7 @@
 
 CT_TEST_DECLS
 
-struct edge_t {
-  CT_Vec3f a, b;
-};
+typedef struct { CT_Vec3f a, b; } TEdge;
 
 static int dump_hs_char(const CT_HSEntry *e, void *state) {
   size_t *num = (size_t *)state;
@@ -45,13 +43,13 @@ static void hs_free_mpool(const void *key, void *state) {
 }
 
 static uint32_t hash_edge(const void *e, size_t _) {
-  const struct edge_t *ee = (struct edge_t *)e;
-  return ct_murmur3_32(&ee->a, 12) + ct_murmur3_32(&ee->b, 12);
+  const TEdge *ee = (TEdge *)e;
+  return ct_murmur3_32(&ee->a, 12) ^ ct_murmur3_32(&ee->b, 12);
 }
 
 static int equiv_edge(const void *a, const void *b, uint32_t as, uint32_t bs) {
-  struct edge_t *ea = (struct edge_t *)a;
-  struct edge_t *eb = (struct edge_t *)b;
+  TEdge *ea = (TEdge *)a;
+  TEdge *eb = (TEdge *)b;
   if (!memcmp(&ea->a, &eb->a, 12)) {
     if (!memcmp(&ea->b, &eb->b, 12)) {
       return 1;
@@ -138,15 +136,20 @@ int test_hashset_edge() {
   CT_Hashset s;
   CT_HSOps ops = {.hash = hash_edge, .equiv_keys = equiv_edge};
   CT_IS(!ct_hs_init(&s, &ops, 4, 8, CT_HS_NONE), "init");
-  struct edge_t e1 = {.a = {0, 0, 0}, .b = {1, 0, 0}};
-  struct edge_t e2 = {.a = {1, 0, 0}, .b = {0, 0, 0}};
-  struct edge_t e3 = {.a = {1, 0, 0}, .b = {0, 1, 0}};
-  CT_IS(!ct_hs_assoc(&s, &e1, sizeof(e1)), "assoc e1");
-  CT_IS(!ct_hs_assoc(&s, &e2, sizeof(e2)), "assoc e2");
-  CT_IS(!ct_hs_assoc(&s, &e3, sizeof(e3)), "assoc e2");
-  CT_IS(ct_hs_contains(&s, &e1, sizeof(e1)), "get e1");
-  CT_IS(ct_hs_contains(&s, &e2, sizeof(e2)), "get e2");
-  CT_IS(ct_hs_contains(&s, &e3, sizeof(e3)), "get e3");
+  TEdge e1 = {.a = {0, 0, 0}, .b = {1, 0, 0}};
+  TEdge e2 = {.a = {1, 0, 0}, .b = {0, 0, 0}};
+  TEdge e3 = {.a = {1, 0, 0}, .b = {0, 1, 0}};
+  TEdge e4 = {.a = {1, 0, 0}, .b = {0, 2, 0}};
+  CT_IS(!ct_hs_assoc(&s, &e1, sizeof(TEdge)), "assoc e1");
+  CT_IS(!ct_hs_assoc(&s, &e2, sizeof(TEdge)), "assoc e2");
+  CT_IS(!ct_hs_assoc(&s, &e3, sizeof(TEdge)), "assoc e2");
+  CT_IS(ct_hs_contains(&s, &e1, sizeof(TEdge)), "contains e1");
+  CT_IS(ct_hs_contains(&s, &e2, sizeof(TEdge)), "contains e2");
+  CT_IS(ct_hs_contains(&s, &e3, sizeof(TEdge)), "contains e3");
+  CT_IS(equiv_edge(&e1, ct_hs_get(&s, &e1, sizeof(TEdge)), sizeof(TEdge),
+                   sizeof(TEdge)),
+        "get e1");
+  CT_IS(!ct_hs_get(&s, &e4, sizeof(TEdge)), "get e4");
   CT_IS(2 == s.size, "size: %u", s.size);
   ct_hs_free(&s);
   return 0;

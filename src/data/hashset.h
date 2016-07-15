@@ -47,7 +47,8 @@ typedef struct CT_Hashset {
 int ct_hs_init(CT_Hashset* s, const CT_HSOps* ops, size_t num, size_t poolSize,
                CT_HSFlags flags);
 void ct_hs_free(CT_Hashset* s);
-int ct_hs_contains(CT_Hashset* s, const void* key, uint32_t ks);
+void* ct_hs_get(const CT_Hashset* s, const void* key, uint32_t ks);
+int ct_hs_contains(const CT_Hashset* s, const void* key, uint32_t ks);
 int ct_hs_assoc(CT_Hashset* s, const void* key, uint32_t ks);
 int ct_hs_dissoc(CT_Hashset* s, const void* key, uint32_t ks);
 int ct_hs_iterate(const CT_Hashset* s, CT_HSIterator visit, void* state);

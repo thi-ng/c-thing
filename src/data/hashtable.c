@@ -209,8 +209,8 @@ fail:
   return 1;
 }
 
-ct_export void* ct_ht_get(CT_Hashtable* t, const void* key, const uint32_t ks,
-                          uint32_t* vs) {
+ct_export void* ct_ht_get(const CT_Hashtable* t, const void* key,
+                          const uint32_t ks, uint32_t* vs) {
   uint32_t bin  = t->ops.hash(key, ks) & t->binMask;
   CT_HTEntry* e = t->bins[bin];
   if (e != NULL) {
@@ -225,7 +225,7 @@ ct_export void* ct_ht_get(CT_Hashtable* t, const void* key, const uint32_t ks,
   return NULL;
 }
 
-ct_export int ct_ht_contains(CT_Hashtable* t, const void* key,
+ct_export int ct_ht_contains(const CT_Hashtable* t, const void* key,
                              const uint32_t ks) {
   uint32_t bin  = t->ops.hash(key, ks) & t->binMask;
   CT_HTEntry* e = t->bins[bin];
