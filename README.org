@@ -132,7 +132,7 @@ make config=release_sse ex-dla && bin/release/ex-dla > assets/dla.svg
 
 *** Polygon clipping (Vatti)
 
-[[./examples/clipping/main.c][Source]]
+[[./examples/vatti/main.c][Source]]
 
 [[./assets/vatti.png]]
 
