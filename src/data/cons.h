@@ -6,17 +6,17 @@
 CT_BEGIN_DECLS
 
 typedef struct CT_Cons CT_Cons;
-typedef struct CT_DCons CT_DCons;
+typedef struct CT_ConsD CT_ConsD;
 
 struct CT_Cons {
   void* value;
   CT_Cons* next;
 };
 
-struct CT_DCons {
+struct CT_ConsD {
   void* value;
-  CT_DCons* next;
-  CT_DCons* prev;
+  CT_ConsD* next;
+  CT_ConsD* prev;
 };
 
 typedef void (*CT_ConsVisitor)(CT_Cons*, void*);
@@ -33,7 +33,8 @@ CT_Cons* ct_cons_from_parray(void** values, size_t num, CT_Cons* head,
                              CT_MPool* mpool);
 CT_Cons* ct_cons_concat_imm(CT_Cons* head, CT_Cons* rest);
 CT_Cons* ct_cons_concat(CT_Cons* head, CT_Cons* rest, CT_MPool* mpool);
+CT_Cons* ct_cons_take(CT_Cons* head, size_t num, CT_MPool* pool);
 
-ct_export CT_Cons* ct_cons_take(CT_Cons* head, size_t num, CT_MPool* pool);
+CT_ConsD* ct_consd(void* x, CT_ConsD* head, CT_MPool* mpool);
 
 CT_END_DECLS

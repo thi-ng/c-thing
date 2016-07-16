@@ -11,6 +11,7 @@ typedef struct {
 ct_export CT_Cons* ct_cons(void* x, CT_Cons* head, CT_MPool* mpool) {
   CT_Cons* cell = CT_MP_ALLOC(mpool, CT_Cons);
   CT_CHECK_MEM(cell);
+  CT_DEBUG("cons: %p (val: %p) -> %p", cell, x, head);
   cell->value = x;
   cell->next  = head;
 fail:
@@ -66,6 +67,14 @@ ct_export void* ct_cons_iterate_n(CT_Cons* cell, CT_ConsVisitor visit,
   return state;
 }
 
+ct_export CT_Cons* ct_cons_find(CT_Cons* cell, void* value) {
+  while (cell != NULL) {
+    if (cell->value == value) return cell;
+    cell = cell->next;
+  }
+  return NULL;
+}
+
 ct_export CT_Cons* ct_cons_from_array(void* values, size_t num, size_t stride,
                                       CT_Cons* head, CT_MPool* mpool) {
   if (num > 0) {
@@ -117,4 +126,16 @@ ct_export CT_Cons* ct_cons_take(CT_Cons* head, size_t num, CT_MPool* mpool) {
   CT_ConsCloneState state = {.head = NULL, .pool = mpool};
   ct_cons_iterate_n(head, ct_cons_iterate_clone, &state, num);
   return state.head;
+}
+
+//// double-linked list
+
+ct_export CT_ConsD* ct_consd(void* x, CT_ConsD* head, CT_MPool* mpool) {
+  CT_ConsD* cell = CT_MP_ALLOC(mpool, CT_ConsD);
+  CT_CHECK_MEM(cell);
+  cell->value          = x;
+  cell->next           = head;
+  if (head) head->prev = cell;
+fail:
+  return cell;
 }
