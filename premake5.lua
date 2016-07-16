@@ -106,3 +106,13 @@ includedirs { "examples/common", "examples/verlet" }
 links "lib"
 dependson "lib"
 flags { "LinkTimeOptimization" }
+
+----- clipping -----
+
+project "ex-clipping"
+kind "ConsoleApp"
+files { "examples/clipping/*.c" }
+includedirs { "examples/common", "examples/clipping" }
+links "lib"
+dependson "lib"
+flags { "LinkTimeOptimization" }
