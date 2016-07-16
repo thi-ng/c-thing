@@ -101,6 +101,10 @@ ct_export ct_inline size_t ct_deltaeq2fv(const CT_Vec2f *a, const CT_Vec2f *b,
   return (ct_deltaeqf(a->x, b->x, eps) && ct_deltaeqf(a->y, b->y, eps));
 }
 
+ct_export ct_inline float ct_cross2fv(const CT_Vec2f *a, const CT_Vec2f *b) {
+  return (a->x * b->y) - (a->y * b->x);
+}
+
 ct_export ct_inline CT_Vec2f *ct_madd2fv_imm(CT_Vec2f *a, const CT_Vec2f *b,
                                              const CT_Vec2f *c) {
   a->x = a->x * b->x + c->x;
@@ -160,7 +164,7 @@ ct_export ct_inline float ct_magsq2f(const CT_Vec2f *v) {
 }
 
 ct_export ct_inline float ct_mag2f(const CT_Vec2f *v) {
-  return sqrtf(v->x * v->x + v->y * v->y);
+  return sqrtf(ct_magsq2f(v));
 }
 
 ct_export ct_inline CT_Vec2f *ct_max2fv_imm(CT_Vec2f *a, const CT_Vec2f *b) {
