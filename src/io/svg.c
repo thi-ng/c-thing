@@ -74,6 +74,8 @@ static int write_attrib(const CT_HTEntry *e, void *state) {
     fprintf(out, "fill=\"%s\" ", (char *)e->val);
   } else if (!strcmp(e->key, "stroke")) {
     fprintf(out, "stroke=\"%s\" ", (char *)e->val);
+  } else if (!strcmp(e->key, "stroke-width")) {
+    fprintf(out, "stroke-width=\"%f\" ", *((float *)e->val));
   }
   return 0;
 }
