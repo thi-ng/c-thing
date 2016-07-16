@@ -18,6 +18,6 @@ struct CT_ClipNode {
 
 CT_ClipNode *ct_create_polygon2f(CT_Vec2f *points, size_t num);
 CT_ClipNode *ct_clip_polygon2f(CT_ClipNode *s, CT_ClipNode *c, int mode);
-void ct_free_poly(CT_ClipNode *p);
+void ct_free_polygon2f(CT_ClipNode *p);
 void ct_trace_clip_node(CT_ClipNode *p);
 void ct_trace_polygon2f(CT_ClipNode *p);

@@ -12,6 +12,7 @@
          - [[#1d2d-cellular-automata][1D/2D Cellular automata]]
          - [[#diffusion-limited-aggregation][Diffusion-Limited Aggregation]]
          - [[#poisson-disc-sampling-image-conversion][Poisson disc sampling image conversion]]
+         - [[#polygon-clipping-vatti][Polygon clipping (Vatti)]]
          - [[#verlet-physics][Verlet physics]]
      - [[#requirements][Requirements]]
      - [[#dependencies][Dependencies]]
@@ -54,9 +55,11 @@ WIP
 
 *** Geometry
 
+- [[./src/math/matrix.h][Matrix 4x4]] (w/ opt SSE impls)
 - [[./src/math/vec.h][Vec2/3/4]] (w/ opt SSE impls)
 - [[./src/math/swizzle.h][Vector swizzling]]
-- [[./src/geom/clip.h][Line clipping]]
+- [[./src/geom/clip.h][Line clipping]] (Liang-Barsky)
+- [[./src/geom/clip/vatti.h][Polygon clipping]] (Vatti)
 ...
 
 TBD
@@ -125,6 +128,17 @@ make config=release_sse ex-dla && bin/release/ex-dla > assets/dla.svg
 
   # concrete example (for image size roughly 700x1000px)
   bin/release/ex-poisson -g 1.25 -q 500 -m 1.5 -x 16 assets/iris.jpg > assets/iris.svg
+#+END_SRC
+
+*** Polygon clipping (Vatti)
+
+[[./examples/clipping/main.c][Source]]
+
+[[./assets/vatti.png]]
+
+#+BEGIN_SRC shell
+# build library & example app
+make config=release_sse ex-clipping && bin/release/ex-clipping
 #+END_SRC
 
 *** Verlet physics

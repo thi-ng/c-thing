@@ -76,6 +76,8 @@ static int write_attrib(const CT_HTEntry *e, void *state) {
     fprintf(out, "stroke=\"%s\" ", (char *)e->val);
   } else if (!strcmp(e->key, "stroke-width")) {
     fprintf(out, "stroke-width=\"%f\" ", *((float *)e->val));
+  } else if (!strcmp(e->key, "transform")) {
+    fprintf(out, "transform=\"%s\" ", (char *)e->val);
   }
   return 0;
 }
@@ -93,27 +95,28 @@ static void write_attribs(FILE *out, CT_SVGAttribs *a, char *suffix) {
 }
 
 int ct_svg_start_doc(FILE *out, CT_SVGAttribs *attribs) {
-  fprintf(out,
-          "<?xml version=\"1.0\"?>\n<svg version=\"1.1\" "
-          "xmlns:xlink=\"http://www.w3.org/1999/xlink\" "
-          "xmlns=\"http://www.w3.org/2000/svg\" ");
+  fputs(
+      "<?xml version=\"1.0\"?>\n<svg version=\"1.1\" "
+      "xmlns:xlink=\"http://www.w3.org/1999/xlink\" "
+      "xmlns=\"http://www.w3.org/2000/svg\" ",
+      out);
   write_attribs(out, attribs, ">");
   return 0;
 }
 
 int ct_svg_end_doc(FILE *out) {
-  fprintf(out, "</svg>");
+  fputs("</svg>", out);
   return 0;
 }
 
 int ct_svg_start_group(FILE *out, CT_SVGAttribs *attribs) {
-  fprintf(out, "<g ");
+  fputs("<g ", out);
   write_attribs(out, attribs, ">");
   return 0;
 }
 
 int ct_svg_end_group(FILE *out) {
-  fprintf(out, "</g>");
+  fputs("</g>", out);
   return 0;
 }
 

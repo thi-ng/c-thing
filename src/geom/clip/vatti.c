@@ -5,6 +5,9 @@
 
 #include "geom/clip/vatti.h"
 
+// https://en.wikipedia.org/wiki/Vatti_clipping_algorithm
+// based on: http://davis.wpi.edu/~matt/courses/clipping/
+
 static void insert_node(CT_ClipNode *ins, CT_ClipNode *first,
                         CT_ClipNode *last) {
   CT_ClipNode *aux = first;
@@ -219,7 +222,7 @@ void ct_trace_polygon2f(CT_ClipNode *p) {
   } while (aux && aux != p);
 }
 
-void ct_free_poly(CT_ClipNode *p) {
+void ct_free_polygon2f(CT_ClipNode *p) {
   CT_ClipNode *hold = p;
   do {
     CT_ClipNode *aux = p;
