@@ -52,7 +52,7 @@ ct_export CT_Vec2f *ct_circle2f_vertices(CT_Circle2f *c, CT_Vec2f *verts,
   CT_Vec2f *ptr = verts;
   float t = TAU / n;
   for (size_t i = 0; i < n; i++) {
-    ct_cartesian2f_imm(ct_set2fxy(ptr, c->r, t * i));
+    ct_add2fv_imm(ct_cartesian2f_imm(ct_set2fxy(ptr, c->r, t * i)), &c->pos);
     ptr++;
   }
   return verts;
