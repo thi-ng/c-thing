@@ -21,7 +21,7 @@ int main() {
   CT_Vec2f a[] = {{10, 10}, {590, 10}, {300, 510}};
   CT_Vec2f b[] = {{10, 300},  {250, 100}, {400, 200},
                   {590, 100}, {350, 300}, {200, 200}};
-  FILE *out = fopen("vatti.svg", "w");
+  FILE *out = fopen("assets/vatti.svg", "w");
   ct_svg_start_doc(
       out, ct_svg_attribs(0, 3, SVG_INT("width", 600), SVG_INT("height", 600),
                           SVG_STR("fill", "none")));

@@ -138,7 +138,7 @@ make config=release_sse ex-dla && bin/release/ex-dla > assets/dla.svg
 
 #+BEGIN_SRC shell
 # build library & example app
-make config=release_sse ex-clipping && bin/release/ex-clipping
+make config=release_sse ex-vatti && bin/release/ex-vatti
 #+END_SRC
 
 *** Verlet physics

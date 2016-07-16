@@ -109,10 +109,10 @@ flags { "LinkTimeOptimization" }
 
 ----- clipping -----
 
-project "ex-clipping"
+project "ex-vatti"
 kind "ConsoleApp"
-files { "examples/clipping/*.c" }
-includedirs { "examples/common", "examples/clipping" }
+files { "examples/vatti/*.c" }
+includedirs { "examples/common", "examples/vatti" }
 links "lib"
 dependson "lib"
 flags { "LinkTimeOptimization" }
