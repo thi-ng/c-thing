@@ -19,19 +19,19 @@ static void export_poly(FILE *out, CT_ClipNode *poly, CT_SVGAttribs *attribs) {
 int main() {
   srand(time(0));
   CT_Vec2f a[] = {{10, 10}, {590, 10}, {300, 510}};
-  CT_Vec2f b[] = {{10, 300}, {250, 100}, {590, 100}, {350, 300}};
-  CT_SVGAttribs *doc_attr =
-      ct_svg_attribs(0, 3, SVG_INT("width", 600), SVG_INT("height", 600),
-                     SVG_STR("fill", "none"));
+  CT_Vec2f b[] = {{10, 300},  {250, 100}, {400, 200},
+                  {590, 100}, {350, 300}, {200, 200}};
   FILE *out = fopen("vatti.svg", "w");
-  ct_svg_start_doc(out, doc_attr);
+  ct_svg_start_doc(
+      out, ct_svg_attribs(0, 3, SVG_INT("width", 600), SVG_INT("height", 600),
+                          SVG_STR("fill", "none")));
   fprintf(out,
           "<defs><pattern id=\"P1\" width=\"10\" height=\"10\" "
           "patternUnits=\"userSpaceOnUse\"><line x1=\"0\" y1=\"0\" x2=\"10\" "
           "y2=\"10\" stroke=\"#00f\"/></pattern></defs>");
   for (size_t i = 0; i < 4; i++) {
     CT_ClipNode *s      = ct_create_polygon2f(a, 3);
-    CT_ClipNode *c      = ct_create_polygon2f(b, 4);
+    CT_ClipNode *c      = ct_create_polygon2f(b, 6);
     CT_ClipNode *result = ct_clip_polygon2f(s, c, i);
     char tx[64];
     snprintf(tx, 64, "translate(%zu,%zu) scale(0.5)", (i & 1) * 300,
