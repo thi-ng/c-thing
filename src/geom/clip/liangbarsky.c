@@ -1,4 +1,4 @@
-#include "geom/clip.h"
+#include "geom/clip/liangbarsky.h"
 
 #define CLIP_LB(pp, qq)         \
   p = (pp);                     \
