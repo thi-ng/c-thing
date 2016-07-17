@@ -16,6 +16,10 @@ struct CT_ClipNode {
   float alpha;            // intersection point placement
 };
 
+CT_ClipNode *ct_create_clip_node(CT_Vec2f *pos, CT_ClipNode *next,
+                                 CT_ClipNode *prev, CT_ClipNode *nextPoly,
+                                 CT_ClipNode *neighbor, int intersect,
+                                 int entry, int visited, float alpha);
 CT_ClipNode *ct_create_polygon2f(CT_Vec2f *points, size_t num);
 CT_ClipNode *ct_clip_polygon2f(CT_ClipNode *s, CT_ClipNode *c, int mode);
 void ct_free_polygon2f(CT_ClipNode *p);
