@@ -7,6 +7,10 @@
 #include "cthing.h"
 #include "mem/ref.h"
 
+#ifdef CT_FEATURE_SSE
+#include <xmmintrin.h>
+#endif
+
 CT_BEGIN_DECLS
 
 typedef enum {
@@ -14,6 +18,7 @@ typedef enum {
   CT_TYPE_I32,
   CT_TYPE_U32,
   CT_TYPE_F32,
+  CT_TYPE_VEC4,
   CT_TYPE_PTR,
   CT_TYPE_STR,
   CT_TYPE_CONS
@@ -24,6 +29,15 @@ typedef union {
   intptr_t i;
   float f;
   void *p;
+  struct {
+    float x, y, z, w;
+  };
+  struct {
+    float r, g, b, a;
+  };
+#ifdef CT_FEATURE_SSE
+  __m128 vec;
+#endif
 } CT_Atom;
 
 typedef union {
@@ -59,7 +73,9 @@ int ct_object_init();
 CT_Object *ct_object_raw(size_t type);
 CT_Object *ct_object_str(char *x, size_t free);
 CT_Object *ct_object_i32(int32_t x);
+CT_Object *ct_object_u32(uint32_t x);
 CT_Object *ct_object_f32(float x);
+CT_Object *ct_object_vec4(float x, float y, float z, float w);
 
 void ct_object_free_nop(const CT_Ref *ref);
 void ct_object_free_box(const CT_Object *o);

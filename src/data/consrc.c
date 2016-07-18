@@ -74,7 +74,7 @@ CT_Object *ct_object_cons(CT_Object *value) {
 }
 
 void ct_consrc_push(CT_Object **list, CT_Object *v) {
-  CT_CHECK(ct_object_is(*list, CT_TYPE_CONS), "%p is not a cons", (*list));
+  CT_CHECK(ct_object_is(*list, CT_TYPE_CONS), "%p is not a cons", *list);
   CT_DEBUG("push %p", v);
   CT_Object *node = ct_object_cons(v);
   CT_ConsRC *c    = (CT_ConsRC *)node->atom.p;
@@ -86,7 +86,7 @@ fail:
 }
 
 CT_Object *ct_consrc_pop(CT_Object **list) {
-  CT_CHECK(ct_object_is(*list, CT_TYPE_CONS), "%p is not a cons", (*list));
+  CT_CHECK(ct_object_is(*list, CT_TYPE_CONS), "%p is not a cons", *list);
   CT_Object *node = *list;
   *list           = ct_object_cons_ptr(node)->next;
   if (*list) ct_ref_inc(&(*list)->rc);

@@ -66,7 +66,12 @@ static int ct_obj_print_int(CT_Object *o, FILE *out) {
 }
 
 static int ct_obj_print_float(CT_Object *o, FILE *out) {
-  return fprintf(out, "%f", o->atom.f);
+  return fprintf(out, "%1.6f", o->atom.f);
+}
+
+static int ct_obj_print_vec4(CT_Object *o, FILE *out) {
+  return fprintf(out, "[%1.6f %1.6f %1.6f %1.6f]", o->atom.x, o->atom.y,
+                 o->atom.z, o->atom.w);
 }
 
 static int ct_obj_print_str(CT_Object *o, FILE *out) {
@@ -74,7 +79,7 @@ static int ct_obj_print_str(CT_Object *o, FILE *out) {
 }
 
 static int ct_obj_print_ptr(CT_Object *o, FILE *out) {
-  return fprintf(out, "%p", o->atom.p);
+  return fprintf(out, "*%p", o->atom.p);
 }
 
 // clang-format off
@@ -83,6 +88,7 @@ static CT_IPrint __impls_iprint[CT_MAX_TYPES] = {
     {.print = ct_obj_print_int},
     {.print = ct_obj_print_int},
     {.print = ct_obj_print_float},
+    {.print = ct_obj_print_vec4},
     {.print = ct_obj_print_ptr},
     {.print = ct_obj_print_str}
 };
@@ -114,7 +120,12 @@ static int ct_obj_tostring_int(CT_Object *o, char *buf, int bsize) {
 }
 
 static int ct_obj_tostring_float(CT_Object *o, char *buf, int bsize) {
-  return snprintf(buf, bsize, "%f", o->atom.f);
+  return snprintf(buf, bsize, "%1.6f", o->atom.f);
+}
+
+static int ct_obj_tostring_vec4(CT_Object *o, char *buf, int bsize) {
+  return snprintf(buf, bsize, "[%1.6f %1.6f %1.6f %1.6f]", o->atom.x, o->atom.y,
+                  o->atom.z, o->atom.w);
 }
 
 static int ct_obj_tostring_str(CT_Object *o, char *buf, int bsize) {
@@ -122,7 +133,7 @@ static int ct_obj_tostring_str(CT_Object *o, char *buf, int bsize) {
 }
 
 static int ct_obj_tostring_ptr(CT_Object *o, char *buf, int bsize) {
-  return snprintf(buf, bsize, "%p", o->atom.p);
+  return snprintf(buf, bsize, "*%p", o->atom.p);
 }
 
 // clang-format off
@@ -131,6 +142,7 @@ static CT_IToString __impls_itostring[CT_MAX_TYPES] = {
     {.tostring = ct_obj_tostring_int},
     {.tostring = ct_obj_tostring_int},
     {.tostring = ct_obj_tostring_float},
+    {.tostring = ct_obj_tostring_vec4},
     {.tostring = ct_obj_tostring_ptr},
     {.tostring = ct_obj_tostring_str}
 };
@@ -193,9 +205,24 @@ CT_Object *ct_object_i32(int32_t x) {
   return o;
 }
 
+CT_Object *ct_object_u32(uint32_t x) {
+  CT_Object *o = ct_object_raw(CT_TYPE_U32);
+  o->atom.u    = x;
+  return o;
+}
+
 CT_Object *ct_object_f32(float x) {
   CT_Object *o = ct_object_raw(CT_TYPE_F32);
   o->atom.f    = x;
+  return o;
+}
+
+CT_Object *ct_object_vec4(float x, float y, float z, float w) {
+  CT_Object *o = ct_object_raw(CT_TYPE_VEC4);
+  o->atom.x    = x;
+  o->atom.y    = y;
+  o->atom.z    = z;
+  o->atom.w    = w;
   return o;
 }
 
