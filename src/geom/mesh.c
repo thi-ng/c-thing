@@ -87,10 +87,3 @@ int ct_mesh_add_face(CT_Mesh *m, CT_Vec3f **verts, size_t num) {
   }
   return 0;
 }
-
-int main() {
-  CT_Mesh m;
-  ct_mesh_init(&m, 12, 8);
-  ct_mesh_free(&m);
-  return 0;
-}

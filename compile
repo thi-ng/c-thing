@@ -3,9 +3,12 @@
 # compile with SIMD:
 # ./compile.sh -asd
 
-SRC="src/data/adjacency.c src/data/cons.c src/data/consrc.c src/data/hashset.c src/data/hashtable.c src/data/object.c src/data/octree.c src/data/quadtree.c src/data/spatialgrid.c src/geom/circle.c src/geom/clip.c src/geom/halfedge.c src/geom/isec.c src/geom/quadedge.c src/geom/triangle.c src/io/svg.c src/math/math.c src/math/hashfn.c src/math/matrix.c src/math/poisson.c src/math/vec.c src/mem/mpool.c src/sim/ca.c src/sim/verlet.c"
+SRC=;
+SRC_DIRS="src/data src/geom src/geom/clip src/math src/mem src/sim"
+for d in $SRC_DIRS; do for f in `ls $d/*.c`; do SRC="$SRC $f"; done; done;
+
 TESTS=
-CFLAGS="-std=c11 -Os -Isrc"
+CFLAGS="-std=c11 -O3 -Isrc"
 EMFLAGS="-s ASM_JS=1 -s ASSERTIONS=0 -s INVOKE_RUN=0 -s AGGRESSIVE_VARIABLE_ELIMINATION=1 -s MODULARIZE=1 -s NO_EXIT_RUNTIME=1 -s TOTAL_MEMORY='48*1024*1024' --js-library src/rt_cthing.js"
 OUT=cthing.js
 MIN=cthing.min.js
@@ -45,7 +48,8 @@ while getopts acdhkmstD: opt; do
         m) CFLAGS="$CFLAGS -DCT_FEATURE_CHECK_MEM"
            ;;
         t) CFLAGS="$CFLAGS -DNDEBUG -DCT_FEATURE_LOG"
-           TESTS="src/test/test.c test/main.c test/adjacency.c test/circle.c test/clip.c test/cons.c test/consrc.c test/hash.c test/hashset.c test/hashtable.c test/matrix.c test/mpool.c test/octree.c test/poisson.c test/quadtree.c test/qedge.c test/spatialgrid.c test/vec.c"
+           TESTS="src/test/test.c"
+           for f in `ls test/*.c`; do TESTS="$TESTS $f"; done;
            ;;
         h) usage
            ;;
@@ -64,6 +68,8 @@ done
 
 echo "cflags: $CFLAGS"
 echo "emflags: $EMFLAGS"
+echo "src: $SRC"
+echo "test: $TESTS"
 
 time emcc $CFLAGS \
      --memory-init-file 0 \
@@ -80,6 +86,7 @@ echo "postprocessing..."
 node postprocess.js
 ls -la $MIN
 cp $OUT geom-cljs/resources/public/js/
+cp $MIN geom-cljs/resources/public/js/
 
 # -s EXPORTED_FUNCTIONS=@exports.json
 # -s ELIMINATE_DUPLICATE_FUNCTIONS_DUMP_EQUIVALENT_FUNCTIONS=1

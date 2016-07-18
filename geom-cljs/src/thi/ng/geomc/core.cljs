@@ -8,7 +8,7 @@
    [thi.ng.geom.vector :as v]
    [thi.ng.strf.core :as f]))
 
-(defonce geom (js/geom))
+(defonce cthing (js/cthing))
 
 (enable-console-print!)
 
@@ -35,59 +35,59 @@
 
 (deftype Vec2f [ptr]
   IMag
-  (mag [_] (._ct_mag2f js/geom ptr))
+  (mag [_] (._ct_mag2f js/cthing ptr))
   IMathOps
-  (+! [_ v] (._ct_add2fv_imm js/geom ptr (.-ptr ^Vec2f v)) _)
-  (-! [_ v] (._ct_sub2fv_imm js/geom ptr (.-ptr ^Vec2f v)) _)
+  (+! [_ v] (._ct_add2fv_imm js/cthing ptr (.-ptr ^Vec2f v)) _)
+  (-! [_ v] (._ct_sub2fv_imm js/cthing ptr (.-ptr ^Vec2f v)) _)
   IPrintWithWriter
   (-pr-writer [_ writer opts]
     (pr-sequential-writer
      writer pr-writer "#vec2f [" " " "]" opts
-     [(aget (.-HEAPF32 js/geom) (unsigned-bit-shift-right ptr 2))
-      (aget (.-HEAPF32 js/geom) (unsigned-bit-shift-right (+ ptr 4) 2))])))
+     [(aget (.-HEAPF32 js/cthing) (unsigned-bit-shift-right ptr 2))
+      (aget (.-HEAPF32 js/cthing) (unsigned-bit-shift-right (+ ptr 4) 2))])))
 
 (deftype Vec3f [ptr]
   IMag
-  (mag [_] (._ct_mag3f js/geom ptr))
+  (mag [_] (._ct_mag3f js/cthing ptr))
   IMathOps
-  (+! [_ v] (._ct_add3fv_imm js/geom ptr (.-ptr ^Vec3f v)) _)
+  (+! [_ v] (._ct_add3fv_imm js/cthing ptr (.-ptr ^Vec3f v)) _)
   ICross
-  (cross! [_ v] (._ct_cross3fv_imm js/geom ptr (.-ptr ^Vec3f v)) _)
+  (cross! [_ v] (._ct_cross3fv_imm js/cthing ptr (.-ptr ^Vec3f v)) _)
   IMix
-  (mix! [_ b t] (._ct_mix3fv_imm js/geom ptr (.-ptr ^Vec3f b) t) _)
+  (mix! [_ b t] (._ct_mix3fv_imm js/cthing ptr (.-ptr ^Vec3f b) t) _)
   IPrintWithWriter
   (-pr-writer [_ writer opts]
     (pr-sequential-writer
      writer pr-writer "#vec3f [" " " "]" opts
-     [(aget (.-HEAPF32 js/geom) (unsigned-bit-shift-right ptr 2))
-      (aget (.-HEAPF32 js/geom) (unsigned-bit-shift-right (+ ptr 4) 2))
-      (aget (.-HEAPF32 js/geom) (unsigned-bit-shift-right (+ ptr 8) 2))])))
+     [(aget (.-HEAPF32 js/cthing) (unsigned-bit-shift-right ptr 2))
+      (aget (.-HEAPF32 js/cthing) (unsigned-bit-shift-right (+ ptr 4) 2))
+      (aget (.-HEAPF32 js/cthing) (unsigned-bit-shift-right (+ ptr 8) 2))])))
 
 (deftype Circle2f [ptr]
   IArea
-  (area [_] (._ct_circle2f_area js/geom ptr))
+  (area [_] (._ct_circle2f_area js/cthing ptr))
   ITessellate
   (tessellate [_ {:keys [res target]}]
-    (let [target (or target (._malloc js/geom (* (inc res) 36)))]
-      (._ct_circle2f_tessellate js/geom ptr target res)))
+    (let [target (or target (._malloc js/cthing (* (inc res) 36)))]
+      (._ct_circle2f_tessellate js/cthing ptr target res)))
   IPrintWithWriter
   (-pr-writer [_ writer opts]
     (pr-sequential-writer
      writer pr-writer "#circle2f [" " " "]" opts
-     [(aget (.-HEAPF32 js/geom) (unsigned-bit-shift-right ptr 2))
-      (aget (.-HEAPF32 js/geom) (unsigned-bit-shift-right (+ ptr 4) 2))
-      (aget (.-HEAPF32 js/geom) (unsigned-bit-shift-right (+ ptr 8) 2))])))
+     [(aget (.-HEAPF32 js/cthing) (unsigned-bit-shift-right ptr 2))
+      (aget (.-HEAPF32 js/cthing) (unsigned-bit-shift-right (+ ptr 4) 2))
+      (aget (.-HEAPF32 js/cthing) (unsigned-bit-shift-right (+ ptr 8) 2))])))
 
 (defn ^:export vec2f
-  [x y] (Vec2f. (._ct_vec2f js/geom x y nil)))
+  [x y] (Vec2f. (._ct_vec2f js/cthing x y nil)))
 
 (defn ^:export vec3f
-  [x y z] (Vec3f. (._ct_vec3f js/geom x y z nil)))
+  [x y z] (Vec3f. (._ct_vec3f js/cthing x y z nil)))
 
 (defn ^:export circle2f
   [x y r]
-  (let [ptr (._malloc js/geom 12)]
-    (Circle2f. (._ct_circle2f_init js/geom ptr x y r))))
+  (let [ptr (._malloc js/cthing 12)]
+    (Circle2f. (._ct_circle2f_init js/cthing ptr x y r))))
 
 (defn ^:export main
   []
@@ -144,13 +144,13 @@
 (defn ^:export bench-tessel
   []
   (let [c (circle2f 0 0 1)
-        tptr (._malloc js/geom (* 81 3 2 4))
+        tptr (._malloc js/cthing (* 81 3 2 4))
         t0 (.getTime (js/Date.))]
     (loop [i 1e5]
       (when (pos? i)
         (tessellate c {:res 80 :target tptr})
         (recur (dec i))))
-    (._free js/geom tptr)
+    (._free js/cthing tptr)
     (prn (- (.getTime (js/Date.)) t0))))
 
 (defn ^:export bench-tessel2
