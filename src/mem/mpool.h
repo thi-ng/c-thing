@@ -6,11 +6,11 @@
 
 #include "cthing.h"
 
-#define CT_MP_ALLOC(mpool, type) \
-  ((mpool) != NULL ? ct_mpool_alloc(mpool) : malloc(sizeof(type)))
+#define CT_MP_ALLOC(pool, type) \
+  ((pool) != NULL ? ct_mpool_alloc(pool) : malloc(sizeof(type)))
 
-#define CT_MP_FREE(mpool, ptr) \
-  ((mpool) != NULL ? ct_mpool_free_block(mpool, (ptr)) : free(ptr))
+#define CT_MP_FREE(pool, ptr) \
+  ((pool) != NULL ? ct_mpool_free_block(pool, (ptr)) : free(ptr))
 
 CT_BEGIN_DECLS
 
@@ -41,12 +41,13 @@ typedef struct {
 } CT_MPCompactResult;
 
 CT_MPool *ct_mpool_new();
-size_t ct_mpool_init(CT_MPool *mpool, size_t num, size_t bsize);
-void *ct_mpool_alloc(CT_MPool *mpool);
-void ct_mpool_free_block(CT_MPool *mpool, const void *block);
+size_t ct_mpool_init(CT_MPool *pool, size_t num, size_t bsize);
+void *ct_mpool_alloc(CT_MPool *pool);
+void ct_mpool_free_block(CT_MPool *pool, const void *block);
 void ct_mpool_free_all_blocks(CT_MPool *mp);
-void ct_mpool_free(CT_MPool *mpool);
+void ct_mpool_free(CT_MPool *pool);
+int ct_mpool_is_valid_block(CT_MPool *pool, void *block);
 CT_MPCompactResult ct_mpool_compact(CT_MPool *mp);
-void ct_mpool_trace(const CT_MPool *mpool);
+void ct_mpool_trace(const CT_MPool *pool);
 
 CT_END_DECLS

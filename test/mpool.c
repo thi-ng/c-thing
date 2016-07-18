@@ -9,6 +9,8 @@ int test_mpool() {
   CT_IS(!ct_mpool_init(&pool, 16, 8), "can't init mpool");
   float *a = (float *)ct_mpool_alloc(&pool);
   *a       = 23;
+  CT_IS(ct_mpool_is_valid_block(&pool, a), "a invalid");
+  CT_IS(!ct_mpool_is_valid_block(&pool, NULL), "NULL invalid");
   CT_IS((uint8_t *)a == pool.head->pool, "*a not 1st block (%p, %p)", a,
         pool.head->pool);
   CT_IS(*a == 23, "a = %f", *a);
