@@ -77,13 +77,12 @@ static void mark_nodes(CT_ClipNode *p, int e, int invert) {
   }
 }
 
-static void insert_intersections(CT_ClipNode *s, CT_ClipNode *c,
-                                 CT_ClipNode *auxs, CT_ClipNode *auxc) {
+static void insert_intersections(CT_ClipNode *s, CT_ClipNode *c) {
   float alpha_s, alpha_c;
   CT_Vec2f isec;
-  for (auxs = s; auxs->next; auxs = auxs->next) {
+  for (CT_ClipNode *auxs = s; auxs->next; auxs = auxs->next) {
     if (!auxs->intersect) {
-      for (auxc = c; auxc->next; auxc = auxc->next) {
+      for (CT_ClipNode *auxc = c; auxc->next; auxc = auxc->next) {
         if (!auxc->intersect) {
           if (ct_intersect_lines(&auxs->pos, &next_node(auxs->next)->pos,
                                  &auxc->pos, &next_node(auxc->next)->pos,
@@ -156,17 +155,17 @@ CT_ClipNode *ct_create_polygon2f(CT_Vec2f *points, size_t num) {
 }
 
 CT_ClipNode *ct_clip_polygon2f(CT_ClipNode *s, CT_ClipNode *c, int mode) {
-  CT_ClipNode *auxs = last_node(s);
   CT_ClipNode *ends =
-      ct_create_clip_node(&s->pos, NULL, auxs, NULL, NULL, 0, 0, 0, 0);
-  CT_ClipNode *auxc = last_node(c);
+      ct_create_clip_node(&s->pos, NULL, last_node(s), NULL, NULL, 0, 0, 0, 0);
   CT_ClipNode *endc =
-      ct_create_clip_node(&c->pos, NULL, auxc, NULL, NULL, 0, 0, 0, 0);
-  insert_intersections(s, c, auxs, auxc);
+      ct_create_clip_node(&c->pos, NULL, last_node(c), NULL, NULL, 0, 0, 0, 0);
+  insert_intersections(s, c);
   mark_nodes(s, classify_node(s, c), mode & 1);
   mark_nodes(c, classify_node(c, s), mode & 2);
   close_poly(s, ends);
   close_poly(c, endc);
+  //ct_trace_polygon2f(s);
+  //ct_trace_polygon2f(c);
   return build_result_poly(s);
 }
 
