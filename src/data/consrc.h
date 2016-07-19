@@ -6,13 +6,15 @@
 CT_BEGIN_DECLS
 
 CT_Object *ct_object_cons(CT_Object *v);
-void ct_consrc_push(CT_Object **list, CT_Object *v);
-CT_Object *ct_consrc_pop(CT_Object **list);
+void ct_consrc_push_imm(CT_Object **list, CT_Object *v);
+CT_Object *ct_consrc_pop_imm(CT_Object **list);
+CT_Object *ct_consrc_cons(CT_Object *v, CT_Object *list);
+CT_Object *ct_consrc_rest(CT_Object *list);
 
 int ct_consrc_init();
 
-static inline CT_ConsRC *ct_object_cons_ptr(CT_Object *o) {
-  return ((CT_ConsRC *)(o->atom.p));
+ct_inline CT_ConsRC *ct_object_cons_ptr(CT_Object *o) {
+  return (CT_ConsRC *)(o->atom.p);
 }
 
 CT_END_DECLS

@@ -23,39 +23,37 @@ CT_Object CT_NIL = {
 void ct_object_free_nop(const CT_Ref *ref) {
 }
 
-/*
-void ct_object_trace(const CT_Object *o) {
+ct_export void ct_object_trace(const CT_Object *o) {
   switch (o->tag.type) {
     case CT_TYPE_I32:
-      CT_DEBUG("i32: %p = %zu (refs: %zu, tag: %x)", o, o->atom.i,
-               o->rc.count, o->tag.tag);
+      CT_DEBUG("i32: %p = %zd (refs: %zu, tag: %zx)", o, o->atom.i, o->rc.count,
+               o->tag.tag);
       break;
     case CT_TYPE_F32:
-      CT_DEBUG("f32: %p = %f (refs: %zu, tag: %x)", o, o->atom.f, o->rc.count,
+      CT_DEBUG("f32: %p = %f (refs: %zu, tag: %zx)", o, o->atom.f, o->rc.count,
                o->tag.tag);
       break;
     case CT_TYPE_STR:
-      CT_DEBUG("str: %p = \"%s\" (refs: %zu, tag: %x)", o, (char *)o->atom.p,
+      CT_DEBUG("str: %p = \"%s\" (refs: %zu, tag: %zx)", o, (char *)o->atom.p,
                o->rc.count, o->tag.tag);
       break;
     case CT_TYPE_NIL:
-      CT_DEBUG("nil: %p = NIL (refs: %zu, tag: %x)", o, o->rc.count,
+      CT_DEBUG("nil: %p = NIL (refs: %zu, tag: %zx)", o, o->rc.count,
                o->tag.tag);
       break;
-    case CT_TYPE_CONS:
-      CT_DEBUG("cons: %p (refs: %zu, tag: %x) ", o, o->rc.count, o->tag.tag);
-      CT_DEBUG("(");
-      while (o) {
-        ct_object_trace(ct_object_cons_ptr(o)->value);
-        o = ct_object_cons_ptr(o)->next;
-      }
-      CT_DEBUG(")");
-      break;
+    //case CT_TYPE_CONS:
+    //  CT_DEBUG("cons: %p (refs: %zu, tag: %x) ", o, o->rc.count, o->tag.tag);
+    //  CT_DEBUG("(");
+    //  while (o) {
+    //    ct_object_trace(ct_object_cons_ptr(o)->value);
+    //    o = ct_object_cons_ptr(o)->next;
+    //  }
+    //  CT_DEBUG(")");
+    //  break;
     default:
-      CT_DEBUG("???: %p (refs: %zu, tag: %05x)", o, o->rc.count, o->tag.tag);
+      CT_DEBUG("???: %p (refs: %zu, tag: %zx)", o, o->rc.count, o->tag.tag);
   }
 }
-*/
 
 static int ct_obj_print_nil(CT_Object *o, FILE *out) {
   return fprintf(out, "nil");
@@ -226,6 +224,11 @@ CT_Object *ct_object_vec4(float x, float y, float z, float w) {
   return o;
 }
 
+static void ct_object_deinit() {
+  CT_DEBUG("free object pool");
+  ct_mpool_free(&__ct_object.pool);
+}
+
 int ct_object_init() {
   if (!__ct_object.inited) {
     if (ct_mpool_init(&__ct_object.pool, CT_POOLSIZE_OBJECT,
@@ -233,6 +236,7 @@ int ct_object_init() {
       return 1;
     }
     __ct_object.inited = 1;
+    atexit(ct_object_deinit);
   }
   return 0;
 }
