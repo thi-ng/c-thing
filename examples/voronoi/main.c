@@ -136,9 +136,11 @@ int main(int argc, char **argv) {
     return 1;
   }
   state.sites = malloc(state.num * sizeof(CT_Vec2f));
+  // define surrounding triangle
   ct_set2fxy(&state.sites[0], -state.limit, -state.limit);
   ct_set2fxy(&state.sites[1], state.limit, -state.limit);
-  ct_set2fxy(&state.sites[2], 0, state.limit);
+  ct_set2fxy(&state.sites[2], state.width / 2, state.limit);
+
   ct_svg_start_doc(stdout, ct_svg_attribs(1, 3, SVG_INT("width", state.width),
                                           SVG_INT("height", state.height),
                                           SVG_HEX("fill", 0xff00cc)));
