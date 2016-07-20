@@ -5,6 +5,7 @@
 
 #include "cthing.h"
 #include "data/hashtable.h"
+#include "math/vec.h"
 
 #define SVG_STR(k, v) (k), 's', (v)
 #define SVG_FLOAT(k, v) (k), 'f', (v)
@@ -34,5 +35,6 @@ int ct_svg_write_rect(FILE *out, float x, float y, float w, float h,
 
 int ct_svg_write_line(FILE *out, float x1, float y1, float x2, float y2,
                       CT_SVGAttribs *attribs);
-
+int ct_svg_write_line2fv(FILE *out, const CT_Vec2f *a, const CT_Vec2f *b,
+                         CT_SVGAttribs *attribs);
 CT_END_DECLS

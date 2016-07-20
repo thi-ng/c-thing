@@ -142,3 +142,8 @@ int ct_svg_write_line(FILE *out, float x1, float y1, float x2, float y2,
   write_attribs(out, attribs, "/>");
   return 0;
 }
+
+int ct_svg_write_line2fv(FILE *out, const CT_Vec2f *a, const CT_Vec2f *b,
+                         CT_SVGAttribs *attribs) {
+  return ct_svg_write_line(out, a->x, a->y, b->x, b->y, attribs);
+}
