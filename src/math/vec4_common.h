@@ -11,14 +11,16 @@ CT_BEGIN_DECLS
 CT_Vec4f *ct_vec4f(float x, float y, float z, float w, CT_MPool *mpool);
 CT_Vec4f *ct_vec4fn(float n, CT_MPool *mpool);
 
-ct_export ct_inline int ct_compare4fv(const CT_Vec4f *a, const CT_Vec4f *b) {
-  int c = COMPARE(a->x, b->x);
+ct_export ct_inline int ct_compare4fv(const void *a, const void *b) {
+  CT_Vec4f *va = (CT_Vec4f *)a;
+  CT_Vec4f *vb = (CT_Vec4f *)b;
+  int c        = COMPARE(va->x, vb->x);
   if (!c) {
-    c = COMPARE(a->y, b->y);
+    c = COMPARE(va->y, vb->y);
     if (!c) {
-      c = COMPARE(a->z, b->z);
+      c = COMPARE(va->z, vb->z);
       if (!c) {
-        return COMPARE(a->w, b->w);
+        return COMPARE(va->w, vb->w);
       }
     }
   }

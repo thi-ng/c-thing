@@ -88,10 +88,12 @@ ct_export ct_inline CT_Vec2f *ct_clamp2fv_imm(CT_Vec2f *a, const CT_Vec2f *min,
   return a;
 }
 
-ct_export ct_inline int ct_compare2fv(const CT_Vec2f *a, const CT_Vec2f *b) {
-  int c = COMPARE(a->x, b->x);
+ct_export ct_inline int ct_compare2fv(const void *a, const void *b) {
+  CT_Vec2f *va = (CT_Vec2f *)a;
+  CT_Vec2f *vb = (CT_Vec2f *)b;
+  int c        = COMPARE(va->x, vb->x);
   if (!c) {
-    return COMPARE(a->y, b->y);
+    return COMPARE(va->y, vb->y);
   }
   return c;
 }
@@ -103,6 +105,11 @@ ct_export ct_inline size_t ct_deltaeq2fv(const CT_Vec2f *a, const CT_Vec2f *b,
 
 ct_export ct_inline float ct_cross2fv(const CT_Vec2f *a, const CT_Vec2f *b) {
   return (a->x * b->y) - (a->y * b->x);
+}
+
+ct_export ct_inline float ct_cross2fv3(const CT_Vec2f *a, const CT_Vec2f *b,
+                                       const CT_Vec2f *c) {
+  return (b->x - a->x) * (c->y - a->y) - (b->y - a->y) * (c->x - a->x);
 }
 
 ct_export ct_inline CT_Vec2f *ct_madd2fv_imm(CT_Vec2f *a, const CT_Vec2f *b,

@@ -183,3 +183,35 @@ int ct_tostringfp(char *buf, int bufsz, const float *p, size_t num) {
   }
   return -1;
 }
+
+size_t ct_convexhull2f(CT_Vec2f *points, size_t num, CT_Vec2f *hull) {
+  if (num < 1) return 0;
+  qsort(points, num, sizeof(CT_Vec2f), ct_compare2fv);
+  size_t len = 0;
+  for (size_t i = 0; i < num; i++) {
+    while (len >= 2 &&
+           ct_cross2fv3(&hull[len - 2], &hull[len - 1], &points[i]) >= 0) {
+      len--;
+    }
+    hull[len] = points[i];
+    CT_DEBUG("add hull: %f,%f (%zu)", points[i].x, points[i].y, len);
+    len++;
+  }
+  for (size_t i = 0, n2 = num / 2, end = num - 1; i < n2; i++) {
+    CT_Vec2f t  = points[i];
+    points[i]   = points[end];
+    points[end] = t;
+    end--;
+  }
+  size_t upper = len;
+  for (size_t i = 0; i < num; i++) {
+    while (len > upper &&
+           ct_cross2fv3(&hull[len - 2], &hull[len - 1], &points[i]) >= 0) {
+      len--;
+    }
+    hull[len] = points[i];
+    CT_DEBUG("add hull: %f,%f (%zu)", points[i].x, points[i].y, len);
+    len++;
+  }
+  return len - 1 - (ct_compare2fv(&hull[0], &hull[1]) == 0);
+}

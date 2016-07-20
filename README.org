@@ -35,7 +35,7 @@ WIP
 - Cons list ([[./src/data/consrc.h][with]] & [[./src/data/cons.h][without]] reference counting)
 - [[./src/data/hashset.h][Hashset]] (generic)
 - [[./src/data/hashtable.h][Hashtable]] (generic)
-- [[./src/data/object.h][Object wrapper]]
+- [[./src/data/object.h][Object wrapper]] & protocol dispatch
 - [[./src/data/octree.h][Octree]]
 - [[./src/data/quadtree.h][Quadtree]]
 - [[./src/data/spatialgrid.h][Spatial grid]] (1D, 2D, 3D)
@@ -56,11 +56,13 @@ WIP
 
 *** Geometry
 
+- Convex Hull (2D)
 - [[./src/math/matrix.h][Matrix 4x4]] (w/ opt SSE impls)
 - [[./src/math/vec.h][Vec2/3/4]] (w/ opt SSE impls)
 - [[./src/math/swizzle.h][Vector swizzling]]
 - [[./src/geom/clip.h][Line clipping]] (Liang-Barsky)
 - [[./src/geom/clip/vatti.h][Polygon clipping]] (Vatti)
+- [[./src/geom/voronoi.h][Voronoi]] (2D)
 ...
 
 TBD

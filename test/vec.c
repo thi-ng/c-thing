@@ -54,17 +54,6 @@ int test_vec2f() {
   return 0;
 }
 
-ct_export void bench_sse(CT_Vec3f *a, CT_Vec3f *b) {
-  clock_t begin = clock();
-  for (size_t i = 0; i < 1e6; i++) {
-    ct_add3fv_imm(a, b);
-  }
-  clock_t end     = clock();
-  double measured = (double)(end - begin) / CLOCKS_PER_SEC * 1000.0;
-  CT_INFO("bench: %1.3fms", measured);
-  CT_INFO("[%f, %f, %f]", a->x, a->y, a->z);
-}
-
 int test_vec3f() {
   CT_MPool pool;
   CT_IS(!ct_mpool_init(&pool, 16, sizeof(CT_Vec3f)), "can't init mpool");
@@ -109,7 +98,7 @@ int test_vec3f() {
   CT_IS(-1 == ct_compare3fv(c, b), "c < b");
   CT_IS(-1 == ct_compare3fv(a, d), "a < d");
   CT_IS(1 == ct_compare3fv(d, a), "d > a");
-  bench_sse(a, b);
+  //bench_sse(a, b);
   ct_mpool_free(&pool);
   return 0;
 }
@@ -182,6 +171,28 @@ int test_vec_hash() {
   CT_IS(0x79740297 == h, "wrong hash: %x", h);
 
   return 0;
+}
+
+int test_convex_hull() {
+  CT_Vec2f points[] = {{0, 0}, {5, 0}, {2, 0.1}, {0, 5}, {1, 2}};
+  CT_Vec2f hull[6];
+  size_t len = ct_convexhull2f(points, 5, hull);
+  CT_IS(3 == len, "hull len: %zu", len);
+  for (size_t i = 0; i < len; i++) {
+    CT_INFO("hull %zu: %f,%f", i, hull[i].x, hull[i].y);
+  }
+  return 0;
+}
+
+ct_export void bench_sse(CT_Vec3f *a, CT_Vec3f *b) {
+  clock_t begin = clock();
+  for (size_t i = 0; i < 1e6; i++) {
+    ct_add3fv_imm(a, b);
+  }
+  clock_t end     = clock();
+  double measured = (double)(end - begin) / CLOCKS_PER_SEC * 1000.0;
+  CT_INFO("bench: %1.3fms", measured);
+  CT_INFO("[%f, %f, %f]", a->x, a->y, a->z);
 }
 
 int bench_vec3_create() {
