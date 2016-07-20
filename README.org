@@ -14,6 +14,7 @@
          - [[#poisson-disc-sampling-image-conversion][Poisson disc sampling image conversion]]
          - [[#polygon-clipping-vatti][Polygon clipping (Vatti)]]
          - [[#verlet-physics][Verlet physics]]
+         - [[#voronoi][Voronoi]]
      - [[#requirements][Requirements]]
      - [[#dependencies][Dependencies]]
      - [[#build--test][Build & test]]
@@ -154,6 +155,17 @@ make config=release_sse ex-verlet && bin/release/ex-verlet
 # ouputs are stored as SVG sequence in /assets
 # use script below to convert to mp4 (requires rsvg & ffmpeg) -> out.mp4
 ./makevideo verlet
+#+END_SRC
+
+*** Voronoi
+
+[[./examples/voronoi/main.c][Source]]
+
+[[./assets/poisson-voronoi.png]]
+
+#+BEGIN_SRC shell
+# build library & example app
+make config=release_sse ex-voronoi && bin/release/ex-voronoi
 #+END_SRC
 
 ** Requirements
