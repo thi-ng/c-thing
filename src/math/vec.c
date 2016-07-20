@@ -113,6 +113,36 @@ ct_export CT_Vec3f *ct_closest_point3f(float *ptr, CT_Vec3f *p, size_t num,
   return closest;
 }
 
+ct_export int ct_bounds2fp(float *ptr, size_t num, size_t fstride,
+                           CT_Vec2f *min, CT_Vec2f *max) {
+  if (num > 0) {
+    ct_set2fn(min, FLT_MAX);
+    ct_set2fn(max, -FLT_MAX);
+    while (num--) {
+      ct_min2fv_imm(min, (CT_Vec2f *)ptr);
+      ct_max2fv_imm(max, (CT_Vec2f *)ptr);
+      ptr += fstride;
+    }
+    return 0;
+  }
+  return 1;
+}
+
+ct_export int ct_bounds3fp(float *ptr, size_t num, size_t fstride,
+                           CT_Vec3f *min, CT_Vec3f *max) {
+  if (num > 0) {
+    ct_set3fn(min, FLT_MAX);
+    ct_set3fn(max, -FLT_MAX);
+    while (num--) {
+      ct_min3fv_imm(min, (CT_Vec3f *)ptr);
+      ct_max3fv_imm(max, (CT_Vec3f *)ptr);
+      ptr += fstride;
+    }
+    return 0;
+  }
+  return 1;
+}
+
 int ct_deltaeqfp(const float *a, const float *b, float eps, size_t num) {
   for (size_t i = 0; i < num; i++) {
     if (!ct_deltaeqf(a[i], b[i], eps)) return 0;

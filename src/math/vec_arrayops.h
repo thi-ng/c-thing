@@ -31,4 +31,9 @@ CT_Vec2f* ct_closest_point2f(float* ptr, CT_Vec2f* p, size_t num,
 CT_Vec3f* ct_closest_point3f(float* ptr, CT_Vec3f* p, size_t num,
                              size_t fstride);
 
+int ct_bounds2fp(float* ptr, size_t num, size_t fstride, CT_Vec2f* min,
+                 CT_Vec2f* max);
+int ct_bounds3fp(float* ptr, size_t num, size_t fstride, CT_Vec3f* min,
+                 CT_Vec3f* max);
+
 CT_END_DECLS
