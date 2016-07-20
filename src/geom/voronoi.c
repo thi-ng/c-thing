@@ -32,7 +32,7 @@ ct_inline int heap_is_empty(CT_VOHeap *heap) {
 }
 
 static int heap_bucket(CT_VOHeap *heap, CT_VOHalfEdge *he) {
-  int bucket = (he->key - heap->ymin) / heap->deltay * heap->hashSize;
+  int bucket = (he->key - heap->miny) / heap->deltay * heap->hashSize;
   if (bucket < 0) {
     bucket = 0;
   } else if (bucket >= heap->hashSize) {
@@ -77,8 +77,8 @@ static CT_Vec2f heap_get_min(CT_VOHeap *heap) {
   while (!heap->hash[heap->min].next) {
     heap->min++;
   }
-  CT_VOHalfEdge *n = heap->hash[heap->min].next;
-  CT_Vec2f v       = {n->vertex->pos.x, n->key};
+  CT_VOHalfEdge *he = heap->hash[heap->min].next;
+  CT_Vec2f v        = {he->vertex->pos.x, he->key};
   return v;
 }
 
@@ -200,10 +200,12 @@ static int is_right_of(CT_VOHalfEdge *el, CT_Vec2f *p) {
 }
 
 static void edge_set_endpoint(CT_Voronoi *vor, CT_VOEdge *e, int side,
-                              CT_VOVertex *s) {
+                              CT_VOVertex *s, CT_VOEdgeHandler handler,
+                              void *state) {
   e->ep[side] = s;
   inc_ref(s);
   if (e->ep[1 - side]) {
+    handler(e, state);
     dec_ref(&vor->vpool, e->reg[0]);
     dec_ref(&vor->vpool, e->reg[1]);
     ct_mpool_free_block(&vor->epool, e);
@@ -233,8 +235,8 @@ static CT_VOHalfEdge *edgelist_get_hash(CT_VOEdgeList *el, int b) {
 }
 
 static CT_VOHalfEdge *edgelist_leftbnd(CT_VOEdgeList *el, CT_Vec2f *p) {
-  //get close to desired halfedge
-  int bucket = (p->x - el->xmin) / el->deltax * el->hashSize;
+  // get close to desired halfedge
+  int bucket = (p->x - el->minx) / el->deltax * el->hashSize;
   if (bucket < 0) {
     bucket = 0;
   } else if (bucket >= el->hashSize) {
@@ -285,24 +287,18 @@ static void halfedge_delete(CT_VOHalfEdge *he) {
   he->parent      = (CT_VOEdge *)VORONOI_DELETED;
 }
 
-static int heap_init(CT_VOHeap *heap, size_t num, float ymin, float deltay) {
-  if (!ct_mpool_init(&heap->pool, num, sizeof(CT_VOHalfEdge))) {
-    heap->count    = 0;
-    heap->min      = 0;
-    heap->hashSize = 4 * (size_t)sqrt(num);
-    heap->hash     = calloc(heap->hashSize, sizeof(CT_VOHalfEdge));
-    heap->ymin     = ymin;
-    heap->deltay   = deltay;
-    return 0;
-  }
-  return 1;
+static int heap_init(CT_VOHeap *heap, size_t num) {
+  heap->count    = 0;
+  heap->min      = 0;
+  heap->hashSize = 4 * (uint32_t)sqrt(num);
+  heap->hash     = calloc(heap->hashSize, sizeof(CT_VOHalfEdge));
+  return 0;
 }
 
-static int edgelist_init(CT_VOEdgeList *el, size_t num, float xmin,
-                         float deltax) {
+static int edgelist_init(CT_VOEdgeList *el, size_t num) {
   el->hashSize = 2 * (uint32_t)sqrt(num);
   el->hash     = calloc(el->hashSize, sizeof(CT_VOHalfEdge *));
-  if (!ct_mpool_init(&el->pool, num, sizeof(CT_VOHalfEdge *))) {
+  if (!ct_mpool_init(&el->pool, num, sizeof(CT_VOHalfEdge))) {
     el->leftend                = make_halfedge(el, NULL, 0);
     el->rightend               = make_halfedge(el, NULL, 0);
     el->leftend->left          = NULL;
@@ -311,8 +307,6 @@ static int edgelist_init(CT_VOEdgeList *el, size_t num, float xmin,
     el->rightend->right        = NULL;
     el->hash[0]                = el->leftend;
     el->hash[el->hashSize - 1] = el->rightend;
-    el->xmin                   = xmin;
-    el->deltax                 = deltax;
     return 0;
   }
   return 1;
@@ -328,32 +322,56 @@ static int compare_vec2f(const void *a, const void *b) {
   return 0;
 }
 
-///// public functions
-
-ct_export int ct_voronoi_init(CT_Voronoi *vor, CT_Vec2f *sites, size_t num) {
-  CT_Vec2f min, max;
-  ct_bounds2fp((float *)sites, num, 2, &min, &max);
-  int fail = (ct_mpool_init(&vor->vpool, num, sizeof(CT_VOVertex)) ||
-              ct_mpool_init(&vor->epool, 2 * num, sizeof(CT_VOEdge)) ||
-              edgelist_init(&vor->halfEdges, num, min.x, max.x - min.x) ||
-              heap_init(&vor->heap, num, min.y, max.y - min.y));
-  if (!fail) {
-    vor->numVertices = 0;
-    vor->numEdges    = 0;
-    vor->numSites    = num + 4;
+static CT_VOVertex *provide_next_site(CT_Voronoi *vor, const CT_Vec2f *sites,
+                                      size_t num) {
+  CT_VOVertex *v = NULL;
+  if (vor->numSites < num) {
+    v       = ct_mpool_alloc(&vor->vpool);
+    v->pos  = sites[vor->numSites++];
+    v->refs = 0;
+    set_vertex_id(vor, v);
   }
-  return fail;
+  return v;
 }
 
-// FIXME sites & provider
-ct_export void ct_voronoi_compute(CT_Voronoi *vor, CT_Vec2f *sites,
-                                  CT_VOVertexProvider provider, void *state) {
-  CT_VOVertex *p;
-  CT_Vec2f candidate;
-  CT_VOHeap *heap = &vor->heap;
+///// public functions
 
-  vor->first           = provider(vor, state);
-  CT_VOVertex *newsite = provider(vor, state);
+ct_export int ct_voronoi_init(CT_Voronoi *vor, size_t num) {
+  return (ct_mpool_init(&vor->vpool, 2 * num, sizeof(CT_VOVertex)) ||
+          ct_mpool_init(&vor->epool, num, sizeof(CT_VOEdge)) ||
+          edgelist_init(&vor->halfEdges, 2 * num) ||
+          heap_init(&vor->heap, num));
+}
+
+ct_export void ct_voronoi_free(CT_Voronoi *vor) {
+  ct_mpool_free(&vor->vpool);
+  ct_mpool_free(&vor->epool);
+  ct_mpool_free(&vor->halfEdges.pool);
+  free(vor->halfEdges.hash);
+  free(vor->heap.hash);
+}
+
+// TODO reset mpools
+ct_export void ct_voronoi_compute(CT_Voronoi *vor, CT_Vec2f *sites, size_t num,
+                                  CT_VOEdgeHandler handler, void *state) {
+  CT_Vec2f min, max, candidate;
+  CT_VOVertex *newsite, *p;
+  CT_VOEdgeList *el = &vor->halfEdges;
+  CT_VOHeap *heap   = &vor->heap;
+
+  ct_bounds2fp((float *)sites, num, 2, &min, &max);
+  qsort(sites, num, sizeof(CT_Vec2f), compare_vec2f);
+  el->minx     = min.x;
+  el->deltax   = max.x - min.x;
+  heap->miny   = min.y;
+  heap->deltay = max.y - min.y;
+
+  vor->numVertices = 0;
+  vor->numEdges    = 0;
+  vor->numSites    = 0;
+  vor->first       = provide_next_site(vor, sites, num);
+  newsite          = provide_next_site(vor, sites, num);
+
   while (1) {
     if (!heap_is_empty(heap)) {
       candidate = heap_get_min(heap);
@@ -363,23 +381,23 @@ ct_export void ct_voronoi_compute(CT_Voronoi *vor, CT_Vec2f *sites,
         (heap_is_empty(heap) || newsite->pos.y < candidate.y ||
          (newsite->pos.y == candidate.y && newsite->pos.x < candidate.x))) {
       // new site is smallest
-      CT_VOHalfEdge *lbnd = edgelist_leftbnd(&vor->halfEdges, &newsite->pos);
-      CT_VOHalfEdge *rbnd = lbnd->right;
-      CT_VOVertex *bot    = rightreg(lbnd, vor->first);
-      CT_VOEdge *e        = bisect(vor, bot, newsite);
-      CT_VOHalfEdge *bisector = make_halfedge(&vor->halfEdges, e, 0);
+      CT_VOHalfEdge *lbnd     = edgelist_leftbnd(el, &newsite->pos);
+      CT_VOHalfEdge *rbnd     = lbnd->right;
+      CT_VOVertex *bot        = rightreg(lbnd, vor->first);
+      CT_VOEdge *e            = bisect(vor, bot, newsite);
+      CT_VOHalfEdge *bisector = make_halfedge(el, e, 0);
       edgelist_insert(lbnd, bisector);
       if ((p = intersect(vor, lbnd, bisector))) {
         heap_delete(heap, lbnd, &vor->vpool);
         heap_insert(heap, lbnd, p, ct_dist2fv(&p->pos, &newsite->pos));
       }
       lbnd     = bisector;
-      bisector = make_halfedge(&vor->halfEdges, e, 1);
+      bisector = make_halfedge(el, e, 1);
       edgelist_insert(lbnd, bisector);
       if ((p = intersect(vor, bisector, rbnd))) {
         heap_insert(heap, bisector, p, ct_dist2fv(&p->pos, &newsite->pos));
       }
-      newsite = provider(vor, state);
+      newsite = provide_next_site(vor, sites, num);
     } else if (!heap_is_empty(heap)) {
       // isec is smallest
       CT_VOHalfEdge *lbnd  = heap_extract_min(heap);
@@ -389,8 +407,8 @@ ct_export void ct_voronoi_compute(CT_Voronoi *vor, CT_Vec2f *sites,
       CT_VOVertex *bot     = leftreg(lbnd, vor->first);
       CT_VOVertex *top     = rightreg(rbnd, vor->first);
       CT_VOVertex *v       = set_vertex_id(vor, lbnd->vertex);
-      edge_set_endpoint(vor, lbnd->parent, lbnd->side, v);
-      edge_set_endpoint(vor, rbnd->parent, rbnd->side, v);
+      edge_set_endpoint(vor, lbnd->parent, lbnd->side, v, handler, state);
+      edge_set_endpoint(vor, rbnd->parent, rbnd->side, v, handler, state);
       halfedge_delete(lbnd);
       heap_delete(heap, rbnd, &vor->vpool);
       halfedge_delete(rbnd);
@@ -402,9 +420,9 @@ ct_export void ct_voronoi_compute(CT_Voronoi *vor, CT_Vec2f *sites,
         side              = 1;
       }
       CT_VOEdge *e            = bisect(vor, bot, top);
-      CT_VOHalfEdge *bisector = make_halfedge(&vor->halfEdges, e, side);
+      CT_VOHalfEdge *bisector = make_halfedge(el, e, side);
       edgelist_insert(llbnd, bisector);
-      edge_set_endpoint(vor, e, 1 - side, v);
+      edge_set_endpoint(vor, e, 1 - side, v, handler, state);
       dec_ref(&vor->vpool, v);
       if ((p = intersect(vor, llbnd, bisector))) {
         heap_delete(heap, llbnd, &vor->vpool);
@@ -416,10 +434,19 @@ ct_export void ct_voronoi_compute(CT_Voronoi *vor, CT_Vec2f *sites,
     } else
       break;
   }
-
   CT_VOHalfEdge *he = vor->halfEdges.leftend->right;
   while (he != vor->halfEdges.rightend) {
-    CT_VOEdge *e = he->parent;
-    he           = he->right;
+    handler(he->parent, state);
+    he = he->right;
   }
+}
+
+ct_export void ct_vovertex_trace(const CT_VOVertex *v) {
+  CT_INFO("id: %u (%p) pos: %f,%f refs: %u", v->id, v, v->pos.x, v->pos.y,
+          v->refs);
+}
+
+ct_export void ct_vohedge_trace(const CT_VOHalfEdge *e) {
+  CT_INFO("he: (%p) v: %p n: %p l: %p r: %p e: %p refs: %u", e, e->vertex,
+          e->next, e->left, e->right, e->parent, e->refs);
 }

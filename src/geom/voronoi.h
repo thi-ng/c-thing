@@ -37,7 +37,7 @@ typedef struct {
   CT_VOHalfEdge *leftend;
   CT_VOHalfEdge *rightend;
   uint32_t hashSize;
-  float xmin;
+  float minx;
   float deltax;
   CT_MPool pool;
 } CT_VOEdgeList;
@@ -47,9 +47,8 @@ typedef struct {
   uint32_t hashSize;
   uint32_t count;
   uint32_t min;
-  float ymin;
+  float miny;
   float deltay;
-  CT_MPool pool;
 } CT_VOHeap;
 
 typedef struct {
@@ -63,4 +62,11 @@ typedef struct {
   CT_VOHeap heap;
 } CT_Voronoi;
 
-typedef CT_VOVertex *(*CT_VOVertexProvider)(CT_Voronoi *, void *state);
+typedef void (*CT_VOEdgeHandler)(CT_VOEdge *, void *);
+
+int ct_voronoi_init(CT_Voronoi *vor, size_t num);
+void ct_voronoi_free(CT_Voronoi *vor);
+void ct_voronoi_compute(CT_Voronoi *vor, CT_Vec2f *sites, size_t num,
+                        CT_VOEdgeHandler handler, void *state);
+void ct_vovertex_trace(const CT_VOVertex *v);
+void ct_vohedge_trace(const CT_VOHalfEdge *e);
