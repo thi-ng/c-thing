@@ -116,3 +116,13 @@ includedirs { "examples/common", "examples/vatti" }
 links "lib"
 dependson "lib"
 flags { "LinkTimeOptimization" }
+
+----- voronoi -----
+
+project "ex-voronoi"
+kind "ConsoleApp"
+files { "examples/voronoi/*.c" }
+includedirs { "examples/common", "examples/voronoi" }
+links "lib"
+dependson "lib"
+flags { "LinkTimeOptimization" }
