@@ -12,7 +12,7 @@
          - [[#1d2d-cellular-automata][1D/2D Cellular automata]]
          - [[#diffusion-limited-aggregation][Diffusion-Limited Aggregation]]
          - [[#poisson-disc-sampling-image-conversion][Poisson disc sampling image conversion]]
-         - [[#polygon-clipping-vatti][Polygon clipping (Vatti)]]
+         - [[#polygon-clipping-greiner-hormann][Polygon clipping (Greiner-Hormann)]]
          - [[#verlet-physics][Verlet physics]]
          - [[#voronoi][Voronoi]]
      - [[#requirements][Requirements]]
@@ -61,7 +61,7 @@ WIP
 - [[./src/math/vec.h][Vec2/3/4]] (w/ opt SSE impls)
 - [[./src/math/swizzle.h][Vector swizzling]]
 - [[./src/geom/clip.h][Line clipping]] (Liang-Barsky)
-- [[./src/geom/clip/vatti.h][Polygon clipping]] (Vatti)
+- [[./src/geom/polygon.h][Polygon & clipping]] (Greiner-Hormann)
 - [[./src/geom/voronoi.h][Voronoi]] (2D)
 ...
 
@@ -134,15 +134,15 @@ make config=release_sse ex-dla && bin/release/ex-dla > assets/dla.svg
   bin/release/ex-poisson -g 1.25 -q 500 -m 1.5 -x 16 assets/iris.jpg > assets/iris.svg
 #+END_SRC
 
-*** Polygon clipping (Vatti)
+*** Polygon clipping (Greiner-Hormann)
 
-[[./examples/vatti/main.c][Source]]
+[[./examples/polyclip/main.c][Source]]
 
-[[./assets/vatti.png]]
+[[./assets/polyclip.png]]
 
 #+BEGIN_SRC shell
 # build library & example app
-make config=release_sse ex-vatti && bin/release/ex-vatti
+make config=release_sse ex-polyclip && bin/release/ex-polyclip > polyclip.svg
 #+END_SRC
 
 *** Verlet physics
