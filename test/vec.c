@@ -175,12 +175,26 @@ int test_vec_hash() {
 
 int test_convex_hull() {
   CT_Vec2f points[] = {{0, 0}, {5, 0}, {2, 0.1}, {0, 5}, {1, 2}};
-  CT_Vec2f hull[6];
+  CT_Vec2f hull[32];
   size_t len = ct_convexhull2f(points, 5, hull);
   CT_IS(3 == len, "hull len: %zu", len);
-  for (size_t i = 0; i < len; i++) {
-    CT_INFO("hull %zu: %f,%f", i, hull[i].x, hull[i].y);
+  //for (size_t i = 0; i < len; i++) {
+  //  CT_INFO("hull %zu: %f,%f", i, hull[i].x, hull[i].y);
+  //}
+  CT_Vec2f *samples = malloc(1e5 * sizeof(CT_Vec2f));
+  for (size_t i = 0; i < 1e5; i++) {
+    ct_set2fxy(&samples[i], ct_rand_norm(), ct_rand_norm());
   }
+  ct_set2fxy(&samples[100], 1, -1);
+  ct_set2fxy(&samples[500], 1, 1);
+  ct_set2fxy(&samples[1000], -1, 1);
+  ct_set2fxy(&samples[5000], -1, -1);
+  len = ct_convexhull2f(samples, 1e5, hull);
+  CT_IS(4 == len, "hull len: %zu", len);
+  //for (size_t i = 0; i < len; i++) {
+  //  CT_INFO("hull %zu: %f,%f", i, hull[i].x, hull[i].y);
+  //}
+  free(samples);
   return 0;
 }
 

@@ -1,6 +1,7 @@
 #include <float.h>
 #include <stdio.h>
 
+#include "data/array.h"
 #include "math/vec.h"
 
 ct_export CT_Vec2f *ct_vec2f(float x, float y, CT_MPool *mpool) {
@@ -156,67 +157,6 @@ ct_export int ct_bounds3fp(float *ptr,
   return 1;
 }
 
-int ct_deltaeqfp(const float *a, const float *b, float eps, size_t num) {
-  for (size_t i = 0; i < num; i++) {
-    if (!ct_deltaeqf(a[i], b[i], eps)) {
-      return 0;
-    }
-  }
-  return 0;
-}
-
-int ct_comparefp(const float *a, const float *b, float eps, size_t num) {
-  for (size_t i = 0; i < num; i++) {
-    float delta = a[i] - b[i];
-    if (delta < -eps) {
-      return -1;
-    } else if (delta > eps) {
-      return 1;
-    }
-  }
-  return 0;
-}
-
-int ct_tostringfp(char *buf, int bufsz, const float *p, size_t num) {
-  if (snprintf(buf, bufsz, "[") > 0) {
-    size_t j = 1;
-    bufsz -= j;
-    for (size_t i = 0; i < num && bufsz > 0; i++) {
-      int res = snprintf(&buf[j], bufsz, "%1.4f", p[i]);
-      if (res < 0) {
-        return -1;
-      }
-      if (i < num - 1) {
-        buf[j + res] = ' ';
-        res++;
-      }
-      bufsz -= res;
-      j += res;
-    }
-    if (bufsz > 1) {
-      buf[j]     = ']';
-      buf[j + 1] = 0;
-      return j + 1;
-    }
-  }
-  return -1;
-}
-
-void *ct_reverse_array_imm(void *ptr, size_t num, size_t stride) {
-  CT_CHECK(stride <= 128, "stride > 128");
-  uint8_t tmp[128];
-  for (size_t i = 0, n2 = num / 2 * stride, end = (num - 1) * stride; i < n2;
-       i += stride) {
-    memcpy(tmp, &ptr[i], stride);
-    memcpy(&ptr[i], &ptr[end], stride);
-    memcpy(&ptr[end], tmp, stride);
-    end -= stride;
-  }
-  return ptr;
-fail:
-  return NULL;
-}
-
 static size_t hull2f(CT_Vec2f *points, size_t num, CT_Vec2f *hull) {
   size_t len = 0;
   for (size_t i = 0; i < num; i++) {
@@ -237,6 +177,8 @@ size_t ct_convexhull2f(CT_Vec2f *points, size_t num, CT_Vec2f *hull) {
   }
   qsort(points, num, sizeof(CT_Vec2f), ct_compare2fv_xy);
   size_t len = hull2f(points, num, hull);
-  len += hull2f(ct_reverse_array_imm(points, num, sizeof(CT_Vec2f)), num, hull + len);
+  ct_array_reverse_f32_imm((float *)points, num, 2);
+  //ct_array_reverse_imm(points, num, sizeof(CT_Vec2f));
+  len += hull2f(points, num, hull + len);
   return len - (ct_compare2fv_xy(&hull[0], &hull[1]) == 0);
 }
