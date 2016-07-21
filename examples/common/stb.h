@@ -1,3 +1,4 @@
+// clang-format off
 /* stb.h - v2.27 - Sean's Tool Box -- public domain -- http://nothings.org/stb.h
           no warranty is offered or implied; use this code at your own risk
 
