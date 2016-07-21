@@ -202,11 +202,22 @@ int ct_tostringfp(char *buf, int bufsz, const float *p, size_t num) {
   return -1;
 }
 
-size_t ct_convexhull2f(CT_Vec2f *points, size_t num, CT_Vec2f *hull) {
-  if (num < 1) {
-    return 0;
+void *ct_reverse_array_imm(void *ptr, size_t num, size_t stride) {
+  CT_CHECK(stride <= 128, "stride > 128");
+  uint8_t tmp[128];
+  for (size_t i = 0, n2 = num / 2 * stride, end = (num - 1) * stride; i < n2;
+       i += stride) {
+    memcpy(tmp, &ptr[i], stride);
+    memcpy(&ptr[i], &ptr[end], stride);
+    memcpy(&ptr[end], tmp, stride);
+    end -= stride;
   }
-  qsort(points, num, sizeof(CT_Vec2f), ct_compare2fv_xy);
+  return ptr;
+fail:
+  return NULL;
+}
+
+static size_t hull2f(CT_Vec2f *points, size_t num, CT_Vec2f *hull) {
   size_t len = 0;
   for (size_t i = 0; i < num; i++) {
     while (len >= 2 &&
@@ -217,21 +228,15 @@ size_t ct_convexhull2f(CT_Vec2f *points, size_t num, CT_Vec2f *hull) {
     CT_DEBUG("add hull: %f,%f (%zu)", points[i].x, points[i].y, len);
     len++;
   }
-  for (size_t i = 0, n2 = num / 2, end = num - 1; i < n2; i++) {
-    CT_Vec2f t  = points[i];
-    points[i]   = points[end];
-    points[end] = t;
-    end--;
+  return len - 1;
+}
+
+size_t ct_convexhull2f(CT_Vec2f *points, size_t num, CT_Vec2f *hull) {
+  if (num < 1) {
+    return 0;
   }
-  size_t upper = len;
-  for (size_t i = 0; i < num; i++) {
-    while (len > upper &&
-           ct_cross2fv3(&hull[len - 2], &hull[len - 1], &points[i]) >= 0) {
-      len--;
-    }
-    hull[len] = points[i];
-    CT_DEBUG("add hull: %f,%f (%zu)", points[i].x, points[i].y, len);
-    len++;
-  }
-  return len - 1 - (ct_compare2fv_xy(&hull[0], &hull[1]) == 0);
+  qsort(points, num, sizeof(CT_Vec2f), ct_compare2fv_xy);
+  size_t len = hull2f(points, num, hull);
+  len += hull2f(ct_reverse_array_imm(points, num, sizeof(CT_Vec2f)), num, hull + len);
+  return len - (ct_compare2fv_xy(&hull[0], &hull[1]) == 0);
 }
