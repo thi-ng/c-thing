@@ -22,24 +22,26 @@ optimize "Size"
 
 project "test"
 kind "ConsoleApp"
-files { "src/**.h", "src/**.c", "test/**.c" }
-removefiles {"src/geom/mesh.c" }
+files { "src/test/**.c", "test/**.c" }
 defines { "CT_FEATURE_ANSI" }
-flags { "FatalWarnings" }
+links "lib"
+dependson "lib"
+flags { "FatalWarnings", "LinkTimeOptimization" }
 
 ----- test w/ addr sanitizer
 
 project "test_asan"
 kind "ConsoleApp"
-files { "src/**.h", "src/**.c", "test/**.c" }
-removefiles {"src/geom/mesh.c" }
+files { "src/test/**.c", "test/**.c" }
 defines { "CT_FEATURE_ANSI" }
+links "lib"
+dependson "lib"
 flags { "FatalWarnings" }
 buildoptions { "-fsanitize=address", "-fno-omit-frame-pointer" }
 linkoptions { "-fsanitize=address" }
 
 ----- test w/ mem sanitizer (currently Linux x86_64 only & clang)
-
+--[[--
 project "test_msan"
 kind "ConsoleApp"
 files { "src/**.h", "src/**.c", "test/**.c" }
@@ -48,6 +50,7 @@ defines { "CT_FEATURE_ANSI" }
 flags { "FatalWarnings" }
 buildoptions { "-fsanitize=mem", "-fno-omit-frame-pointer", "-fsanitize-memory-track-origins" }
 linkoptions { "-fsanitize=mem", "-fsanitize-memory-track-origins" }
+--]]--
 
 ----- lib
 
