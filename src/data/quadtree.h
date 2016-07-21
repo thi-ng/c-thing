@@ -37,7 +37,11 @@ typedef struct {
 
 typedef int (*CT_QTVisitor)(const CT_QTNode *, void *);
 
-int ct_qtree_init(CT_Quadtree *t, float x, float y, float w, float h,
+int ct_qtree_init(CT_Quadtree *t,
+                  float x,
+                  float y,
+                  float w,
+                  float h,
                   size_t poolSize);
 void ct_qtree_free(CT_Quadtree *t);
 int ct_qtree_insert(CT_Quadtree *t, const CT_Vec2f *p, const void *data);
@@ -45,7 +49,8 @@ int ct_qtree_remove(CT_Quadtree *t, const CT_Vec2f *p);
 CT_QTNode *ct_qtree_find_leaf(const CT_Quadtree *t, const CT_Vec2f *p);
 void ct_qtree_trace_node(const CT_QTNode *node, size_t depth);
 void ct_qtree_trace(const CT_Quadtree *t);
-int ct_qtree_visit_leaves(const CT_Quadtree *t, CT_QTVisitor visit,
+int ct_qtree_visit_leaves(const CT_Quadtree *t,
+                          CT_QTVisitor visit,
                           void *state);
 void ct_qtree_visit(const CT_Quadtree *t, CT_QTVisitor visit, void *state);
 

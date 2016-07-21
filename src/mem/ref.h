@@ -19,7 +19,9 @@ ct_inline void ct_ref_inc(const CT_Ref *ref) {
 }
 
 ct_inline void ct_ref_dec(const CT_Ref *ref) {
-  if (--((CT_Ref *)ref)->count == 0) ref->free(ref);
+  if (--((CT_Ref *)ref)->count == 0) {
+    ref->free(ref);
+  }
 }
 
 CT_END_DECLS

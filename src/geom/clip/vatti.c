@@ -9,7 +9,8 @@
 // https://en.wikipedia.org/wiki/Vatti_clipping_algorithm
 // based on: http://davis.wpi.edu/~matt/courses/clipping/
 
-static void insert_node(CT_ClipNode *ins, CT_ClipNode *first,
+static void insert_node(CT_ClipNode *ins,
+                        CT_ClipNode *first,
                         CT_ClipNode *last) {
   CT_ClipNode *aux = first;
   while (aux != last && aux->alpha < ins->alpha) {
@@ -48,7 +49,8 @@ static CT_ClipNode *first_node(CT_ClipNode *node) {
   return aux;
 }
 
-static void close_poly(CT_ClipContext *ctx, CT_ClipNode *start,
+static void close_poly(CT_ClipContext *ctx,
+                       CT_ClipNode *start,
                        CT_ClipNode *end) {
   end->prev->next = start;
   start->prev     = end->prev;
@@ -79,7 +81,8 @@ static void mark_nodes(CT_ClipNode *p, int e, int invert) {
   }
 }
 
-static void insert_intersections(CT_ClipContext *ctx, CT_ClipNode *s,
+static void insert_intersections(CT_ClipContext *ctx,
+                                 CT_ClipNode *s,
                                  CT_ClipNode *c) {
   float alpha_s, alpha_c;
   CT_Vec2f isec;
@@ -142,22 +145,30 @@ ct_export void ct_clip_reset_context(CT_ClipContext *ctx) {
   ct_mpool_free_all_blocks(&ctx->pool);
 }
 
-ct_export CT_ClipNode *ct_clip_create_node(
-    CT_ClipContext *ctx, const CT_Vec2f *pos, CT_ClipNode *next,
-    CT_ClipNode *prev, CT_ClipNode *nextPoly, CT_ClipNode *neighbor,
-    int intersect, int entry, int visited, float alpha) {
-  CT_ClipNode *new     = ct_mpool_alloc(&ctx->pool);
-  new->pos             = *pos;
-  new->next            = next;
-  new->prev            = prev;
-  if (prev) prev->next = new;
-  if (next) next->prev = new;
-  new->nextPoly        = nextPoly;
-  new->neighbor        = neighbor;
-  new->intersect       = intersect;
-  new->entry           = entry;
-  new->visited         = visited;
-  new->alpha           = alpha;
+ct_export CT_ClipNode *ct_clip_create_node(CT_ClipContext *ctx,
+                                           const CT_Vec2f *pos,
+                                           CT_ClipNode *next,
+                                           CT_ClipNode *prev,
+                                           CT_ClipNode *nextPoly,
+                                           CT_ClipNode *neighbor,
+                                           int intersect,
+                                           int entry,
+                                           int visited,
+                                           float alpha) {
+  CT_ClipNode *new = ct_mpool_alloc(&ctx->pool);
+  new->pos         = *pos;
+  new->next        = next;
+  new->prev        = prev;
+  if (prev)
+    prev->next = new;
+  if (next)
+    next->prev   = new;
+  new->nextPoly  = nextPoly;
+  new->neighbor  = neighbor;
+  new->intersect = intersect;
+  new->entry     = entry;
+  new->visited   = visited;
+  new->alpha     = alpha;
   return new;
 }
 
@@ -172,8 +183,10 @@ ct_export CT_ClipNode *ct_clip_create_polygon2f(CT_ClipContext *ctx,
   return poly;
 }
 
-ct_export CT_ClipNode *ct_clip_execute(CT_ClipContext *ctx, CT_ClipNode *s,
-                                       CT_ClipNode *c, int mode) {
+ct_export CT_ClipNode *ct_clip_execute(CT_ClipContext *ctx,
+                                       CT_ClipNode *s,
+                                       CT_ClipNode *c,
+                                       int mode) {
   CT_ClipNode *ends = ct_clip_create_node(ctx, &s->pos, NULL, last_node(s),
                                           NULL, NULL, 0, 0, 0, 0);
   CT_ClipNode *endc = ct_clip_create_node(ctx, &c->pos, NULL, last_node(c),

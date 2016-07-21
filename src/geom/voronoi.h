@@ -66,7 +66,10 @@ typedef void (*CT_VOEdgeHandler)(CT_VOEdge *, void *);
 
 int ct_voronoi_init(CT_Voronoi *vor, size_t num);
 void ct_voronoi_free(CT_Voronoi *vor);
-void ct_voronoi_compute(CT_Voronoi *vor, CT_Vec2f *sites, size_t num,
-                        CT_VOEdgeHandler handler, void *state);
+void ct_voronoi_compute(CT_Voronoi *vor,
+                        CT_Vec2f *sites,
+                        size_t num,
+                        CT_VOEdgeHandler handler,
+                        void *state);
 void ct_vovertex_trace(const CT_VOVertex *v);
 void ct_vohedge_trace(const CT_VOHalfEdge *e);

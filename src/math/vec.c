@@ -42,7 +42,10 @@ ct_export CT_Vec3f *ct_vec3fn(float n, CT_MPool *mpool) {
   return v;
 }
 
-ct_export CT_Vec4f *ct_vec4f(float x, float y, float z, float w,
+ct_export CT_Vec4f *ct_vec4f(float x,
+                             float y,
+                             float z,
+                             float w,
                              CT_MPool *mpool) {
   CT_Vec4f *v = CT_MP_ALLOC(mpool, CT_Vec4f);
   if (v != NULL) {
@@ -79,7 +82,9 @@ VEC_ARRAYOP(scale3f, CT_Vec3f, float, ct_mul3fv_imm)
 VEC_ARRAYOP(translate4f, CT_Vec4f, float, ct_add4fv_imm)
 VEC_ARRAYOP(scale4f, CT_Vec4f, float, ct_mul4fv_imm)
 
-ct_export CT_Vec2f *ct_closest_point2f(float *ptr, CT_Vec2f *p, size_t num,
+ct_export CT_Vec2f *ct_closest_point2f(float *ptr,
+                                       CT_Vec2f *p,
+                                       size_t num,
                                        size_t fstride) {
   float minD        = FLT_MAX;
   CT_Vec2f *closest = NULL;
@@ -96,7 +101,9 @@ ct_export CT_Vec2f *ct_closest_point2f(float *ptr, CT_Vec2f *p, size_t num,
   return closest;
 }
 
-ct_export CT_Vec3f *ct_closest_point3f(float *ptr, CT_Vec3f *p, size_t num,
+ct_export CT_Vec3f *ct_closest_point3f(float *ptr,
+                                       CT_Vec3f *p,
+                                       size_t num,
                                        size_t fstride) {
   float minD        = FLT_MAX;
   CT_Vec3f *closest = NULL;
@@ -113,8 +120,11 @@ ct_export CT_Vec3f *ct_closest_point3f(float *ptr, CT_Vec3f *p, size_t num,
   return closest;
 }
 
-ct_export int ct_bounds2fp(float *ptr, size_t num, size_t fstride,
-                           CT_Vec2f *min, CT_Vec2f *max) {
+ct_export int ct_bounds2fp(float *ptr,
+                           size_t num,
+                           size_t fstride,
+                           CT_Vec2f *min,
+                           CT_Vec2f *max) {
   if (num > 0) {
     ct_set2fn(min, FLT_MAX);
     ct_set2fn(max, -FLT_MAX);
@@ -128,8 +138,11 @@ ct_export int ct_bounds2fp(float *ptr, size_t num, size_t fstride,
   return 1;
 }
 
-ct_export int ct_bounds3fp(float *ptr, size_t num, size_t fstride,
-                           CT_Vec3f *min, CT_Vec3f *max) {
+ct_export int ct_bounds3fp(float *ptr,
+                           size_t num,
+                           size_t fstride,
+                           CT_Vec3f *min,
+                           CT_Vec3f *max) {
   if (num > 0) {
     ct_set3fn(min, FLT_MAX);
     ct_set3fn(max, -FLT_MAX);
@@ -145,7 +158,9 @@ ct_export int ct_bounds3fp(float *ptr, size_t num, size_t fstride,
 
 int ct_deltaeqfp(const float *a, const float *b, float eps, size_t num) {
   for (size_t i = 0; i < num; i++) {
-    if (!ct_deltaeqf(a[i], b[i], eps)) return 0;
+    if (!ct_deltaeqf(a[i], b[i], eps)) {
+      return 0;
+    }
   }
   return 0;
 }
@@ -153,10 +168,11 @@ int ct_deltaeqfp(const float *a, const float *b, float eps, size_t num) {
 int ct_comparefp(const float *a, const float *b, float eps, size_t num) {
   for (size_t i = 0; i < num; i++) {
     float delta = a[i] - b[i];
-    if (delta < -eps)
+    if (delta < -eps) {
       return -1;
-    else if (delta > eps)
+    } else if (delta > eps) {
       return 1;
+    }
   }
   return 0;
 }
@@ -167,7 +183,9 @@ int ct_tostringfp(char *buf, int bufsz, const float *p, size_t num) {
     bufsz -= j;
     for (size_t i = 0; i < num && bufsz > 0; i++) {
       int res = snprintf(&buf[j], bufsz, "%1.4f", p[i]);
-      if (res < 0) return -1;
+      if (res < 0) {
+        return -1;
+      }
       if (i < num - 1) {
         buf[j + res] = ' ';
         res++;
@@ -185,7 +203,9 @@ int ct_tostringfp(char *buf, int bufsz, const float *p, size_t num) {
 }
 
 size_t ct_convexhull2f(CT_Vec2f *points, size_t num, CT_Vec2f *hull) {
-  if (num < 1) return 0;
+  if (num < 1) {
+    return 0;
+  }
   qsort(points, num, sizeof(CT_Vec2f), ct_compare2fv_xy);
   size_t len = 0;
   for (size_t i = 0; i < num; i++) {

@@ -52,7 +52,8 @@ float ct_parse_float(char *src, float err);
 int ct_parse_int(char *src, int err);
 uint32_t ct_parse_hex32(char *src, uint32_t err);
 
-ct_export ct_inline float ct_clampf(const float a, const float b,
+ct_export ct_inline float ct_clampf(const float a,
+                                    const float b,
                                     const float c) {
   return CLAMP(a, b, c);
 }
@@ -65,7 +66,8 @@ ct_export ct_inline size_t ct_clz8(uint8_t x) {
 #endif
 }
 
-ct_export ct_inline int ct_deltaeqf(const float a, const float b,
+ct_export ct_inline int ct_deltaeqf(const float a,
+                                    const float b,
                                     const float eps) {
   return fabs(a - b) <= eps;
 }
@@ -101,7 +103,9 @@ ct_inline int ct_signumf(const float x, const float eps) {
   return (x < 0.f ? -1 : 1);
 }
 
-ct_inline float ct_stepf(const float x, const float edge, const float y1,
+ct_inline float ct_stepf(const float x,
+                         const float edge,
+                         const float y1,
                          const float y2) {
   return (x < edge ? y1 : y2);
 }

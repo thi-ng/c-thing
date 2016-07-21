@@ -11,7 +11,8 @@ struct CT_SPCell {
   float key[3];
 };
 
-ct_inline int find_cell_idx(const CT_SpatialGrid *grid, const float *p,
+ct_inline int find_cell_idx(const CT_SpatialGrid *grid,
+                            const float *p,
                             size_t idx) {
   return (int)((p[idx] - grid->offset[idx]) * grid->invWidth[idx]);
 }
@@ -31,9 +32,12 @@ static int find_cell3d(const CT_SpatialGrid *grid, const float *p) {
          find_cell_idx(grid, p, 0);
 }
 
-ct_export int ct_spgrid_init(CT_SpatialGrid *grid, const float *start,
-                             const float *end, const size_t *stride,
-                             size_t dims, size_t poolSize) {
+ct_export int ct_spgrid_init(CT_SpatialGrid *grid,
+                             const float *start,
+                             const float *end,
+                             const size_t *stride,
+                             size_t dims,
+                             size_t poolSize) {
   CT_CHECK(dims > 0 && dims < 4, "wrong dimension: %zu", dims);
   size_t numCells = stride[0];
   for (size_t i = 0; i < dims; i++) {
@@ -65,7 +69,9 @@ ct_export void ct_spgrid_free(CT_SpatialGrid *grid) {
   ct_mpool_free(&grid->pool);
 }
 
-static int do_insert(CT_SpatialGrid *grid, int id, const float *p,
+static int do_insert(CT_SpatialGrid *grid,
+                     int id,
+                     const float *p,
                      const void *item) {
   CT_CHECK(id >= 0 && id < grid->numCells, "p out of bounds");
   CT_SPCell *cell = ct_mpool_alloc(&grid->pool);
@@ -86,7 +92,8 @@ fail:
   return 1;
 }
 
-ct_export int ct_spgrid_insert(CT_SpatialGrid *grid, const float *p,
+ct_export int ct_spgrid_insert(CT_SpatialGrid *grid,
+                               const float *p,
                                const void *item) {
   return do_insert(grid, grid->find_cell(grid, p), p, item);
 }
@@ -113,13 +120,16 @@ fail:
   return 1;
 }
 
-ct_export int ct_spgrid_remove(CT_SpatialGrid *grid, const float *p,
+ct_export int ct_spgrid_remove(CT_SpatialGrid *grid,
+                               const float *p,
                                const void *item) {
   return do_remove(grid, grid->find_cell(grid, p), item);
 }
 
-ct_export int ct_spgrid_update(CT_SpatialGrid *grid, const float *p,
-                               const float *q, const void *item) {
+ct_export int ct_spgrid_update(CT_SpatialGrid *grid,
+                               const float *p,
+                               const float *q,
+                               const void *item) {
   int id  = grid->find_cell(grid, p);
   int id2 = grid->find_cell(grid, q);
   if (id != id2) {
@@ -145,8 +155,11 @@ fail:
   return 1;
 }
 
-ct_export size_t ct_spgrid_select1d(const CT_SpatialGrid *grid, float p,
-                                    float eps, void **results, size_t len) {
+ct_export size_t ct_spgrid_select1d(const CT_SpatialGrid *grid,
+                                    float p,
+                                    float eps,
+                                    void **results,
+                                    size_t len) {
   size_t i = 0;
   float x1 = p - eps;
   float x2 = p + eps;
@@ -174,8 +187,10 @@ ct_export size_t ct_spgrid_select1d(const CT_SpatialGrid *grid, float p,
   return i;
 }
 
-ct_export size_t ct_spgrid_select2d(const CT_SpatialGrid *grid, const float *p,
-                                    const float *eps, void **results,
+ct_export size_t ct_spgrid_select2d(const CT_SpatialGrid *grid,
+                                    const float *p,
+                                    const float *eps,
+                                    void **results,
                                     size_t len) {
   size_t i = 0;
   CT_Vec2f a, b;
@@ -216,8 +231,10 @@ ct_export size_t ct_spgrid_select2d(const CT_SpatialGrid *grid, const float *p,
   return i;
 }
 
-ct_export size_t ct_spgrid_select3d(const CT_SpatialGrid *grid, const float *p,
-                                    const float *eps, void **results,
+ct_export size_t ct_spgrid_select3d(const CT_SpatialGrid *grid,
+                                    const float *p,
+                                    const float *eps,
+                                    void **results,
                                     size_t len) {
   size_t i = 0;
   CT_Vec3f a, b, veps;

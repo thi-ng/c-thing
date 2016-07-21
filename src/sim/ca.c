@@ -163,8 +163,12 @@ void ct_camatrix_seed1d(CT_CAMatrix *mat, size_t seed) {
   }
 }
 
-void ct_camatrix_seed2d(CT_CAMatrix *mat, size_t x, size_t y, size_t w,
-                        size_t h, const char *cells) {
+void ct_camatrix_seed2d(CT_CAMatrix *mat,
+                        size_t x,
+                        size_t y,
+                        size_t w,
+                        size_t h,
+                        const char *cells) {
   for (size_t yy = 0; (yy < h) && (y < mat->height); yy++, y++) {
     size_t idx = y * mat->width + x;
     for (size_t xx = 0; (xx < w) && (x < mat->width); xx++, idx++) {

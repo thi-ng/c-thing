@@ -25,15 +25,25 @@ void ct_scale3f(float* ptr, CT_Vec3f* t, size_t num, size_t fstride);
 void ct_translate4f(float* ptr, CT_Vec4f* t, size_t num, size_t fstride);
 void ct_scale4f(float* ptr, CT_Vec4f* t, size_t num, size_t fstride);
 
-CT_Vec2f* ct_closest_point2f(float* ptr, CT_Vec2f* p, size_t num,
+CT_Vec2f* ct_closest_point2f(float* ptr,
+                             CT_Vec2f* p,
+                             size_t num,
                              size_t fstride);
 
-CT_Vec3f* ct_closest_point3f(float* ptr, CT_Vec3f* p, size_t num,
+CT_Vec3f* ct_closest_point3f(float* ptr,
+                             CT_Vec3f* p,
+                             size_t num,
                              size_t fstride);
 
-int ct_bounds2fp(float* ptr, size_t num, size_t fstride, CT_Vec2f* min,
+int ct_bounds2fp(float* ptr,
+                 size_t num,
+                 size_t fstride,
+                 CT_Vec2f* min,
                  CT_Vec2f* max);
-int ct_bounds3fp(float* ptr, size_t num, size_t fstride, CT_Vec3f* min,
+int ct_bounds3fp(float* ptr,
+                 size_t num,
+                 size_t fstride,
+                 CT_Vec3f* min,
                  CT_Vec3f* max);
 
 size_t ct_convexhull2f(CT_Vec2f* ptr, size_t num, CT_Vec2f* hull);

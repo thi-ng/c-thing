@@ -87,7 +87,8 @@ ct_export ct_inline float ct_distsq4fv(const CT_Vec4f *a, const CT_Vec4f *b) {
 #endif
 }
 
-ct_export ct_inline CT_Vec4f *ct_madd4fv_imm(CT_Vec4f *a, const CT_Vec4f *b,
+ct_export ct_inline CT_Vec4f *ct_madd4fv_imm(CT_Vec4f *a,
+                                             const CT_Vec4f *b,
                                              const CT_Vec4f *c) {
   a->mmval = a->mmval * b->mmval + c->mmval;
   return a;
@@ -97,7 +98,8 @@ ct_export ct_inline float ct_magsq4f(const CT_Vec4f *v) {
   return ct_dot4fv(v, v);
 }
 
-ct_export ct_inline CT_Vec4f *ct_mix4fv_imm(CT_Vec4f *a, const CT_Vec4f *b,
+ct_export ct_inline CT_Vec4f *ct_mix4fv_imm(CT_Vec4f *a,
+                                            const CT_Vec4f *b,
                                             float t) {
   a->mmval += (b->mmval - a->mmval) * _mm_set1_ps(t);
   return a;
@@ -121,8 +123,11 @@ ct_export ct_inline CT_Vec4f *ct_set4fn(CT_Vec4f *v, float n) {
   return v;
 }
 
-ct_export ct_inline CT_Vec4f *ct_set4fxyzw(CT_Vec4f *v, float x, float y,
-                                           float z, float w) {
+ct_export ct_inline CT_Vec4f *ct_set4fxyzw(CT_Vec4f *v,
+                                           float x,
+                                           float y,
+                                           float z,
+                                           float w) {
   v->mmval = _mm_set_ps(w, z, y, x);
   return v;
 }

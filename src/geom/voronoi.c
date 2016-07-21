@@ -18,12 +18,16 @@ ct_inline CT_VOVertex *set_vertex_id(CT_Voronoi *vor, CT_VOVertex *v) {
 }
 
 ct_inline CT_VOVertex *leftreg(CT_VOHalfEdge *he, CT_VOVertex *fail) {
-  if (!he->parent) return fail;
+  if (!he->parent) {
+    return fail;
+  }
   return (he->side == 0 ? he->parent->reg[0] : he->parent->reg[1]);
 }
 
 ct_inline CT_VOVertex *rightreg(CT_VOHalfEdge *he, CT_VOVertex *fail) {
-  if (!he->parent) return fail;
+  if (!he->parent) {
+    return fail;
+  }
   return (he->side == 0 ? he->parent->reg[1] : he->parent->reg[0]);
 }
 
@@ -43,7 +47,9 @@ static int heap_bucket(CT_VOHeap *heap, CT_VOHalfEdge *he) {
   return bucket;
 }
 
-static void heap_insert(CT_VOHeap *heap, CT_VOHalfEdge *he, CT_VOVertex *v,
+static void heap_insert(CT_VOHeap *heap,
+                        CT_VOHalfEdge *he,
+                        CT_VOVertex *v,
                         float offset) {
   CT_VOHalfEdge *last, *next;
   inc_ref(v);
@@ -117,7 +123,8 @@ static CT_VOEdge *bisect(CT_Voronoi *vor, CT_VOVertex *v1, CT_VOVertex *v2) {
   return newedge;
 }
 
-static CT_VOVertex *intersect(CT_Voronoi *vor, CT_VOHalfEdge *ea,
+static CT_VOVertex *intersect(CT_Voronoi *vor,
+                              CT_VOHalfEdge *ea,
                               CT_VOHalfEdge *eb) {
   CT_VOEdge *e1 = ea->parent;
   CT_VOEdge *e2 = eb->parent;
@@ -179,15 +186,21 @@ static int is_right_of(CT_VOHalfEdge *el, CT_Vec2f *p) {
       above = (dyp >= e->b * dxp);
       fast  = above;
     } else {
-      above                 = p->x + p->y * e->b > e->c;
-      if (e->b < 0.0) above = !above;
-      if (!above) fast      = 1;
+      above = p->x + p->y * e->b > e->c;
+      if (e->b < 0.0) {
+        above = !above;
+      }
+      if (!above) {
+        fast = 1;
+      }
     }
     if (!fast) {
       float dxs = topsite->pos.x - (e->reg[0])->pos.x;
       above     = (e->b * (dxp * dxp - dyp * dyp) <
                dxs * dyp * (1.0 + 2.0 * dxp / dxs + e->b * e->b));
-      if (e->b < 0.0) above = !above;
+      if (e->b < 0.0) {
+        above = !above;
+      }
     }
   } else {  // e->b==1.0
     float yl = e->c - e->a * p->x;
@@ -199,8 +212,11 @@ static int is_right_of(CT_VOHalfEdge *el, CT_Vec2f *p) {
   return (el->side == 0 ? above : !above);
 }
 
-static void edge_set_endpoint(CT_Voronoi *vor, CT_VOEdge *e, int side,
-                              CT_VOVertex *s, CT_VOEdgeHandler handler,
+static void edge_set_endpoint(CT_Voronoi *vor,
+                              CT_VOEdge *e,
+                              int side,
+                              CT_VOVertex *s,
+                              CT_VOEdgeHandler handler,
                               void *state) {
   e->ep[side] = s;
   inc_ref(s);
@@ -221,9 +237,13 @@ static void edgelist_insert(CT_VOHalfEdge *lb, CT_VOHalfEdge *new) {
 
 static CT_VOHalfEdge *edgelist_get_hash(CT_VOEdgeList *el, int b) {
   CT_VOHalfEdge *he;
-  if (b < 0 || b >= el->hashSize) return NULL;
+  if (b < 0 || b >= el->hashSize) {
+    return NULL;
+  }
   he = el->hash[b];
-  if (he == NULL || he->parent != (CT_VOEdge *)VORONOI_DELETED) return he;
+  if (he == NULL || he->parent != (CT_VOEdge *)VORONOI_DELETED) {
+    return he;
+  }
 
   // he is a deleted edge
   el->hash[b] = NULL;
@@ -245,8 +265,12 @@ static CT_VOHalfEdge *edgelist_leftbnd(CT_VOEdgeList *el, CT_Vec2f *p) {
   CT_VOHalfEdge *he = edgelist_get_hash(el, bucket);
   if (!he) {
     for (size_t i = 1; 1; i++) {
-      if ((he = edgelist_get_hash(el, bucket - i))) break;
-      if ((he = edgelist_get_hash(el, bucket + i))) break;
+      if ((he = edgelist_get_hash(el, bucket - i))) {
+        break;
+      }
+      if ((he = edgelist_get_hash(el, bucket + i))) {
+        break;
+      }
     }
   }
   // scan list of halfedges for correct one
@@ -312,7 +336,8 @@ static int edgelist_init(CT_VOEdgeList *el, size_t num) {
   return 1;
 }
 
-static CT_VOVertex *provide_next_site(CT_Voronoi *vor, const CT_Vec2f *sites,
+static CT_VOVertex *provide_next_site(CT_Voronoi *vor,
+                                      const CT_Vec2f *sites,
                                       size_t num) {
   CT_VOVertex *v = NULL;
   if (vor->numSites < num) {
@@ -342,8 +367,11 @@ ct_export void ct_voronoi_free(CT_Voronoi *vor) {
 }
 
 // TODO reset mpools
-ct_export void ct_voronoi_compute(CT_Voronoi *vor, CT_Vec2f *sites, size_t num,
-                                  CT_VOEdgeHandler handler, void *state) {
+ct_export void ct_voronoi_compute(CT_Voronoi *vor,
+                                  CT_Vec2f *sites,
+                                  size_t num,
+                                  CT_VOEdgeHandler handler,
+                                  void *state) {
   CT_Vec2f min, max, candidate;
   CT_VOVertex *newsite, *p;
   CT_VOEdgeList *el = &vor->halfEdges;

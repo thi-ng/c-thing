@@ -75,7 +75,8 @@ ct_export ct_inline CT_Vec3f *ct_cross3fv_imm(CT_Vec3f *a, const CT_Vec3f *b) {
   return a;
 }
 
-ct_export ct_inline CT_Vec3f *ct_cross3fv(const CT_Vec3f *a, const CT_Vec3f *b,
+ct_export ct_inline CT_Vec3f *ct_cross3fv(const CT_Vec3f *a,
+                                          const CT_Vec3f *b,
                                           CT_Vec3f *out) {
   out->x = a->y * b->z - a->z * b->y;
   out->y = a->z * b->x - a->x * b->z;
@@ -90,7 +91,8 @@ ct_export ct_inline float ct_distsq3fv(const CT_Vec3f *a, const CT_Vec3f *b) {
   return dx * dx + dy * dy + dz * dz;
 }
 
-ct_export ct_inline CT_Vec3f *ct_madd3fv_imm(CT_Vec3f *a, const CT_Vec3f *b,
+ct_export ct_inline CT_Vec3f *ct_madd3fv_imm(CT_Vec3f *a,
+                                             const CT_Vec3f *b,
                                              const CT_Vec3f *c) {
   a->x = a->x * b->x + c->x;
   a->y = a->y * b->y + c->y;
@@ -116,7 +118,8 @@ ct_export ct_inline CT_Vec3f *ct_min3fv_imm(CT_Vec3f *a, CT_Vec3f *b) {
   return a;
 }
 
-ct_export ct_inline CT_Vec3f *ct_mix3fv_imm(CT_Vec3f *a, const CT_Vec3f *b,
+ct_export ct_inline CT_Vec3f *ct_mix3fv_imm(CT_Vec3f *a,
+                                            const CT_Vec3f *b,
                                             float t) {
   a->x = ct_mixf(a->x, b->x, t);
   a->y = ct_mixf(a->y, b->y, t);
@@ -149,7 +152,9 @@ ct_export ct_inline CT_Vec3f *ct_set3fn(CT_Vec3f *v, float n) {
   return v;
 }
 
-ct_export ct_inline CT_Vec3f *ct_set3fxyz(CT_Vec3f *v, float x, float y,
+ct_export ct_inline CT_Vec3f *ct_set3fxyz(CT_Vec3f *v,
+                                          float x,
+                                          float y,
                                           float z) {
   v->x = x;
   v->y = y;

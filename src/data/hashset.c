@@ -5,7 +5,9 @@
 #include "data/hashset.h"
 #include "math/math.h"
 
-static int make_key(const CT_Hashset* s, CT_HSEntry* e, const void* key,
+static int make_key(const CT_Hashset* s,
+                    CT_HSEntry* e,
+                    const void* key,
                     const uint32_t ks) {
   if (s->flags & CT_HS_CONST_KEYS) {
     e->key = (void*)key;
@@ -15,14 +17,17 @@ static int make_key(const CT_Hashset* s, CT_HSEntry* e, const void* key,
     } else {
       e->key = malloc(ks);
     }
-    if (!e->key) return 1;
+    if (!e->key) {
+      return 1;
+    }
     memcpy(e->key, key, ks);
   }
   e->keySize = ks;
   return 0;
 }
 
-static CT_HSEntry* make_entry(CT_Hashset* s, const void* key,
+static CT_HSEntry* make_entry(CT_Hashset* s,
+                              const void* key,
                               const uint32_t ks) {
   CT_HSEntry* e = ct_mpool_alloc(&s->pool);
   CT_CHECK_MEM(e);
@@ -52,13 +57,17 @@ static void free_entry(CT_Hashset* s, const CT_HSEntry* e) {
   ct_mpool_free_block(&s->pool, e);
 }
 
-static int equiv_keys(const void* a, const void* b, const uint32_t sa,
+static int equiv_keys(const void* a,
+                      const void* b,
+                      const uint32_t sa,
                       const uint32_t sb) {
   return sa == sb ? !memcmp(a, b, sa) : 0;
 }
 
-static CT_HSEntry* find_entry(const CT_Hashset* s, CT_HSEntry* e,
-                              const void* key, const uint32_t ks) {
+static CT_HSEntry* find_entry(const CT_Hashset* s,
+                              CT_HSEntry* e,
+                              const void* key,
+                              const uint32_t ks) {
   int (*equiv_keys)(const void*, const void*, uint32_t, uint32_t) =
       s->ops.equiv_keys;
   while (e != NULL) {
@@ -71,7 +80,9 @@ static CT_HSEntry* find_entry(const CT_Hashset* s, CT_HSEntry* e,
   return e;
 }
 
-static int cons_entry(CT_Hashset* s, const uint32_t bin, const void* key,
+static int cons_entry(CT_Hashset* s,
+                      const uint32_t bin,
+                      const void* key,
                       const uint32_t ks) {
   // TODO resize?
   CT_HSEntry* e = make_entry(s, key, ks);
@@ -82,7 +93,8 @@ fail:
   return e == NULL;
 }
 
-static void delete_entry(CT_Hashset* s, const uint32_t bin,
+static void delete_entry(CT_Hashset* s,
+                         const uint32_t bin,
                          const CT_HSEntry* e) {
   CT_HSEntry* first = s->bins[bin];
   CT_HSEntry* rest  = first->next;
@@ -106,8 +118,11 @@ static void delete_entry(CT_Hashset* s, const uint32_t bin,
   }
 }
 
-ct_export int ct_hs_init(CT_Hashset* s, const CT_HSOps* ops, size_t num,
-                         const size_t poolSize, const CT_HSFlags flags) {
+ct_export int ct_hs_init(CT_Hashset* s,
+                         const CT_HSOps* ops,
+                         size_t num,
+                         const size_t poolSize,
+                         const CT_HSFlags flags) {
   int mp = ct_mpool_init(&s->pool, poolSize, sizeof(CT_HSEntry));
   if (!mp) {
     num     = ct_ceil_pow2(num);
@@ -168,7 +183,8 @@ fail:
   return 1;
 }
 
-ct_export void* ct_hs_get(const CT_Hashset* s, const void* key,
+ct_export void* ct_hs_get(const CT_Hashset* s,
+                          const void* key,
                           const uint32_t ks) {
   uint32_t bin  = s->ops.hash(key, ks) & s->binMask;
   CT_HSEntry* e = s->bins[bin];
@@ -178,7 +194,8 @@ ct_export void* ct_hs_get(const CT_Hashset* s, const void* key,
   return (e ? e->key : NULL);
 }
 
-ct_export int ct_hs_contains(const CT_Hashset* s, const void* key,
+ct_export int ct_hs_contains(const CT_Hashset* s,
+                             const void* key,
                              const uint32_t ks) {
   return (ct_hs_get(s, key, ks) != NULL);
 }
@@ -197,13 +214,16 @@ ct_export int ct_hs_dissoc(CT_Hashset* s, const void* key, const uint32_t ks) {
   return 1;
 }
 
-ct_export int ct_hs_iterate(const CT_Hashset* s, CT_HSIterator iter,
+ct_export int ct_hs_iterate(const CT_Hashset* s,
+                            CT_HSIterator iter,
                             void* state) {
   for (size_t i = 0; i <= s->binMask; i++) {
     CT_HSEntry* e = s->bins[i];
     while (e != NULL) {
       int res = iter(e, state);
-      if (res) return res;
+      if (res) {
+        return res;
+      }
       e = e->next;
     }
   }

@@ -120,14 +120,21 @@ int ct_svg_end_group(FILE *out) {
   return 0;
 }
 
-int ct_svg_write_circle(FILE *out, float x, float y, float r,
+int ct_svg_write_circle(FILE *out,
+                        float x,
+                        float y,
+                        float r,
                         CT_SVGAttribs *attribs) {
   fprintf(out, "<circle cx=\"%f\" cy=\"%f\" r=\"%f\" ", x, y, r);
   write_attribs(out, attribs, "/>");
   return 0;
 }
 
-int ct_svg_write_rect(FILE *out, float x, float y, float w, float h,
+int ct_svg_write_rect(FILE *out,
+                      float x,
+                      float y,
+                      float w,
+                      float h,
                       CT_SVGAttribs *attribs) {
   fprintf(out, "<rect x=\"%f\" y=\"%f\" width=\"%f\" height=\"%f\" ", x, y, w,
           h);
@@ -135,7 +142,11 @@ int ct_svg_write_rect(FILE *out, float x, float y, float w, float h,
   return 0;
 }
 
-int ct_svg_write_line(FILE *out, float x1, float y1, float x2, float y2,
+int ct_svg_write_line(FILE *out,
+                      float x1,
+                      float y1,
+                      float x2,
+                      float y2,
                       CT_SVGAttribs *attribs) {
   fprintf(out, "<line x1=\"%f\" y1=\"%f\" x2=\"%f\" y2=\"%f\" ", x1, y1, x2,
           y2);
@@ -143,7 +154,9 @@ int ct_svg_write_line(FILE *out, float x1, float y1, float x2, float y2,
   return 0;
 }
 
-int ct_svg_write_line2fv(FILE *out, const CT_Vec2f *a, const CT_Vec2f *b,
+int ct_svg_write_line2fv(FILE *out,
+                         const CT_Vec2f *a,
+                         const CT_Vec2f *b,
                          CT_SVGAttribs *attribs) {
   return ct_svg_write_line(out, a->x, a->y, b->x, b->y, attribs);
 }

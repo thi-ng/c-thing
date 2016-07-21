@@ -49,11 +49,13 @@ static AppState state = {
 static float disc_gen(CT_Quadtree *t, CT_Circle2f *disc, void *s) {
   ct_set2fxy(&disc->pos, ct_rand_normpos() * t->root.w,
              ct_rand_normpos() * t->root.h);
-  size_t x              = (size_t)disc->pos.x;
-  size_t y              = (size_t)disc->pos.y;
-  AppState *state       = (AppState *)s;
-  float tt              = (float)state->image[y * state->width + x] / 255.f;
-  if (state->invert) tt = 1.0f - tt;
+  size_t x        = (size_t)disc->pos.x;
+  size_t y        = (size_t)disc->pos.y;
+  AppState *state = (AppState *)s;
+  float tt        = (float)state->image[y * state->width + x] / 255.f;
+  if (state->invert) {
+    tt = 1.0f - tt;
+  }
   return disc->r =
              ct_mixf(state->minDist, state->maxDist, powf(tt, state->gamma));
 }

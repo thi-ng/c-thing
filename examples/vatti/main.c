@@ -23,14 +23,15 @@ int main() {
                   {590, 100}, {350, 300}, {200, 200}};
   //CT_Vec2f a[] = {{100, 100}, {300, 200}, {400, 100}, {500, 300}, {50, 300}};
   //CT_Vec2f b[] = {{10, 10}, {590, 100}, {590, 130}, {10, 250}};
-  FILE *out    = fopen("assets/vatti.svg", "w");
+  FILE *out = fopen("assets/vatti.svg", "w");
   ct_svg_start_doc(
       out, ct_svg_attribs(0, 3, SVG_INT("width", 600), SVG_INT("height", 600),
                           SVG_STR("fill", "none")));
-  fprintf(out,
-          "<defs><pattern id=\"P1\" width=\"10\" height=\"10\" "
-          "patternUnits=\"userSpaceOnUse\"><path d=\"M0,0 L10,10\" "
-          "stroke=\"#00f\"/></pattern></defs>");
+  fputs(
+      "<defs><pattern id=\"P1\" width=\"10\" height=\"10\" "
+      "patternUnits=\"userSpaceOnUse\"><path d=\"M0,0 L10,10\" "
+      "stroke=\"#00f\"/></pattern></defs>",
+      out);
   CT_ClipContext ctx;
   ct_clip_init_context(&ctx, 32);
   for (size_t i = 0; i < 4; i++) {

@@ -51,17 +51,28 @@ typedef struct CT_Hashtable {
   CT_MPool pool;
 } CT_Hashtable;
 
-int ct_ht_init(CT_Hashtable* t, const CT_HTOps* ops, size_t num,
-               const size_t poolSize, const CT_HTFlags flags);
+int ct_ht_init(CT_Hashtable* t,
+               const CT_HTOps* ops,
+               size_t num,
+               const size_t poolSize,
+               const CT_HTFlags flags);
 void ct_ht_free(CT_Hashtable* t);
-void* ct_ht_get(const CT_Hashtable* t, const void* key, uint32_t ks,
+void* ct_ht_get(const CT_Hashtable* t,
+                const void* key,
+                uint32_t ks,
                 uint32_t* vs);
 int ct_ht_contains(const CT_Hashtable* t, const void* key, uint32_t ks);
-int ct_ht_assoc(CT_Hashtable* t, const void* key, const void* value,
-                uint32_t ks, uint32_t vs);
+int ct_ht_assoc(CT_Hashtable* t,
+                const void* key,
+                const void* value,
+                uint32_t ks,
+                uint32_t vs);
 int ct_ht_dissoc(CT_Hashtable* t, const void* key, uint32_t ks);
-void* ct_ht_update(CT_Hashtable* t, const void* key, uint32_t ks,
-                   CT_HTUpdater update, void* state);
+void* ct_ht_update(CT_Hashtable* t,
+                   const void* key,
+                   uint32_t ks,
+                   CT_HTUpdater update,
+                   void* state);
 int ct_ht_iterate(const CT_Hashtable* t, CT_HTIterator iter, void* state);
 int ct_ht_into(CT_Hashtable* dest, const CT_Hashtable* src);
 

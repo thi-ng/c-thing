@@ -81,7 +81,8 @@ ct_export ct_inline float ct_distsq4fv(const CT_Vec4f *a, const CT_Vec4f *b) {
   return dx * dx + dy * dy + dz * dz + dw * dw;
 }
 
-ct_export ct_inline CT_Vec4f *ct_madd4fv_imm(CT_Vec4f *a, const CT_Vec4f *b,
+ct_export ct_inline CT_Vec4f *ct_madd4fv_imm(CT_Vec4f *a,
+                                             const CT_Vec4f *b,
                                              const CT_Vec4f *c) {
   a->x = a->x * b->x + c->x;
   a->y = a->y * b->y + c->y;
@@ -94,7 +95,8 @@ ct_export ct_inline float ct_magsq4f(const CT_Vec4f *v) {
   return v->x * v->x + v->y * v->y + v->z * v->z + v->w * v->w;
 }
 
-ct_export ct_inline CT_Vec4f *ct_mix4fv_imm(CT_Vec4f *a, const CT_Vec4f *b,
+ct_export ct_inline CT_Vec4f *ct_mix4fv_imm(CT_Vec4f *a,
+                                            const CT_Vec4f *b,
                                             float t) {
   a->x = ct_mixf(a->x, b->x, t);
   a->y = ct_mixf(a->y, b->y, t);
@@ -131,8 +133,11 @@ ct_export ct_inline CT_Vec4f *ct_set4fn(CT_Vec4f *v, float n) {
   return v;
 }
 
-ct_export ct_inline CT_Vec4f *ct_set4fxyzw(CT_Vec4f *v, float x, float y,
-                                           float z, float w) {
+ct_export ct_inline CT_Vec4f *ct_set4fxyzw(CT_Vec4f *v,
+                                           float x,
+                                           float y,
+                                           float z,
+                                           float w) {
   v->x = x;
   v->y = y;
   v->z = z;

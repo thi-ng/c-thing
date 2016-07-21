@@ -271,7 +271,8 @@ ct_export CT_Mat4f *ct_mat4f_rotatez_imm(CT_Mat4f *m, float theta) {
 
 #endif
 
-ct_export CT_Mat4f *ct_mat4f_rotate_axis_imm(CT_Mat4f *m, const CT_Vec3f *axis,
+ct_export CT_Mat4f *ct_mat4f_rotate_axis_imm(CT_Mat4f *m,
+                                             const CT_Vec3f *axis,
                                              float theta) {
   float x   = axis->x;
   float y   = axis->y;
@@ -317,7 +318,8 @@ ct_export CT_Mat4f *ct_mat4f_transpose(const CT_Mat4f *m, CT_Mat4f *out) {
   return ct_mat4f_transpose_imm(out);
 }
 
-ct_export CT_Mat4f *ct_mat4f_mul(const CT_Mat4f *a, const CT_Mat4f *b,
+ct_export CT_Mat4f *ct_mat4f_mul(const CT_Mat4f *a,
+                                 const CT_Mat4f *b,
                                  CT_Mat4f *out) {
   *out = *a;
   return ct_mat4f_mul_imm(out, b);
@@ -328,39 +330,49 @@ ct_export CT_Mat4f *ct_mat4f_scalen(const CT_Mat4f *m, float n, CT_Mat4f *out) {
   return ct_mat4f_scalen_imm(out, n);
 }
 
-ct_export CT_Mat4f *ct_mat4f_translate3fp(const CT_Mat4f *m, const float *t,
+ct_export CT_Mat4f *ct_mat4f_translate3fp(const CT_Mat4f *m,
+                                          const float *t,
                                           CT_Mat4f *out) {
   *out = *m;
   return ct_mat4f_translate3fp_imm(out, t);
 }
 
-ct_export CT_Mat4f *ct_mat4f_rotatex(const CT_Mat4f *m, float theta,
+ct_export CT_Mat4f *ct_mat4f_rotatex(const CT_Mat4f *m,
+                                     float theta,
                                      CT_Mat4f *out) {
   *out = *m;
   return ct_mat4f_rotatex_imm(out, theta);
 }
 
-ct_export CT_Mat4f *ct_mat4f_rotatey(const CT_Mat4f *m, float theta,
+ct_export CT_Mat4f *ct_mat4f_rotatey(const CT_Mat4f *m,
+                                     float theta,
                                      CT_Mat4f *out) {
   *out = *m;
   return ct_mat4f_rotatey_imm(out, theta);
 }
 
-ct_export CT_Mat4f *ct_mat4f_rotatez(const CT_Mat4f *m, float theta,
+ct_export CT_Mat4f *ct_mat4f_rotatez(const CT_Mat4f *m,
+                                     float theta,
                                      CT_Mat4f *out) {
   *out = *m;
   return ct_mat4f_rotatez_imm(out, theta);
 }
 
 ct_export CT_Mat4f *ct_mat4f_rotate_axis(const CT_Mat4f *m,
-                                         const CT_Vec3f *axis, float theta,
+                                         const CT_Vec3f *axis,
+                                         float theta,
                                          CT_Mat4f *out) {
   *out = *m;
   return ct_mat4f_rotate_axis_imm(out, axis, theta);
 }
 
-ct_export CT_Mat4f *ct_mat4f_set_ortho(CT_Mat4f *m, float l, float t, float r,
-                                       float b, float n, float f) {
+ct_export CT_Mat4f *ct_mat4f_set_ortho(CT_Mat4f *m,
+                                       float l,
+                                       float t,
+                                       float r,
+                                       float b,
+                                       float n,
+                                       float f) {
   float dx = 1.0f / (l - r);
   float dy = 1.0f / (b - t);
   float dz = 1.0f / (n - f);
@@ -377,8 +389,10 @@ ct_export CT_Mat4f *ct_mat4f_set_ortho(CT_Mat4f *m, float l, float t, float r,
   return m;
 }
 
-ct_export CT_Mat4f *ct_mat4f_set_perspective(CT_Mat4f *m, float fovy,
-                                             float aspect, float near,
+ct_export CT_Mat4f *ct_mat4f_set_perspective(CT_Mat4f *m,
+                                             float fovy,
+                                             float aspect,
+                                             float near,
                                              float far) {
   float f  = 1.0f / tanf(0.5 * fovy * RADIANS);
   float nf = 1.0f / (near - far);
@@ -394,11 +408,15 @@ ct_export CT_Mat4f *ct_mat4f_set_perspective(CT_Mat4f *m, float fovy,
   return m;
 }
 
-ct_export int ct_mat4f_set_lookat(CT_Mat4f *m, const CT_Vec3f *eye,
-                                  const CT_Vec3f *target, const CT_Vec3f *up) {
+ct_export int ct_mat4f_set_lookat(CT_Mat4f *m,
+                                  const CT_Vec3f *eye,
+                                  const CT_Vec3f *target,
+                                  const CT_Vec3f *up) {
   CT_Vec3f x, y, z;
   ct_sub3fv(eye, target, &z);
-  if (ct_magsq3f(&z) < EPS) return 1;
+  if (ct_magsq3f(&z) < EPS) {
+    return 1;
+  }
   ct_normalize3f_imm(&z, 1);
   ct_normalize3f_imm(ct_cross3fv(up, &z, &x), 1);
   ct_normalize3f_imm(ct_cross3fv(&z, &x, &y), 1);

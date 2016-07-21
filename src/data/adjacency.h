@@ -21,7 +21,8 @@ int ct_adjmat_join(CT_AdjMatrix *mat, size_t x, size_t y);
 int ct_adjmat_disjoin(CT_AdjMatrix *mat, size_t x, size_t y);
 int ct_adjmat_is_join(CT_AdjMatrix *mat, size_t x, size_t y);
 void ct_adjmat_trace(const CT_AdjMatrix *mat);
-int ct_adjmat_iterate(const CT_AdjMatrix *mat, CT_AdjMatIterator iter,
+int ct_adjmat_iterate(const CT_AdjMatrix *mat,
+                      CT_AdjMatIterator iter,
                       void *state);
 
 CT_END_DECLS

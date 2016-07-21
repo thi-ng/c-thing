@@ -4,7 +4,8 @@
 #include "data/adjacency.h"
 #include "math/math.h"
 
-ct_inline size_t cell_index(const CT_AdjMatrix *mat, const size_t x,
+ct_inline size_t cell_index(const CT_AdjMatrix *mat,
+                            const size_t x,
                             const size_t y) {
   return x * mat->stride + (y >> 3);
 }
@@ -21,7 +22,8 @@ ct_export void ct_adjmat_free(CT_AdjMatrix *mat) {
   free(mat->bits);
 }
 
-ct_export int ct_adjmat_join(CT_AdjMatrix *mat, const size_t x,
+ct_export int ct_adjmat_join(CT_AdjMatrix *mat,
+                             const size_t x,
                              const size_t y) {
   CT_CHECK(x < mat->stride << 3, "x out of bounds");
   CT_CHECK(y < mat->stride << 3, "y out of bounds");
@@ -36,7 +38,8 @@ fail:
   return 1;
 }
 
-ct_export int ct_adjmat_disjoin(CT_AdjMatrix *mat, const size_t x,
+ct_export int ct_adjmat_disjoin(CT_AdjMatrix *mat,
+                                const size_t x,
                                 const size_t y) {
   CT_CHECK(x < mat->stride << 3, "x out of bounds");
   CT_CHECK(y < mat->stride << 3, "y out of bounds");
@@ -51,7 +54,8 @@ fail:
   return 1;
 }
 
-ct_export int ct_adjmat_is_join(CT_AdjMatrix *mat, const size_t x,
+ct_export int ct_adjmat_is_join(CT_AdjMatrix *mat,
+                                const size_t x,
                                 const size_t y) {
   CT_CHECK(x < mat->stride << 3, "x out of bounds");
   CT_CHECK(y < mat->stride << 3, "y out of bounds");
@@ -78,7 +82,8 @@ ct_export void ct_adjmat_trace(const CT_AdjMatrix *mat) {
   }
 }
 
-ct_export int ct_adjmat_iterate(const CT_AdjMatrix *mat, CT_AdjMatIterator iter,
+ct_export int ct_adjmat_iterate(const CT_AdjMatrix *mat,
+                                CT_AdjMatIterator iter,
                                 void *state) {
   uint8_t *ptr = mat->bits;
   for (size_t y = 0, w = mat->stride << 3; y < w; y++) {
@@ -90,7 +95,9 @@ ct_export int ct_adjmat_iterate(const CT_AdjMatrix *mat, CT_AdjMatIterator iter,
              b++, bv <<= 1, xx++) {
           if (cell & bv) {
             int res = iter(xx, y, state);
-            if (res) return res;
+            if (res) {
+              return res;
+            }
           }
         }
       }

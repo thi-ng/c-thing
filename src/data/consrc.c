@@ -55,8 +55,12 @@ static void ct_consrc_free(const CT_Ref *ref) {
   CT_ConsRC *c    = ct_object_cons_ptr(o);
   CT_Object *next = c->next;
   CT_DEBUG("free cons: %p->%p val: %p", o, next, c->value);
-  if (c->value) ct_ref_dec(&c->value->rc);
-  if (next) ct_ref_dec(&next->rc);
+  if (c->value) {
+    ct_ref_dec(&c->value->rc);
+  }
+  if (next) {
+    ct_ref_dec(&next->rc);
+  }
   ct_mpool_free_block(&__ct_consrc.pool, c);
   ct_object_free_box(o);
 }
@@ -89,7 +93,9 @@ CT_Object *ct_consrc_pop_imm(CT_Object **list) {
   CT_CHECK(ct_object_is(*list, CT_TYPE_CONS), "%p is not a cons", *list);
   CT_Object *node = *list;
   *list           = ct_object_cons_ptr(node)->next;
-  if (*list) ct_ref_inc(&(*list)->rc);
+  if (*list) {
+    ct_ref_inc(&(*list)->rc);
+  }
   return node;
 fail:
   return NULL;

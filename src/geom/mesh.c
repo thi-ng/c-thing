@@ -30,7 +30,9 @@ static uint32_t hash_edge_vec3f(const void *a, size_t _) {
   return ct_murmur3_32(e->a, 12) + ct_murmur3_32(e->b, 12);
 }
 
-static int equiv_edge_vec3f(const void *a, const void *b, size_t as,
+static int equiv_edge_vec3f(const void *a,
+                            const void *b,
+                            size_t as,
                             size_t bs) {
   CT_MeshEdge *ea = (CT_MeshEdge *)a;
   CT_MeshEdge *eb = (CT_MeshEdge *)b;

@@ -16,8 +16,12 @@ ct_export CT_QuadEdgeRef ct_qedge() {
 
 ct_export void ct_qedge_destroy(CT_QuadEdgeRef e) {
   CT_QuadEdgeRef f = SYM(e);
-  if (ONEXT(e) != e) ct_qedge_splice(e, OPREV(e));
-  if (ONEXT(f) != f) ct_qedge_splice(f, OPREV(f));
+  if (ONEXT(e) != e) {
+    ct_qedge_splice(e, OPREV(e));
+  }
+  if (ONEXT(f) != f) {
+    ct_qedge_splice(f, OPREV(f));
+  }
   free((uint8_t *)QE_MASK(e));
 }
 
@@ -40,8 +44,10 @@ ct_export void ct_qedge_splice(CT_QuadEdgeRef a, CT_QuadEdgeRef b) {
 
 /* Enumerate edge quads */
 
-static void ct_qedge_do_iter(CT_QuadEdgeRef e, CT_QuadEdgeVisitor visit,
-                             void *state, size_t mark) {
+static void ct_qedge_do_iter(CT_QuadEdgeRef e,
+                             CT_QuadEdgeVisitor visit,
+                             void *state,
+                             size_t mark) {
   while (MARK(e) != mark) {
     visit(e, state);
     MARK(e) = mark;
@@ -52,10 +58,13 @@ static void ct_qedge_do_iter(CT_QuadEdgeRef e, CT_QuadEdgeVisitor visit,
 
 static size_t next_mark = 1;
 
-ct_export void ct_qedge_iterate(CT_QuadEdgeRef a, CT_QuadEdgeVisitor visit,
+ct_export void ct_qedge_iterate(CT_QuadEdgeRef a,
+                                CT_QuadEdgeVisitor visit,
                                 void *state) {
   size_t mark = next_mark;
   next_mark++;
-  if (next_mark == 0) next_mark = 1;
+  if (next_mark == 0) {
+    next_mark = 1;
+  }
   ct_qedge_do_iter(a, visit, state, mark);
 }

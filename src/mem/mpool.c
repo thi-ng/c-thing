@@ -79,6 +79,7 @@ ct_export int ct_mpool_is_valid_block(CT_MPool *pool, void *ptr) {
 }
 
 ct_export CT_MPCompactResult ct_mpool_compact(CT_MPool *pool) {
+  CT_DEBUG("compacting pool: %zu...", pool->poolID);
   CT_MPoolList *head     = pool->head;
   CT_MPoolList *prevHead = NULL;
   CT_MPCompactResult res = {.blocks = 0, .pools = 0};
@@ -150,7 +151,8 @@ ct_export void *ct_mpool_alloc(CT_MPool *pool) {
     CT_CHECK_MEM(head);
     head->pool = malloc(pool->numBlocks * pool->blockSize);
     CT_CHECK_MEM(head->pool);
-    CT_DEBUG("adding new sub-pool: %p, %p", head, head->pool);
+    CT_DEBUG("pool: %zu, adding new sub-pool: %p, %p", pool->poolID, head,
+             head->pool);
     ptr          = head->pool;
     head->next   = pool->head;
     head->nextID = 1;

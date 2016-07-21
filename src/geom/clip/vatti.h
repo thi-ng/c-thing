@@ -22,15 +22,23 @@ int ct_clip_init_context(CT_ClipContext *ctx, size_t num);
 void ct_clip_free_context(CT_ClipContext *ctx);
 void ct_clip_reset_context(CT_ClipContext *ctx);
 
-CT_ClipNode *ct_clip_create_node(CT_ClipContext *ctx, const CT_Vec2f *pos,
-                                 CT_ClipNode *next, CT_ClipNode *prev,
-                                 CT_ClipNode *nextPoly, CT_ClipNode *neighbor,
-                                 int intersect, int entry, int visited,
+CT_ClipNode *ct_clip_create_node(CT_ClipContext *ctx,
+                                 const CT_Vec2f *pos,
+                                 CT_ClipNode *next,
+                                 CT_ClipNode *prev,
+                                 CT_ClipNode *nextPoly,
+                                 CT_ClipNode *neighbor,
+                                 int intersect,
+                                 int entry,
+                                 int visited,
                                  float alpha);
 CT_ClipNode *ct_clip_create_polygon2f(CT_ClipContext *ctx,
-                                      const CT_Vec2f *points, size_t num);
-CT_ClipNode *ct_clip_execute(CT_ClipContext *ctx, CT_ClipNode *s,
-                             CT_ClipNode *c, int mode);
+                                      const CT_Vec2f *points,
+                                      size_t num);
+CT_ClipNode *ct_clip_execute(CT_ClipContext *ctx,
+                             CT_ClipNode *s,
+                             CT_ClipNode *c,
+                             int mode);
 void ct_clip_free_node(CT_ClipContext *ctx, CT_ClipNode *p);
 void ct_clip_trace_node(const CT_ClipNode *p);
 void ct_clip_trace_polygon2f(const CT_ClipNode *p);

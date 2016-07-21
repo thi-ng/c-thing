@@ -32,8 +32,14 @@ typedef struct {
 
 typedef int (*CT_OTVisitor)(const CT_OTNode *, void *);
 
-int ct_octree_init(CT_Octree *t, float x, float y, float z, float w, float h,
-                   float d, size_t poolSize);
+int ct_octree_init(CT_Octree *t,
+                   float x,
+                   float y,
+                   float z,
+                   float w,
+                   float h,
+                   float d,
+                   size_t poolSize);
 void ct_octree_free(CT_Octree *t);
 int ct_octree_insert(CT_Octree *t, const CT_Vec3f *p, const void *data);
 int ct_octree_remove(CT_Octree *t, const CT_Vec3f *p);

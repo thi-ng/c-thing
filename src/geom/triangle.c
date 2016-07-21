@@ -1,6 +1,7 @@
 #include "geom/triangle.h"
 
-ct_export CT_Triangle2f *ct_triangle2f_init(CT_Triangle2f *t, const CT_Vec2f *a,
+ct_export CT_Triangle2f *ct_triangle2f_init(CT_Triangle2f *t,
+                                            const CT_Vec2f *a,
                                             const CT_Vec2f *b,
                                             const CT_Vec2f *c) {
   t->a = *a;
@@ -78,7 +79,8 @@ ct_export CT_Vec2f *ct_triangle2f_point_opposite(CT_Triangle2f *t,
   return NULL;
 }
 
-ct_export CT_Triangle3f *ct_triangle3f_init(CT_Triangle3f *t, const CT_Vec3f *a,
+ct_export CT_Triangle3f *ct_triangle3f_init(CT_Triangle3f *t,
+                                            const CT_Vec3f *a,
                                             const CT_Vec3f *b,
                                             const CT_Vec3f *c) {
   t->a = *a;
@@ -109,7 +111,8 @@ ct_export CT_Triangle3f *ct_triangle3f_initpf(CT_Triangle3f *t,
   return t;
 }
 
-ct_export CT_Vec3f *ct_triangle3f_normal(const CT_Triangle3f *t, CT_Vec3f *out,
+ct_export CT_Vec3f *ct_triangle3f_normal(const CT_Triangle3f *t,
+                                         CT_Vec3f *out,
                                          size_t normalize) {
   CT_Vec3f ba, ca;
   ct_cross3fv(ct_sub3fv(&t->b, &t->a, &ba), ct_sub3fv(&t->c, &t->a, &ca), out);

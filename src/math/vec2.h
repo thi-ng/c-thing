@@ -81,7 +81,8 @@ ct_export ct_inline CT_Vec2f *ct_set2fp(CT_Vec2f *v, const float *p) {
   return v;
 }
 
-ct_export ct_inline CT_Vec2f *ct_clamp2fv_imm(CT_Vec2f *a, const CT_Vec2f *min,
+ct_export ct_inline CT_Vec2f *ct_clamp2fv_imm(CT_Vec2f *a,
+                                              const CT_Vec2f *min,
                                               const CT_Vec2f *max) {
   a->x = ct_clampf(a->x, min->x, max->x);
   a->y = ct_clampf(a->y, min->y, max->y);
@@ -91,24 +92,33 @@ ct_export ct_inline CT_Vec2f *ct_clamp2fv_imm(CT_Vec2f *a, const CT_Vec2f *min,
 ct_export ct_inline int ct_compare2fv_xy(const void *a, const void *b) {
   CT_Vec2f *va = (CT_Vec2f *)a;
   CT_Vec2f *vb = (CT_Vec2f *)b;
-  if (va->x < vb->x) return -1;
-  if (va->x > vb->x) return 1;
-  if (va->y < vb->y) return -1;
-  if (va->y > vb->y) return 1;
+  if (va->x < vb->x)
+    return -1;
+  if (va->x > vb->x)
+    return 1;
+  if (va->y < vb->y)
+    return -1;
+  if (va->y > vb->y)
+    return 1;
   return 0;
 }
 
 ct_export ct_inline int ct_compare2fv_yx(const void *a, const void *b) {
   CT_Vec2f *va = (CT_Vec2f *)a;
   CT_Vec2f *vb = (CT_Vec2f *)b;
-  if (va->y < vb->y) return -1;
-  if (va->y > vb->y) return 1;
-  if (va->x < vb->x) return -1;
-  if (va->x > vb->x) return 1;
+  if (va->y < vb->y)
+    return -1;
+  if (va->y > vb->y)
+    return 1;
+  if (va->x < vb->x)
+    return -1;
+  if (va->x > vb->x)
+    return 1;
   return 0;
 }
 
-ct_export ct_inline size_t ct_deltaeq2fv(const CT_Vec2f *a, const CT_Vec2f *b,
+ct_export ct_inline size_t ct_deltaeq2fv(const CT_Vec2f *a,
+                                         const CT_Vec2f *b,
                                          float eps) {
   return (ct_deltaeqf(a->x, b->x, eps) && ct_deltaeqf(a->y, b->y, eps));
 }
@@ -117,32 +127,39 @@ ct_export ct_inline float ct_cross2fv(const CT_Vec2f *a, const CT_Vec2f *b) {
   return (a->x * b->y) - (a->y * b->x);
 }
 
-ct_export ct_inline float ct_cross2fv3(const CT_Vec2f *a, const CT_Vec2f *b,
+ct_export ct_inline float ct_cross2fv3(const CT_Vec2f *a,
+                                       const CT_Vec2f *b,
                                        const CT_Vec2f *c) {
   return (b->x - a->x) * (c->y - a->y) - (b->y - a->y) * (c->x - a->x);
 }
 
-ct_export ct_inline CT_Vec2f *ct_madd2fv_imm(CT_Vec2f *a, const CT_Vec2f *b,
+ct_export ct_inline CT_Vec2f *ct_madd2fv_imm(CT_Vec2f *a,
+                                             const CT_Vec2f *b,
                                              const CT_Vec2f *c) {
   a->x = a->x * b->x + c->x;
   a->y = a->y * b->y + c->y;
   return a;
 }
 
-ct_export ct_inline CT_Vec2f *ct_madd2fnv_imm(CT_Vec2f *a, float b,
+ct_export ct_inline CT_Vec2f *ct_madd2fnv_imm(CT_Vec2f *a,
+                                              float b,
                                               const CT_Vec2f *c) {
   a->x = a->x * b + c->x;
   a->y = a->y * b + c->y;
   return a;
 }
 
-ct_export ct_inline CT_Vec2f *ct_madd2fv(const CT_Vec2f *a, const CT_Vec2f *b,
-                                         const CT_Vec2f *c, CT_Vec2f *out) {
+ct_export ct_inline CT_Vec2f *ct_madd2fv(const CT_Vec2f *a,
+                                         const CT_Vec2f *b,
+                                         const CT_Vec2f *c,
+                                         CT_Vec2f *out) {
   return ct_madd2fv_imm(ct_set2fv(out, a), b, c);
 }
 
-ct_export ct_inline CT_Vec2f *ct_madd2fnv(const CT_Vec2f *a, float b,
-                                          const CT_Vec2f *c, CT_Vec2f *out) {
+ct_export ct_inline CT_Vec2f *ct_madd2fnv(const CT_Vec2f *a,
+                                          float b,
+                                          const CT_Vec2f *c,
+                                          CT_Vec2f *out) {
   return ct_madd2fnv_imm(ct_set2fv(out, a), b, c);
 }
 
@@ -196,15 +213,18 @@ ct_export ct_inline CT_Vec2f *ct_min2fv_imm(CT_Vec2f *a, const CT_Vec2f *b) {
   return a;
 }
 
-ct_export ct_inline CT_Vec2f *ct_mix2fv_imm(CT_Vec2f *a, const CT_Vec2f *b,
+ct_export ct_inline CT_Vec2f *ct_mix2fv_imm(CT_Vec2f *a,
+                                            const CT_Vec2f *b,
                                             float t) {
   a->x = ct_mixf(a->x, b->x, t);
   a->y = ct_mixf(a->y, b->y, t);
   return a;
 }
 
-ct_export ct_inline CT_Vec2f *ct_mix2fv(const CT_Vec2f *a, const CT_Vec2f *b,
-                                        float t, CT_Vec2f *out) {
+ct_export ct_inline CT_Vec2f *ct_mix2fv(const CT_Vec2f *a,
+                                        const CT_Vec2f *b,
+                                        float t,
+                                        CT_Vec2f *out) {
   return ct_mix2fv_imm(ct_set2fv(out, a), b, t);
 }
 
@@ -228,7 +248,8 @@ ct_export ct_inline CT_Vec2f *ct_normalize2f_imm(CT_Vec2f *v, float len) {
   return v;
 }
 
-ct_export ct_inline CT_Vec2f *ct_normalize2f(const CT_Vec2f *v, float len,
+ct_export ct_inline CT_Vec2f *ct_normalize2f(const CT_Vec2f *v,
+                                             float len,
                                              CT_Vec2f *out) {
   return ct_normalize2f_imm(ct_set2fv(out, v), len);
 }

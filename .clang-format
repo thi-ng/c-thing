@@ -1,6 +1,12 @@
 BasedOnStyle: Google
-AllowShortFunctionsOnASingleLine: None
+AllowAllParametersOfDeclarationOnNextLine: false
+AlignConsecutiveAssignments: true
 AllowShortBlocksOnASingleLine: false
+AllowShortFunctionsOnASingleLine: false
+AllowShortIfStatementsOnASingleLine: false
+AllowShortLoopsOnASingleLine: false
+BinPackParameters: false
+BreakBeforeBraces: Attach
+ColumnLimit: 80
 ReflowComments: false
 SortIncludes: true
-AlignConsecutiveAssignments: true

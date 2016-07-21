@@ -27,64 +27,95 @@ ct_export ct_inline int ct_compare3fv(const void *a, const void *b) {
 ct_export ct_inline int ct_compare3fv_xyz(const void *a, const void *b) {
   CT_Vec3f *va = (CT_Vec3f *)a;
   CT_Vec3f *vb = (CT_Vec3f *)b;
-  if (va->x < vb->x) return -1;
-  if (va->x > vb->x) return 1;
-  if (va->y < vb->y) return -1;
-  if (va->y > vb->y) return 1;
-  if (va->z < vb->z) return -1;
-  if (va->z > vb->z) return 1;
+  if (va->x < vb->x)
+    return -1;
+  if (va->x > vb->x)
+    return 1;
+  if (va->y < vb->y)
+    return -1;
+  if (va->y > vb->y)
+    return 1;
+  if (va->z < vb->z)
+    return -1;
+  if (va->z > vb->z)
+    return 1;
   return 0;
 }
 
 ct_export ct_inline int ct_compare3fv_yxz(const void *a, const void *b) {
   CT_Vec3f *va = (CT_Vec3f *)a;
   CT_Vec3f *vb = (CT_Vec3f *)b;
-  if (va->y < vb->y) return -1;
-  if (va->y > vb->y) return 1;
-  if (va->x < vb->x) return -1;
-  if (va->x > vb->x) return 1;
-  if (va->z < vb->z) return -1;
-  if (va->z > vb->z) return 1;
+  if (va->y < vb->y)
+    return -1;
+  if (va->y > vb->y)
+    return 1;
+  if (va->x < vb->x)
+    return -1;
+  if (va->x > vb->x)
+    return 1;
+  if (va->z < vb->z)
+    return -1;
+  if (va->z > vb->z)
+    return 1;
   return 0;
 }
 
 ct_export ct_inline int ct_compare3fv_yzx(const void *a, const void *b) {
   CT_Vec3f *va = (CT_Vec3f *)a;
   CT_Vec3f *vb = (CT_Vec3f *)b;
-  if (va->y < vb->y) return -1;
-  if (va->y > vb->y) return 1;
-  if (va->z < vb->z) return -1;
-  if (va->z > vb->z) return 1;
-  if (va->x < vb->x) return -1;
-  if (va->x > vb->x) return 1;
+  if (va->y < vb->y)
+    return -1;
+  if (va->y > vb->y)
+    return 1;
+  if (va->z < vb->z)
+    return -1;
+  if (va->z > vb->z)
+    return 1;
+  if (va->x < vb->x)
+    return -1;
+  if (va->x > vb->x)
+    return 1;
   return 0;
 }
 
 ct_export ct_inline int ct_compare3fv_zyx(const void *a, const void *b) {
   CT_Vec3f *va = (CT_Vec3f *)a;
   CT_Vec3f *vb = (CT_Vec3f *)b;
-  if (va->z < vb->z) return -1;
-  if (va->z > vb->z) return 1;
-  if (va->y < vb->y) return -1;
-  if (va->y > vb->y) return 1;
-  if (va->x < vb->x) return -1;
-  if (va->x > vb->x) return 1;
+  if (va->z < vb->z)
+    return -1;
+  if (va->z > vb->z)
+    return 1;
+  if (va->y < vb->y)
+    return -1;
+  if (va->y > vb->y)
+    return 1;
+  if (va->x < vb->x)
+    return -1;
+  if (va->x > vb->x)
+    return 1;
   return 0;
 }
 
 ct_export ct_inline int ct_compare3fv_zxy(const void *a, const void *b) {
   CT_Vec3f *va = (CT_Vec3f *)a;
   CT_Vec3f *vb = (CT_Vec3f *)b;
-  if (va->z < vb->z) return -1;
-  if (va->z > vb->z) return 1;
-  if (va->x < vb->x) return -1;
-  if (va->x > vb->x) return 1;
-  if (va->y < vb->y) return -1;
-  if (va->y > vb->y) return 1;
+  if (va->z < vb->z)
+    return -1;
+  if (va->z > vb->z)
+    return 1;
+  if (va->x < vb->x)
+    return -1;
+  if (va->x > vb->x)
+    return 1;
+  if (va->y < vb->y)
+    return -1;
+  if (va->y > vb->y)
+    return 1;
   return 0;
 }
 
-ct_export ct_inline size_t ct_deltaeq3fv(const CT_Vec3f *a, const CT_Vec3f *b,
+ct_export ct_inline size_t ct_deltaeq3fv(const CT_Vec3f *a,
+                                         const CT_Vec3f *b,
                                          float eps) {
   return (ct_deltaeqf(a->x, b->x, eps) && ct_deltaeqf(a->y, b->y, eps) &&
           ct_deltaeqf(a->z, b->z, eps));
@@ -120,8 +151,10 @@ ct_export ct_inline uint32_t ct_hash3f(const CT_Vec3f *v) {
   return ct_murmur3_32(v, 3 * sizeof(float));
 }
 
-ct_export ct_inline CT_Vec3f *ct_madd3fv(const CT_Vec3f *a, const CT_Vec3f *b,
-                                         const CT_Vec3f *c, CT_Vec3f *out) {
+ct_export ct_inline CT_Vec3f *ct_madd3fv(const CT_Vec3f *a,
+                                         const CT_Vec3f *b,
+                                         const CT_Vec3f *c,
+                                         CT_Vec3f *out) {
   return ct_madd3fv_imm(ct_set3fv(out, a), b, c);
 }
 
@@ -129,12 +162,15 @@ ct_export ct_inline float ct_mag3f(const CT_Vec3f *v) {
   return sqrtf(ct_magsq3f(v));
 }
 
-ct_export ct_inline CT_Vec3f *ct_mix3fv(const CT_Vec3f *a, const CT_Vec3f *b,
-                                        float t, CT_Vec3f *out) {
+ct_export ct_inline CT_Vec3f *ct_mix3fv(const CT_Vec3f *a,
+                                        const CT_Vec3f *b,
+                                        float t,
+                                        CT_Vec3f *out) {
   return ct_mix3fv_imm(ct_set3fv(out, a), b, t);
 }
 
-ct_export ct_inline CT_Vec3f *ct_normalize3f(const CT_Vec3f *v, float len,
+ct_export ct_inline CT_Vec3f *ct_normalize3f(const CT_Vec3f *v,
+                                             float len,
                                              CT_Vec3f *out) {
   return ct_normalize3f_imm(ct_set3fv(out, v), len);
 }
