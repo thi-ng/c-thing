@@ -112,10 +112,10 @@ flags { "LinkTimeOptimization" }
 
 ----- clipping -----
 
-project "ex-vatti"
+project "ex-polyclip"
 kind "ConsoleApp"
-files { "examples/vatti/*.c" }
-includedirs { "examples/common", "examples/vatti" }
+files { "examples/polyclip/*.c" }
+includedirs { "examples/common", "examples/polyclip" }
 links "lib"
 dependson "lib"
 flags { "LinkTimeOptimization" }
