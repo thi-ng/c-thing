@@ -11,20 +11,32 @@ CT_BEGIN_DECLS
 CT_Vec4f *ct_vec4f(float x, float y, float z, float w, CT_MPool *mpool);
 CT_Vec4f *ct_vec4fn(float n, CT_MPool *mpool);
 
-ct_export ct_inline int ct_compare4fv(const void *a, const void *b) {
+ct_export ct_inline int ct_compare4fv_xyzw(const void *a, const void *b) {
   CT_Vec4f *va = (CT_Vec4f *)a;
   CT_Vec4f *vb = (CT_Vec4f *)b;
-  int c        = COMPARE(va->x, vb->x);
-  if (!c) {
-    c = COMPARE(va->y, vb->y);
-    if (!c) {
-      c = COMPARE(va->z, vb->z);
-      if (!c) {
-        return COMPARE(va->w, vb->w);
-      }
-    }
-  }
-  return c;
+  if (va->x < vb->x) return -1;
+  if (va->x > vb->x) return 1;
+  if (va->y < vb->y) return -1;
+  if (va->y > vb->y) return 1;
+  if (va->z < vb->z) return -1;
+  if (va->z > vb->z) return 1;
+  if (va->w < vb->w) return -1;
+  if (va->w > vb->w) return 1;
+  return 0;
+}
+
+ct_export ct_inline int ct_compare4fv_wzyx(const void *a, const void *b) {
+  CT_Vec4f *va = (CT_Vec4f *)a;
+  CT_Vec4f *vb = (CT_Vec4f *)b;
+  if (va->w < vb->w) return -1;
+  if (va->w > vb->w) return 1;
+  if (va->z < vb->z) return -1;
+  if (va->z > vb->z) return 1;
+  if (va->y < vb->y) return -1;
+  if (va->y > vb->y) return 1;
+  if (va->x < vb->x) return -1;
+  if (va->x > vb->x) return 1;
+  return 0;
 }
 
 ct_export ct_inline size_t ct_deltaeq4fv(const CT_Vec4f *a, const CT_Vec4f *b,

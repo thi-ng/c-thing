@@ -312,16 +312,6 @@ static int edgelist_init(CT_VOEdgeList *el, size_t num) {
   return 1;
 }
 
-static int compare_vec2f(const void *a, const void *b) {
-  CT_Vec2f *va = (CT_Vec2f *)a;
-  CT_Vec2f *vb = (CT_Vec2f *)b;
-  if (va->y < vb->y) return -1;
-  if (va->y > vb->y) return 1;
-  if (va->x < vb->x) return -1;
-  if (va->x > vb->x) return 1;
-  return 0;
-}
-
 static CT_VOVertex *provide_next_site(CT_Voronoi *vor, const CT_Vec2f *sites,
                                       size_t num) {
   CT_VOVertex *v = NULL;
@@ -360,7 +350,7 @@ ct_export void ct_voronoi_compute(CT_Voronoi *vor, CT_Vec2f *sites, size_t num,
   CT_VOHeap *heap   = &vor->heap;
 
   ct_bounds2fp((float *)sites, num, 2, &min, &max);
-  qsort(sites, num, sizeof(CT_Vec2f), compare_vec2f);
+  qsort(sites, num, sizeof(CT_Vec2f), ct_compare2fv_yx);
   el->minx     = min.x;
   el->deltax   = max.x - min.x;
   heap->miny   = min.y;

@@ -24,6 +24,66 @@ ct_export ct_inline int ct_compare3fv(const void *a, const void *b) {
   return c;
 }
 
+ct_export ct_inline int ct_compare3fv_xyz(const void *a, const void *b) {
+  CT_Vec3f *va = (CT_Vec3f *)a;
+  CT_Vec3f *vb = (CT_Vec3f *)b;
+  if (va->x < vb->x) return -1;
+  if (va->x > vb->x) return 1;
+  if (va->y < vb->y) return -1;
+  if (va->y > vb->y) return 1;
+  if (va->z < vb->z) return -1;
+  if (va->z > vb->z) return 1;
+  return 0;
+}
+
+ct_export ct_inline int ct_compare3fv_yxz(const void *a, const void *b) {
+  CT_Vec3f *va = (CT_Vec3f *)a;
+  CT_Vec3f *vb = (CT_Vec3f *)b;
+  if (va->y < vb->y) return -1;
+  if (va->y > vb->y) return 1;
+  if (va->x < vb->x) return -1;
+  if (va->x > vb->x) return 1;
+  if (va->z < vb->z) return -1;
+  if (va->z > vb->z) return 1;
+  return 0;
+}
+
+ct_export ct_inline int ct_compare3fv_yzx(const void *a, const void *b) {
+  CT_Vec3f *va = (CT_Vec3f *)a;
+  CT_Vec3f *vb = (CT_Vec3f *)b;
+  if (va->y < vb->y) return -1;
+  if (va->y > vb->y) return 1;
+  if (va->z < vb->z) return -1;
+  if (va->z > vb->z) return 1;
+  if (va->x < vb->x) return -1;
+  if (va->x > vb->x) return 1;
+  return 0;
+}
+
+ct_export ct_inline int ct_compare3fv_zyx(const void *a, const void *b) {
+  CT_Vec3f *va = (CT_Vec3f *)a;
+  CT_Vec3f *vb = (CT_Vec3f *)b;
+  if (va->z < vb->z) return -1;
+  if (va->z > vb->z) return 1;
+  if (va->y < vb->y) return -1;
+  if (va->y > vb->y) return 1;
+  if (va->x < vb->x) return -1;
+  if (va->x > vb->x) return 1;
+  return 0;
+}
+
+ct_export ct_inline int ct_compare3fv_zxy(const void *a, const void *b) {
+  CT_Vec3f *va = (CT_Vec3f *)a;
+  CT_Vec3f *vb = (CT_Vec3f *)b;
+  if (va->z < vb->z) return -1;
+  if (va->z > vb->z) return 1;
+  if (va->x < vb->x) return -1;
+  if (va->x > vb->x) return 1;
+  if (va->y < vb->y) return -1;
+  if (va->y > vb->y) return 1;
+  return 0;
+}
+
 ct_export ct_inline size_t ct_deltaeq3fv(const CT_Vec3f *a, const CT_Vec3f *b,
                                          float eps) {
   return (ct_deltaeqf(a->x, b->x, eps) && ct_deltaeqf(a->y, b->y, eps) &&

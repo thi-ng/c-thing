@@ -186,7 +186,7 @@ int ct_tostringfp(char *buf, int bufsz, const float *p, size_t num) {
 
 size_t ct_convexhull2f(CT_Vec2f *points, size_t num, CT_Vec2f *hull) {
   if (num < 1) return 0;
-  qsort(points, num, sizeof(CT_Vec2f), ct_compare2fv);
+  qsort(points, num, sizeof(CT_Vec2f), ct_compare2fv_xy);
   size_t len = 0;
   for (size_t i = 0; i < num; i++) {
     while (len >= 2 &&
@@ -213,5 +213,5 @@ size_t ct_convexhull2f(CT_Vec2f *points, size_t num, CT_Vec2f *hull) {
     CT_DEBUG("add hull: %f,%f (%zu)", points[i].x, points[i].y, len);
     len++;
   }
-  return len - 1 - (ct_compare2fv(&hull[0], &hull[1]) == 0);
+  return len - 1 - (ct_compare2fv_xy(&hull[0], &hull[1]) == 0);
 }

@@ -45,11 +45,11 @@ int test_vec2f() {
   a = ct_vec2f(1, 2, &pool);
   b = ct_vec2f(1, 1, &pool);
   c = ct_vec2f(2, 1, &pool);
-  CT_IS(1 == ct_compare2fv(a, b), "a > b");
-  CT_IS(0 == ct_compare2fv(a, a), "a == a");
-  CT_IS(-1 == ct_compare2fv(b, a), "b < a");
-  CT_IS(-1 == ct_compare2fv(a, c), "a < c");
-  CT_IS(1 == ct_compare2fv(c, a), "c > a");
+  CT_IS(1 == ct_compare2fv_xy(a, b), "a > b");
+  CT_IS(0 == ct_compare2fv_xy(a, a), "a == a");
+  CT_IS(-1 == ct_compare2fv_xy(b, a), "b < a");
+  CT_IS(-1 == ct_compare2fv_xy(a, c), "a < c");
+  CT_IS(1 == ct_compare2fv_xy(c, a), "c > a");
   ct_mpool_free(&pool);
   return 0;
 }
