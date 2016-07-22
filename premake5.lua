@@ -120,6 +120,16 @@ links "lib"
 dependson "lib"
 flags { "LinkTimeOptimization" }
 
+----- offset -----
+
+project "ex-polyoffset"
+kind "ConsoleApp"
+files { "examples/polyoffset/*.c" }
+includedirs { "examples/common", "examples/polyoffset" }
+links "lib"
+dependson "lib"
+flags { "LinkTimeOptimization" }
+
 ----- voronoi -----
 
 project "ex-voronoi"
