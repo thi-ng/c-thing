@@ -18,15 +18,12 @@ ct_export int ct_intersect_lines(const CT_Vec2f *a,
   if (det == 0) {
     return -1;
   }
-  float acx  = a->x - c->x;
-  float acy  = a->y - c->y;
-  *alpha     = (dcx * acy - dcy * acx) / det;
-  *beta      = (bax * acy - bay * acx) / det;
-  int inside = (0 < *alpha && *alpha < 1) && (0 < *beta && *beta < 1);
-  if (inside) {
-    ct_mix2fv(a, b, *alpha, isec);
-  }
-  return inside;
+  float acx = a->x - c->x;
+  float acy = a->y - c->y;
+  *alpha    = (dcx * acy - dcy * acx) / det;
+  *beta     = (bax * acy - bay * acx) / det;
+  ct_mix2fv(a, b, *alpha, isec);
+  return (0 < *alpha && *alpha < 1) && (0 < *beta && *beta < 1);
 }
 
 ct_export int ct_intersect_rect_circle(const CT_Vec2f *p,
