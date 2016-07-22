@@ -50,13 +50,20 @@ int test_cons() {
   ConsTestState cs = {.count = 0, .err = 0};
   ct_cons_iterate(c, count_cons, &cs);
   CT_IS(cs.count == 3, "c length != 3 (%zu)", cs.count);
-  ct_cons_free_all(c, 0);
+  ct_cons_free_all(c, NULL, NULL, NULL);
+
+  c = ct_cons_append("AAA", NULL, NULL);
+  ct_cons_append("CCC", ct_cons_append("BBB", c, NULL), NULL);
+  ct_cons_iterate(c, count_cons, reset_state(&cs, NULL));
+  CT_IS(cs.count == 3, "c append length != 3 (%zu)", cs.count);
+  ct_cons_iterate(c, trace_cons, NULL);
+  ct_cons_free_all(c, NULL, NULL, NULL);
 
   CT_MPool pool;
   ct_mpool_init(&pool, 256, sizeof(CT_Cons));
   c = ct_cons("CCC", ct_cons("BBB", ct_cons("AAA", NULL, &pool), &pool), &pool);
-  reset_state(&cs, NULL);
-  ct_cons_iterate(c, count_cons, &cs);
+
+  ct_cons_iterate(c, count_cons, reset_state(&cs, NULL));
   CT_IS(cs.count == 3, "c mpool length != 3 (%zu)", cs.count);
 
   char *vals[] = {"DDD", "EEE", "FFF"};
@@ -67,8 +74,7 @@ int test_cons() {
 
   float fvals[] = {23, 24, 25};
   CT_Cons *cf   = ct_cons_from_array(fvals, 3, sizeof(float), NULL, &pool);
-  reset_state(&cs, fvals);
-  ct_cons_iterate(cf, verify_cons_float, &cs);
+  ct_cons_iterate(cf, verify_cons_float, reset_state(&cs, fvals));
   CT_IS(!cs.err, "cons != src array (%zu errors)", cs.err);
   CT_IS(cs.count == 3, "c2 length != 3 (%zu)", cs.count);
 
