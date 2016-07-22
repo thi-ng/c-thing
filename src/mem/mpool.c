@@ -38,7 +38,7 @@ fail:
   return;
 }
 
-ct_export void ct_mpool_free_all_blocks(CT_MPool *pool) {
+ct_export void ct_mpool_reset(CT_MPool *pool) {
   pool->freeList  = NULL;
   CT_MPoolList *p = pool->head;
   while (p != NULL) {
