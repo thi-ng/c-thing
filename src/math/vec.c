@@ -83,6 +83,40 @@ VEC_ARRAYOP(scale3f, CT_Vec3f, float, ct_mul3fv_imm)
 VEC_ARRAYOP(translate4f, CT_Vec4f, float, ct_add4fv_imm)
 VEC_ARRAYOP(scale4f, CT_Vec4f, float, ct_mul4fv_imm)
 
+ct_export CT_Vec2f *ct_centroid2f(float *ptr,
+                                  size_t num,
+                                  size_t fstride,
+                                  CT_Vec2f *out) {
+  float x  = 0;
+  float y  = 0;
+  size_t n = num;
+  while (n--) {
+    x += ptr[0];
+    y += ptr[1];
+    ptr += fstride;
+  }
+  ct_set2fxy(out, x / num, y / num);
+  return out;
+}
+
+ct_export CT_Vec3f *ct_centroid3f(float *ptr,
+                                  size_t num,
+                                  size_t fstride,
+                                  CT_Vec3f *out) {
+  float x  = 0;
+  float y  = 0;
+  float z  = 0;
+  size_t n = num;
+  while (n--) {
+    x += ptr[0];
+    y += ptr[1];
+    z += ptr[2];
+    ptr += fstride;
+  }
+  ct_set3fxyz(out, x / num, y / num, z / num);
+  return out;
+}
+
 ct_export CT_Vec2f *ct_closest_point2f(float *ptr,
                                        CT_Vec2f *p,
                                        size_t num,

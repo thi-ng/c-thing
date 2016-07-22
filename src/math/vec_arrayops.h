@@ -21,6 +21,9 @@ void ct_scale3f(float* ptr, CT_Vec3f* t, size_t num, size_t fstride);
 void ct_translate4f(float* ptr, CT_Vec4f* t, size_t num, size_t fstride);
 void ct_scale4f(float* ptr, CT_Vec4f* t, size_t num, size_t fstride);
 
+CT_Vec2f* ct_centroid2f(float* ptr, size_t num, size_t fstride, CT_Vec2f* out);
+CT_Vec3f* ct_centroid3f(float* ptr, size_t num, size_t fstride, CT_Vec3f* out);
+
 CT_Vec2f* ct_closest_point2f(float* ptr,
                              CT_Vec2f* p,
                              size_t num,
