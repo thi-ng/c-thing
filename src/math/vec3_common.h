@@ -182,6 +182,10 @@ ct_export ct_inline CT_Vec3f *ct_mix3fv(const CT_Vec3f *a,
   return ct_mix3fv_imm(ct_set3fv(out, a), b, t);
 }
 
+ct_export ct_inline CT_Vec3f *ct_negate3f(const CT_Vec3f *v, CT_Vec3f *out) {
+  return ct_negate3f_imm(ct_set3fv(out, v));
+}
+
 ct_export ct_inline CT_Vec3f *ct_normalize3f(const CT_Vec3f *v,
                                              float len,
                                              CT_Vec3f *out) {

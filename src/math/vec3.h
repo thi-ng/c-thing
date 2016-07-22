@@ -127,6 +127,13 @@ ct_export ct_inline CT_Vec3f *ct_mix3fv_imm(CT_Vec3f *a,
   return a;
 }
 
+ct_export ct_inline CT_Vec3f *ct_negate3f_imm(CT_Vec3f *v) {
+  v->x = -v->x;
+  v->y = -v->y;
+  v->z = -v->z;
+  return v;
+}
+
 ct_export ct_inline CT_Vec3f *ct_normalize3f_imm(CT_Vec3f *v, float len) {
   float m = sqrt(ct_magsq3f(v));
   if (m > 0.0) {

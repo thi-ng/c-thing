@@ -126,6 +126,10 @@ ct_export ct_inline CT_Vec4f *ct_mix4fv(const CT_Vec4f *a,
   return ct_mix4fv_imm(ct_set4fv(out, a), b, t);
 }
 
+ct_export ct_inline CT_Vec4f *ct_negate4f(const CT_Vec4f *v, CT_Vec4f *out) {
+  return ct_negate4f_imm(ct_set4fv(out, v));
+}
+
 ct_export ct_inline CT_Vec4f *ct_normalize4f(const CT_Vec4f *v,
                                              float len,
                                              CT_Vec4f *out) {

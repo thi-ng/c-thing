@@ -239,14 +239,14 @@ ct_export ct_inline CT_Vec2f *ct_mix2fv(const CT_Vec2f *a,
   return ct_mix2fv_imm(ct_set2fv(out, a), b, t);
 }
 
-ct_export ct_inline CT_Vec2f *ct_negate_imm(CT_Vec2f *v) {
+ct_export ct_inline CT_Vec2f *ct_negate2f_imm(CT_Vec2f *v) {
   v->x = -v->x;
   v->y = -v->y;
   return v;
 }
 
-ct_export ct_inline CT_Vec2f *ct_negate(const CT_Vec2f *v, CT_Vec2f *out) {
-  return ct_negate_imm(ct_set2fv(out, v));
+ct_export ct_inline CT_Vec2f *ct_negate2f(const CT_Vec2f *v, CT_Vec2f *out) {
+  return ct_negate2f_imm(ct_set2fv(out, v));
 }
 
 ct_export ct_inline CT_Vec2f *ct_normalize2f_imm(CT_Vec2f *v, float len) {

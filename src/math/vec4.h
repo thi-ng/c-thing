@@ -105,6 +105,14 @@ ct_export ct_inline CT_Vec4f *ct_mix4fv_imm(CT_Vec4f *a,
   return a;
 }
 
+ct_export ct_inline CT_Vec4f *ct_negate4f_imm(CT_Vec4f *v) {
+  v->x = -v->x;
+  v->y = -v->y;
+  v->z = -v->z;
+  v->w = -v->w;
+  return v;
+}
+
 ct_export ct_inline CT_Vec4f *ct_normalize4f_imm(CT_Vec4f *v, float len) {
   float m = sqrt(ct_magsq4f(v));
   if (m > 0.0) {
