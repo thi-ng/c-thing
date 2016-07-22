@@ -57,7 +57,7 @@ ct_export void ct_cons_free(CT_Cons* cell,
   if (cell) {
     if (freeVal) {
       CT_INFO("free cons value: %p", cell->value);
-      freeVal(state, cell->value);
+      freeVal(cell->value, state);
     }
     CT_MP_FREE(pool, cell);
   }
