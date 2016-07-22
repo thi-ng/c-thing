@@ -66,6 +66,20 @@ ct_export ct_inline float ct_dist4fv(const CT_Vec4f *a, const CT_Vec4f *b) {
   return sqrtf(ct_distsq4fv(a, b));
 }
 
+ct_export ct_inline float ct_dist4fv_manhatten(const CT_Vec4f *a,
+                                               const CT_Vec4f *b) {
+  return fabs(a->x - b->x) + fabs(a->y - b->y) + fabs(a->z - b->z) +
+         fabs(a->w - b->w);
+}
+
+ct_export ct_inline float ct_dist4fv_minkowski(const CT_Vec4f *a,
+                                               const CT_Vec4f *b,
+                                               float p) {
+  return powf(powf(fabs(a->x - b->x), p) + powf(fabs(a->y - b->y), p) +
+                  powf(fabs(a->z - b->z), p) + powf(fabs(a->w - b->w), p),
+              1 / p);
+}
+
 ct_export ct_inline CT_Vec4f *ct_ceil4f_imm(CT_Vec4f *v) {
 #ifdef CT_FEATURE_SSE4
   v->mmval = _mm_ceil_ps(v->mmval);

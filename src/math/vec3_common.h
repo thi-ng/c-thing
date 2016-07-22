@@ -125,6 +125,19 @@ ct_export ct_inline float ct_dist3fv(const CT_Vec3f *a, const CT_Vec3f *b) {
   return sqrtf(ct_distsq3fv(a, b));
 }
 
+ct_export ct_inline float ct_dist3fv_manhatten(const CT_Vec3f *a,
+                                               const CT_Vec3f *b) {
+  return fabs(a->x - b->x) + fabs(a->y - b->y) + fabs(a->z - b->z);
+}
+
+ct_export ct_inline float ct_dist3fv_minkowski(const CT_Vec3f *a,
+                                               const CT_Vec3f *b,
+                                               float p) {
+  return powf(powf(fabs(a->x - b->x), p) + powf(fabs(a->y - b->y), p) +
+                  powf(fabs(a->z - b->z), p),
+              1 / p);
+}
+
 ct_export ct_inline CT_Vec3f *ct_ceil3f_imm(CT_Vec3f *v) {
 #ifdef CT_FEATURE_SSE4
   v->mmval = _mm_ceil_ps(v->mmval);

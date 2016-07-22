@@ -177,6 +177,17 @@ ct_export ct_inline float ct_dist2fv(const CT_Vec2f *a, const CT_Vec2f *b) {
   return sqrtf(ct_distsq2fv(a, b));
 }
 
+ct_export ct_inline float ct_dist2fv_manhatten(const CT_Vec2f *a,
+                                               const CT_Vec2f *b) {
+  return fabs(a->x - b->x) + fabs(a->y - b->y);
+}
+
+ct_export ct_inline float ct_dist2fv_minkowski(const CT_Vec2f *a,
+                                               const CT_Vec2f *b,
+                                               float p) {
+  return powf(powf(fabs(a->x - b->x), p) + powf(fabs(a->y - b->y), p), 1 / p);
+}
+
 ct_export ct_inline CT_Vec2f *ct_ceil2f_imm(CT_Vec2f *v) {
   v->x = ceilf(v->x);
   v->y = ceilf(v->y);
@@ -268,10 +279,22 @@ ct_export ct_inline CT_Vec2f *ct_limit2f_imm(CT_Vec2f *v, float len) {
   return v;
 }
 
+ct_export ct_inline CT_Vec2f *ct_perpendicular2f_imm(CT_Vec2f *v) {
+  float x = v->x;
+  v->x    = -v->y;
+  v->y    = x;
+  return v;
+}
+
+ct_export ct_inline CT_Vec2f *ct_perpendicular2f(const CT_Vec2f *v,
+                                                 CT_Vec2f *out) {
+  return ct_perpendicular2f_imm(ct_set2fv(out, v));
+}
+
 ct_export ct_inline CT_Vec2f *ct_cartesian2f_imm(CT_Vec2f *v) {
-  float x = v->x * cosf(v->y);
-  v->y    = v->x * sinf(v->y);
-  v->x    = x;
+  float x = v->x;
+  v->x    = x * cosf(v->y);
+  v->y    = x * sinf(v->y);
   return v;
 }
 
