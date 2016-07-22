@@ -9,10 +9,12 @@
          - [[#simulation][Simulation]]
          - [[#geometry][Geometry]]
      - [[#examples][Examples]]
+         - [[#build-all-examples][Build all examples]]
          - [[#1d2d-cellular-automata][1D/2D Cellular automata]]
          - [[#diffusion-limited-aggregation][Diffusion-Limited Aggregation]]
          - [[#poisson-disc-sampling-image-conversion][Poisson disc sampling image conversion]]
          - [[#polygon-clipping-greiner-hormann][Polygon clipping (Greiner-Hormann)]]
+         - [[#polygon-offsetting][Polygon offsetting]]
          - [[#verlet-physics][Verlet physics]]
          - [[#voronoi][Voronoi]]
      - [[#requirements][Requirements]]
@@ -61,13 +63,22 @@ WIP
 - [[./src/math/vec.h][Vec2/3/4]] (w/ opt SSE impls)
 - [[./src/math/swizzle.h][Vector swizzling]]
 - [[./src/geom/clip.h][Line clipping]] (Liang-Barsky)
-- [[./src/geom/polygon.h][Polygon & clipping]] (Greiner-Hormann)
+- [[./src/geom/polygon.h][Polygon]] (2D)
+  - [[#polygon-clipping-greiner-hormann][Polygon clipping]] (Greiner-Hormann)
+  - [[#polygon-offsetting][Polygon offsetting / insetting]]
 - [[./src/geom/voronoi.h][Voronoi]] (2D)
 ...
 
 TBD
 
 ** Examples
+*** Build all examples
+
+#+BEGIN_SRC shell
+premake gmake
+make config=release_sse
+#+END_SRC
+
 *** 1D/2D Cellular automata
 
 [[./examples/ca/ca1d.c][Source (1D)]] | [[./examples/ca/ca2d.c][Source (2D)]]
@@ -143,6 +154,17 @@ make config=release_sse ex-dla && bin/release/ex-dla > assets/dla.svg
 #+BEGIN_SRC shell
 # build library & example app
 make config=release_sse ex-polyclip && bin/release/ex-polyclip > polyclip.svg
+#+END_SRC
+
+*** Polygon offsetting
+
+[[./examples/polyoffset/main.c][Source]]
+
+[[./assets/polyoffset-all-small.png]]
+
+#+BEGIN_SRC shell
+# build library & example app
+make config=release_sse ex-polyclip && bin/release/ex-polyoffset > polyoffset.svg
 #+END_SRC
 
 *** Verlet physics
