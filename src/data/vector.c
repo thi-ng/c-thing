@@ -1,17 +1,35 @@
 #include "data/vector.h"
 #include "math/math.h"
 
-int ct_vector_init(CT_Vector *v, size_t limit, size_t stride) {
+struct CT_Vector {
+  uint8_t *buffer;
+  size_t num;
+  size_t limit;
+  int32_t stride;
+};
+
+struct CT_VectorIter {
+  uint8_t *curr;
+  uint8_t *end;
+  uint8_t *start;
+  int32_t stride;
+};
+
+CT_Vector *ct_vector_new(size_t limit, int32_t stride) {
+  CT_CHECK(stride > 0, "stride must be > 0");
+  CT_Vector *v = malloc(sizeof(CT_Vector));
+  CT_CHECK_MEM(v);
   v->buffer = calloc(limit, stride);
   v->num    = 0;
   v->limit  = limit;
   v->stride = stride;
-  return v->buffer == NULL;
+fail:
+  return v;
 }
 
 void ct_vector_free(CT_Vector *v) {
   free(v->buffer);
-  v->buffer = NULL;
+  free(v);
 }
 
 size_t ct_vector_size(const CT_Vector *v) {
@@ -54,20 +72,51 @@ void *ct_vector_get(const CT_Vector *v, size_t idx) {
   return NULL;
 }
 
-CT_VectorIter ct_vector_iter_init(CT_Vector *v, int reverse) {
+CT_VectorIter *ct_vector_iter_new(CT_Vector *v, int reverse) {
+  CT_VectorIter *i = malloc(sizeof(CT_VectorIter));
+  CT_CHECK_MEM(v);
   uint8_t *end = &v->buffer[v->num * v->stride];
-  // clang-format off
-  CT_VectorIter i = {.curr   = reverse ? end - v->stride : v->buffer,
-                     .start  = v->buffer,
-                     .end    = end,
-                     .stride = v->stride};
-  // clang-format on
+  if (reverse) {
+    i->curr   = end - v->stride;
+    i->start  = i->curr;
+    i->end    = v->buffer;
+    i->stride = -v->stride;
+  } else {
+    i->curr   = v->buffer;
+    i->start  = v->buffer;
+    i->end    = end;
+    i->stride = v->stride;
+  }
+fail:
   return i;
 }
 
+void ct_vector_iter_free(CT_VectorIter *i) {
+  free(i);
+}
+
+void *ct_vector_iter_get(CT_VectorIter *i) {
+  if (i->stride > 0) {
+    if (i->curr < i->start || i->curr >= i->end) {
+      return NULL;
+    }
+  } else {
+    if (i->curr > i->start || i->curr < i->end) {
+      return NULL;
+    }
+  }
+  return i->curr;
+}
+
 void *ct_vector_iter_next(CT_VectorIter *i) {
-  if (i->curr >= i->end) {
-    return NULL;
+  if (i->stride > 0) {
+    if (i->curr >= i->end) {  // fwd
+      return NULL;
+    }
+  } else {
+    if (i->curr < i->end) {  // rev
+      return NULL;
+    }
   }
   void *p = i->curr;
   i->curr += i->stride;
@@ -75,10 +124,16 @@ void *ct_vector_iter_next(CT_VectorIter *i) {
 }
 
 void *ct_vector_iter_prev(CT_VectorIter *i) {
-  if (i->curr < i->start) {
-    return NULL;
+  if (i->stride > 0) {
+    if (i->curr <= i->start) {  // fwd
+      return NULL;
+    }
+  } else {
+    if (i->curr >= i->start) {  // rev
+      return NULL;
+    }
   }
-  void *p = i->curr;
   i->curr -= i->stride;
+  void *p = i->curr;
   return p;
 }
