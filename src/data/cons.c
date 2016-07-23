@@ -1,5 +1,3 @@
-#include <stdlib.h>
-
 #include "data/cons.h"
 
 typedef struct {

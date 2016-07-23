@@ -1,3 +1,5 @@
+#pragma once
+
 #include "cthing.h"
 
 #ifndef CT_VECTOR_GROWTH_MIN

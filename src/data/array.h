@@ -1,5 +1,3 @@
-#include <stdint.h>
-
 #include "cthing.h"
 
 float *ct_array_add2_f32(const float *a,

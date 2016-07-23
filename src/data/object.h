@@ -1,10 +1,9 @@
 #pragma once
 
-#include <stddef.h>
-#include <stdint.h>
 #include <stdio.h>
 
 #include "cthing.h"
+
 #include "mem/ref.h"
 
 #ifdef CT_FEATURE_SSE

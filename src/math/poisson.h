@@ -1,8 +1,7 @@
 #pragma once
 
-#include <stddef.h>
-
 #include "cthing.h"
+
 #include "data/quadtree.h"
 #include "geom/circle.h"
 #include "math/vec.h"

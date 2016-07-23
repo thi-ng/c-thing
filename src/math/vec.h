@@ -10,10 +10,9 @@
   }
 
 #include <math.h>
-#include <stddef.h>
-#include <stdint.h>
 
 #include "cthing.h"
+
 #include "math/hashfn.h"
 #include "math/math.h"
 #include "mem/mpool.h"

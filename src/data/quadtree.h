@@ -1,8 +1,7 @@
 #pragma once
 
-#include <stddef.h>
-
 #include "cthing.h"
+
 #include "data/tree.h"
 #include "geom/rect.h"
 #include "math/vec.h"

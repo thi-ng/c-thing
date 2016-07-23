@@ -1,5 +1,3 @@
-#include <stdlib.h>
-
 #include "data/octree.h"
 
 ct_inline size_t child_index(const CT_OTNode *node, const CT_Vec3f *p) {

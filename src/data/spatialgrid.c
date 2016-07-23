@@ -1,6 +1,3 @@
-#include <stddef.h>
-#include <stdlib.h>
-
 #include "data/spatialgrid.h"
 #include "math/vec.h"
 #include "mem/mem.h"

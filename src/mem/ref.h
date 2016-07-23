@@ -1,8 +1,7 @@
 #pragma once
 
-#include <stddef.h>
-
 #include "cthing.h"
+
 #include "mem/mem.h"
 
 CT_BEGIN_DECLS

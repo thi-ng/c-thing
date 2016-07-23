@@ -1,9 +1,6 @@
 #pragma once
 
 #include <math.h>
-#include <stddef.h>
-#include <stdint.h>
-#include <stdlib.h>
 
 #include "cthing.h"
 

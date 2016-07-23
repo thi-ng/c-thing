@@ -1,5 +1,3 @@
-#include <stdlib.h>
-
 #include "data/quadtree.h"
 
 ct_inline size_t child_index(const CT_QTNode *node, const CT_Vec2f *p) {

@@ -1,5 +1,3 @@
-#include <stdlib.h>
-
 #include "geom/quadedge.h"
 
 ct_export CT_QuadEdgeRef ct_qedge() {

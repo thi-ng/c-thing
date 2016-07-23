@@ -61,11 +61,14 @@
 #define CT_POOLSIZE_CONSRC 0x1000
 #endif
 
+#include <errno.h>
+#include <stddef.h>
+#include <stdint.h>
+#include <stdlib.h>
+#include <time.h>
+
 ////////////////////////////////////////////////////////////
 // based on: http://c.learncodethehardway.org/book/ex20.html
-
-#include <errno.h>
-#include <time.h>
 
 #if defined(CT_FEATURE_CHECKS) || defined(CT_FEATURE_LOG)
 #include <stdio.h>

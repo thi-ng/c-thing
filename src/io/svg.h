@@ -1,9 +1,9 @@
 #pragma once
 
-#include <stddef.h>
 #include <stdio.h>
 
 #include "cthing.h"
+
 #include "data/hashtable.h"
 #include "math/vec.h"
 
