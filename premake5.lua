@@ -33,7 +33,7 @@ flags { "FatalWarnings", "LinkTimeOptimization" }
 project "test_asan"
 kind "ConsoleApp"
 files { "src/test/**.c", "test/**.c" }
-defines { "CT_FEATURE_ANSI" }
+defines { "CT_FEATURE_ANSI", "CT_FEATURE_CHECKS", "CT_FEATURE_CHECK_MEM" }
 links "lib"
 dependson "lib"
 flags { "FatalWarnings" }
