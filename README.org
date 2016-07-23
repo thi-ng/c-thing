@@ -41,6 +41,7 @@ WIP
 - [[./src/data/octree.h][Octree]]
 - [[./src/data/quadtree.h][Quadtree]]
 - [[./src/data/spatialgrid.h][Spatial grid]] (1D, 2D, 3D)
+- [[./src/data/soa.h][Structure of Array]] (SOA) wrapper & vector ops (SSE, AVX & serial)
 
 *** Memory management
 
