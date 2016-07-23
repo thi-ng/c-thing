@@ -12,6 +12,7 @@ extern int test_convex_hull();
 extern int test_mat4();
 extern int test_circle();
 extern int test_qedge();
+extern int test_vector();
 extern int test_cons();
 extern int test_consrc();
 extern int test_consrc2();
@@ -75,6 +76,7 @@ int all_tests() {
   CT_RUN_TEST(test_mat4);
   CT_RUN_TEST(test_circle);
   CT_RUN_TEST(test_qedge);
+  CT_RUN_TEST(test_vector);
   CT_RUN_TEST(test_cons);
   CT_RUN_TEST(test_consrc);
   CT_RUN_TEST(test_consrc2);
