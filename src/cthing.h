@@ -23,6 +23,10 @@
 #define CT_FEATURE_SSE4 1
 #endif
 
+#if defined(CT_FEATURE_SSE) && defined(__AVX__)
+#define CT_FEATURE_AVX 1
+#endif
+
 #ifdef CT_FEATURE_ANSI
 #define CT_ANSI_RED "\x1b[31;1m"
 #define CT_ANSI_GREEN "\x1b[32;1m"

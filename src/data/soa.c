@@ -1,124 +1,95 @@
 #include "data/soa.h"
 
-#include <stdio.h>
-
-#ifdef CT_FEATURE_SSE
-
-CT_SOA_PROLOGUE1(add1) {
+CT_SOA_PROLOGUE2_SCALAR(add1f) {
   aa[j] += bb;
 }
-CT_SOA_EPILOGUE;
+CT_SOA_EPILOGUE_IMM;
 
-CT_SOA_PROLOGUE1(sub1) {
+CT_SOA_PROLOGUE2_SCALAR(sub1f) {
   aa[j] -= bb;
 }
-CT_SOA_EPILOGUE;
+CT_SOA_EPILOGUE_IMM;
 
-CT_SOA_PROLOGUE1(mul1) {
+CT_SOA_PROLOGUE2_SCALAR(mul1f) {
   aa[j] *= bb;
 }
-CT_SOA_EPILOGUE;
+CT_SOA_EPILOGUE_IMM;
 
-CT_SOA_PROLOGUE1(div1) {
+CT_SOA_PROLOGUE2_SCALAR(div1f) {
   aa[j] /= bb;
 }
-CT_SOA_EPILOGUE;
+CT_SOA_EPILOGUE_IMM;
+
+CT_SOA_PROLOGUE2_FPTR(add1fp) {
+  aa[j] += bb;
+}
+CT_SOA_EPILOGUE_IMM;
+
+CT_SOA_PROLOGUE2_FPTR(sub1fp) {
+  aa[j] -= bb;
+}
+CT_SOA_EPILOGUE_IMM;
+
+CT_SOA_PROLOGUE2_FPTR(mul1fp) {
+  aa[j] *= bb;
+}
+CT_SOA_EPILOGUE_IMM;
+
+CT_SOA_PROLOGUE2_FPTR(div1fp) {
+  aa[j] /= bb;
+}
+CT_SOA_EPILOGUE_IMM;
 
 CT_SOA_PROLOGUE2(add) {
   aa[j] += bb[j];
 }
-CT_SOA_EPILOGUE;
+CT_SOA_EPILOGUE_IMM;
 
 CT_SOA_PROLOGUE2(sub) {
   aa[j] -= bb[j];
 }
-CT_SOA_EPILOGUE;
+CT_SOA_EPILOGUE_IMM;
 
 CT_SOA_PROLOGUE2(mul) {
   aa[j] *= bb[j];
 }
-CT_SOA_EPILOGUE;
+CT_SOA_EPILOGUE_IMM;
 
 CT_SOA_PROLOGUE2(div) {
   aa[j] /= bb[j];
 }
-CT_SOA_EPILOGUE;
+CT_SOA_EPILOGUE_IMM;
 
-float *ct_soa_dot2(const CT_SOA *a, const CT_SOA *b, float *o) {
-  CT_CHECK(a->width == b->width == 2 && a->num == b->num,
-           "a & b dims not same");
-  __m128 *ax  = (__m128 *)a->comps[0];
-  __m128 *ay  = (__m128 *)a->comps[1];
-  __m128 *bx  = (__m128 *)b->comps[0];
-  __m128 *by  = (__m128 *)b->comps[1];
-  __m128 *out = (__m128 *)o;
-  for (size_t i = 0, n = a->num >> 2; i < n; i++) {
-    out[i] = ax[i] * bx[i] + ay[i] * by[i];
+CT_SOA2_PROLOGUE3(dot2) {
+  out[i] = ax[i] * bx[i] + ay[i] * by[i];
+}
+CT_SOA_EPILOGUE3;
+
+CT_SOA3_PROLOGUE3(dot3) {
+  out[i] = ax[i] * bx[i] + ay[i] * by[i] + az[i] * bz[i];
+}
+CT_SOA_EPILOGUE3;
+
+CT_SOA2_PROLOGUE3(dist2) {
+  ct_soa_vec dx = ax[i] - bx[i];
+  ct_soa_vec dy = ay[i] - by[i];
+  out[i]        = CT_SOA_SQRT(dx * dx + dy * dy);
+}
+CT_SOA_EPILOGUE3;
+
+CT_SOA *ct_soa_normalize2f_imm(CT_SOA *a, float len) {
+  size_t n       = a->num >> CT_SOA_WORD_SHIFT;
+  ct_soa_vec *ax = (ct_soa_vec *)a->comps[0];
+  ct_soa_vec *ay = (ct_soa_vec *)a->comps[1];
+  ct_soa_vec ll  = CT_SOA_SET1(len);
+  for (size_t i = 0; i < n; i++) {
+    ct_soa_vec x = ax[i];
+    ct_soa_vec y = ay[i];
+    ct_soa_vec l = ll * CT_SOA_RSQRT(x * x + y * y);
+    ax[i]        = x * l;
+    ay[i]        = y * l;
   }
-  return o;
+  return a;
+fail:
+  return NULL;
 }
-
-float *ct_soa_dot3(const CT_SOA *a, const CT_SOA *b, float *o) {
-  CT_CHECK(a->width == b->width == 3 && a->num == b->num,
-           "a & b dims not same");
-  __m128 *ax  = (__m128 *)a->comps[0];
-  __m128 *ay  = (__m128 *)a->comps[1];
-  __m128 *bx  = (__m128 *)b->comps[0];
-  __m128 *by  = (__m128 *)b->comps[1];
-  __m128 *out = (__m128 *)o;
-  for (size_t i = 0, n = a->num >> 2; i < n; i++) {
-    out[i] = ax[i] * bx[i] + ay[i] * by[i];
-  }
-  return o;
-}
-
-float *ct_soa_dist2(const CT_SOA *a, const CT_SOA *b, float *o) {
-  CT_CHECK(a->width == b->width && a->num == b->num, "a & b dims not same");
-  __m128 *ax  = (__m128 *)a->comps[0];
-  __m128 *ay  = (__m128 *)a->comps[1];
-  __m128 *bx  = (__m128 *)b->comps[0];
-  __m128 *by  = (__m128 *)b->comps[1];
-  __m128 *out = (__m128 *)o;
-  for (size_t i = 0, n = a->num >> 2; i < n; i++) {
-    __m128 dx = ax[i] - bx[i];
-    __m128 dy = ay[i] * by[i];
-    out[i]    = _mm_sqrt_ps(dx * dx + dy * dy);
-  }
-  return o;
-}
-
-#else  // NO SSE
-
-CT_SOA_PROLOGUE2(add) {
-  aa[j] += bb[j];
-  aa[j + 1] += bb[j + 1];
-  aa[j + 2] += bb[j + 2];
-  aa[j + 3] += bb[j + 3];
-}
-CT_SOA_EPILOGUE;
-
-CT_SOA_PROLOGUE2(sub) {
-  aa[j] -= bb[j];
-  aa[j + 1] -= bb[j + 1];
-  aa[j + 2] -= bb[j + 2];
-  aa[j + 3] -= bb[j + 3];
-}
-CT_SOA_EPILOGUE;
-
-CT_SOA_PROLOGUE2(mul) {
-  aa[j] *= bb[j];
-  aa[j + 1] *= bb[j + 1];
-  aa[j + 2] *= bb[j + 2];
-  aa[j + 3] *= bb[j + 3];
-}
-CT_SOA_EPILOGUE;
-
-CT_SOA_PROLOGUE2(div) {
-  aa[j] *= bb[j];
-  aa[j + 1] *= bb[j + 1];
-  aa[j + 2] *= bb[j + 2];
-  aa[j + 3] *= bb[j + 3];
-}
-CT_SOA_EPILOGUE;
-
-#endif
