@@ -1,35 +1,31 @@
 #include "data/vector.h"
 #include "math/math.h"
 
-struct CT_Vector {
-  uint8_t *buffer;
-  size_t num;
-  size_t limit;
-  int32_t stride;
-};
-
-struct CT_VectorIter {
-  uint8_t *curr;
-  uint8_t *end;
-  uint8_t *start;
-  int32_t stride;
-};
-
-CT_Vector *ct_vector_new(size_t limit, int32_t stride) {
-  CT_CHECK(stride > 0, "stride must be > 0");
-  CT_Vector *v = malloc(sizeof(CT_Vector));
+CT_Vector *ct_vector_new(size_t limit, int32_t stride, CT_MPool *pool) {
+  CT_Vector *v = CT_MP_ALLOC(pool, CT_Vector);
   CT_CHECK_MEM(v);
+  if (!ct_vector_init(v, limit, stride)) {
+    return v;
+  }
+  CT_MP_FREE(pool, v);
+fail:
+  return NULL;
+}
+
+int ct_vector_init(CT_Vector *v, size_t limit, int32_t stride) {
+  CT_CHECK(stride > 0, "stride must be > 0");
   v->buffer = calloc(limit, stride);
+  CT_CHECK_MEM(v->buffer);
   v->num    = 0;
   v->limit  = limit;
   v->stride = stride;
+  return 0;
 fail:
-  return v;
+  return 1;
 }
 
-void ct_vector_free(CT_Vector *v) {
+void ct_vector_free(CT_Vector *v, CT_MPool *pool) {
   free(v->buffer);
-  free(v);
 }
 
 size_t ct_vector_size(const CT_Vector *v) {
@@ -72,9 +68,22 @@ void *ct_vector_get(const CT_Vector *v, size_t idx) {
   return NULL;
 }
 
-CT_VectorIter *ct_vector_iter_new(CT_Vector *v, int reverse) {
-  CT_VectorIter *i = malloc(sizeof(CT_VectorIter));
-  CT_CHECK_MEM(v);
+CT_VectorIter *ct_vector_iter_new(const CT_Vector *v,
+                                  int reverse,
+                                  CT_MPool *pool) {
+  CT_CHECK(v, "vector is NULL");
+  CT_VectorIter *i = CT_MP_ALLOC(pool, CT_VectorIter);
+  CT_CHECK_MEM(i);
+  if (!ct_vector_iter_init(i, v, reverse)) {
+    return i;
+  }
+  CT_MP_FREE(pool, i);
+fail:
+  return NULL;
+}
+
+int ct_vector_iter_init(CT_VectorIter *i, const CT_Vector *v, int reverse) {
+  CT_CHECK(v, "vector is NULL");
   uint8_t *end = &v->buffer[v->num * v->stride];
   if (reverse) {
     i->curr   = end - v->stride;
@@ -87,12 +96,9 @@ CT_VectorIter *ct_vector_iter_new(CT_Vector *v, int reverse) {
     i->end    = end;
     i->stride = v->stride;
   }
+  return 0;
 fail:
-  return i;
-}
-
-void ct_vector_iter_free(CT_VectorIter *i) {
-  free(i);
+  return 1;
 }
 
 void *ct_vector_iter_get(CT_VectorIter *i) {
