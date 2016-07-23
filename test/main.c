@@ -49,6 +49,9 @@ int all_tests() {
 #ifdef CT_FEATURE_CHECKS
   CT_INFO("using checks...");
 #endif
+#ifdef CT_FEATURE_CHECK_MEM
+  CT_INFO("using mem checks...");
+#endif
 #ifdef CT_FEATURE_TRACE_MPOOL
   CT_INFO("tracing mpool...");
 #endif

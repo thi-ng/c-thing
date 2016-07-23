@@ -118,8 +118,7 @@ int test_hashtable_char() {
 }
 
 int test_hashtable_vec() {
-  CT_MPool vpool;
-  CT_IS(!ct_mpool_init(&vpool, 16, sizeof(CT_Vec3f)), "init vpool");
+  CT_DEF_MPOOL(vpool, 16, CT_Vec3f);
   CT_Hashtable t, t2;
   CT_HTOps ops = {.hash      = ct_murmur3_32,
                   .alloc_key = ht_alloc_mpool,
@@ -145,6 +144,8 @@ int test_hashtable_vec() {
   ct_ht_free(&t2);
   ct_mpool_free(&vpool);
   return 0;
+fail:
+  return 1;
 }
 
 int test_hashtable_edge() {
@@ -176,12 +177,11 @@ ct_export int bench_hashtable() {
   for (size_t k = 0; k < 20; k++) {
     clock_t begin = clock();
     CT_Hashtable t;
-    CT_MPool vpool;
     CT_HTOps ops = {.hash = ct_murmur3_32};
     uint32_t num = 1e6;
     char *a      = "a";
     CT_IS(!ct_ht_init(&t, &ops, num, 0x10000, CT_HT_CONST_ALL), "init ht");
-    CT_IS(!ct_mpool_init(&vpool, num, sizeof(CT_Vec3f)), "init vpool");
+    CT_DEF_MPOOL(vpool, num, CT_Vec3f);
     for (size_t i = 0; i < num; i++) {
       ct_ht_assoc(&t, ct_vec3f(ct_rand_norm() * 1000, ct_rand_norm() * 1000,
                                ct_rand_norm() * 1000, &vpool),
@@ -199,4 +199,6 @@ ct_export int bench_hashtable() {
             (double)(t2 - begin) * tscale, (double)(t3 - begin) * tscale);
   }
   return 0;
+fail:
+  return 1;
 }

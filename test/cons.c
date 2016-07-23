@@ -59,8 +59,7 @@ int test_cons() {
   ct_cons_iterate(c, trace_cons, NULL);
   ct_cons_free_all(c, NULL, NULL, NULL);
 
-  CT_MPool pool;
-  ct_mpool_init(&pool, 256, sizeof(CT_Cons));
+  CT_DEF_MPOOL(pool, 256, CT_Cons);
   c = ct_cons("CCC", ct_cons("BBB", ct_cons("AAA", NULL, &pool), &pool), &pool);
 
   ct_cons_iterate(c, count_cons, reset_state(&cs, NULL));
@@ -95,4 +94,6 @@ int test_cons() {
 
   ct_mpool_free(&pool);
   return 0;
+fail:
+  return 1;
 }

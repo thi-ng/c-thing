@@ -50,10 +50,12 @@ static void print_isec_results(struct isec_t *isec) {
 int test_quadtree() {
   CT_INFO("CT_Quadtree size: %zu", sizeof(CT_Quadtree));
   CT_INFO("CT_QTNode size: %zu", sizeof(CT_QTNode));
+
   CT_Quadtree t;
-  CT_MPool vpool;
   ct_qtree_init(&t, 0, 0, 100, 100, 0x10000);
-  ct_mpool_init(&vpool, 0x10000, sizeof(CT_Vec2f));
+
+  CT_DEF_MPOOL(vpool, 0x10000, CT_Vec2f);
+
   CT_Vec2f *a  = ct_vec2f(10, 10, &vpool);
   CT_Vec2f *b  = ct_vec2f(10, 11, &vpool);
   CT_Vec2f *b2 = ct_vec2f(10.1, 11, &vpool);
@@ -98,7 +100,8 @@ int test_quadtree() {
   CT_INFO("%f,%f -> %f, %f, %zu", bounds.min.x, bounds.min.y, bounds.max.x,
           bounds.max.y, bounds.num);
   ct_mpool_free(&vpool);
-  //ct_mpool_trace(&t.pool);
   ct_qtree_free(&t);
   return 0;
+fail:
+  return 1;
 }

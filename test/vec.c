@@ -16,8 +16,7 @@ CT_TEST_DECLS
         (float)(yy), (float)(zz));
 
 int test_vec2f() {
-  CT_MPool pool;
-  CT_IS(!ct_mpool_init(&pool, 16, sizeof(CT_Vec2f)), "can't init mpool");
+  CT_DEF_MPOOL(pool, 16, CT_Vec2f);
   CT_Vec2f *a = ct_vec2f(1, 2, &pool);
   CT_Vec2f *b = ct_add2fn(a, 10, CT_MP_ALLOC(&pool, CT_Vec2f));
   ASSERT_VEC2F(b, 11, 12);
@@ -52,11 +51,12 @@ int test_vec2f() {
   CT_IS(1 == ct_compare2fv_xy(c, a), "c > a");
   ct_mpool_free(&pool);
   return 0;
+fail:
+  return 1;
 }
 
 int test_vec3f() {
-  CT_MPool pool;
-  CT_IS(!ct_mpool_init(&pool, 16, sizeof(CT_Vec3f)), "can't init mpool");
+  CT_DEF_MPOOL(pool, 16, CT_Vec3f);
   CT_Vec3f *a = ct_vec3f(1, 2, 3, &pool);
   CT_Vec3f *b = ct_add3fn(a, 10, CT_MP_ALLOC(&pool, CT_Vec3f));
   ASSERT_VEC3F(b, 11, 12, 13);
@@ -101,6 +101,8 @@ int test_vec3f() {
   //bench_sse(a, b);
   ct_mpool_free(&pool);
   return 0;
+fail:
+  return 1;
 }
 
 int test_swizzle() {
@@ -211,8 +213,7 @@ ct_export void bench_sse(CT_Vec3f *a, CT_Vec3f *b) {
 
 int bench_vec3_create() {
   uint32_t num = 1e6;
-  CT_MPool vpool;
-  CT_IS(!ct_mpool_init(&vpool, num, sizeof(CT_Vec3f)), "init vpool");
+  CT_DEF_MPOOL(vpool, num, CT_Vec3f);
   for (size_t i = 0; i < num; i++) {
     //ct_vec3f(ct_rand_norm() * 1000, ct_rand_norm() * 1000,
     //         ct_rand_norm() * 1000, &vpool);
@@ -221,4 +222,6 @@ int bench_vec3_create() {
   }
   ct_mpool_free(&vpool);
   return 0;
+fail:
+  return 1;
 }

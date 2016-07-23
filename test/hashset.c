@@ -105,8 +105,7 @@ int test_hashset_char() {
 }
 
 int test_hashset_vec() {
-  CT_MPool vpool;
-  CT_IS(!ct_mpool_init(&vpool, 16, sizeof(CT_Vec3f)), "init vpool");
+  CT_DEF_MPOOL(vpool, 16, CT_Vec3f);
   CT_Hashset s, s2;
   CT_HSOps ops = {.hash      = ct_murmur3_32,
                   .alloc_key = hs_alloc_mpool,
@@ -130,6 +129,8 @@ int test_hashset_vec() {
   ct_hs_free(&s2);
   ct_mpool_free(&vpool);
   return 0;
+fail:
+  return 1;
 }
 
 int test_hashset_edge() {
@@ -160,11 +161,10 @@ int bench_hashset() {
   for (size_t k = 0; k < 20; k++) {
     clock_t begin = clock();
     CT_Hashset s;
-    CT_MPool vpool;
     CT_HSOps ops = {.hash = ct_murmur3_32};
     uint32_t num = 1e6;
     CT_IS(!ct_hs_init(&s, &ops, num, 0x10000, CT_HS_CONST_KEYS), "init hs");
-    CT_IS(!ct_mpool_init(&vpool, num, sizeof(CT_Vec3f)), "init vpool");
+    CT_DEF_MPOOL(vpool, num, CT_Vec3f);
     for (size_t i = 0; i < num; i++) {
       ct_hs_assoc(&s, ct_vec3f(ct_rand_norm() * 1000, ct_rand_norm() * 1000,
                                ct_rand_norm() * 1000, &vpool),
@@ -182,4 +182,6 @@ int bench_hashset() {
             (double)(t2 - begin) * tscale, (double)(t3 - begin) * tscale);
   }
   return 0;
+fail:
+  return 1;
 }

@@ -8,6 +8,13 @@
 #define CT_MP_FREE(pool, ptr) \
   ((pool) != NULL ? ct_mpool_free_block(pool, (ptr)) : free(ptr))
 
+#define CT_DEF_MPOOL(name, num, type)                \
+  CT_MPool name;                                     \
+  if (ct_mpool_init(&(name), (num), sizeof(type))) { \
+    CT_ERROR("out of memory (mpool)");               \
+    goto fail;                                       \
+  }
+
 CT_BEGIN_DECLS
 
 typedef struct CT_MPoolFreeList CT_MPoolFreeList;

@@ -20,10 +20,12 @@ int ct_octree_bounds(const CT_OTNode *node, void *state) {
 int test_octree() {
   CT_INFO("CT_Octree size: %zu", sizeof(CT_Octree));
   CT_INFO("CT_OTNode size: %zu", sizeof(CT_OTNode));
+
   CT_Octree t;
-  CT_MPool vpool;
   ct_octree_init(&t, 0, 0, 0, 100, 100, 100, 0x10000);
-  ct_mpool_init(&vpool, 0x10000, sizeof(CT_Vec3f));
+
+  CT_DEF_MPOOL(vpool, 0x10000, CT_Vec3f);
+
   CT_Vec3f *a  = ct_vec3f(10, 10, 10, &vpool);
   CT_Vec3f *b  = ct_vec3f(10, 11, 10, &vpool);
   CT_Vec3f *b2 = ct_vec3f(10.1, 11, 10, &vpool);
@@ -57,9 +59,9 @@ int test_octree() {
   CT_IS(num == bounds.num, "wrong leaf count: %zu", bounds.num);
   CT_INFO("%f,%f,%f -> %f,%f,%f %zu", bounds.min.x, bounds.min.y, bounds.min.z,
           bounds.max.x, bounds.max.y, bounds.max.z, bounds.num);
-  //ct_octree_trace(&t);
   ct_mpool_free(&vpool);
-  //ct_mpool_trace(&t.pool);
   ct_octree_free(&t);
   return 0;
+fail:
+  return 1;
 }
