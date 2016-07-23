@@ -7,6 +7,7 @@ extern int test_vec2f();
 extern int test_vec3f();
 extern int test_vec4f();
 extern int test_swizzle();
+extern int test_soa();
 extern int test_vec_hash();
 extern int test_convex_hull();
 extern int test_mat4();
@@ -74,6 +75,7 @@ int all_tests() {
   CT_RUN_TEST(test_vec3f);
   CT_RUN_TEST(test_vec4f);
   CT_RUN_TEST(test_swizzle);
+  CT_RUN_TEST(test_soa);
   CT_RUN_TEST(test_vec_hash);
   CT_RUN_TEST(test_convex_hull);
   CT_RUN_TEST(test_mat4);
