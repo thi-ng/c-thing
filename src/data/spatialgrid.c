@@ -51,7 +51,7 @@ ct_export int ct_spgrid_init(CT_SpatialGrid *grid,
   grid->dims     = dims;
   grid->find_cell =
       dims == 1 ? find_cell1d : dims == 2 ? find_cell2d : find_cell3d;
-  if (!ct_mpool_init(&grid->pool, MAX(numCells >> 1, poolSize),
+  if (!ct_mpool_init(&grid->pool, CT_MAX(numCells >> 1, poolSize),
                      sizeof(CT_SPCell))) {
     grid->cells = calloc(numCells, sizeof(CT_SPCell *));
     CT_CHECK_MEM(grid);
@@ -162,8 +162,8 @@ ct_export size_t ct_spgrid_select1d(const CT_SpatialGrid *grid,
   float x2 = p + eps;
   int s    = find_cell_idx(grid, &x1, 0);
   int tex  = find_cell_idx(grid, &x2, 0);
-  s        = MAX(s, 0);
-  MIN_LET(int, tex, tex, grid->size[0] - 1);
+  s        = CT_MAX(s, 0);
+  tex      = ct_mini(tex, grid->size[0] - 1);
   CT_DEBUG("select range: %d,%d", s, tex);
   while (s <= tex) {
     CT_SPCell *cell = grid->cells[s];
@@ -197,10 +197,10 @@ ct_export size_t ct_spgrid_select2d(const CT_SpatialGrid *grid,
   int ex = find_cell_idx(grid, (float *)&b, 0);
   int sy = find_cell_idx(grid, (float *)&a, 1);
   int ey = find_cell_idx(grid, (float *)&b, 1);
-  sx     = MAX(sx, 0);
-  sy     = MAX(sy, 0);
-  MIN_LET(int, ex, ex, grid->size[0] - 1);
-  MIN_LET(int, ey, ey, grid->size[1] - 1);
+  sx     = CT_MAX(sx, 0);
+  sy     = CT_MAX(sy, 0);
+  ex     = ct_mini(ex, grid->size[0] - 1);
+  ey     = ct_mini(ey, grid->size[1] - 1);
   CT_DEBUG("select range: [%d,%d] - [%d,%d]", sx, sy, ex, ey);
   const size_t stride = grid->stride[0];
   while (sy <= ey) {
@@ -250,12 +250,12 @@ ct_export size_t ct_spgrid_select3d(const CT_SpatialGrid *grid,
   int ex = find_cell_idx(grid, (float *)&b, 0);
   int ey = find_cell_idx(grid, (float *)&b, 1);
   int ez = find_cell_idx(grid, (float *)&b, 2);
-  sx     = MAX(sx, 0);
-  sy     = MAX(sy, 0);
-  sz     = MAX(sz, 0);
-  MIN_LET(int, ex, ex, grid->size[0] - 1);
-  MIN_LET(int, ey, ey, grid->size[1] - 1);
-  MIN_LET(int, ez, ez, grid->size[2] - 1);
+  sx     = CT_MAX(sx, 0);
+  sy     = CT_MAX(sy, 0);
+  sz     = CT_MAX(sz, 0);
+  ex     = ct_mini(ex, grid->size[0] - 1);
+  ey     = ct_mini(ey, grid->size[1] - 1);
+  ez     = ct_mini(ez, grid->size[2] - 1);
   CT_DEBUG("select range: [%d,%d,%d] - [%d,%d,%d]", sx, sy, sz, ex, ey, ez);
   const size_t stridex = grid->stride[0];
   const size_t stridey = grid->stride[1];

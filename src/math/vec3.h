@@ -105,16 +105,16 @@ ct_export ct_inline float ct_magsq3f(const CT_Vec3f *v) {
 }
 
 ct_export ct_inline CT_Vec3f *ct_max3fv_imm(CT_Vec3f *a, CT_Vec3f *b) {
-  a->x = MAX(a->x, b->x);
-  a->y = MAX(a->y, b->y);
-  a->z = MAX(a->z, b->z);
+  a->x = CT_MAX(a->x, b->x);
+  a->y = CT_MAX(a->y, b->y);
+  a->z = CT_MAX(a->z, b->z);
   return a;
 }
 
 ct_export ct_inline CT_Vec3f *ct_min3fv_imm(CT_Vec3f *a, CT_Vec3f *b) {
-  a->x = MIN(a->x, b->x);
-  a->y = MIN(a->y, b->y);
-  a->z = MIN(a->z, b->z);
+  a->x = CT_MIN(a->x, b->x);
+  a->y = CT_MIN(a->y, b->y);
+  a->z = CT_MIN(a->z, b->z);
   return a;
 }
 

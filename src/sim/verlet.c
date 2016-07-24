@@ -496,8 +496,8 @@ ct_export void ct_verlet_set_spring2d(CT_Verlet *v,
   s->b           = b << 1;
   s->restLen     = len;
   s->strength    = strength;
-  CT_INFO("add spring2d: %zu, a: %zu, b: %zu, rl: %f, str: %f", i, a, b, len,
-          strength);
+  CT_DEBUG("add spring2d: %zu, a: %zu, b: %zu, rl: %f, str: %f", i, a, b, len,
+           strength);
 }
 
 ct_export void ct_verlet_set_spring3d(CT_Verlet *v,
@@ -511,6 +511,6 @@ ct_export void ct_verlet_set_spring3d(CT_Verlet *v,
   s->b           = b << 2;
   s->restLen     = len;
   s->strength    = strength;
-  CT_INFO("add spring3d: %zu, a: %zu, b: %zu, rl: %f, str: %f", i, a, b, len,
-          strength);
+  CT_DEBUG("add spring3d: %zu, a: %zu, b: %zu, rl: %f, str: %f", i, a, b, len,
+           strength);
 }

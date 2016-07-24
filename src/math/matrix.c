@@ -140,25 +140,12 @@ ct_export CT_Mat4f *ct_mat4f_set_identity(CT_Mat4f *m) {
 }
 
 ct_export CT_Mat4f *ct_mat4f_transpose_imm(CT_Mat4f *m) {
-  float t;
-  t      = m->m01;
-  m->m01 = m->m10;
-  m->m10 = t;
-  t      = m->m02;
-  m->m02 = m->m20;
-  m->m20 = t;
-  t      = m->m03;
-  m->m03 = m->m30;
-  m->m30 = t;
-  t      = m->m12;
-  m->m12 = m->m21;
-  m->m21 = t;
-  t      = m->m13;
-  m->m13 = m->m31;
-  m->m31 = t;
-  t      = m->m23;
-  m->m23 = m->m32;
-  m->m32 = t;
+  SWAP(float, m->m01, m->m10);
+  SWAP(float, m->m02, m->m20);
+  SWAP(float, m->m03, m->m30);
+  SWAP(float, m->m12, m->m21);
+  SWAP(float, m->m13, m->m31);
+  SWAP(float, m->m23, m->m32);
   return m;
 }
 
@@ -394,7 +381,7 @@ ct_export CT_Mat4f *ct_mat4f_set_perspective(CT_Mat4f *m,
                                              float aspect,
                                              float near,
                                              float far) {
-  float f  = 1.0f / tanf(0.5 * fovy * RADIANS);
+  float f  = 1.0f / tanf(0.5 * fovy * CT_RADIANS);
   float nf = 1.0f / (near - far);
   m->m01 = m->m02 = m->m03 = 0;
   m->m10 = m->m12 = m->m13 = 0;

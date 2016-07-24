@@ -162,7 +162,7 @@ int ct_polygon2f_init(CT_Polygon2f *poly, CT_Vec2f *points, size_t num) {
   poly->firstIsec = NULL;
   poly->lastProc  = NULL;
   poly->num       = 0;
-  if (!ct_mpool_init(&poly->pool, MAX(num, 16), sizeof(CT_PolyVertex))) {
+  if (!ct_mpool_init(&poly->pool, CT_MAX(num, 16), sizeof(CT_PolyVertex))) {
     if (points) {
       for (size_t i = 0; i < num; i++) {
         ct_polygon2f_add_vertex(poly, &points[i]);
@@ -335,13 +335,13 @@ static CT_Cons *create_arc(CT_PolyOffsetContext *ctx,
   float ta = atan2f(a->y - c->y, a->x - c->x);
   float tb = atan2f(b->y - c->y, b->x - c->x);
   if (ta < 0) {
-    ta += TAU;
+    ta += CT_TAU;
   }
   if (tb < 0) {
-    tb += TAU;
+    tb += CT_TAU;
   }
-  float theta = (ta > tb) ? (ta - tb) : (ta + TAU - tb);
-  float ts    = (outwards ? -theta : TAU - theta) / ctx->res;
+  float theta = (ta > tb) ? (ta - tb) : (ta + CT_TAU - tb);
+  float ts    = (outwards ? -theta : CT_TAU - theta) / ctx->res;
   for (size_t i = 1; i < ctx->res; i++) {
     CT_Vec2f *v = ct_mpool_alloc(&ctx->vpool);
     ct_add2fv_imm(ct_cartesian2f_imm(ct_set2fxy(v, radius, ta + ts * i)), c);

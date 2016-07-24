@@ -213,14 +213,14 @@ ct_export ct_inline float ct_mag2f(const CT_Vec2f *v) {
 }
 
 ct_export ct_inline CT_Vec2f *ct_max2fv_imm(CT_Vec2f *a, const CT_Vec2f *b) {
-  a->x = MAX(a->x, b->x);
-  a->y = MAX(a->y, b->y);
+  a->x = CT_MAX(a->x, b->x);
+  a->y = CT_MAX(a->y, b->y);
   return a;
 }
 
 ct_export ct_inline CT_Vec2f *ct_min2fv_imm(CT_Vec2f *a, const CT_Vec2f *b) {
-  a->x = MIN(a->x, b->x);
-  a->y = MIN(a->y, b->y);
+  a->x = CT_MIN(a->x, b->x);
+  a->y = CT_MIN(a->y, b->y);
   return a;
 }
 
@@ -304,7 +304,7 @@ ct_export ct_inline CT_Vec2f *ct_cartesian2f(const CT_Vec2f *v, CT_Vec2f *out) {
 
 ct_export ct_inline CT_Vec2f *ct_polar2f_imm(CT_Vec2f *v) {
   float x = ct_mag2f(v);
-  v->y    = ct_wrapf(atan2f(v->y, v->x), TAU);
+  v->y    = ct_wrapf(atan2f(v->y, v->x), CT_TAU);
   v->x    = x;
   return v;
 }

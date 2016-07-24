@@ -39,20 +39,21 @@ int test_mat4() {
   ct_mat4f_set_identity(&a);
 
   ct_set4fxyzw(&p, 0, 1, 0, 0);
-  ct_mat4f_transform4fv_imm(ct_mat4f_rotatex(&a, HALF_PI, &b), &p);
+  ct_mat4f_transform4fv_imm(ct_mat4f_rotatex(&a, CT_HALF_PI, &b), &p);
   ASSERT_VEC4F(&p, 0, 0, 1, 0);
 
   ct_set4fxyzw(&p, 1, 0, 0, 0);
-  ct_mat4f_transform4fv_imm(ct_mat4f_rotatey(&a, HALF_PI, &b), &p);
+  ct_mat4f_transform4fv_imm(ct_mat4f_rotatey(&a, CT_HALF_PI, &b), &p);
   ASSERT_VEC4F(&p, 0, 0, -1, 0);
 
   ct_set4fxyzw(&p, 1, 0, 0, 0);
-  ct_mat4f_transform4fv_imm(ct_mat4f_rotatez(&a, HALF_PI, &b), &p);
+  ct_mat4f_transform4fv_imm(ct_mat4f_rotatez(&a, CT_HALF_PI, &b), &p);
   ASSERT_VEC4F(&p, 0, 1, 0, 0);
 
   CT_Vec3f axis = {0, 1, 0};
   ct_set4fxyzw(&p, 1, 0, 0, 0);
-  ct_mat4f_transform4fv_imm(ct_mat4f_rotate_axis(&a, &axis, HALF_PI, &b), &p);
+  ct_mat4f_transform4fv_imm(ct_mat4f_rotate_axis(&a, &axis, CT_HALF_PI, &b),
+                            &p);
   ASSERT_VEC4F(&p, 0, 0, -1, 0);
 
   return 0;
@@ -76,7 +77,7 @@ ct_export int bench_mat4_rotate_axis() {
   ct_mat4f_set_identity(&a);
   CT_Vec3f axis = {1, 0, 0};
   for (size_t i = 0; i < 1e6; i++) {
-    ct_mat4f_rotatex(&a, HALF_PI, &b);
+    ct_mat4f_rotatex(&a, CT_HALF_PI, &b);
   }
   //ct_tostringfp(buf, 256, a.mat, 16);
   //CT_INFO("%s", buf);

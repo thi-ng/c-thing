@@ -77,7 +77,7 @@ int main() {
   spring_attr = ct_svg_attribs(0, 1, SVG_HEX("stroke", 0xff0000));
   outputFrame(&phys, 0);
   for (size_t i = 1; i < 300; i++) {
-    size_t num = MIN(i * 8, NUM);
+    size_t num = CT_MIN(i * 8, NUM);
     CT_Vec2f *p = i > 1 ? (CT_Vec2f*)&phys.pos[num - 1] : (CT_Vec2f*)FVEC(300,300);
     for(size_t j = phys.numP; j< num; j++) {
       spawn_particle(&phys, p, j);

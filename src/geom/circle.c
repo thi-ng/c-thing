@@ -36,11 +36,11 @@ ct_export CT_Circle2f *ct_circle2f_initr(CT_Circle2f *c, float r) {
 }
 
 ct_export float ct_circle2f_area(CT_Circle2f *c) {
-  return PI * c->r * c->r;
+  return CT_PI * c->r * c->r;
 }
 
 ct_export float ct_circle2f_circumference(CT_Circle2f *c) {
-  return TAU * c->r;
+  return CT_TAU * c->r;
 }
 
 ct_export int ct_circle2f_classify_point(CT_Circle2f *c, CT_Vec2f *p) {
@@ -50,7 +50,7 @@ ct_export int ct_circle2f_classify_point(CT_Circle2f *c, CT_Vec2f *p) {
 ct_export CT_Vec2f *ct_circle2f_vertices(CT_Circle2f *c, CT_Vec2f *verts,
                                          size_t n) {
   CT_Vec2f *ptr = verts;
-  float t = TAU / n;
+  float t = CT_TAU / n;
   for (size_t i = 0; i < n; i++) {
     ct_add2fv_imm(ct_cartesian2f_imm(ct_set2fxy(ptr, c->r, t * i)), &c->pos);
     ptr++;
