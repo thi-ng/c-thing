@@ -170,9 +170,9 @@
     goto fail;                  \
   }
 
-#define CT_TIMED(...)                                                   \
-  {                                                                     \
-    clock_t t0 = clock();                                               \
-    __VA_ARGS__;                                                        \
-    CT_INFO("time: %f", (double)(clock() - t0) / CLOCKS_PER_SEC * 1e3); \
+#define CT_TIMED(...)                                                        \
+  {                                                                          \
+    clock_t t0 = clock();                                                    \
+    __VA_ARGS__;                                                             \
+    CT_INFO("time: %1.3fms", (double)(clock() - t0) / CLOCKS_PER_SEC * 1e3); \
   }
