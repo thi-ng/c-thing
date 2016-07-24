@@ -134,7 +134,7 @@ CT_SOA_EPILOGUE3_ALT;
 CT_SOA2_PROLOGUE3(dist2) {
   ct_soa_vec dx = ax[i] - bx[i];
   ct_soa_vec dy = ay[i] - by[i];
-  oo[i]        = CT_SOA_SQRT(dx * dx + dy * dy);
+  oo[i]         = CT_SOA_SQRT(dx * dx + dy * dy);
 }
 CT_SOA_EPILOGUE3_ALT;
 

@@ -66,38 +66,40 @@ typedef float ct_soa_vec;
       ct_soa_vec *bb = (ct_soa_vec *)b->comps[i];                              \
       for (size_t j = 0; j < n; j++)
 
-#define CT_SOA_PROLOGUE3(name)                                             \
-  CT_SOA *ct_soa_##name(const CT_SOA *a, const CT_SOA *b, CT_SOA *out) {      \
-    CT_CHECK(a->width == b->width && a->width == out->width && a->num == b->num && a->num == out->num, "dims not same"); \
-    size_t n = a->num >> CT_SOA_WORD_SHIFT;                                    \
-    for (size_t i = 0, w = a->width; i < w; i++) {                             \
-      ct_soa_vec *aa = (ct_soa_vec *)a->comps[i];                              \
-      ct_soa_vec *bb = (ct_soa_vec *)b->comps[i];                              \
-      ct_soa_vec *oo = (ct_soa_vec *)out->comps[i];                              \
+#define CT_SOA_PROLOGUE3(name)                                           \
+  CT_SOA *ct_soa_##name(const CT_SOA *a, const CT_SOA *b, CT_SOA *out) { \
+    CT_CHECK(a->width == b->width && a->width == out->width &&           \
+                 a->num == b->num && a->num == out->num,                 \
+             "dims not same");                                           \
+    size_t n = a->num >> CT_SOA_WORD_SHIFT;                              \
+    for (size_t i = 0, w = a->width; i < w; i++) {                       \
+      ct_soa_vec *aa = (ct_soa_vec *)a->comps[i];                        \
+      ct_soa_vec *bb = (ct_soa_vec *)b->comps[i];                        \
+      ct_soa_vec *oo = (ct_soa_vec *)out->comps[i];                      \
       for (size_t j = 0; j < n; j++)
 
-#define CT_SOA2_PROLOGUE3(name)                                      \
+#define CT_SOA2_PROLOGUE3(name)                                        \
   float *ct_soa_##name(const CT_SOA *a, const CT_SOA *b, float *out) { \
-    CT_CHECK(a->width == 2 && b->width == 2 && a->num == b->num,     \
-             "a & b dims not same");                                 \
-    ct_soa_vec *ax  = (ct_soa_vec *)a->comps[0];                     \
-    ct_soa_vec *ay  = (ct_soa_vec *)a->comps[1];                     \
-    ct_soa_vec *bx  = (ct_soa_vec *)b->comps[0];                     \
-    ct_soa_vec *by  = (ct_soa_vec *)b->comps[1];                     \
-    ct_soa_vec *oo = (ct_soa_vec *)out;                               \
+    CT_CHECK(a->width == 2 && b->width == 2 && a->num == b->num,       \
+             "a & b dims not same");                                   \
+    ct_soa_vec *ax = (ct_soa_vec *)a->comps[0];                        \
+    ct_soa_vec *ay = (ct_soa_vec *)a->comps[1];                        \
+    ct_soa_vec *bx = (ct_soa_vec *)b->comps[0];                        \
+    ct_soa_vec *by = (ct_soa_vec *)b->comps[1];                        \
+    ct_soa_vec *oo = (ct_soa_vec *)out;                                \
     for (size_t i = 0, n = a->num >> CT_SOA_WORD_SHIFT; i < n; i++)
 
-#define CT_SOA3_PROLOGUE3(name)                                      \
+#define CT_SOA3_PROLOGUE3(name)                                        \
   float *ct_soa_##name(const CT_SOA *a, const CT_SOA *b, float *out) { \
-    CT_CHECK(a->width == 3 && b->width == 3 && a->num == b->num,     \
-             "a & b dims not same");                                 \
-    ct_soa_vec *ax  = (ct_soa_vec *)a->comps[0];                     \
-    ct_soa_vec *ay  = (ct_soa_vec *)a->comps[1];                     \
-    ct_soa_vec *az  = (ct_soa_vec *)b->comps[2];                     \
-    ct_soa_vec *bx  = (ct_soa_vec *)b->comps[0];                     \
-    ct_soa_vec *by  = (ct_soa_vec *)b->comps[1];                     \
-    ct_soa_vec *bz  = (ct_soa_vec *)b->comps[2];                     \
-    ct_soa_vec *oo  = (ct_soa_vec *)out;                               \
+    CT_CHECK(a->width == 3 && b->width == 3 && a->num == b->num,       \
+             "a & b dims not same");                                   \
+    ct_soa_vec *ax = (ct_soa_vec *)a->comps[0];                        \
+    ct_soa_vec *ay = (ct_soa_vec *)a->comps[1];                        \
+    ct_soa_vec *az = (ct_soa_vec *)b->comps[2];                        \
+    ct_soa_vec *bx = (ct_soa_vec *)b->comps[0];                        \
+    ct_soa_vec *by = (ct_soa_vec *)b->comps[1];                        \
+    ct_soa_vec *bz = (ct_soa_vec *)b->comps[2];                        \
+    ct_soa_vec *oo = (ct_soa_vec *)out;                                \
     for (size_t i = 0, n = a->num >> CT_SOA_WORD_SHIFT; i < n; i++)
 
 #define CT_SOA_EPILOGUE_IMM \
@@ -108,16 +110,16 @@ typedef float ct_soa_vec;
   }
 
 #define CT_SOA_EPILOGUE3 \
-  } \
-  return out;              \
+  }                      \
+  return out;            \
   fail:                  \
   return NULL;           \
   }
 
 #define CT_SOA_EPILOGUE3_ALT \
-  return out;              \
-  fail:                  \
-  return NULL;           \
+  return out;                \
+  fail:                      \
+  return NULL;               \
   }
 
 CT_SOA *ct_soa_new(size_t width, size_t num, size_t stride);
@@ -139,10 +141,10 @@ CT_SOA *ct_soa_sub_imm(CT_SOA *a, const CT_SOA *b);
 CT_SOA *ct_soa_mul_imm(CT_SOA *a, const CT_SOA *b);
 CT_SOA *ct_soa_div_imm(CT_SOA *a, const CT_SOA *b);
 
-CT_SOA *ct_soa_add(const CT_SOA *a, const CT_SOA *b, CT_SOA* out);
-CT_SOA *ct_soa_sub(const CT_SOA *a, const CT_SOA *b, CT_SOA* out);
-CT_SOA *ct_soa_mul(const CT_SOA *a, const CT_SOA *b, CT_SOA* out);
-CT_SOA *ct_soa_div(const CT_SOA *a, const CT_SOA *b, CT_SOA* out);
+CT_SOA *ct_soa_add(const CT_SOA *a, const CT_SOA *b, CT_SOA *out);
+CT_SOA *ct_soa_sub(const CT_SOA *a, const CT_SOA *b, CT_SOA *out);
+CT_SOA *ct_soa_mul(const CT_SOA *a, const CT_SOA *b, CT_SOA *out);
+CT_SOA *ct_soa_div(const CT_SOA *a, const CT_SOA *b, CT_SOA *out);
 
 float *ct_soa_dot2(const CT_SOA *a, const CT_SOA *b, float *out);
 float *ct_soa_dist2(const CT_SOA *a, const CT_SOA *b, float *out);
