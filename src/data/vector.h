@@ -26,13 +26,16 @@ typedef struct {
   int32_t stride;
 } CT_VectorIter;
 
-CT_Vector *ct_vector_new(size_t limit, int32_t stride, CT_MPool *pool);
-int ct_vector_init(CT_Vector *v, size_t limit, int32_t stride);
+CT_Vector *ct_vector_new(size_t limit, uint32_t stride, CT_MPool *pool);
+int ct_vector_init(CT_Vector *v, size_t limit, uint32_t stride);
+int ct_vector_init_ptr(CT_Vector *v, void *ptr, size_t limit, uint32_t stride);
 void ct_vector_free(CT_Vector *v, CT_MPool *pool);
+
 size_t ct_vector_size(const CT_Vector *v);
 int ct_vector_push(CT_Vector *v, const void *x);
 int ct_vector_pop(CT_Vector *v, void *out);
 void *ct_vector_get(const CT_Vector *v, size_t idx);
+
 CT_VectorIter *ct_vector_iter_new(const CT_Vector *v,
                                   int reverse,
                                   CT_MPool *pool);

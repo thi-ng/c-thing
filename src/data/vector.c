@@ -1,7 +1,7 @@
 #include "data/vector.h"
 #include "math/math.h"
 
-CT_Vector *ct_vector_new(size_t limit, int32_t stride, CT_MPool *pool) {
+CT_Vector *ct_vector_new(size_t limit, uint32_t stride, CT_MPool *pool) {
   CT_Vector *v = CT_MP_ALLOC(pool, CT_Vector);
   CT_CHECK_MEM(v);
   if (!ct_vector_init(v, limit, stride)) {
@@ -12,7 +12,7 @@ fail:
   return NULL;
 }
 
-int ct_vector_init(CT_Vector *v, size_t limit, int32_t stride) {
+int ct_vector_init(CT_Vector *v, size_t limit, uint32_t stride) {
   CT_CHECK(stride > 0, "stride must be > 0");
   v->buffer = calloc(limit, stride);
   CT_CHECK_MEM(v->buffer);
@@ -21,6 +21,17 @@ int ct_vector_init(CT_Vector *v, size_t limit, int32_t stride) {
   v->stride = stride;
   return 0;
 fail:
+  return 1;
+}
+
+int ct_vector_init_ptr(CT_Vector *v, void *ptr, size_t limit, uint32_t stride) {
+  CT_CHECK(stride > 0, "stride must be > 0");
+  v->buffer = ptr;
+  v->num = limit;
+  v->limit = limit;
+  v->stride = stride;
+  return 0;
+ fail:
   return 1;
 }
 
