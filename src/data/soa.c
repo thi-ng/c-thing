@@ -1,5 +1,39 @@
 #include "data/soa.h"
 
+CT_SOA *ct_soa_new(size_t width, size_t num, size_t stride) {
+  CT_CHECK(width <= 4, "width > 4");
+  CT_SOA *s = calloc(1, sizeof(CT_SOA));
+  CT_CHECK_MEM(s);
+  void *buf = calloc((size_t)width * num, stride);
+  if (buf) {
+    for (size_t i = 0; i < width; i++) {
+      s->comps[i] = (void *)((uintptr_t)buf + i * num * stride);
+    }
+    s->num   = num;
+    s->width = width;
+    return s;
+  }
+  free(s);
+fail:
+  return NULL;
+}
+
+int ct_soa_init(CT_SOA *s, void *comps, size_t width, size_t num) {
+  CT_CHECK(width <= 4, "width > 4");
+  CT_CHECK(comps, "comps == %p", comps);
+  memcpy(s->comps, comps, width * sizeof(void *));
+  s->width = width;
+  s->num   = num;
+  return 0;
+fail:
+  return 1;
+}
+
+void ct_soa_free(CT_SOA *s) {
+  free(s->comps[0]);
+  free(s);
+}
+
 CT_SOA_PROLOGUE2_SCALAR(add1f) {
   aa[j] += bb;
 }

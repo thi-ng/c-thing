@@ -8,10 +8,11 @@ CT_TEST_DECLS
 #define NUM (1 << 2)
 
 static void trace_soa(CT_SOA *s) {
+  float **c = (float **)s->comps;
   for (size_t i = 0; i < s->width; i++) {
     fprintf(stderr, "%zu: ", i);
     for (size_t j = 0; j < s->num; j++) {
-      fprintf(stderr, "%f, ", s->comps[i][j]);
+      fprintf(stderr, "%f, ", c[i][j]);
     }
     fputs("\n", stderr);
   }
@@ -19,17 +20,20 @@ static void trace_soa(CT_SOA *s) {
 
 static void reset_soa2(CT_SOA *a, CT_SOA *b) {
   for (size_t i = 0; i < NUM; i++) {
-    a->comps[0][i] = a->comps[1][i] = i + 1;
-    b->comps[0][i] = b->comps[1][i] = (i + 1) * 10;
+    CT_Vec2f va = {i + 1, i + 1};
+    CT_Vec2f vb = {(i + 1) * 10, (i + 1) * 10};
+    ct_soa_set2f(a, i, &va);
+    ct_soa_set2f(b, i, &vb);
   }
 }
 
 int test_soa() {
+  CT_SOA a, b;
   float *buf = malloc(NUM * 4 * 4);
   float *xa = buf, *ya = buf + NUM, *xb = buf + NUM * 2, *yb = buf + NUM * 3;
-  CT_SOA a = {.comps = {xa, ya}, .num = NUM, .width = 2};
-  CT_SOA b = {.comps = {xb, yb}, .num = NUM, .width = 2};
 
+  CT_IS(!ct_soa_init(&a, (float *[]){xa, ya}, 2, NUM), "init a");
+  CT_IS(!ct_soa_init(&b, (float *[]){xb, yb}, 2, NUM), "init b");
   reset_soa2(&a, &b);
 
   ct_soa_add1f_imm(&a, 10);

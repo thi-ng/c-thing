@@ -5,9 +5,9 @@
 #include "math/vec.h"
 
 typedef struct {
-  float *comps[4];
+  void *comps[4];
   size_t num;
-  uint8_t width;
+  size_t width;
 } CT_SOA;
 
 #ifdef CT_FEATURE_SSE
@@ -65,7 +65,7 @@ typedef float ct_soa_vec;
 
 #define CT_SOA2_PROLOGUE3(name)                                      \
   float *ct_soa_##name(const CT_SOA *a, const CT_SOA *b, float *o) { \
-    CT_CHECK(a->width == b->width == 2 && a->num == b->num,          \
+    CT_CHECK(a->width == 2 && b->width == 2 && a->num == b->num,     \
              "a & b dims not same");                                 \
     ct_soa_vec *ax  = (ct_soa_vec *)a->comps[0];                     \
     ct_soa_vec *ay  = (ct_soa_vec *)a->comps[1];                     \
@@ -76,7 +76,7 @@ typedef float ct_soa_vec;
 
 #define CT_SOA3_PROLOGUE3(name)                                      \
   float *ct_soa_##name(const CT_SOA *a, const CT_SOA *b, float *o) { \
-    CT_CHECK(a->width == b->width == 2 && a->num == b->num,          \
+    CT_CHECK(a->width == 3 && b->width == 3 && a->num == b->num,     \
              "a & b dims not same");                                 \
     ct_soa_vec *ax  = (ct_soa_vec *)a->comps[0];                     \
     ct_soa_vec *ay  = (ct_soa_vec *)a->comps[1];                     \
@@ -100,7 +100,9 @@ typedef float ct_soa_vec;
   return NULL;           \
   }
 
-int ct_soa_init(CT_SOA *a, float *comps, size_t width, size_t num);
+CT_SOA *ct_soa_new(size_t width, size_t num, size_t stride);
+int ct_soa_init(CT_SOA *a, void *comps, size_t width, size_t num);
+void ct_soa_free(CT_SOA *s);
 
 CT_SOA *ct_soa_add1f_imm(CT_SOA *a, float b);
 CT_SOA *ct_soa_sub1f_imm(CT_SOA *a, float b);
@@ -124,43 +126,49 @@ CT_SOA *ct_soa_normalize2f_imm(CT_SOA *a, float len);
 CT_SOA *ct_soa_normalize3f_imm(CT_SOA *a, float len);
 
 ct_inline CT_Vec2f *ct_soa_get2f(const CT_SOA *s, size_t idx, CT_Vec2f *v) {
-  v->x = s->comps[0][idx];
-  v->y = s->comps[1][idx];
+  float **c = (float **)s->comps;
+  v->x      = c[0][idx];
+  v->y      = c[1][idx];
   return v;
 }
 
 ct_inline CT_Vec3f *ct_soa_get3f(const CT_SOA *s, size_t idx, CT_Vec3f *v) {
-  v->x = s->comps[0][idx];
-  v->y = s->comps[1][idx];
-  v->z = s->comps[2][idx];
+  float **c = (float **)s->comps;
+  v->x      = c[0][idx];
+  v->y      = c[1][idx];
+  v->z      = c[2][idx];
   return v;
 }
 
 ct_inline CT_Vec4f *ct_soa_get4f(const CT_SOA *s, size_t idx, CT_Vec4f *v) {
-  v->x = s->comps[0][idx];
-  v->y = s->comps[1][idx];
-  v->z = s->comps[2][idx];
-  v->w = s->comps[3][idx];
+  float **c = (float **)s->comps;
+  v->x      = c[0][idx];
+  v->y      = c[1][idx];
+  v->z      = c[2][idx];
+  v->w      = c[3][idx];
   return v;
 }
 
 ct_inline CT_SOA *ct_soa_set2f(CT_SOA *s, size_t idx, const CT_Vec2f *v) {
-  s->comps[0][idx] = v->x;
-  s->comps[1][idx] = v->y;
+  float **c = (float **)s->comps;
+  c[0][idx] = v->x;
+  c[1][idx] = v->y;
   return s;
 }
 
 ct_inline CT_SOA *ct_soa_set3f(CT_SOA *s, size_t idx, const CT_Vec3f *v) {
-  s->comps[0][idx] = v->x;
-  s->comps[1][idx] = v->y;
-  s->comps[2][idx] = v->z;
+  float **c = (float **)s->comps;
+  c[0][idx] = v->x;
+  c[1][idx] = v->y;
+  c[2][idx] = v->z;
   return s;
 }
 
 ct_inline CT_SOA *ct_soa_set4f(CT_SOA *s, size_t idx, const CT_Vec4f *v) {
-  s->comps[0][idx] = v->x;
-  s->comps[1][idx] = v->y;
-  s->comps[2][idx] = v->z;
-  s->comps[3][idx] = v->w;
+  float **c = (float **)s->comps;
+  c[0][idx] = v->x;
+  c[1][idx] = v->y;
+  c[2][idx] = v->z;
+  c[3][idx] = v->w;
   return s;
 }
