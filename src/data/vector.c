@@ -27,11 +27,11 @@ fail:
 int ct_vector_init_ptr(CT_Vector *v, void *ptr, size_t limit, uint32_t stride) {
   CT_CHECK(stride > 0, "stride must be > 0");
   v->buffer = ptr;
-  v->num = limit;
-  v->limit = limit;
+  v->num    = limit;
+  v->limit  = limit;
   v->stride = stride;
   return 0;
- fail:
+fail:
   return 1;
 }
 

@@ -13,6 +13,7 @@
 #define CT_PI 3.1415926535897932384626433832795029f
 #define CT_TAU (2.0f * CT_PI)
 #define CT_HALF_PI (0.5f * CT_PI)
+#define CT_QUARTER_PI (0.25f * CT_PI)
 #define CT_INV_TAU (1.0f / CT_TAU)
 #define CT_INV_PI (1.0f / CT_PI)
 #define CT_INV_HALF_PI (1.0f / CT_HALF_PI)

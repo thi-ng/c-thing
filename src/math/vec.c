@@ -211,7 +211,7 @@ size_t ct_convexhull2f(CT_Vec2f *points, size_t num, CT_Vec2f *hull) {
   }
   qsort(points, num, sizeof(CT_Vec2f), ct_compare2fv_xy);
   size_t len = hull2f(points, num, hull);
-  ct_array_reverse_f32_imm((float *)points, num, 2);
+  ct_array_reverse8_imm(points, num);
   //ct_array_reverse_imm(points, num, sizeof(CT_Vec2f));
   len += hull2f(points, num, hull + len);
   return len - (ct_compare2fv_xy(&hull[0], &hull[1]) == 0);
