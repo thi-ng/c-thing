@@ -28,12 +28,17 @@ static void reset_soa2(CT_SOA *a, CT_SOA *b) {
 }
 
 int test_soa() {
+  CT_DEBUG("word size: %d, mask: %d, shift: %d", CT_SOA_WORD_SIZE,
+           CT_SOA_SIZE_MASK, CT_SOA_WORD_SHIFT);
+
   CT_SOA a, b;
   float *buf = malloc(NUM * 4 * 4);
   float *xa = buf, *ya = buf + NUM, *xb = buf + NUM * 2, *yb = buf + NUM * 3;
 
-  CT_IS(!ct_soa_init(&a, (float *[]){xa, ya}, 2, NUM), "init a");
-  CT_IS(!ct_soa_init(&b, (float *[]){xb, yb}, 2, NUM), "init b");
+  float *bufa[] = {xa, ya};
+  float *bufb[] = {xb, yb};
+  CT_IS(!ct_soa_init(&a, (void **)bufa, 2, NUM), "init a");
+  CT_IS(!ct_soa_init(&b, (void **)bufb, 2, NUM), "init b");
   reset_soa2(&a, &b);
 
   ct_soa_add1f_imm(&a, 10);
@@ -77,5 +82,27 @@ int test_soa() {
         "norm2y");
 
   free(buf);
+
+  CT_SOA *aa = ct_soa_new(16, 16, 4);
+  CT_IS(aa, "new 16x16");
+  float *data   = calloc(aa->width * aa->num, sizeof(float));
+  float **comps = (float **)aa->comps;
+  for (size_t i = 0; i < aa->width; i++) {
+    float *dc   = data + i * aa->num;
+    float scale = powf(10, i);
+    for (size_t j = 0; j < aa->num; j++) {
+      comps[i][j] = (j + 1) * scale;
+      dc[j]       = comps[i][j] * 2;
+    }
+  }
+  ct_soa_add_imm(aa, aa);
+  for (size_t i = 0; i < aa->width; i++) {
+    float *dc = data + i * aa->num;
+    CT_IS(0 == ct_array_compare_f32(aa->comps[i], dc, EPS, aa->num), "row %zu",
+          i);
+  }
+  //trace_soa(aa);
+  ct_soa_free(aa);
+
   return 0;
 }

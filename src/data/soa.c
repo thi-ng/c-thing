@@ -1,27 +1,34 @@
 #include "data/soa.h"
 
 CT_SOA *ct_soa_new(size_t width, size_t num, size_t stride) {
-  CT_CHECK(width <= 4, "width > 4");
-  CT_SOA *s = calloc(1, sizeof(CT_SOA));
+  void *buf = NULL;
+  CT_SOA *s = NULL;
+  s         = calloc(1, sizeof(CT_SOA));
   CT_CHECK_MEM(s);
-  void *buf = calloc((size_t)width * num, stride);
-  if (buf) {
-    for (size_t i = 0; i < width; i++) {
-      s->comps[i] = (void *)((uintptr_t)buf + i * num * stride);
-    }
-    s->num   = num;
-    s->width = width;
-    return s;
+  buf = calloc(width * num, stride);
+  CT_CHECK_MEM(buf);
+  s->comps = calloc(width, sizeof(void *));
+  CT_CHECK_MEM(s->comps);
+  for (size_t i = 0; i < width; i++) {
+    s->comps[i] = (void *)((uintptr_t)buf + i * num * stride);
   }
-  free(s);
+  s->num   = num;
+  s->width = width;
+  //CT_INFO("soa: %p, comps: %p, comps[0]: %p", s, s->comps, s->comps[0]);
+  return s;
 fail:
+  if (s) {
+    if (buf) {
+      free(buf);
+    }
+    free(s);
+  }
   return NULL;
 }
 
-int ct_soa_init(CT_SOA *s, void *comps, size_t width, size_t num) {
-  CT_CHECK(width <= 4, "width > 4");
-  CT_CHECK(comps, "comps == %p", comps);
-  memcpy(s->comps, comps, width * sizeof(void *));
+int ct_soa_init(CT_SOA *s, void **comps, size_t width, size_t num) {
+  CT_CHECK(comps, "comps is NULL", comps);
+  s->comps = comps;
   s->width = width;
   s->num   = num;
   return 0;
@@ -31,65 +38,66 @@ fail:
 
 void ct_soa_free(CT_SOA *s) {
   free(s->comps[0]);
+  free(s->comps);
   free(s);
 }
 
-CT_SOA_PROLOGUE2_SCALAR(add1f) {
+CT_SOA_PROLOGUE2_SCALAR_IMM(add1f) {
   aa[j] += bb;
 }
 CT_SOA_EPILOGUE_IMM;
 
-CT_SOA_PROLOGUE2_SCALAR(sub1f) {
+CT_SOA_PROLOGUE2_SCALAR_IMM(sub1f) {
   aa[j] -= bb;
 }
 CT_SOA_EPILOGUE_IMM;
 
-CT_SOA_PROLOGUE2_SCALAR(mul1f) {
+CT_SOA_PROLOGUE2_SCALAR_IMM(mul1f) {
   aa[j] *= bb;
 }
 CT_SOA_EPILOGUE_IMM;
 
-CT_SOA_PROLOGUE2_SCALAR(div1f) {
+CT_SOA_PROLOGUE2_SCALAR_IMM(div1f) {
   aa[j] /= bb;
 }
 CT_SOA_EPILOGUE_IMM;
 
-CT_SOA_PROLOGUE2_FPTR(add1fp) {
+CT_SOA_PROLOGUE2_FPTR_IMM(add1fp) {
   aa[j] += bb;
 }
 CT_SOA_EPILOGUE_IMM;
 
-CT_SOA_PROLOGUE2_FPTR(sub1fp) {
+CT_SOA_PROLOGUE2_FPTR_IMM(sub1fp) {
   aa[j] -= bb;
 }
 CT_SOA_EPILOGUE_IMM;
 
-CT_SOA_PROLOGUE2_FPTR(mul1fp) {
+CT_SOA_PROLOGUE2_FPTR_IMM(mul1fp) {
   aa[j] *= bb;
 }
 CT_SOA_EPILOGUE_IMM;
 
-CT_SOA_PROLOGUE2_FPTR(div1fp) {
+CT_SOA_PROLOGUE2_FPTR_IMM(div1fp) {
   aa[j] /= bb;
 }
 CT_SOA_EPILOGUE_IMM;
 
-CT_SOA_PROLOGUE2(add) {
+CT_SOA_PROLOGUE2_IMM(add) {
   aa[j] += bb[j];
 }
 CT_SOA_EPILOGUE_IMM;
 
-CT_SOA_PROLOGUE2(sub) {
+CT_SOA_PROLOGUE2_IMM(sub) {
   aa[j] -= bb[j];
 }
 CT_SOA_EPILOGUE_IMM;
 
-CT_SOA_PROLOGUE2(mul) {
+CT_SOA_PROLOGUE2_IMM(mul) {
   aa[j] *= bb[j];
 }
 CT_SOA_EPILOGUE_IMM;
 
-CT_SOA_PROLOGUE2(div) {
+CT_SOA_PROLOGUE2_IMM(div) {
   aa[j] /= bb[j];
 }
 CT_SOA_EPILOGUE_IMM;

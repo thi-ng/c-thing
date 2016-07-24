@@ -5,7 +5,7 @@
 #include "math/vec.h"
 
 typedef struct {
-  void *comps[4];
+  void **comps;
   size_t num;
   size_t width;
 } CT_SOA;
@@ -38,7 +38,10 @@ typedef float ct_soa_vec;
 
 #endif
 
-#define CT_SOA_PROLOGUE2_SCALAR(name)               \
+#define CT_SOA_WORD_SIZE (1 << CT_SOA_WORD_SHIFT)
+#define CT_SOA_SIZE_MASK (CT_SOA_WORD_SIZE - 1)
+
+#define CT_SOA_PROLOGUE2_SCALAR_IMM(name)           \
   CT_SOA *ct_soa_##name##_imm(CT_SOA *a, float b) { \
     size_t n      = a->num >> CT_SOA_WORD_SHIFT;    \
     ct_soa_vec bb = CT_SOA_SET1(b);                 \
@@ -46,7 +49,7 @@ typedef float ct_soa_vec;
       ct_soa_vec *aa = (ct_soa_vec *)a->comps[i];   \
       for (size_t j = 0; j < n; j++)
 
-#define CT_SOA_PROLOGUE2_FPTR(name)                        \
+#define CT_SOA_PROLOGUE2_FPTR_IMM(name)                    \
   CT_SOA *ct_soa_##name##_imm(CT_SOA *a, const float *b) { \
     size_t n = a->num >> CT_SOA_WORD_SHIFT;                \
     for (size_t i = 0, w = a->width; i < w; i++) {         \
@@ -54,7 +57,7 @@ typedef float ct_soa_vec;
       ct_soa_vec bb  = CT_SOA_SET1(b[i]);                  \
       for (size_t j = 0; j < n; j++)
 
-#define CT_SOA_PROLOGUE2(name)                                                 \
+#define CT_SOA_PROLOGUE2_IMM(name)                                             \
   CT_SOA *ct_soa_##name##_imm(CT_SOA *a, const CT_SOA *b) {                    \
     CT_CHECK(a->width == b->width && a->num == b->num, "a & b dims not same"); \
     size_t n = a->num >> CT_SOA_WORD_SHIFT;                                    \
@@ -101,7 +104,7 @@ typedef float ct_soa_vec;
   }
 
 CT_SOA *ct_soa_new(size_t width, size_t num, size_t stride);
-int ct_soa_init(CT_SOA *a, void *comps, size_t width, size_t num);
+int ct_soa_init(CT_SOA *a, void **comps, size_t width, size_t num);
 void ct_soa_free(CT_SOA *s);
 
 CT_SOA *ct_soa_add1f_imm(CT_SOA *a, float b);
