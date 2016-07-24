@@ -183,15 +183,17 @@ int test_convex_hull() {
   //for (size_t i = 0; i < len; i++) {
   //  CT_INFO("hull %zu: %f,%f", i, hull[i].x, hull[i].y);
   //}
-  CT_Vec2f *samples = malloc(1e5 * sizeof(CT_Vec2f));
-  for (size_t i = 0; i < 1e5; i++) {
+  srand(0);
+  size_t num = (size_t)1e6;
+  CT_Vec2f *samples = malloc(num * sizeof(CT_Vec2f));
+  for (size_t i = 0; i < num; i++) {
     ct_set2fxy(&samples[i], ct_rand_norm(), ct_rand_norm());
   }
   ct_set2fxy(&samples[100], 1, -1);
   ct_set2fxy(&samples[500], 1, 1);
   ct_set2fxy(&samples[1000], -1, 1);
   ct_set2fxy(&samples[5000], -1, -1);
-  len = ct_convexhull2f(samples, 1e5, hull);
+  len = ct_convexhull2f(samples, num, hull);
   CT_IS(4 == len, "hull len: %zu", len);
   //for (size_t i = 0; i < len; i++) {
   //  CT_INFO("hull %zu: %f,%f", i, hull[i].x, hull[i].y);
