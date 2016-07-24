@@ -11,6 +11,7 @@
      - [[#examples][Examples]]
          - [[#build-all-examples][Build all examples]]
          - [[#1d2d-cellular-automata][1D/2D Cellular automata]]
+         - [[#convex-hull][Convex Hull]]
          - [[#diffusion-limited-aggregation][Diffusion-Limited Aggregation]]
          - [[#poisson-disc-sampling-image-conversion][Poisson disc sampling image conversion]]
          - [[#polygon-clipping-greiner-hormann][Polygon clipping (Greiner-Hormann)]]
@@ -108,6 +109,17 @@ make config=release_sse ex-ca2d
 bin/release/ex-ca2d
 #+END_SRC
 
+*** Convex Hull
+
+[[./examples/convexhull/main.c][Source]]
+
+[[./assets/chull.png]]
+
+#+BEGIN_SRC shell
+# build library & example app
+make config=release_sse ex-chull && bin/release/ex-chull > assets/chull.svg
+#+END_SRC
+
 *** Diffusion-Limited Aggregation
 
 [[./examples/dla/main.c][Source]]
@@ -118,6 +130,7 @@ bin/release/ex-ca2d
 # build library & example app
 make config=release_sse ex-dla && bin/release/ex-dla > assets/dla.svg
 #+END_SRC
+
 *** Poisson disc sampling image conversion
 
 [[./examples/poisson/main.c][Source]]

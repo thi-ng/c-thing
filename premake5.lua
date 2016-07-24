@@ -80,6 +80,16 @@ links "lib"
 dependson "lib"
 flags { "LinkTimeOptimization" }
 
+----- chull -----
+
+project "ex-chull"
+kind "ConsoleApp"
+files { "examples/convexhull/main.c" }
+includedirs { "examples/common", "examples/convexhull" }
+links "lib"
+dependson "lib"
+flags { "LinkTimeOptimization" }
+
 ----- dla -----
 
 project "ex-dla"
