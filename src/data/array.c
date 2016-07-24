@@ -120,6 +120,17 @@ fail:
   return NULL;
 }
 
+void *ct_array_reverse8_imm(void *ptr, size_t num) {
+  uint32_t tmp;
+  uint32_t *iptr = (uint32_t*)ptr;
+  for (size_t i = 0, end = num * 2 - 2; i < num;
+       i += 2, end -= 2) {
+    SWAP(uint32_t, iptr[i], iptr[end]);
+    SWAP(uint32_t, iptr[i + 1], iptr[end + 1]);
+  }
+  return ptr;
+}
+
 void *ct_array_reverse(const void *src, size_t num, size_t stride, void *dest) {
   CT_CHECK(stride <= 128, "stride > 128");
   for (size_t i = 0, len = num * stride, end = len - stride; i < len;

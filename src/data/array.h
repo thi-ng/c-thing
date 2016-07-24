@@ -23,6 +23,7 @@ uintptr_t ct_array_reduce_sum_u32(const uint32_t *p,
 
 float *ct_array_reverse_f32_imm(float *ptr, size_t num, size_t fstride);
 void *ct_array_reverse_imm(void *ptr, size_t num, size_t stride);
+void *ct_array_reverse8_imm(void *ptr, size_t num);
 void *ct_array_reverse(const void *src, size_t num, size_t stride, void *out);
 
 int ct_array_deltaeq_f32(const float *a, const float *b, float eps, size_t num);
