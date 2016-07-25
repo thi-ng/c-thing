@@ -109,11 +109,12 @@ fail:
 void *ct_array_reverse_imm(void *ptr, size_t num, size_t stride) {
   CT_CHECK(stride <= 128, "stride > 128");
   uint8_t tmp[128];
+  uint8_t *p = (uint8_t*)ptr;
   for (size_t i = 0, n2 = num / 2 * stride, end = (num - 1) * stride; i < n2;
        i += stride, end -= stride) {
-    memcpy(tmp, &ptr[i], stride);
-    memcpy(&ptr[i], &ptr[end], stride);
-    memcpy(&ptr[end], tmp, stride);
+    memcpy(tmp, &p[i], stride);
+    memcpy(&p[i], &p[end], stride);
+    memcpy(&p[end], tmp, stride);
   }
   return ptr;
 fail:
