@@ -11,7 +11,7 @@
 #endif
 
 typedef struct CT_Vector {
-  void *buffer;
+  uint8_t *buffer;
   size_t num;
   size_t limit;
   int32_t stride;
@@ -49,13 +49,13 @@ ct_inline size_t ct_vector_size(const CT_Vector *v) {
 
 ct_inline void *ct_vector_get(const CT_Vector *v, size_t idx) {
   CT_CHECK(idx < v->limit, "idx out of bounds: %zu", idx);
-  return &(uint8_t*)v->buffer[idx * v->stride];
+  return &v->buffer[idx * v->stride];
 fail:
   return NULL;
 }
 
 ct_inline void *ct_vector_get_unsafe(const CT_Vector *v, size_t idx) {
-  return &(uint8_t*)v->buffer[idx * v->stride];
+  return &v->buffer[idx * v->stride];
 }
 
 ct_inline void *ct_vector_peek(const CT_Vector *v) {

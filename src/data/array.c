@@ -138,7 +138,6 @@ void *ct_array_reverse8_imm(void *ptr, size_t num) {
 #else */
 
 void *ct_array_reverse8_imm(void *ptr, size_t num) {
-  uint32_t tmp;
   uint32_t *iptr = (uint32_t *)ptr;
   for (size_t i = 0, end = num * 2 - 2; i < num; i += 2, end -= 2) {
     SWAP(uint32_t, iptr[i], iptr[end]);
@@ -151,9 +150,11 @@ void *ct_array_reverse8_imm(void *ptr, size_t num) {
 
 void *ct_array_reverse(const void *src, size_t num, size_t stride, void *dest) {
   CT_CHECK(stride <= 128, "stride > 128");
+  uint8_t *s = (uint8_t*)src;
+  uint8_t *d = (uint8_t*)dest;
   for (size_t i = 0, len = num * stride, end = len - stride; i < len;
        i += stride, end -= stride) {
-    memcpy(&dest[end], &src[i], stride);
+    memcpy(&d[end], &s[i], stride);
   }
   return dest;
 fail:
