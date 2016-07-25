@@ -45,6 +45,4 @@ int ct_bounds3fp(float* ptr,
                  CT_Vec3f* min,
                  CT_Vec3f* max);
 
-size_t ct_convexhull2f(CT_Vec2f* ptr, size_t num, CT_Vec2f* hull);
-
 CT_END_DECLS

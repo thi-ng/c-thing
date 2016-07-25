@@ -176,43 +176,6 @@ int test_vec_hash() {
   return 0;
 }
 
-int test_convex_hull() {
-  CT_Vec2f points[] CT_ALIGN(16) = {{0, 0},   {5, 0}, {2, 0.1},
-                                    {2, 0.2}, {0, 5}, {1, 2}};
-  CT_Vec2f hull[32];
-  size_t len = ct_convexhull2f(points, 6, hull);
-  CT_IS(3 == len, "hull len: %zu", len);
-  //for(size_t i=0; i<6; i++) {
-  //  CT_INFO("%zu: %f,%f", i, points[i].x, points[i].y);
-  //}
-  //ct_array_reverse8_imm(points, 6);
-  //for(size_t i=0; i<6; i++) {
-  // CT_INFO("%zu: %f,%f", i, points[i].x, points[i].y);
-  //}
-  //for (size_t i = 0; i < len; i++) {
-  //  CT_INFO("hull %zu: %f,%f", i, hull[i].x, hull[i].y);
-  //}
-  srand(0);
-  size_t num        = (size_t)1e6;
-  CT_Vec2f *samples = malloc(num * sizeof(CT_Vec2f));
-  //for (size_t k = 0; k < 10; k++) {
-  for (size_t i = 0; i < num; i++) {
-    ct_set2fxy(&samples[i], ct_rand_norm(), ct_rand_norm());
-  }
-  ct_set2fxy(&samples[100], 1, -1);
-  ct_set2fxy(&samples[500], 1, 1);
-  ct_set2fxy(&samples[1000], -1, 1);
-  ct_set2fxy(&samples[5000], -1, -1);
-  len = ct_convexhull2f(samples, num, hull);
-  CT_IS(4 == len, "hull len: %zu", len);
-  //}
-  //for (size_t i = 0; i < len; i++) {
-  //  CT_INFO("hull %zu: %f,%f", i, hull[i].x, hull[i].y);
-  //}
-  free(samples);
-  return 0;
-}
-
 ct_export void bench_sse(CT_Vec3f *a, CT_Vec3f *b) {
   clock_t begin = clock();
   for (size_t i = 0; i < 1e6; i++) {

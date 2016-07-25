@@ -1,5 +1,5 @@
 #include "io/svg.h"
-#include "math/vec.h"
+#include "geom/hull.h"
 
 #define NUM 10000
 #define WIDTH 600
@@ -7,21 +7,21 @@
 #define RADIUS (0.48 * WIDTH)
 #define THETA (0.5 * CT_PI)
 
-static void export_poly(FILE *out,
-                        CT_Vec2f *poly,
-                        size_t num,
-                        CT_SVGAttribs *attribs) {
+static void export_poly(FILE *out, CT_Vector *poly, CT_SVGAttribs *attribs) {
+  CT_VectorIter *i = ct_vector_iter_new(poly, 0);
+  CT_Vec2f *p;
   ct_svg_start_group(out, attribs);
   fputs("<polygon points=\"", out);
-  for (size_t i = 0; i < num; i++) {
-    fprintf(out, "%1.3f,%1.3f ", poly[i].x, poly[i].y);
+  while ((p = (CT_Vec2f *)ct_vector_iter_next(i))) {
+    fprintf(out, "%1.3f,%1.3f ", p->x, p->y);
   }
   fputs("\"/>", out);
   ct_svg_end_group(out);
+  free(i);
 }
 
 int main(int argc, char **argv) {
-  CT_Vec2f hull[64];
+  CT_Vector *hull  = ct_vector_new(32, sizeof(CT_Vec2f));
   CT_Vec2f *points = calloc(NUM, sizeof(CT_Vec2f));
 
   ct_svg_start_doc(stdout, ct_svg_attribs(1, 3, SVG_INT("width", WIDTH),
@@ -42,11 +42,12 @@ int main(int argc, char **argv) {
 
   size_t len = ct_convexhull2f(points, NUM, hull);
   CT_INFO("hull points: %zu", len);
-  export_poly(stdout, hull, len, ct_svg_attribs(1, 1, SVG_HEX("stroke", 0xff)));
+  export_poly(stdout, hull, ct_svg_attribs(1, 1, SVG_HEX("stroke", 0xff)));
 
   ct_svg_end_doc(stdout);
 
   free(points);
+  ct_vector_free(hull);
 
   return 0;
 }

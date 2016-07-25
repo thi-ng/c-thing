@@ -1,7 +1,6 @@
 #include <float.h>
 #include <stdio.h>
 
-#include "data/array.h"
 #include "math/vec.h"
 
 ct_export CT_Vec2f *ct_vec2f(float x, float y, CT_MPool *mpool) {
@@ -189,30 +188,4 @@ ct_export int ct_bounds3fp(float *ptr,
     return 0;
   }
   return 1;
-}
-
-static size_t hull2f(CT_Vec2f *points, size_t num, CT_Vec2f *hull) {
-  size_t len = 0;
-  for (size_t i = 0; i < num; i++) {
-    while (len >= 2 &&
-           ct_cross2fv3(&hull[len - 2], &hull[len - 1], &points[i]) >= 0) {
-      len--;
-    }
-    hull[len] = points[i];
-    CT_DEBUG("add hull: %f,%f (%zu)", points[i].x, points[i].y, len);
-    len++;
-  }
-  return len - 1;
-}
-
-size_t ct_convexhull2f(CT_Vec2f *points, size_t num, CT_Vec2f *hull) {
-  if (num < 1) {
-    return 0;
-  }
-  qsort(points, num, sizeof(CT_Vec2f), ct_compare2fv_xy);
-  size_t len = hull2f(points, num, hull);
-  ct_array_reverse8_imm(points, num);
-  //ct_array_reverse_imm(points, num, sizeof(CT_Vec2f));
-  len += hull2f(points, num, hull + len);
-  return len - (ct_compare2fv_xy(&hull[0], &hull[1]) == 0);
 }
