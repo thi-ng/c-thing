@@ -8,11 +8,11 @@ int test_vector() {
   float data[] = {1, 2, 3, 4, 5, 6, 7, 8, 9};
   size_t num   = sizeof(data) / sizeof(float);
 
-  CT_Vector *v = ct_vector_new(8, sizeof(float), NULL);
+  CT_Vector *v = ct_vector_new(8, sizeof(float));
   CT_IS(v, "init");
   CT_IS(0 == ct_vector_size(v), "not empty");
 
-  CT_VectorIter *iter = ct_vector_iter_new(v, 0, NULL);
+  CT_VectorIter *iter = ct_vector_iter_new(v, 0);
   CT_IS(iter, "init");
   CT_IS(!ct_vector_iter_next(iter), "next != NULL");
 
@@ -39,6 +39,7 @@ int test_vector() {
     CT_DEBUG("rnext: %f", *val);
   }
   CT_IS(data[0] * 100 == last_val, "last val");
+
   while ((val = (float *)ct_vector_iter_prev(iter))) {
     CT_DEBUG("p: %p", val);
     *val     = *val * 10;
@@ -53,7 +54,7 @@ int test_vector() {
   }
   CT_IS(0 == ct_vector_size(v), "not empty");
 
-  ct_vector_free(v, NULL);
+  ct_vector_free(v);
   free(iter);
   return 0;
 fail:

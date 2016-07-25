@@ -1,13 +1,16 @@
 #include "data/vector.h"
 #include "math/math.h"
 
-CT_Vector *ct_vector_new(size_t limit, uint32_t stride, CT_MPool *pool) {
-  CT_Vector *v = CT_MP_ALLOC(pool, CT_Vector);
+enum { CT_VECTOR_FREE = 1 };
+
+CT_Vector *ct_vector_new(size_t limit, uint32_t stride) {
+  CT_Vector *v = calloc(1, sizeof(CT_Vector));
   CT_CHECK_MEM(v);
   if (!ct_vector_init(v, limit, stride)) {
+    v->flags = CT_VECTOR_FREE;
     return v;
   }
-  CT_MP_FREE(pool, v);
+  free(v);
 fail:
   return NULL;
 }
@@ -35,12 +38,11 @@ fail:
   return 1;
 }
 
-void ct_vector_free(CT_Vector *v, CT_MPool *pool) {
+void ct_vector_free(CT_Vector *v) {
   free(v->buffer);
-}
-
-size_t ct_vector_size(const CT_Vector *v) {
-  return v->num;
+  if (v->flags & CT_VECTOR_FREE) {
+    free(v);
+  }
 }
 
 int ct_vector_push(CT_Vector *v, const void *x) {
@@ -72,23 +74,14 @@ int ct_vector_pop(CT_Vector *v, void *out) {
   return 0;
 }
 
-void *ct_vector_get(const CT_Vector *v, size_t idx) {
-  if (idx < v->limit) {
-    return &v->buffer[idx * v->stride];
-  }
-  return NULL;
-}
-
-CT_VectorIter *ct_vector_iter_new(const CT_Vector *v,
-                                  int reverse,
-                                  CT_MPool *pool) {
+CT_VectorIter *ct_vector_iter_new(const CT_Vector *v, int reverse) {
   CT_CHECK(v, "vector is NULL");
-  CT_VectorIter *i = CT_MP_ALLOC(pool, CT_VectorIter);
+  CT_VectorIter *i = malloc(sizeof(CT_VectorIter));
   CT_CHECK_MEM(i);
   if (!ct_vector_iter_init(i, v, reverse)) {
     return i;
   }
-  CT_MP_FREE(pool, i);
+  free(i);
 fail:
   return NULL;
 }
