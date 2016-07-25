@@ -15,9 +15,10 @@ CT_SVGAttribs *ct_svg_attribs(size_t flags, size_t num, ...) {
     va_start(args, num);
     for (size_t i = 0; i < num; i++) {
       char *key = va_arg(args, char *);
+      CT_CHECK_MEM(key);
       char type = (char)va_arg(args, int);
       size_t ks = strlen(key) + 1;
-      CT_DEBUG("attrib: %s (%p)", key, key);
+      CT_DEBUG("attrib: %s (%p, len=%zu)", key, key, ks);
       switch (type) {
         case 's': {
           char *val = va_arg(args, char *);
@@ -48,8 +49,8 @@ CT_SVGAttribs *ct_svg_attribs(size_t flags, size_t num, ...) {
         default:
           CT_SENTINEL("unsupported attrib type: %c", type);
       }
-      va_end(args);
     }
+    va_end(args);
     return a;
   }
 fail:
