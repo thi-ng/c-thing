@@ -5,7 +5,7 @@
 CT_TEST_DECLS
 
 int test_convex_hull() {
-  CT_Vec2f points[] CT_ALIGN(16) = {{0, 0},   {5, 0}, {2, 0.1},
+  CT_Vec2f points[] = {{0, 0},   {5, 0}, {2, 0.1},
                                     {2, 0.2}, {0, 5}, {1, 2}};
   CT_Vector *hull = ct_vector_new(8, sizeof(CT_Vec2f));
   size_t len      = ct_convexhull2f(points, 6, hull);
