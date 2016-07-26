@@ -111,6 +111,7 @@ int test_soa() {
   }
   //trace_soa(aa);
   ct_soa_free(aa);
+  free(data);
 
   return 0;
 }

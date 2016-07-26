@@ -2,6 +2,8 @@
 
 #include "geom/hull.h"
 
+#define ITER 1
+
 CT_TEST_DECLS
 
 int test_convex_hull() {
@@ -22,7 +24,7 @@ int test_convex_hull() {
   srand(0);
   size_t num        = (size_t)1e6;
   CT_Vec2f *samples = malloc(num * sizeof(CT_Vec2f));
-  for (size_t k = 0; k < 10; k++) {
+  for (size_t k = 0; k < ITER; k++) {
     for (size_t i = 0; i < num; i++) {
       ct_set2fxy(&samples[i], ct_rand_norm(), ct_rand_norm());
     }
