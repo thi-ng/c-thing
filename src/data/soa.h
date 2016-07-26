@@ -8,6 +8,7 @@ typedef struct {
   void **comps;
   size_t num;
   size_t width;
+  size_t stride;
 } CT_SOA;
 
 #ifdef CT_FEATURE_SSE
@@ -129,8 +130,13 @@ typedef float ct_soa_vec;
   }
 
 CT_SOA *ct_soa_new(size_t width, size_t num, size_t stride);
-int ct_soa_init(CT_SOA *a, void **comps, size_t width, size_t num);
+int ct_soa_init(CT_SOA *a,
+                void **comps,
+                size_t width,
+                size_t num,
+                size_t stride);
 void ct_soa_free(CT_SOA *s);
+void *ct_soa_flatten(const CT_SOA *s);
 
 CT_SOA *ct_soa_add1f_imm(CT_SOA *a, float b);
 CT_SOA *ct_soa_sub1f_imm(CT_SOA *a, float b);

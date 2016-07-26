@@ -3,7 +3,9 @@
 CT_SOA *ct_soa_new(size_t width, size_t num, size_t stride) {
   void *buf = NULL;
   CT_SOA *s = NULL;
-  s         = calloc(1, sizeof(CT_SOA));
+  CT_CHECK(0 == num % (1 << CT_SOA_WORD_SHIFT), "num must be multiple of %d",
+           (1 << CT_SOA_WORD_SHIFT));
+  s = calloc(1, sizeof(CT_SOA));
   CT_CHECK_MEM(s);
   buf = calloc(width * num, stride);
   CT_CHECK_MEM(buf);
@@ -12,8 +14,9 @@ CT_SOA *ct_soa_new(size_t width, size_t num, size_t stride) {
   for (size_t i = 0; i < width; i++) {
     s->comps[i] = (void *)((uintptr_t)buf + i * num * stride);
   }
-  s->num   = num;
-  s->width = width;
+  s->num    = num;
+  s->width  = width;
+  s->stride = stride;
   //CT_INFO("soa: %p, comps: %p, comps[0]: %p", s, s->comps, s->comps[0]);
   return s;
 fail:
@@ -26,11 +29,18 @@ fail:
   return NULL;
 }
 
-int ct_soa_init(CT_SOA *s, void **comps, size_t width, size_t num) {
+int ct_soa_init(CT_SOA *s,
+                void **comps,
+                size_t width,
+                size_t num,
+                size_t stride) {
   CT_CHECK(comps, "comps is NULL");
-  s->comps = comps;
-  s->width = width;
-  s->num   = num;
+  CT_CHECK(0 == num % (1 << CT_SOA_WORD_SHIFT), "num must be multiple of %d",
+           (1 << CT_SOA_WORD_SHIFT));
+  s->comps  = comps;
+  s->width  = width;
+  s->num    = num;
+  s->stride = stride;
   return 0;
 fail:
   return 1;
@@ -40,6 +50,17 @@ void ct_soa_free(CT_SOA *s) {
   free(s->comps[0]);
   free(s->comps);
   free(s);
+}
+
+void *ct_soa_flatten(const CT_SOA *s) {
+  size_t len   = s->num * s->stride;
+  uint8_t *out = malloc(s->width * len);
+  CT_CHECK_MEM(out);
+  for (size_t i = 0; i < s->width; i++) {
+    memcpy(&out[i * len], s->comps[i], len);
+  }
+fail:
+  return out;
 }
 
 #ifdef CT_FEATURE_SSE

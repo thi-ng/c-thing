@@ -37,8 +37,8 @@ int test_soa() {
 
   float *bufa[] = {xa, ya};
   float *bufb[] = {xb, yb};
-  CT_IS(!ct_soa_init(&a, (void **)bufa, 2, NUM), "init a");
-  CT_IS(!ct_soa_init(&b, (void **)bufb, 2, NUM), "init b");
+  CT_IS(!ct_soa_init(&a, (void **)bufa, 2, NUM, sizeof(float)), "init a");
+  CT_IS(!ct_soa_init(&b, (void **)bufb, 2, NUM, sizeof(float)), "init b");
   reset_soa2(&a, &b);
 
   ct_soa_add1f_imm(&a, 10);
