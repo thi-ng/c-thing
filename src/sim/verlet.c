@@ -59,7 +59,7 @@ static void collide2d(CT_Verlet *v, size_t preserve) {
             ct_mul2fn(&delta, l, &delta_scaled);
             ct_limit2f_imm(&delta_scaled, maxf);
             ct_sub2fv(p, &delta_scaled, &np);
-            ct_spgrid_update(&v->accel, &pos[i], (float *)&np, (void *)i);
+            ct_spgrid_update(&v->accel, &pos[i], np.buf, (void *)i);
             *p = np;
             ct_add2fv(q, &delta_scaled, &nq);
             if (preserve) {
@@ -74,7 +74,7 @@ static void collide2d(CT_Verlet *v, size_t preserve) {
               ct_sub2fxy_imm(&qvel, fx, fy);
               ct_sub2fv(&nq, &qvel, (CT_Vec2f *)&prev[id]);
             }
-            ct_spgrid_update(&v->accel, &pos[id], (float *)&nq, (void *)id);
+            ct_spgrid_update(&v->accel, &pos[id], nq.buf, (void *)id);
             *q = nq;
           }
         }
@@ -115,7 +115,7 @@ static void collide3d(CT_Verlet *v, size_t preserve) {
             ct_mul3fn(&delta, l, &delta_scaled);
             ct_limit3f_imm(&delta_scaled, maxf);
             ct_sub3fv(p, &delta_scaled, &np);
-            ct_spgrid_update(&v->accel, &pos[i], (float *)&np, (void *)i);
+            ct_spgrid_update(&v->accel, &pos[i], np.buf, (void *)i);
             *p = np;
             ct_add3fv(q, &delta_scaled, &nq);
             if (preserve) {
@@ -131,7 +131,7 @@ static void collide3d(CT_Verlet *v, size_t preserve) {
               ct_sub3fxyz_imm(&qvel, fx, fy, fz);
               ct_sub3fv(&nq, &qvel, (CT_Vec3f *)&prev[id]);
             }
-            ct_spgrid_update(&v->accel, &pos[id], (float *)&nq, (void *)id);
+            ct_spgrid_update(&v->accel, &pos[id], nq.buf, (void *)id);
             *q = nq;
           }
         }
@@ -336,12 +336,12 @@ static void springs2d(CT_Verlet *v) {
     ct_limit2f_imm(&delta, maxf);
     float dx = a->x - delta.x;
     float dy = a->y - delta.y;
-    ct_spgrid_update(&v->accel, (float *)a, FVEC(dx, dy), (void *)s->a);
+    ct_spgrid_update(&v->accel, a->buf, FVEC(dx, dy), (void *)s->a);
     a->x = dx;
     a->y = dy;
     dx   = b->x + delta.x;
     dy   = b->y + delta.y;
-    ct_spgrid_update(&v->accel, (float *)b, FVEC(dx, dy), (void *)s->b);
+    ct_spgrid_update(&v->accel, b->buf, FVEC(dx, dy), (void *)s->b);
     b->x = dx;
     b->y = dy;
   }
@@ -363,14 +363,14 @@ static void springs3d(CT_Verlet *v) {
     float dx = a->x - delta.x;
     float dy = a->y - delta.y;
     float dz = a->z - delta.y;
-    ct_spgrid_update(&v->accel, (float *)a, FVEC(dx, dy, dz), (void *)s->a);
+    ct_spgrid_update(&v->accel, a->buf, FVEC(dx, dy, dz), (void *)s->a);
     a->x = dx;
     a->y = dy;
     a->z = dz;
     dx   = b->x + delta.x;
     dy   = b->y + delta.y;
     dz   = b->z + delta.z;
-    ct_spgrid_update(&v->accel, (float *)b, FVEC(dx, dy, dz), (void *)s->b);
+    ct_spgrid_update(&v->accel, b->buf, FVEC(dx, dy, dz), (void *)s->b);
     b->x = dx;
     b->y = dy;
     b->z = dz;
@@ -400,7 +400,7 @@ ct_export int ct_verlet_init2d(CT_Verlet *v,
   CT_Vec2f a, b;
   ct_sub2fn((CT_Vec2f *)v->bounds, v->maxForce * 10, &a);
   ct_add2fn((CT_Vec2f *)&v->bounds[2], v->maxForce * 10, &b);
-  return ct_spgrid_init(&v->accel, (float *)&a, (float *)&b, grid, 2, 0x100);
+  return ct_spgrid_init(&v->accel, a.buf, b.buf, grid, 2, 0x100);
 fail:
   return 1;
 }
@@ -428,7 +428,7 @@ ct_export int ct_verlet_init3d(CT_Verlet *v,
   CT_Vec3f a, b;
   ct_sub3fn((CT_Vec3f *)v->bounds, v->maxForce * 10, &a);
   ct_add3fn((CT_Vec3f *)&v->bounds[3], v->maxForce * 10, &b);
-  return ct_spgrid_init(&v->accel, (float *)&a, (float *)&b, grid, 3, 0x100);
+  return ct_spgrid_init(&v->accel, a.buf, b.buf, grid, 3, 0x100);
 fail:
   return 1;
 }

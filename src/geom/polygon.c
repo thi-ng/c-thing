@@ -3,6 +3,7 @@
 
 // http://www.inf.usi.ch/hormann/papers/Greiner.1998.ECO.pdf
 // http://davis.wpi.edu/~matt/courses/clipping/
+// http://syntheti.cc/article/polygon-clipping/
 // https://github.com/tcql/greiner-hormann/
 // https://github.com/w8r/GreinerHormann/
 

@@ -1,5 +1,5 @@
-#include "io/svg.h"
 #include "geom/hull.h"
+#include "io/svg.h"
 
 #define NUM 10000
 #define WIDTH 600

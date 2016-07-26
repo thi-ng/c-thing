@@ -360,10 +360,11 @@ CT_BEGIN_DECLS
 // ct_set_swizzle4f(ZYXX, [1,2,3,4], [10,20,30]) => a=[30,20,10,10]
 
 ct_export ct_inline CT_Vec2f *ct_swizzle2f(size_t id, CT_Vec2f *a, void *b) {
-  float x = ((float *)b)[CT_SWIZZLE_B(id)];
-  float y = ((float *)b)[CT_SWIZZLE_A(id)];
-  a->x    = x;
-  a->y    = y;
+  float *v = (float *)b;
+  float x  = v[CT_SWIZZLE_B(id)];
+  float y  = v[CT_SWIZZLE_A(id)];
+  a->x     = x;
+  a->y     = y;
   return a;
 }
 
@@ -375,12 +376,13 @@ ct_export ct_inline void *ct_set_swizzle2f(size_t id, void *a, CT_Vec2f *b) {
 }
 
 ct_export ct_inline CT_Vec3f *ct_swizzle3f(size_t id, CT_Vec3f *a, void *b) {
-  float x = ((float *)b)[CT_SWIZZLE_C(id)];
-  float y = ((float *)b)[CT_SWIZZLE_B(id)];
-  float z = ((float *)b)[CT_SWIZZLE_A(id)];
-  a->x    = x;
-  a->y    = y;
-  a->z    = z;
+  float *v = (float *)b;
+  float x  = v[CT_SWIZZLE_C(id)];
+  float y  = v[CT_SWIZZLE_B(id)];
+  float z  = v[CT_SWIZZLE_A(id)];
+  a->x     = x;
+  a->y     = y;
+  a->z     = z;
   return a;
 }
 
@@ -393,14 +395,15 @@ ct_export ct_inline void *ct_set_swizzle3f(size_t id, void *a, CT_Vec3f *b) {
 }
 
 ct_export ct_inline CT_Vec4f *ct_swizzle4f(size_t id, CT_Vec4f *a, void *b) {
-  float x = ((float *)b)[CT_SWIZZLE_D(id)];
-  float y = ((float *)b)[CT_SWIZZLE_C(id)];
-  float z = ((float *)b)[CT_SWIZZLE_B(id)];
-  float w = ((float *)b)[CT_SWIZZLE_A(id)];
-  a->x    = x;
-  a->y    = y;
-  a->z    = z;
-  a->w    = w;
+  float *v = (float *)b;
+  float x  = v[CT_SWIZZLE_D(id)];
+  float y  = v[CT_SWIZZLE_C(id)];
+  float z  = v[CT_SWIZZLE_B(id)];
+  float w  = v[CT_SWIZZLE_A(id)];
+  a->x     = x;
+  a->y     = y;
+  a->z     = z;
+  a->w     = w;
   return a;
 }
 

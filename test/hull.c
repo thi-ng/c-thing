@@ -5,10 +5,9 @@
 CT_TEST_DECLS
 
 int test_convex_hull() {
-  CT_Vec2f points[] = {{0, 0},   {5, 0}, {2, 0.1},
-                                    {2, 0.2}, {0, 5}, {1, 2}};
-  CT_Vector *hull = ct_vector_new(8, sizeof(CT_Vec2f));
-  size_t len      = ct_convexhull2f(points, 6, hull);
+  CT_Vec2f points[] = {{0, 0}, {5, 0}, {2, 0.1}, {2, 0.2}, {0, 5}, {1, 2}};
+  CT_Vector *hull   = ct_vector_new(8, sizeof(CT_Vec2f));
+  size_t len        = ct_convexhull2f(points, 6, hull);
   CT_IS(3 == len, "hull len: %zu", len);
   //for(size_t i=0; i<6; i++) {
   //  CT_INFO("%zu: %f,%f", i, points[i].x, points[i].y);

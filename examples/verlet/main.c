@@ -49,7 +49,7 @@ void spawn_particle(CT_Verlet *phys, CT_Vec2f *p, size_t id) {
       ok = (ct_distsq2fv(&q, (CT_Vec2f *)&phys->pos[i]) >= raccept);
     }
   } while (!ok);
-  ct_verlet_set2f(phys, id, (float *)&q, r);
+  ct_verlet_set2f(phys, id, q.buf, r);
   if (id > 0) {
     ct_verlet_set_spring2d(phys, phys->numS, id - 1, id, 16, 0.5);
     phys->numS++;

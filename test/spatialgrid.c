@@ -33,7 +33,7 @@ int test_spatialgrid1d() {
   CT_IS(0 == num, "count: %zu", num);
   num = ct_spgrid_select1d(&grid, c.x, 100, (void **)&results, 4);
   CT_IS(1 == num, "count: %zu", num);
-  CT_IS(!ct_spgrid_update(&grid, b.buf, (float *)&b, &b), "update b");
+  CT_IS(!ct_spgrid_update(&grid, b.buf, b.buf, b.buf), "update b");
   num = ct_spgrid_select1d(&grid, b.x, 0, (void **)&results, 4);
   CT_IS(1 == num, "count: %zu", num);
   CT_IS(!ct_spgrid_update(&grid, b.buf, FVEC(90), &b), "update b");

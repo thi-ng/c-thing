@@ -193,10 +193,10 @@ ct_export size_t ct_spgrid_select2d(const CT_SpatialGrid *grid,
   CT_Vec2f a, b;
   ct_sub2fv((CT_Vec2f *)p, (CT_Vec2f *)eps, &a);
   ct_add2fv((CT_Vec2f *)p, (CT_Vec2f *)eps, &b);
-  int sx = find_cell_idx(grid, (float *)&a, 0);
-  int ex = find_cell_idx(grid, (float *)&b, 0);
-  int sy = find_cell_idx(grid, (float *)&a, 1);
-  int ey = find_cell_idx(grid, (float *)&b, 1);
+  int sx = find_cell_idx(grid, a.buf, 0);
+  int ex = find_cell_idx(grid, b.buf, 0);
+  int sy = find_cell_idx(grid, a.buf, 1);
+  int ey = find_cell_idx(grid, b.buf, 1);
   sx     = CT_MAX(sx, 0);
   sy     = CT_MAX(sy, 0);
   ex     = ct_mini(ex, grid->size[0] - 1);
@@ -244,12 +244,12 @@ ct_export size_t ct_spgrid_select3d(const CT_SpatialGrid *grid,
   ct_sub3fv((CT_Vec3f *)p, (CT_Vec3f *)eps, &a);
   ct_add3fv((CT_Vec3f *)p, (CT_Vec3f *)eps, &b);
 #endif
-  int sx = find_cell_idx(grid, (float *)&a, 0);
-  int sy = find_cell_idx(grid, (float *)&a, 1);
-  int sz = find_cell_idx(grid, (float *)&a, 2);
-  int ex = find_cell_idx(grid, (float *)&b, 0);
-  int ey = find_cell_idx(grid, (float *)&b, 1);
-  int ez = find_cell_idx(grid, (float *)&b, 2);
+  int sx = find_cell_idx(grid, a.buf, 0);
+  int sy = find_cell_idx(grid, a.buf, 1);
+  int sz = find_cell_idx(grid, a.buf, 2);
+  int ex = find_cell_idx(grid, b.buf, 0);
+  int ey = find_cell_idx(grid, b.buf, 1);
+  int ez = find_cell_idx(grid, b.buf, 2);
   sx     = CT_MAX(sx, 0);
   sy     = CT_MAX(sy, 0);
   sz     = CT_MAX(sz, 0);

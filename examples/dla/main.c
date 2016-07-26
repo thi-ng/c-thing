@@ -37,13 +37,13 @@ static void add_particle(DLA *dla) {
   static CT_Vec3f *res[BUF_SIZE];
   CT_Vec3f *p = rand_particle(dla);
   while (1) {
-    const size_t num = ct_spgrid_select2d(&dla->accel, (float *)p, dla->eps,
+    const size_t num = ct_spgrid_select2d(&dla->accel, p->buf, dla->eps,
                                           (void **)&res, BUF_SIZE);
     if (num > 0) {
       float minD  = FLT_MAX;
       CT_Vec3f *c = NULL;
       for (size_t i = 0; i < num; i++) {
-        const float d = ct_distsq2fv((CT_Vec2f *)p, (CT_Vec2f *)res[i]);
+        const float d = ct_distsq2fv(&p->xy, (CT_Vec2f *)res[i]);
         if (d >= 1 && d < minD) {
           minD = d;
           c    = res[i];
@@ -59,7 +59,7 @@ static void add_particle(DLA *dla) {
         p->y          = c->y + t * (p->y - c->y);
 #endif
         p->z = c->z;
-        ct_spgrid_insert(&dla->accel, (float *)p, p);
+        ct_spgrid_insert(&dla->accel, p->buf, p);
         return;
       }
     }
@@ -78,7 +78,7 @@ int main() {
   for (int i = 0; i < dla.seeds; i++) {
     CT_Vec3f *p = rand_particle(&dla);
     p->z        = i;
-    ct_spgrid_insert(&dla.accel, (float *)p, p);
+    ct_spgrid_insert(&dla.accel, p->buf, p);
     cols[i] = rand() & 0xffffff;
   }
   while (dla.num < dla.length) {
