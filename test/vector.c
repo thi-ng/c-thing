@@ -11,10 +11,17 @@ int test_vector() {
   CT_Vector *v = ct_vector_new(8, sizeof(float));
   CT_IS(v, "init");
   CT_IS(0 == ct_vector_size(v), "not empty");
+  CT_IS(NULL == ct_vector_peek(v), "peek");
+  CT_IS(1 == ct_vector_pop(v, NULL), "pop");
 
   CT_VectorIter *iter = ct_vector_iter_new(v, 0);
   CT_IS(iter, "init");
-  CT_IS(!ct_vector_iter_next(iter), "next != NULL");
+  CT_IS(!ct_vector_iter_next(iter), "fwd next != NULL");
+  CT_IS(!ct_vector_iter_prev(iter), "fwd prev != NULL");
+
+  ct_vector_iter_init(iter, v, 1);
+  CT_IS(!ct_vector_iter_next(iter), "rev next != NULL");
+  CT_IS(!ct_vector_iter_prev(iter), "rev prev != NULL");
 
   for (size_t i = 0; i < num; i++) {
     CT_IS(!ct_vector_push(v, &data[i]), "push %zu", i);

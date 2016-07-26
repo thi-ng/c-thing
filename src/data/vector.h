@@ -59,5 +59,5 @@ ct_inline void *ct_vector_get_unsafe(const CT_Vector *v, size_t idx) {
 }
 
 ct_inline void *ct_vector_peek(const CT_Vector *v) {
-  return ct_vector_get(v, v->num - 1);
+  return v->num ? ct_vector_get(v, v->num - 1) : NULL;
 }
