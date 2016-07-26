@@ -1,3 +1,5 @@
+#include <string.h>
+
 #include "data/vector.h"
 #include "math/math.h"
 
