@@ -50,9 +50,11 @@ int test_octree() {
   //srand(time(0));
   int num = 1e5;
   for (int i = 0; i < num; i++) {
-    CT_Vec3f *p = ct_vec3f(ct_rand_normpos() * 100, ct_rand_normpos() * 100,
-                           ct_rand_normpos() * 100, &vpool);
-    ct_octree_insert(&t, p, NULL);
+    CT_Vec3f *p =
+        ct_vec3f(ct_rand_normpos() * 99.999, ct_rand_normpos() * 99.999,
+                 ct_rand_normpos() * 99.999, &vpool);
+    int ok = !ct_octree_insert(&t, p, NULL);
+    CT_CHECK(ok, "insert: %f,%f", p->x, p->y);
   }
   struct bounds_t bounds = {{1000, 1000, 1000}, {-1000, -1000, -1000}, 0};
   ct_octree_visit_leaves(&t, ct_octree_bounds, &bounds);
