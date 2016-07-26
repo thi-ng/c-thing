@@ -18,6 +18,8 @@ typedef struct {
 #define CT_SOA_SET1 _mm256_set1_ps
 #define CT_SOA_SQRT _mm256_sqrt_ps
 #define CT_SOA_RSQRT _mm256_rsqrt_ps
+#define CT_SOA_MIN _mm256_min_ps
+#define CT_SOA_MAX _mm256_max_ps
 typedef __m256 ct_soa_vec;
 #else
 #include <xmmintrin.h>
@@ -25,6 +27,8 @@ typedef __m256 ct_soa_vec;
 #define CT_SOA_SET1 _mm_set1_ps
 #define CT_SOA_SQRT _mm_sqrt_ps
 #define CT_SOA_RSQRT _mm_rsqrt_ps
+#define CT_SOA_MIN _mm_min_ps
+#define CT_SOA_MAX _mm_max_ps
 typedef __m128 ct_soa_vec;
 #endif
 
@@ -34,6 +38,8 @@ typedef __m128 ct_soa_vec;
 #define CT_SOA_SET1
 #define CT_SOA_SQRT sqrtf
 #define CT_SOA_RSQRT 1.0f / sqrtf
+#define CT_SOA_MIN CT_MIN
+#define CT_SOA_MAX CT_MAX
 typedef float ct_soa_vec;
 
 #endif
@@ -140,6 +146,9 @@ CT_SOA *ct_soa_add_imm(CT_SOA *a, const CT_SOA *b);
 CT_SOA *ct_soa_sub_imm(CT_SOA *a, const CT_SOA *b);
 CT_SOA *ct_soa_mul_imm(CT_SOA *a, const CT_SOA *b);
 CT_SOA *ct_soa_div_imm(CT_SOA *a, const CT_SOA *b);
+
+CT_SOA *ct_soa_min_imm(CT_SOA *a, const CT_SOA *b);
+CT_SOA *ct_soa_max_imm(CT_SOA *a, const CT_SOA *b);
 
 CT_SOA *ct_soa_add(const CT_SOA *a, const CT_SOA *b, CT_SOA *out);
 CT_SOA *ct_soa_sub(const CT_SOA *a, const CT_SOA *b, CT_SOA *out);

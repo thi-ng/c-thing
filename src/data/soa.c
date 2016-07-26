@@ -42,6 +42,12 @@ void ct_soa_free(CT_SOA *s) {
   free(s);
 }
 
+#ifdef CT_FEATURE_SSE
+
+#else
+
+#endif
+
 CT_SOA_PROLOGUE2_SCALAR_IMM(add1f) {
   aa[j] += bb;
 }
@@ -99,6 +105,16 @@ CT_SOA_EPILOGUE_IMM;
 
 CT_SOA_PROLOGUE2_IMM(div) {
   aa[j] /= bb[j];
+}
+CT_SOA_EPILOGUE_IMM;
+
+CT_SOA_PROLOGUE2_IMM(min) {
+  aa[j] = CT_SOA_MIN(aa[j], bb[j]);
+}
+CT_SOA_EPILOGUE_IMM;
+
+CT_SOA_PROLOGUE2_IMM(max) {
+  aa[j] = CT_SOA_MAX(aa[j], bb[j]);
 }
 CT_SOA_EPILOGUE_IMM;
 

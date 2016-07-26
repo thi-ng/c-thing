@@ -56,6 +56,14 @@ int test_soa() {
   ct_soa_get2f(&a, 3, &v2);
   CT_IS(14 == v2.x && 24 == v2.y, "get2f");
 
+  ct_soa_max_imm(&a, &b);
+  CT_IS(0 == ct_array_compare_f32(xa, FVEC(11, 20, 30, 40), EPS, NUM), "max x");
+  CT_IS(0 == ct_array_compare_f32(ya, FVEC(21, 22, 30, 40), EPS, NUM), "max y");
+
+  ct_soa_min_imm(&a, &b);
+  CT_IS(0 == ct_array_compare_f32(xa, xb, EPS, NUM), "min x");
+  CT_IS(0 == ct_array_compare_f32(ya, yb, EPS, NUM), "min y");
+
   reset_soa2(&a, &b);
   ct_soa_add_imm(&a, &b);
   CT_IS(0 == ct_array_compare_f32(xa, FVEC(11, 22, 33, 44), EPS, NUM), "addx");
