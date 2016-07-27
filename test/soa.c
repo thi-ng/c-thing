@@ -60,6 +60,13 @@ int test_soa() {
   CT_IS(0 == ct_array_compare_f32(xa, FVEC(11, 20, 30, 40), EPS, NUM), "max x");
   CT_IS(0 == ct_array_compare_f32(ya, FVEC(21, 22, 30, 40), EPS, NUM), "max y");
 
+  float *flat = ct_soa_flatten(&a, NULL);
+  CT_IS(flat, "flat == NULL");
+  CT_IS(0 == ct_array_compare_f32(flat, FVEC(11, 20, 30, 40, 21, 22, 30, 40),
+                                  EPS, NUM * 2),
+        "cmp flat");
+  free(flat);
+
   ct_soa_min_imm(&a, &b);
   CT_IS(0 == ct_array_compare_f32(xa, xb, EPS, NUM), "min x");
   CT_IS(0 == ct_array_compare_f32(ya, yb, EPS, NUM), "min y");

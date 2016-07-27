@@ -136,7 +136,7 @@ int ct_soa_init(CT_SOA *a,
                 size_t num,
                 size_t stride);
 void ct_soa_free(CT_SOA *s);
-void *ct_soa_flatten(const CT_SOA *s);
+void *ct_soa_flatten(const CT_SOA *s, void *out);
 
 CT_SOA *ct_soa_add1f_imm(CT_SOA *a, float b);
 CT_SOA *ct_soa_sub1f_imm(CT_SOA *a, float b);

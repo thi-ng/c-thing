@@ -52,15 +52,15 @@ void ct_soa_free(CT_SOA *s) {
   free(s);
 }
 
-void *ct_soa_flatten(const CT_SOA *s) {
+void *ct_soa_flatten(const CT_SOA *s, void *out) {
   size_t len   = s->num * s->stride;
-  uint8_t *out = malloc(s->width * len);
-  CT_CHECK_MEM(out);
+  uint8_t *buf = out ? out : malloc(s->width * len);
+  CT_CHECK_MEM(buf);
   for (size_t i = 0; i < s->width; i++) {
-    memcpy(&out[i * len], s->comps[i], len);
+    memcpy(&buf[i * len], s->comps[i], len);
   }
 fail:
-  return out;
+  return buf;
 }
 
 #ifdef CT_FEATURE_SSE
