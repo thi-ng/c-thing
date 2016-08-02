@@ -126,6 +126,8 @@ make config=release_sse ex-chull && bin/release/ex-chull > assets/chull.svg
 
 [[./assets/dla.png]]
 
+[[./assets/dla-color.png]]
+
 #+BEGIN_SRC shell
 # build library & example app
 make config=release_sse ex-dla && bin/release/ex-dla > assets/dla.svg
