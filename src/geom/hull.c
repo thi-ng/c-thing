@@ -11,7 +11,7 @@ static size_t hull2f(CT_Vec2f *points, size_t num, CT_Vector *h) {
       len--;
     }
     ct_vector_push(h, &points[i]);
-    CT_DEBUG("add h: %f,%f (%zu)", points[i].x, points[i].y, len);
+    //CT_DEBUG("add h: %f,%f (%zu)", points[i].x, points[i].y, len);
     len++;
   }
   return len - 1;
