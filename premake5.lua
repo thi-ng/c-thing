@@ -114,7 +114,15 @@ flags { "LinkTimeOptimization" }
 
 project "ex-verlet"
 kind "ConsoleApp"
-files { "examples/verlet/*.c" }
+files { "examples/verlet/main.c" }
+includedirs { "examples/common", "examples/verlet" }
+links "lib"
+dependson "lib"
+flags { "LinkTimeOptimization" }
+
+project "ex-verlet-pack"
+kind "ConsoleApp"
+files { "examples/verlet/cpack.c" }
 includedirs { "examples/common", "examples/verlet" }
 links "lib"
 dependson "lib"
