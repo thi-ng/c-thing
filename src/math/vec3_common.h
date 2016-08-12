@@ -206,4 +206,11 @@ ct_export ct_inline CT_Vec3f *ct_limit3f_imm(CT_Vec3f *v, float len) {
   return v;
 }
 
+ct_export ct_inline CT_Vec3f *ct_orthonormal3fv(const CT_Vec3f *a,
+                                                const CT_Vec3f *b,
+                                                const CT_Vec3f *c,
+                                                CT_Vec3f *out) {
+  CT_Vec3f t;
+  return ct_cross3fv_imm(ct_sub3fv(c, a, out), ct_sub3fv(b, a, &t));
+}
 CT_END_DECLS
