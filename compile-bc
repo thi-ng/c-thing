@@ -1,0 +1,53 @@
+#!/bin/sh
+
+SRC=;
+SRC_DIRS="src/data src/geom src/geom/clip src/math src/mem src/sim"
+for d in $SRC_DIRS; do for f in `ls $d/*.c`; do SRC="$SRC $f"; done; done;
+
+CFLAGS="-std=c11 -O2 -Isrc -DCT_NO_EXPORT"
+EMFLAGS="-s ASM_JS=1 -s ASSERTIONS=0 --js-library src/rt_cthing.js"
+OUT=libcthing.bc
+
+usage()
+{
+    cat <<EOF
+Usage:
+  -d     : remove duplicate functions
+  -D SYM : add define
+  -h     : show this help
+  -k     : enable runtime checks
+  -m     : enable memory checks
+EOF
+    exit 1
+}
+
+while getopts dhkmD: opt; do
+    case $opt in
+        d) EMFLAGS="$EMFLAGS -s ELIMINATE_DUPLICATE_FUNCTIONS=1"
+           ;;
+        k) CFLAGS="$CFLAGS -DCT_FEATURE_CHECKS"
+           ;;
+        m) CFLAGS="$CFLAGS -DCT_FEATURE_CHECK_MEM"
+           ;;
+        h) usage
+           ;;
+        D) CFLAGS="$CFLAGS -D$OPTARG"
+           ;;
+        \?) echo "invalid option: $opt" >&2
+            usage
+            exit 1
+            ;;
+        :) echo "$opt missing argument" >&2
+           usage
+           exit 1
+           ;;
+    esac
+done
+
+echo "cflags: $CFLAGS"
+echo "emflags: $EMFLAGS"
+echo "src: $SRC"
+
+time emcc $CFLAGS $EMFLAGS -o $OUT $SRC
+
+ls -la $OUT
