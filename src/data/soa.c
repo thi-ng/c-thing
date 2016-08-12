@@ -1,3 +1,5 @@
+#include <string.h>
+
 #include "data/soa.h"
 
 CT_SOA *ct_soa_new(size_t width, size_t num, size_t stride) {
