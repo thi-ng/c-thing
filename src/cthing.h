@@ -37,7 +37,7 @@
 #define CT_ANSI_RESET
 #endif
 
-#ifdef __EMSCRIPTEN__
+#if defined(__EMSCRIPTEN__) && !defined(CT_NO_EXPORT)
 #define ct_export __attribute__((used))
 #else
 #define ct_export
@@ -87,7 +87,7 @@
 #define CT_DEBUG(M, ...)
 #else
 #define CT_DEBUG(M, ...) \
-  fprintf(stderr, "[DEBUG] (%s:%d) " M "\n", __FILE__, __LINE__, ##__VA_ARGS__)
+  fprintf(stderr, "[DEBUG ] (%s:%d) " M "\n", __FILE__, __LINE__, ##__VA_ARGS__)
 #endif  // NDEBUG
 
 #define CT_FMT_ERRNO() (errno == 0 ? "n/a" : strerror(errno))
@@ -97,12 +97,12 @@
           CT_ANSI_RED "[ERROR] (%s:%d, err: %s) " M CT_ANSI_RESET "\n", \
           __FILE__, __LINE__, CT_FMT_ERRNO(), ##__VA_ARGS__)
 
-#define CT_WARN(M, ...)                                                  \
-  fprintf(stderr, "[WARN] (%s:%d: err: %s) " M "\n", __FILE__, __LINE__, \
+#define CT_WARN(M, ...)                                                    \
+  fprintf(stderr, "[WARN  ] (%s:%d: err: %s) " M "\n", __FILE__, __LINE__, \
           CT_FMT_ERRNO(), ##__VA_ARGS__)
 
 #define CT_INFO(M, ...) \
-  fprintf(stderr, "[INFO] (%s:%d) " M "\n", __FILE__, __LINE__, ##__VA_ARGS__)
+  fprintf(stderr, "[INFO  ] (%s:%d) " M "\n", __FILE__, __LINE__, ##__VA_ARGS__)
 
 #define CT_SUCCESS(M, ...)                                                 \
   fprintf(stderr, CT_ANSI_GREEN "[SUCCESS] (%s:%d) " M CT_ANSI_RESET "\n", \

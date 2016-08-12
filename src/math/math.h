@@ -48,7 +48,7 @@ uint32_t ct_parse_hex32(char *src, uint32_t err);
 // x must be 0..1
 // bias: 1 = unbiased, <1 = bias towards high, >1 = bias towards low
 ct_export ct_inline float ct_biasf(float x, float low, float high, float bias) {
-    return low + (high - low) * powf(x, bias);
+  return low + (high - low) * powf(x, bias);
 }
 
 ct_export ct_inline int ct_clampi(const int x, const int a, const int b) {
