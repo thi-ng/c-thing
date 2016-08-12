@@ -20,6 +20,7 @@ Usage:
   -a     : separate asm.js output
   -c     : enable Closure compiler step
   -d     : remove duplicate functions
+  -e     : disable function export
   -D SYM : add define
   -h     : show this help
   -k     : enable runtime checks
@@ -30,7 +31,7 @@ EOF
     exit 1
 }
 
-while getopts acdhkmstD: opt; do
+while getopts acdehkmstD: opt; do
     case $opt in
         s) CFLAGS="$CFLAGS -DCT_FEATURE_SSE -fslp-vectorize -msse2"
            EMFLAGS="$EMFLAGS -s SIMD=1"
@@ -42,6 +43,8 @@ while getopts acdhkmstD: opt; do
         d) EMFLAGS="$EMFLAGS -s ELIMINATE_DUPLICATE_FUNCTIONS=1"
            # EMFLAGS="$EMFLAGS -s ELIMINATE_DUPLICATE_FUNCTIONS_PASSES=5"
            EMFLAGS="$EMFLAGS -s ELIMINATE_DUPLICATE_FUNCTIONS_DUMP_EQUIVALENT_FUNCTIONS=1"
+           ;;
+        e) CFLAGS="$CFLAGS -DCT_NO_EXPORT"
            ;;
         k) CFLAGS="$CFLAGS -DCT_FEATURE_CHECKS"
            ;;
@@ -82,8 +85,8 @@ time emcc $CFLAGS \
      $TESTS
 
 ls -la $OUT
-echo "postprocessing..."
-node postprocess.js
+echo "postprocessing... $OUT -> $MIN"
+node postprocess.js $OUT $MIN
 ls -la $MIN
 cp $OUT geom-cljs/resources/public/js/
 cp $MIN geom-cljs/resources/public/js/
