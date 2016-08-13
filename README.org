@@ -13,7 +13,7 @@
          - [[#1d2d-cellular-automata][1D/2D Cellular automata]]
          - [[#convex-hull][Convex Hull]]
          - [[#diffusion-limited-aggregation][Diffusion-Limited Aggregation]]
-     - [[#glfw-desktop--emscripten][GLFW (desktop & emscripten)]]
+         - [[#glfw-desktop--emscripten][GLFW (desktop & emscripten)]]
          - [[#poisson-disc-sampling-image-conversion][Poisson disc sampling image conversion]]
          - [[#polygon-clipping-greiner-hormann][Polygon clipping (Greiner-Hormann)]]
          - [[#polygon-offsetting][Polygon offsetting]]
@@ -134,7 +134,7 @@ make config=release_sse ex-chull && bin/release/ex-chull > assets/chull.svg
 make config=release_sse ex-dla && bin/release/ex-dla > assets/dla.svg
 #+END_SRC
 
-** GLFW (desktop & emscripten)
+*** GLFW (desktop & emscripten)
 
 [[./examples/glfw/ex01.c][Source]]
 
