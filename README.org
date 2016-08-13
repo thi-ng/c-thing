@@ -150,18 +150,20 @@ make config=release_sse ex-glfw01 && bin/release/ex-glfw01
 To compile with Emscripten & open in browser: [[http://localhost:8000/glfw.html][http://localhost:8000/glfw.html]]
 
 #+BEGIN_SRC shell
-  # build LLVM bitcode of library (libcthing.bc)
+  # build LLVM bitcode of library (./obj/libcthing.bc)
   ./compile-bc
 
   # compile example for browser & link with lib
-  emcc -Os -DCT_FEATURE_LOG -DNDEBUG \
+  emcc -O2 -DCT_FEATURE_LOG -DCT_NO_EXPORT -DNDEBUG \
        -s 'USE_GLFW=3' \
        -s 'ELIMINATE_DUPLICATE_FUNCTIONS=1' \
+       -s 'NO_EXIT_RUNTIME=1' \
+       --llvm-lto 1 \
        --closure 1 \
        --preload-file assets/suzanne.stl \
        -Isrc \
        -o glfw.html \
-       examples/glfw/*.c libcthing.bc
+       examples/glfw/*.c obj/libcthing.bc
 
   # launch server
   python -m SimpleHTTPServer

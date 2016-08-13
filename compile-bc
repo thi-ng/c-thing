@@ -6,7 +6,8 @@ for d in $SRC_DIRS; do for f in `ls $d/*.c`; do SRC="$SRC $f"; done; done;
 
 CFLAGS="-std=c11 -Os -Isrc -DCT_NO_EXPORT"
 EMFLAGS="-s ASM_JS=1 -s ASSERTIONS=0 --js-library src/rt_cthing.js"
-OUT=libcthing.bc
+BUILD_DIR=obj
+OUT=$BUILD_DIR/libcthing.bc
 
 usage()
 {
@@ -48,6 +49,7 @@ echo "cflags: $CFLAGS"
 echo "emflags: $EMFLAGS"
 echo "src: $SRC"
 
+mkdir -p $BUILD_DIR
 time emcc $CFLAGS $EMFLAGS -o $OUT $SRC
 
 ls -la $OUT
