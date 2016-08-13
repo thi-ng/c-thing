@@ -41,8 +41,8 @@ static size_t make_leaf(CT_OTNode *node,
                         const CT_Vec3f *p,
                         const void *data,
                         CT_MPool *pool) {
-  CT_OTNode *c = ct_mpool_alloc(pool);
-  CT_CHECK_MEM(c);
+  CT_OTNode *c;
+  CT_CHECK_MEM(c = ct_mpool_alloc(pool));
   clear_children(c);
   c->x                = node->coords[idx & 1];
   c->y                = node->coords[((idx & 2) >> 1) | 2];

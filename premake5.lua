@@ -2,7 +2,7 @@ workspace "cthing"
 configurations { "debug", "release" }
 platforms { "sse", "no_sse" }
 language "C"
-includedirs { "src" }
+includedirs { "ext", "src" }
 targetdir "bin/%{cfg.buildcfg}"
 flags { "Symbols", "C++11" }
 linkoptions "-lm"

@@ -6,8 +6,8 @@
 enum { CT_VECTOR_FREE = 1 };
 
 CT_Vector *ct_vector_new(size_t limit, uint32_t stride) {
-  CT_Vector *v = calloc(1, sizeof(CT_Vector));
-  CT_CHECK_MEM(v);
+  CT_Vector *v;
+  CT_CHECK_MEM(v = calloc(1, sizeof(CT_Vector)));
   if (!ct_vector_init(v, limit, stride)) {
     v->flags = CT_VECTOR_FREE;
     return v;
@@ -19,8 +19,7 @@ fail:
 
 int ct_vector_init(CT_Vector *v, size_t limit, uint32_t stride) {
   CT_CHECK(stride > 0, "stride must be > 0");
-  v->buffer = calloc(limit, stride);
-  CT_CHECK_MEM(v->buffer);
+  CT_CHECK_MEM(v->buffer = calloc(limit, stride));
   v->num    = 0;
   v->limit  = limit;
   v->stride = stride;
@@ -51,9 +50,9 @@ int ct_vector_push(CT_Vector *v, const void *x) {
   if (v->num == v->limit) {
     size_t new_limit = ct_ceil_multiple_pow2(v->limit * CT_VECTOR_GROWTH_FACTOR,
                                              CT_VECTOR_GROWTH_MIN);
-    void *new_buf = realloc(v->buffer, new_limit * v->stride);
+    void *new_buf;
+    CT_CHECK_MEM(new_buf = realloc(v->buffer, new_limit * v->stride));
     CT_DEBUG("realloc vector: %p -> %p (%zu)", v->buffer, new_buf, new_limit);
-    CT_CHECK_MEM(new_buf);
     v->buffer = new_buf;
     v->limit  = new_limit;
   }
@@ -78,8 +77,8 @@ int ct_vector_pop(CT_Vector *v, void *out) {
 
 CT_VectorIter *ct_vector_iter_new(const CT_Vector *v, int reverse) {
   CT_CHECK(v, "vector is NULL");
-  CT_VectorIter *i = malloc(sizeof(CT_VectorIter));
-  CT_CHECK_MEM(i);
+  CT_VectorIter *i;
+  CT_CHECK_MEM(i = malloc(sizeof(CT_VectorIter)));
   if (!ct_vector_iter_init(i, v, reverse)) {
     return i;
   }

@@ -1,3 +1,5 @@
+#include <string.h>
+
 #include "glfw_example.h"
 
 char *slurp(const char *path) {
@@ -91,7 +93,7 @@ GLuint init_shader_program(const char *vsrc, const char *fsrc) {
   glGetProgramiv(program, GL_LINK_STATUS, &status);
   glDeleteShader(vs);
   glDeleteShader(fs);
-  CT_CHECK(!status, "link error: %d");
+  CT_CHECK(!status, "link error: %d", status);
   return program;
 fail:
   exit(1);

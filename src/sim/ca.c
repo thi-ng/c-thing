@@ -70,10 +70,10 @@ void ct_carule1d_evolve(const CT_CARule1D *rule, CT_CAMatrix *mat) {
 
 int ct_carule2d_init(CT_CARule2D *r) {
   CT_CHECK(r->numStates > 1, "num states");
-  const int kw     = r->kernelWidth;
-  const int kw2    = 2 * kw + 1;
-  r->kernelOffsets = (size_t *)calloc(kw2 * kw2 - 1, sizeof(size_t));
-  CT_CHECK_MEM(r->kernelOffsets);
+  const int kw  = r->kernelWidth;
+  const int kw2 = 2 * kw + 1;
+  CT_CHECK_MEM(r->kernelOffsets =
+                   (size_t *)calloc(kw2 * kw2 - 1, sizeof(size_t)));
   for (int y = -kw, i = 0; y <= kw; y++) {
     for (int x = -kw; x <= kw; x++) {
       if ((y != 0) || (x != 0)) {

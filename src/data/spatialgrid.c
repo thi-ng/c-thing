@@ -53,8 +53,7 @@ ct_export int ct_spgrid_init(CT_SpatialGrid *grid,
       dims == 1 ? find_cell1d : dims == 2 ? find_cell2d : find_cell3d;
   if (!ct_mpool_init(&grid->pool, CT_MAX(numCells >> 1, poolSize),
                      sizeof(CT_SPCell))) {
-    grid->cells = calloc(numCells, sizeof(CT_SPCell *));
-    CT_CHECK_MEM(grid);
+    CT_CHECK_MEM(grid->cells = calloc(numCells, sizeof(CT_SPCell *)));
     return 0;
   }
 fail:
@@ -71,8 +70,8 @@ static int do_insert(CT_SpatialGrid *grid,
                      const float *p,
                      const void *item) {
   CT_CHECK(id >= 0 && id < grid->numCells, "p out of bounds");
-  CT_SPCell *cell = ct_mpool_alloc(&grid->pool);
-  CT_CHECK_MEM(cell);
+  CT_SPCell *cell;
+  CT_CHECK_MEM(cell = ct_mpool_alloc(&grid->pool));
   CT_DEBUG("insert @ grid: %d new: (%p) -> %p", id, cell, grid->cells[id]);
   cell->value     = (void *)item;
   cell->next      = grid->cells[id];

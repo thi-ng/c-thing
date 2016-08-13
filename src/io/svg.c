@@ -14,8 +14,8 @@ CT_SVGAttribs *ct_svg_attribs(size_t flags, size_t num, ...) {
     va_list args;
     va_start(args, num);
     for (size_t i = 0; i < num; i++) {
-      char *key = va_arg(args, char *);
-      CT_CHECK_MEM(key);
+      char *key;
+      CT_CHECK_MEM(key = va_arg(args, char *));
       char type = (char)va_arg(args, int);
       size_t ks = strlen(key) + 1;
       CT_DEBUG("attrib: %s (%p, len=%zu)", key, key, ks);

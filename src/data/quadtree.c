@@ -38,8 +38,8 @@ static size_t make_leaf(CT_QTNode *node,
                         const CT_Vec2f *p,
                         const void *data,
                         CT_MPool *pool) {
-  CT_QTNode *c = ct_mpool_alloc(pool);
-  CT_CHECK_MEM(c);
+  CT_QTNode *c;
+  CT_CHECK_MEM(c = ct_mpool_alloc(pool));
   clear_children(c);
   c->x                = node->coords[(idx & 1) << 2];
   c->y                = node->coords[((idx & 2) << 1) | 1];

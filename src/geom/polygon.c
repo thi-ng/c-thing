@@ -446,8 +446,7 @@ CT_Polygon2f *ct_polygon2f_offset_points(CT_PolyOffsetContext *ctx,
                                          float dist,
                                          int8_t res) {
   CT_Polygon2f *result = NULL;
-  ctx->edges           = malloc(num * sizeof(CT_PolyEdge));
-  CT_CHECK_MEM(ctx->edges);
+  CT_CHECK_MEM(ctx->edges = malloc(num * sizeof(CT_PolyEdge)));
   for (size_t i = 0; i < num; i++) {
     init_edge(&ctx->edges[i], &points[i], &points[(i + 1) % num]);
   }

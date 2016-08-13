@@ -28,8 +28,8 @@ static int make_key(const CT_Hashset* s,
 static CT_HSEntry* make_entry(CT_Hashset* s,
                               const void* key,
                               const uint32_t ks) {
-  CT_HSEntry* e = ct_mpool_alloc(&s->pool);
-  CT_CHECK_MEM(e);
+  CT_HSEntry* e;
+  CT_CHECK_MEM(e = ct_mpool_alloc(&s->pool));
   e->next = NULL;
   if (!make_key(s, e, key, ks)) {
     CT_DEBUG("new HSEntry: %p, k=%p", e, e->key);
@@ -84,8 +84,8 @@ static int cons_entry(CT_Hashset* s,
                       const void* key,
                       const uint32_t ks) {
   // TODO resize?
-  CT_HSEntry* e = make_entry(s, key, ks);
-  CT_CHECK_MEM(e);
+  CT_HSEntry* e;
+  CT_CHECK_MEM(e = make_entry(s, key, ks));
   e->next      = s->bins[bin];
   s->bins[bin] = e;
 fail:
@@ -124,9 +124,8 @@ ct_export int ct_hs_init(CT_Hashset* s,
                          const CT_HSFlags flags) {
   int mp = ct_mpool_init(&s->pool, poolSize, sizeof(CT_HSEntry));
   if (!mp) {
-    num     = ct_ceil_pow2(num);
-    s->bins = calloc(num, sizeof(CT_HSEntry*));
-    CT_CHECK_MEM(&s->bins);
+    num = ct_ceil_pow2(num);
+    CT_CHECK_MEM(s->bins = calloc(num, sizeof(CT_HSEntry*)));
     s->ops = *ops;
     if (s->ops.equiv_keys == NULL) {
       s->ops.equiv_keys = equiv_keys;
@@ -162,9 +161,8 @@ ct_export int ct_hs_assoc(CT_Hashset* s, const void* key, const uint32_t ks) {
   CT_HSEntry* e = s->bins[bin];
   if (e == NULL) {
     CT_DEBUG("new entry w/ hash: %x, bin: %x", hash, bin);
-    e = make_entry(s, key, ks);
-    CT_CHECK_MEM(e);
-    s->bins[bin] = e;
+    CT_CHECK_MEM(e = make_entry(s, key, ks));
+    s->bins[bin]   = e;
     s->size++;
   } else {
     e = find_entry(s, e, key, ks);

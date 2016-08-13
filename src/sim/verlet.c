@@ -381,15 +381,15 @@ ct_export int ct_verlet_init2d(CT_Verlet *v,
                                size_t maxP,
                                size_t maxS,
                                size_t *grid) {
-  maxP       = ct_ceil_multiple_pow2(maxP, 4);
-  float *buf = calloc((3 * 2 + 1) * maxP, sizeof(float));
-  CT_CHECK_MEM(buf);
-  v->pos               = buf;
-  v->prev              = buf + maxP * 2;
-  v->force             = buf + maxP * 4;
-  v->radius            = buf + maxP * 6;
-  CT_VPSpring *springs = calloc(maxS, sizeof(CT_VPSpring));
-  CT_CHECK_MEM(springs);
+  maxP = ct_ceil_multiple_pow2(maxP, 4);
+  float *buf;
+  CT_CHECK_MEM(buf = calloc((3 * 2 + 1) * maxP, sizeof(float)));
+  v->pos    = buf;
+  v->prev   = buf + maxP * 2;
+  v->force  = buf + maxP * 4;
+  v->radius = buf + maxP * 6;
+  CT_VPSpring *springs;
+  CT_CHECK_MEM(springs = calloc(maxS, sizeof(CT_VPSpring)));
   v->springs = springs;
   v->strideP = maxP;
   v->strideS = maxS;
@@ -409,15 +409,15 @@ ct_export int ct_verlet_init3d(CT_Verlet *v,
                                size_t maxP,
                                size_t maxS,
                                size_t *grid) {
-  maxP       = ct_ceil_multiple_pow2(maxP, 4);
-  float *buf = calloc((3 * 4 + 1) * maxP, sizeof(float));
-  CT_CHECK_MEM(buf);
-  v->pos               = buf;
-  v->prev              = buf + maxP * 4;
-  v->force             = buf + maxP * 8;
-  v->radius            = buf + maxP * 12;
-  CT_VPSpring *springs = calloc(maxS, sizeof(CT_VPSpring));
-  CT_CHECK_MEM(springs);
+  maxP = ct_ceil_multiple_pow2(maxP, 4);
+  float *buf;
+  CT_CHECK_MEM(buf = calloc((3 * 4 + 1) * maxP, sizeof(float)));
+  v->pos    = buf;
+  v->prev   = buf + maxP * 4;
+  v->force  = buf + maxP * 8;
+  v->radius = buf + maxP * 12;
+  CT_VPSpring *springs;
+  CT_CHECK_MEM(springs = calloc(maxS, sizeof(CT_VPSpring)));
   v->springs = springs;
   v->strideP = maxP;
   v->strideS = maxS;

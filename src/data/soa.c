@@ -7,12 +7,9 @@ CT_SOA *ct_soa_new(size_t width, size_t num, size_t stride) {
   CT_SOA *s = NULL;
   CT_CHECK(0 == num % (1 << CT_SOA_WORD_SHIFT), "num must be multiple of %d",
            (1 << CT_SOA_WORD_SHIFT));
-  s = calloc(1, sizeof(CT_SOA));
-  CT_CHECK_MEM(s);
-  buf = calloc(width * num, stride);
-  CT_CHECK_MEM(buf);
-  s->comps = calloc(width, sizeof(void *));
-  CT_CHECK_MEM(s->comps);
+  CT_CHECK_MEM(s = calloc(1, sizeof(CT_SOA)));
+  CT_CHECK_MEM(buf = calloc(width * num, stride));
+  CT_CHECK_MEM(s->comps = calloc(width, sizeof(void *)));
   for (size_t i = 0; i < width; i++) {
     s->comps[i] = (void *)((uintptr_t)buf + i * num * stride);
   }
@@ -55,9 +52,9 @@ void ct_soa_free(CT_SOA *s) {
 }
 
 void *ct_soa_flatten(const CT_SOA *s, void *out) {
-  size_t len   = s->num * s->stride;
-  uint8_t *buf = out ? out : malloc(s->width * len);
-  CT_CHECK_MEM(buf);
+  size_t len = s->num * s->stride;
+  uint8_t *buf;
+  CT_CHECK_MEM(buf = out ? out : malloc(s->width * len));
   for (size_t i = 0; i < s->width; i++) {
     memcpy(&buf[i * len], s->comps[i], len);
   }

@@ -7,8 +7,8 @@ typedef struct {
 } CT_ConsCloneState;
 
 ct_export CT_Cons* ct_cons(void* val, CT_Cons* head, CT_MPool* pool) {
-  CT_Cons* cell = CT_MP_ALLOC(pool, CT_Cons);
-  CT_CHECK_MEM(cell);
+  CT_Cons* cell;
+  CT_CHECK_MEM(cell = CT_MP_ALLOC(pool, CT_Cons));
   CT_DEBUG("cons: %p (val: %p) -> %p", cell, val, head);
   cell->value = val;
   cell->next  = head;
@@ -17,8 +17,8 @@ fail:
 }
 
 ct_export CT_Cons* ct_cons_append(void* val, CT_Cons* tail, CT_MPool* pool) {
-  CT_Cons* cell = CT_MP_ALLOC(pool, CT_Cons);
-  CT_CHECK_MEM(cell);
+  CT_Cons* cell;
+  CT_CHECK_MEM(cell = CT_MP_ALLOC(pool, CT_Cons));
   CT_DEBUG("cons append: %p -> %p (val: %p)", tail, cell, val);
   cell->value = val;
   cell->next  = NULL;
@@ -159,8 +159,8 @@ ct_export CT_Cons* ct_cons_take(CT_Cons* head, size_t num, CT_MPool* pool) {
 //// double-linked list
 
 ct_export CT_ConsD* ct_consd(void* val, CT_ConsD* head, CT_MPool* pool) {
-  CT_ConsD* cell = CT_MP_ALLOC(pool, CT_ConsD);
-  CT_CHECK_MEM(cell);
+  CT_ConsD* cell;
+  CT_CHECK_MEM(cell = CT_MP_ALLOC(pool, CT_ConsD));
   cell->value = val;
   cell->next  = head;
   if (head) {

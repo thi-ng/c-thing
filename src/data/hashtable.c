@@ -53,8 +53,8 @@ static CT_HTEntry* make_entry(CT_Hashtable* t,
                               const void* val,
                               const uint32_t ks,
                               const uint32_t vs) {
-  CT_HTEntry* e = ct_mpool_alloc(&t->pool);
-  CT_CHECK_MEM(e);
+  CT_HTEntry* e;
+  CT_CHECK_MEM(e = ct_mpool_alloc(&t->pool));
   e->next = NULL;
   if (!make_key(t, e, key, ks) && !make_val(t, e, val, vs)) {
     CT_DEBUG("new HTEntry: %p, k=%p, v=%p", e, e->key, e->val);
@@ -123,8 +123,8 @@ static int cons_entry(CT_Hashtable* t,
                       const uint32_t ks,
                       const uint32_t vs) {
   // TODO resize table?
-  CT_HTEntry* e = make_entry(t, key, val, ks, vs);
-  CT_CHECK_MEM(e);
+  CT_HTEntry* e;
+  CT_CHECK_MEM(e = make_entry(t, key, val, ks, vs));
   e->next      = t->bins[bin];
   t->bins[bin] = e;
 fail:
@@ -163,9 +163,8 @@ ct_export int ct_ht_init(CT_Hashtable* t,
                          const CT_HTFlags flags) {
   int mp = ct_mpool_init(&t->pool, poolSize, sizeof(CT_HTEntry));
   if (!mp) {
-    num     = ct_ceil_pow2(num);
-    t->bins = calloc(num, sizeof(CT_HTEntry*));
-    CT_CHECK_MEM(&t->bins);
+    num = ct_ceil_pow2(num);
+    CT_CHECK_MEM(t->bins = calloc(num, sizeof(CT_HTEntry*)));
     t->ops = *ops;
     if (t->ops.equiv_keys == NULL) {
       t->ops.equiv_keys = equiv_keys;
@@ -212,9 +211,8 @@ ct_export int ct_ht_assoc(CT_Hashtable* t,
   CT_HTEntry* e = t->bins[bin];
   if (e == NULL) {
     CT_DEBUG("new entry w/ hash: %x, bin: %x", hash, bin);
-    e = make_entry(t, key, val, ks, vs);
-    CT_CHECK_MEM(e);
-    t->bins[bin] = e;
+    CT_CHECK_MEM(e = make_entry(t, key, val, ks, vs));
+    t->bins[bin]   = e;
     t->size++;
   } else {
     e = find_entry(t, e, key, ks);

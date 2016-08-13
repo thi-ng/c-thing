@@ -10,13 +10,12 @@ ct_export size_t ct_mpool_init(CT_MPool *pool, size_t num, size_t blockSize) {
   CT_CHECK(blockSize >= sizeof(CT_MPoolFreeList),
            "blocksize must be >= %zu, was %zu", sizeof(CT_MPoolFreeList),
            blockSize);
-  pool->numBlocks    = num;
-  pool->blockSize    = blockSize;
-  pool->freeList     = NULL;
-  CT_MPoolList *head = malloc(sizeof(CT_MPoolList));
-  CT_CHECK_MEM(head);
-  head->pool = malloc(num * pool->blockSize);
-  CT_CHECK_MEM(head->pool);
+  pool->numBlocks = num;
+  pool->blockSize = blockSize;
+  pool->freeList  = NULL;
+  CT_MPoolList *head;
+  CT_CHECK_MEM(head = malloc(sizeof(CT_MPoolList)));
+  CT_CHECK_MEM(head->pool = malloc(num * pool->blockSize));
   head->next   = NULL;
   head->nextID = 0;
   pool->head   = head;
@@ -147,10 +146,9 @@ ct_export void *ct_mpool_alloc(CT_MPool *pool) {
     pool->head->nextID++;
     //return ptr;
   } else {
-    CT_MPoolList *head = malloc(sizeof(CT_MPoolList));
-    CT_CHECK_MEM(head);
-    head->pool = malloc(pool->numBlocks * pool->blockSize);
-    CT_CHECK_MEM(head->pool);
+    CT_MPoolList *head;
+    CT_CHECK_MEM(head = malloc(sizeof(CT_MPoolList)));
+    CT_CHECK_MEM(head->pool = malloc(pool->numBlocks * pool->blockSize));
     CT_DEBUG("pool: %zu, adding new sub-pool: %p, %p", pool->poolID, head,
              head->pool);
     ptr          = head->pool;

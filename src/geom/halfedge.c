@@ -36,8 +36,8 @@ typedef struct {
 static size_t _vertex_idx = 0;
 
 CT_HEVertex *ct_hevertex(float *pos, CT_HalfEdge *e, CT_MPool *pool) {
-  CT_HEVertex *v = CT_MP_ALLOC(pool, CT_HEVertex);
-  CT_CHECK_MEM(v);
+  CT_HEVertex *v;
+  CT_CHECK_MEM(v = CT_MP_ALLOC(pool, CT_HEVertex));
   ct_set3fxyz(&v->pos, pos[0], pos[1], pos[2]);
   v->edge = e;
 fail:
