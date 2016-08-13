@@ -22,7 +22,7 @@ optimize "Size"
 
 project "test"
 kind "ConsoleApp"
-files { "src/test/**.c", "test/**.c" }
+files { "ext/**.c", "test/**.c" }
 defines { "CT_FEATURE_ANSI" }
 links "lib"
 dependson "lib"
@@ -32,7 +32,7 @@ flags { "FatalWarnings", "LinkTimeOptimization" }
 
 project "test_asan"
 kind "ConsoleApp"
-files { "src/test/**.c", "test/**.c" }
+files { "ext/**.c", "test/**.c" }
 defines { "CT_FEATURE_ANSI", "CT_FEATURE_CHECKS", "CT_FEATURE_CHECK_MEM" }
 links "lib"
 dependson "lib"

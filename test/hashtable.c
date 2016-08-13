@@ -1,6 +1,6 @@
 #include <string.h>
 
-#include "test/test.h"
+#include "ct-head/test.h"
 
 #include "data/hashtable.h"
 #include "math/hashfn.h"

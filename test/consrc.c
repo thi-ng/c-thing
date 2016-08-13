@@ -1,6 +1,6 @@
 #include <string.h>
 
-#include "test/test.h"
+#include "ct-head/test.h"
 
 #include "data/consrc.h"
 #include "data/object.h"
