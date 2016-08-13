@@ -63,18 +63,18 @@ ct_export CT_Vec2f *ct_triangle2f_point_opposite_ptr(CT_Triangle2f *t,
 ct_export CT_Vec2f *ct_triangle2f_point_opposite(CT_Triangle2f *t,
                                                  const CT_Vec2f *a,
                                                  const CT_Vec2f *b) {
-  if (ct_deltaeq2fv(a, &t->a, EPS)) {
-    return (ct_deltaeq2fv(b, &t->b, EPS)
+  if (ct_deltaeq2fv(a, &t->a, CT_EPS)) {
+    return (ct_deltaeq2fv(b, &t->b, CT_EPS)
                 ? &t->c
-                : (ct_deltaeq2fv(b, &t->c, EPS) ? &t->b : NULL));
-  } else if (ct_deltaeq2fv(a, &t->b, EPS)) {
-    return (ct_deltaeq2fv(b, &t->a, EPS)
+                : (ct_deltaeq2fv(b, &t->c, CT_EPS) ? &t->b : NULL));
+  } else if (ct_deltaeq2fv(a, &t->b, CT_EPS)) {
+    return (ct_deltaeq2fv(b, &t->a, CT_EPS)
                 ? &t->c
-                : (ct_deltaeq2fv(b, &t->c, EPS) ? &t->a : NULL));
-  } else if (ct_deltaeq2fv(a, &t->c, EPS)) {
-    return (ct_deltaeq2fv(b, &t->b, EPS)
+                : (ct_deltaeq2fv(b, &t->c, CT_EPS) ? &t->a : NULL));
+  } else if (ct_deltaeq2fv(a, &t->c, CT_EPS)) {
+    return (ct_deltaeq2fv(b, &t->b, CT_EPS)
                 ? &t->a
-                : (ct_deltaeq2fv(b, &t->a, EPS) ? &t->b : NULL));
+                : (ct_deltaeq2fv(b, &t->a, CT_EPS) ? &t->b : NULL));
   }
   return NULL;
 }
@@ -158,18 +158,18 @@ ct_export CT_Vec3f *ct_triangle3f_point_opposite_ptr(CT_Triangle3f *t,
 ct_export CT_Vec3f *ct_triangle3f_point_opposite(CT_Triangle3f *t,
                                                  const CT_Vec3f *a,
                                                  const CT_Vec3f *b) {
-  if (ct_deltaeq3fv(a, &t->a, EPS)) {
-    return (ct_deltaeq3fv(b, &t->b, EPS)
+  if (ct_deltaeq3fv(a, &t->a, CT_EPS)) {
+    return (ct_deltaeq3fv(b, &t->b, CT_EPS)
                 ? &t->c
-                : (ct_deltaeq3fv(b, &t->c, EPS) ? &t->b : NULL));
-  } else if (ct_deltaeq3fv(a, &t->b, EPS)) {
-    return (ct_deltaeq3fv(b, &t->a, EPS)
+                : (ct_deltaeq3fv(b, &t->c, CT_EPS) ? &t->b : NULL));
+  } else if (ct_deltaeq3fv(a, &t->b, CT_EPS)) {
+    return (ct_deltaeq3fv(b, &t->a, CT_EPS)
                 ? &t->c
-                : (ct_deltaeq3fv(b, &t->c, EPS) ? &t->a : NULL));
-  } else if (ct_deltaeq3fv(a, &t->c, EPS)) {
-    return (ct_deltaeq3fv(b, &t->b, EPS)
+                : (ct_deltaeq3fv(b, &t->c, CT_EPS) ? &t->a : NULL));
+  } else if (ct_deltaeq3fv(a, &t->c, CT_EPS)) {
+    return (ct_deltaeq3fv(b, &t->b, CT_EPS)
                 ? &t->a
-                : (ct_deltaeq3fv(b, &t->a, EPS) ? &t->b : NULL));
+                : (ct_deltaeq3fv(b, &t->a, CT_EPS) ? &t->b : NULL));
   }
   return NULL;
 }

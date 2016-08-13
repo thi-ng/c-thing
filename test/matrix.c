@@ -10,7 +10,7 @@ static char buf[256];
 
 #define ASSERT_VEC(a, n, ...)                                             \
   {                                                                       \
-    int res = ct_array_compare_f32((float*)a, FVEC(__VA_ARGS__), EPS, n); \
+    int res = ct_array_compare_f32((float*)a, FVEC(__VA_ARGS__), CT_EPS, n); \
     __testAsserts++;                                                      \
     if (res) {                                                            \
       ct_array_tostring_f32(buf, 256, (float*)a, n, 1);                   \

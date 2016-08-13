@@ -140,12 +140,12 @@ ct_export CT_Mat4f *ct_mat4f_set_identity(CT_Mat4f *m) {
 }
 
 ct_export CT_Mat4f *ct_mat4f_transpose_imm(CT_Mat4f *m) {
-  SWAP(float, m->m01, m->m10);
-  SWAP(float, m->m02, m->m20);
-  SWAP(float, m->m03, m->m30);
-  SWAP(float, m->m12, m->m21);
-  SWAP(float, m->m13, m->m31);
-  SWAP(float, m->m23, m->m32);
+  CT_SWAP(float, m->m01, m->m10);
+  CT_SWAP(float, m->m02, m->m20);
+  CT_SWAP(float, m->m03, m->m30);
+  CT_SWAP(float, m->m12, m->m21);
+  CT_SWAP(float, m->m13, m->m31);
+  CT_SWAP(float, m->m23, m->m32);
   return m;
 }
 
@@ -459,7 +459,7 @@ ct_export int ct_mat4f_set_lookat(CT_Mat4f *m,
                                   const CT_Vec3f *up) {
   CT_Vec3f x, y, z;
   ct_sub3fv(eye, target, &z);
-  if (ct_magsq3f(&z) < EPS) {
+  if (ct_magsq3f(&z) < CT_EPS) {
     return 1;
   }
   ct_normalize3f_imm(&z, 1);

@@ -14,11 +14,11 @@ CT_Vec3f *ct_vec3fn(float n, CT_MPool *mpool);
 ct_export ct_inline int ct_compare3fv(const void *a, const void *b) {
   CT_Vec3f *va = (CT_Vec3f *)a;
   CT_Vec3f *vb = (CT_Vec3f *)b;
-  int c        = COMPARE(va->x, vb->x);
+  int c        = CT_COMPARE(va->x, vb->x);
   if (!c) {
-    c = COMPARE(va->y, vb->y);
+    c = CT_COMPARE(va->y, vb->y);
     if (!c) {
-      return COMPARE(va->z, vb->z);
+      return CT_COMPARE(va->z, vb->z);
     }
   }
   return c;
@@ -193,7 +193,7 @@ ct_export ct_inline CT_Vec3f *ct_normalize3f(const CT_Vec3f *v,
 }
 
 ct_export ct_inline size_t ct_is_normalized3f(const CT_Vec3f *v) {
-  return ct_deltaeqf(ct_mag3f(v), 1.f, EPS);
+  return ct_deltaeqf(ct_mag3f(v), 1.f, CT_EPS);
 }
 
 ct_export ct_inline CT_Vec3f *ct_limit3f_imm(CT_Vec3f *v, float len) {

@@ -3,7 +3,7 @@
 #define CLIP_LB(pp, qq)         \
   p = (pp);                     \
   q = (qq);                     \
-  if (q < 0 && fabs(p) < EPS) { \
+  if (q < 0 && fabs(p) < CT_EPS) { \
     return 0;                   \
   }                             \
   r = q / p;                    \

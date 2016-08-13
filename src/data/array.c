@@ -131,7 +131,7 @@ void *ct_array_reverse8_imm(void *ptr, size_t num) {
   __m64 *iptr = (__m64*)ptr;
   for (size_t i = 0, n2 = num >> 1, end = num - 1; i < n2; i++, end--) {
     //CT_INFO("swap: %p, %p", &iptr[i], &iptr[end]);
-    SWAP(__m64, iptr[i], iptr[end]);
+    CT_SWAP(__m64, iptr[i], iptr[end]);
   }
   return ptr;
 }
@@ -141,8 +141,8 @@ void *ct_array_reverse8_imm(void *ptr, size_t num) {
 void *ct_array_reverse8_imm(void *ptr, size_t num) {
   uint32_t *iptr = (uint32_t *)ptr;
   for (size_t i = 0, end = num * 2 - 2; i < num; i += 2, end -= 2) {
-    SWAP(uint32_t, iptr[i], iptr[end]);
-    SWAP(uint32_t, iptr[i + 1], iptr[end + 1]);
+    CT_SWAP(uint32_t, iptr[i], iptr[end]);
+    CT_SWAP(uint32_t, iptr[i + 1], iptr[end + 1]);
   }
   return ptr;
 }

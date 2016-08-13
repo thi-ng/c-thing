@@ -266,7 +266,7 @@ ct_export ct_inline CT_Vec2f *ct_normalize2f(const CT_Vec2f *v,
 }
 
 ct_export ct_inline size_t ct_is_normalized2f(const CT_Vec2f *v) {
-  return ct_deltaeqf(ct_mag2f(v), 1.f, EPS);
+  return ct_deltaeqf(ct_mag2f(v), 1.f, CT_EPS);
 }
 
 ct_export ct_inline CT_Vec2f *ct_limit2f_imm(CT_Vec2f *v, float len) {

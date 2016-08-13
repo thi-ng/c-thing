@@ -31,7 +31,7 @@ static int path_for_point(CT_OTNode *node,
     *path++ = node;
     i++;
   }
-  return (node->type == CT_TREE_LEAF && ct_deltaeq3fv(node->point, p, EPS))
+  return (node->type == CT_TREE_LEAF && ct_deltaeq3fv(node->point, p, CT_EPS))
              ? i
              : -1;
 }
@@ -114,7 +114,7 @@ static int insert_node(CT_OTNode *node,
       node->type  = CT_TREE_LEAF;
       return 0;
     case CT_TREE_LEAF:
-      if (ct_deltaeq3fv(node->point, p, EPS)) {
+      if (ct_deltaeq3fv(node->point, p, CT_EPS)) {
         node->point = (CT_Vec3f *)p;
         node->data  = (void *)data;
         return 0;
@@ -201,7 +201,7 @@ ct_export CT_OTNode *ct_octree_find_leaf(const CT_Octree *t,
     }
     node = c;
   }
-  return ((node->type == CT_TREE_LEAF && ct_deltaeq3fv(node->point, p, EPS))
+  return ((node->type == CT_TREE_LEAF && ct_deltaeq3fv(node->point, p, CT_EPS))
               ? node
               : NULL);
 fail:

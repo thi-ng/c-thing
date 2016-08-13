@@ -53,7 +53,7 @@ static void collide2d(CT_Verlet *v, size_t preserve) {
           float d    = ct_magsq2f(&delta);
           float mind = pr + v->radius[id >> 1];
           if (d < mind * mind) {
-            float l = sqrtf(d) + EPS;
+            float l = sqrtf(d) + CT_EPS;
             l       = (l - mind) / l * repulsion;
             CT_Vec2f delta_scaled, np, nq;
             ct_mul2fn(&delta, l, &delta_scaled);
@@ -109,7 +109,7 @@ static void collide3d(CT_Verlet *v, size_t preserve) {
           float d    = ct_magsq3f(&delta);
           float mind = pr + v->radius[id >> 1];
           if (d < mind * mind) {
-            float l = sqrtf(d) + EPS;
+            float l = sqrtf(d) + CT_EPS;
             l       = (l - mind) / l * repulsion;
             CT_Vec3f delta_scaled, np, nq;
             ct_mul3fn(&delta, l, &delta_scaled);
@@ -331,7 +331,7 @@ static void springs2d(CT_Verlet *v) {
     CT_Vec2f *b    = (CT_Vec2f *)&pos[s->b];
     CT_Vec2f delta;
     ct_sub2fv(a, b, &delta);
-    float d = ct_mag2f(&delta) + EPS;
+    float d = ct_mag2f(&delta) + CT_EPS;
     ct_mul2fn_imm(&delta, (d - s->restLen) / d * s->strength);
     ct_limit2f_imm(&delta, maxf);
     float dx = a->x - delta.x;
@@ -357,7 +357,7 @@ static void springs3d(CT_Verlet *v) {
     CT_Vec3f *b    = (CT_Vec3f *)&pos[s->b];
     CT_Vec3f delta;
     ct_sub3fv(a, b, &delta);
-    float d = ct_mag3f(&delta) + EPS;
+    float d = ct_mag3f(&delta) + CT_EPS;
     ct_mul3fn_imm(&delta, (d - s->restLen) / d * s->strength);
     ct_limit3f_imm(&delta, maxf);
     float dx = a->x - delta.x;

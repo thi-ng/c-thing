@@ -44,7 +44,7 @@ ct_export float ct_circle2f_circumference(CT_Circle2f *c) {
 }
 
 ct_export int ct_circle2f_classify_point(CT_Circle2f *c, CT_Vec2f *p) {
-  return ct_signumf(c->r - ct_dist2fv(&c->pos, p), EPS);
+  return ct_signumf(c->r - ct_dist2fv(&c->pos, p), CT_EPS);
 }
 
 ct_export CT_Vec2f *ct_circle2f_vertices(CT_Circle2f *c, CT_Vec2f *verts,

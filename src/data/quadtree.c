@@ -28,7 +28,7 @@ static int path_for_point(CT_QTNode *node,
     *path++ = node;
     i++;
   }
-  return (node->type == CT_TREE_LEAF && ct_deltaeq2fv(node->point, p, EPS))
+  return (node->type == CT_TREE_LEAF && ct_deltaeq2fv(node->point, p, CT_EPS))
              ? i
              : -1;
 }
@@ -105,7 +105,7 @@ static int insert_node(CT_QTNode *node,
       node->type  = CT_TREE_LEAF;
       return 0;
     case CT_TREE_LEAF:
-      if (ct_deltaeq2fv(node->point, p, EPS)) {
+      if (ct_deltaeq2fv(node->point, p, CT_EPS)) {
         node->point = (CT_Vec2f *)p;
         node->data  = (void *)data;
         return 0;
@@ -190,7 +190,7 @@ ct_export CT_QTNode *ct_qtree_find_leaf(const CT_Quadtree *t,
     }
     node = c;
   }
-  return (node->type == CT_TREE_LEAF && ct_deltaeq2fv(node->point, p, EPS)
+  return (node->type == CT_TREE_LEAF && ct_deltaeq2fv(node->point, p, CT_EPS)
               ? node
               : NULL);
 fail:
