@@ -8,6 +8,8 @@
          - [[#math][Math]]
          - [[#simulation][Simulation]]
          - [[#geometry][Geometry]]
+     - [[#requirements][Requirements]]
+     - [[#dependencies][Dependencies]]
      - [[#examples][Examples]]
          - [[#build-all-examples][Build all examples]]
          - [[#1d2d-cellular-automata][1D/2D Cellular automata]]
@@ -19,8 +21,6 @@
          - [[#polygon-offsetting][Polygon offsetting]]
          - [[#verlet-physics][Verlet physics]]
          - [[#voronoi][Voronoi]]
-     - [[#requirements][Requirements]]
-     - [[#dependencies][Dependencies]]
      - [[#build--test][Build & test]]
      - [[#build-static-library][Build static library]]
      - [[#build-source-x-ref][Build source x-ref]]
@@ -75,6 +75,25 @@ WIP
 ...
 
 TBD
+** Requirements
+
+- [[https://premake.github.io/][Premake5]]
+- [[http://www.gnu.org/software/make/][GNU Make]]
+- GCC / Clang (w/ C11 support)
+- [[https://github.com/emcrisostomo/fswatch][fswatch]] (only needed for =./autotest= runner)
+- [[http://emscripten.org][emscripten]] & [[http://nodejs.org][node]] (only needed for asm.js x-compilation via
+  =./compile= & =./compile-bc=)
+- [[http://cscope.sourceforge.net/][cscope]] (only needed for =./browse=)
+- [[https://wiki.gnome.org/Projects/LibRsvg][rsvg]] & [[http://ffmpeg.org/][ffmpeg]] (only needed for =./makevideo=)
+
+** Dependencies
+
+The library itself has no 3rd party dependencies. Some of the examples
+however use these additional libs:
+
+- [[https://github.com/thi-ng/ct-head][ct-head]] (included as submodule)
+- [[https://github.com/nothings/stb][stb_image]] (bundled under =/examples/common=)
+- [[http://www.glfw.org/][GLFW3.2+]]
 
 ** Examples
 *** Build all examples
@@ -143,6 +162,8 @@ make config=release_sse ex-dla && bin/release/ex-dla > assets/dla.svg
 [[./examples/glfw/ex01.c][Source]] | [[http://c.thi.ng/glfw/01/][Online demo]]
 
 [[./assets/glfw01.jpg]]
+
+See [[#dependencies][dependencies]] for details...
 
 #+BEGIN_SRC shell
 # build library & example app
@@ -261,25 +282,6 @@ these points into the voronoi example.
 bin/release/ex-poisson -b 00ffff -f 0000ff -q 500 -m 2 -x 16 -t assets/iris.jpg | \
 bin/release/ex-voronoi -p -w 757 -h 450 > iris-voronoi.svg
 #+END_SRC
-
-** Requirements
-
-- [[https://premake.github.io/][Premake5]]
-- [[http://www.gnu.org/software/make/][GNU Make]]
-- GCC / Clang (w/ C11 support)
-- [[https://github.com/emcrisostomo/fswatch][fswatch]] (only needed for =./autotest= runner)
-- [[http://emscripten.org][emscripten]] & [[http://nodejs.org][node]] (only needed for asm.js x-compilation via =./compile=)
-- [[http://cscope.sourceforge.net/][cscope]] (only needed for =./browse=)
-- [[https://wiki.gnome.org/Projects/LibRsvg][rsvg]] & [[http://ffmpeg.org/][ffmpeg]] (only needed for =./makevideo=)
-
-** Dependencies
-
-The library itself has no 3rd party dependencies. Some of the examples
-however use these additional libs:
-
-- [[https://github.com/thi-ng/ct-head][ct-head]] (included as submodule)
-- [[https://github.com/nothings/stb][stb_image]] (bundled under =/examples/common=)
-- [[http://www.glfw.org/][GLFW3.2+]]
 
 ** Build & test
 
