@@ -26,6 +26,8 @@
      - [[#build-source-x-ref][Build source x-ref]]
      - [[#disassemble--list-symbols][Disassemble & list symbols]]
      - [[#compile-with-emscripten][Compile with emscripten]]
+         - [[#build-as-library-for-emcc][Build as library for emcc]]
+         - [[#run-test-suite-in-browser][Run test suite in browser]]
      - [[#build-customization][Build customization]]
      - [[#contributors][Contributors]]
      - [[#license][License]]
@@ -361,7 +363,16 @@ nm -g -j bin/release/libcthing.a | grep --color=never _ct_
 #+END_SRC
 
 ** Compile with emscripten
+*** Build as library for emcc
 
+Also see [[#glfw-desktop--emscripten][GLFW example]] for further details...
+
+#+BEGIN_SRC shell
+  # build LLVM bitcode version for future linking with other sources
+  ./compile-bc
+#+END_SRC
+
+*** Run test suite in browser
 #+BEGIN_SRC shell
   # help / usage
   ./compile -h
@@ -387,13 +398,9 @@ nm -g -j bin/release/libcthing.a | grep --color=never _ct_
 
 ** Build customization
 
-The following =defines= can be used to customize behavior:
-
-| =CT_FEATURE_LOG=       | enable logging (if =NDEBUG= is defined, the debug log level is disabled) |
-| =CT_FEATURE_ANSI=      | use ANSI colors in log messages                                          |
-| =CT_FEATURE_CHECKS=    | enable runtime assertions (via =CT_CHECK= macro)                         |
-| =CT_FEATURE_CHECK_MEM= | enable runtime memory checks (via =CT_CHECK_MEM= macro)                  |
-| =CT_FEATURE_SSE=       | enable SSE version                                                       |
+This project utilizes feature macros defined in the [[https://github.com/thi-ng/ct-head][thi.ng/ct-head]]
+project. Please see documentation there for further reference to
+customize behavior.
 
 ** Contributors
 
