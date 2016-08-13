@@ -39,7 +39,11 @@ CT_Mat4f *ct_mat4f_rotate_axis(const CT_Mat4f *m,
                                const CT_Vec3f *axis,
                                float theta,
                                CT_Mat4f *out);
+
 CT_Vec4f *ct_mat4f_transform4fv_imm(const CT_Mat4f *m, CT_Vec4f *v);
+
+float ct_mat4f_determinant(const CT_Mat4f *m);
+CT_Mat4f *ct_mat4f_invert(const CT_Mat4f *m, CT_Mat4f *out);
 
 CT_Mat4f *ct_mat4f_set_ortho(CT_Mat4f *m,
                              float l,

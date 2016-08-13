@@ -258,6 +258,64 @@ ct_export CT_Mat4f *ct_mat4f_rotatez_imm(CT_Mat4f *m, float theta) {
 
 #endif
 
+ct_export float ct_mat4f_determinant(const CT_Mat4f *m) {
+  float s00 = m->m00 * m->m11 - m->m01 * m->m10;
+  float s01 = m->m00 * m->m12 - m->m02 * m->m10;
+  float s02 = m->m00 * m->m13 - m->m03 * m->m10;
+  float s03 = m->m01 * m->m12 - m->m02 * m->m11;
+  float s04 = m->m01 * m->m13 - m->m03 * m->m11;
+  float s05 = m->m02 * m->m13 - m->m03 * m->m12;
+  float c00 = m->m20 * m->m31 - m->m21 * m->m30;
+  float c01 = m->m20 * m->m32 - m->m22 * m->m30;
+  float c02 = m->m20 * m->m33 - m->m23 * m->m30;
+  float c03 = m->m21 * m->m32 - m->m22 * m->m31;
+  float c04 = m->m21 * m->m33 - m->m23 * m->m31;
+  float c05 = m->m22 * m->m33 - m->m23 * m->m32;
+  return s00 * c05 - s01 * c04 - s04 * c01 + s02 * c03 + s03 * c02 + s05 * c00;
+}
+
+ct_export CT_Mat4f *ct_mat4f_invert(const CT_Mat4f *m, CT_Mat4f *out) {
+  float s00 = m->m00 * m->m11 - m->m01 * m->m10;
+  float s01 = m->m00 * m->m12 - m->m02 * m->m10;
+  float s02 = m->m00 * m->m13 - m->m03 * m->m10;
+  float s03 = m->m01 * m->m12 - m->m02 * m->m11;
+  float s04 = m->m01 * m->m13 - m->m03 * m->m11;
+  float s05 = m->m02 * m->m13 - m->m03 * m->m12;
+  float c00 = m->m20 * m->m31 - m->m21 * m->m30;
+  float c01 = m->m20 * m->m32 - m->m22 * m->m30;
+  float c02 = m->m20 * m->m33 - m->m23 * m->m30;
+  float c03 = m->m21 * m->m32 - m->m22 * m->m31;
+  float c04 = m->m21 * m->m33 - m->m23 * m->m31;
+  float c05 = m->m22 * m->m33 - m->m23 * m->m32;
+  float det =
+      s00 * c05 - s01 * c04 - s04 * c01 + s02 * c03 + s03 * c02 + s05 * c00;
+  if (!det)
+    return NULL;
+  det = 1.0 / det;
+
+  out->m00 = (m->m11 * c05 - m->m12 * c04 + m->m13 * c03) * det;
+  out->m01 = (-m->m01 * c05 + m->m02 * c04 - m->m03 * c03) * det;
+  out->m02 = (m->m31 * s05 - m->m32 * s04 + m->m33 * s03) * det;
+  out->m03 = (-m->m21 * s05 + m->m22 * s04 - m->m23 * s03) * det;
+
+  out->m10 = (-m->m10 * c05 + m->m12 * c02 - m->m13 * c01) * det;
+  out->m11 = (m->m00 * c05 - m->m02 * c02 + m->m03 * c01) * det;
+  out->m12 = (-m->m30 * s05 + m->m32 * s02 - m->m33 * s01) * det;
+  out->m13 = (m->m20 * s05 - m->m22 * s02 + m->m23 * s01) * det;
+
+  out->m20 = (m->m10 * c04 - m->m11 * c02 + m->m13 * c00) * det;
+  out->m21 = (-m->m00 * c04 + m->m01 * c02 - m->m03 * c00) * det;
+  out->m22 = (m->m30 * s04 - m->m31 * s02 + m->m33 * s00) * det;
+  out->m23 = (-m->m20 * s04 + m->m21 * s02 - m->m23 * s00) * det;
+
+  out->m30 = (-m->m10 * c03 + m->m11 * c01 - m->m12 * c00) * det;
+  out->m31 = (m->m00 * c03 - m->m01 * c01 + m->m02 * c00) * det;
+  out->m32 = (-m->m30 * s03 + m->m31 * s01 - m->m32 * s00) * det;
+  out->m33 = (m->m20 * s03 - m->m21 * s01 + m->m22 * s00) * det;
+
+  return out;
+}
+
 ct_export CT_Mat4f *ct_mat4f_rotate_axis_imm(CT_Mat4f *m,
                                              const CT_Vec3f *axis,
                                              float theta) {

@@ -13,8 +13,6 @@
 #include "math/matrix.h"
 #include "math/vec.h"
 
-#include "linmath.h"
-
 #ifndef ASSET_PATH
 #ifdef __EMSCRIPTEN__
 #define ASSET_PATH "assets"

@@ -79,9 +79,8 @@ void render() {
   ct_mat4f_set_lookat(&view, &eye, &target, &up);
   ct_mat4f_set_perspective(&proj, 60, aspect, 0.1, 10);
 
-  ct_mat4f_mul(&view, &model, &t);
-  mat4x4_invert((vec4*)&nmat, (vec4*)&t);  // TODO
-  ct_mat4f_transpose_imm(&nmat);
+  ct_mat4f_transpose_imm(
+      ct_mat4f_invert(ct_mat4f_mul(&view, &model, &t), &nmat));
 
   glUseProgram(program);
   glUniformMatrix4fv(model_loc, 1, GL_FALSE, (GLfloat*)&model);
