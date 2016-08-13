@@ -8,7 +8,7 @@ SRC_DIRS="src/data src/geom src/geom/clip src/math src/mem src/sim"
 for d in $SRC_DIRS; do for f in `ls $d/*.c`; do SRC="$SRC $f"; done; done;
 
 TESTS=
-CFLAGS="-std=c11 -O3 -Isrc"
+CFLAGS="-std=c11 -O3 -Isrc -Iext"
 EMFLAGS="-s ASM_JS=1 -s ASSERTIONS=0 -s INVOKE_RUN=0 -s AGGRESSIVE_VARIABLE_ELIMINATION=1 -s MODULARIZE=1 -s NO_EXIT_RUNTIME=1 -s TOTAL_MEMORY='48*1024*1024' --js-library src/rt_cthing.js"
 OUT=cthing.js
 MIN=cthing.min.js

@@ -78,6 +78,8 @@ TBD
 *** Build all examples
 
 #+BEGIN_SRC shell
+git clone --recursive https://github.com/thi-ng/c-thing
+
 premake gmake
 make config=release_sse
 #+END_SRC
@@ -161,7 +163,7 @@ To compile with Emscripten & open in browser: [[http://localhost:8000/glfw.html]
        --llvm-lto 1 \
        --closure 1 \
        --preload-file assets/suzanne.stl \
-       -Isrc \
+       -Isrc -Iext \
        -o glfw.html \
        examples/glfw/*.c obj/libcthing.bc
 
@@ -273,6 +275,7 @@ bin/release/ex-voronoi -p -w 757 -h 450 > iris-voronoi.svg
 The library itself has no 3rd party dependencies. Some of the examples
 however use these additional libs:
 
+- [[https://github.com/thi-ng/ct-head][ct-head]] (included as submodule)
 - [[https://github.com/nothings/stb][stb_image]] (bundled under =/examples/common=)
 - [[http://www.glfw.org/][GLFW3.2+]]
 
