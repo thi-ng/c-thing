@@ -13,6 +13,7 @@
          - [[#1d2d-cellular-automata][1D/2D Cellular automata]]
          - [[#convex-hull][Convex Hull]]
          - [[#diffusion-limited-aggregation][Diffusion-Limited Aggregation]]
+     - [[#glfw-desktop--emscripten][GLFW (desktop & emscripten)]]
          - [[#poisson-disc-sampling-image-conversion][Poisson disc sampling image conversion]]
          - [[#polygon-clipping-greiner-hormann][Polygon clipping (Greiner-Hormann)]]
          - [[#polygon-offsetting][Polygon offsetting]]
@@ -133,6 +134,39 @@ make config=release_sse ex-chull && bin/release/ex-chull > assets/chull.svg
 make config=release_sse ex-dla && bin/release/ex-dla > assets/dla.svg
 #+END_SRC
 
+** GLFW (desktop & emscripten)
+
+[[./examples/glfw/ex01.c][Source]]
+
+[[./assets/glfw01.jpg]]
+
+#+BEGIN_SRC shell
+# build library & example app
+make config=release_sse ex-glfw01 && bin/release/ex-glfw01
+#+END_SRC
+
+*Note:* Desktop version currently only has build settings for OSX.
+
+To compile with Emscripten & open in browser: http://localhost:8000/glfw.html
+
+#+BEGIN_SRC shell
+  # build LLVM bitcode of library (libcthing.bc)
+  ./compile-bc
+
+  # compile example for browser & link with lib
+  emcc -Os -DCT_FEATURE_LOG -DNDEBUG \
+       -s 'USE_GLFW=3' \
+       -s 'ELIMINATE_DUPLICATE_FUNCTIONS=1' \
+       --closure 1 \
+       --preload-file assets/suzanne.stl \
+       -Isrc \
+       -o glfw.html \
+       examples/glfw/*.c libcthing.bc
+
+  # launch server
+  python -m SimpleHTTPServer
+#+END_SRC
+
 *** Poisson disc sampling image conversion
 
 [[./examples/poisson/main.c][Source]]
@@ -238,6 +272,7 @@ The library itself has no 3rd party dependencies. Some of the examples
 however use these additional libs:
 
 - [[https://github.com/nothings/stb][stb_image]] (bundled under =/examples/common=)
+- [[http://www.glfw.org/][GLFW3.2+]]
 
 ** Build & test
 
