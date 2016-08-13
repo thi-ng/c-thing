@@ -157,3 +157,14 @@ includedirs { "examples/common", "examples/voronoi" }
 links "lib"
 dependson "lib"
 flags { "LinkTimeOptimization" }
+
+----- glfw -----
+
+project "ex-glfw01"
+kind "ConsoleApp"
+files { "examples/glfw/*.c" }
+includedirs { "examples/common", "examples/glfw" }
+links "lib"
+dependson "lib"
+flags { "LinkTimeOptimization" }
+linkoptions { "-lglfw3", "-framework Cocoa", "-framework OpenGL" }

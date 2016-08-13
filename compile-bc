@@ -4,7 +4,7 @@ SRC=;
 SRC_DIRS="src/data src/geom src/geom/clip src/math src/mem src/sim"
 for d in $SRC_DIRS; do for f in `ls $d/*.c`; do SRC="$SRC $f"; done; done;
 
-CFLAGS="-std=c11 -O2 -Isrc -DCT_NO_EXPORT"
+CFLAGS="-std=c11 -Os -Isrc -DCT_NO_EXPORT"
 EMFLAGS="-s ASM_JS=1 -s ASSERTIONS=0 --js-library src/rt_cthing.js"
 OUT=libcthing.bc
 
