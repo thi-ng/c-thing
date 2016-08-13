@@ -40,11 +40,11 @@ float *read_stl_binary(const char *path, uint32_t *num) {
     // skip face attrib + next normal
     fseek(f, 2 + 3 * sizeof(float), SEEK_CUR);
 
-// memcpy needed for potential SSE alignment
 #ifdef CT_FEATURE_SSE
-    memcpy(&a, &buf[j], 12);
-    memcpy(&b, &buf[j + 6], 12);
-    memcpy(&c, &buf[j + 12], 12);
+    // memcpy needed for SSE alignment
+    memcpy(&a, &buf[j], 3 * sizeof(float));
+    memcpy(&b, &buf[j + 6], 3 * sizeof(float));
+    memcpy(&c, &buf[j + 12], 3 * sizeof(float));
     ct_orthonormal3fv(&a, &b, &c, &n);
 #else
     ct_orthonormal3fv((CT_Vec3f *)&buf[j], (CT_Vec3f *)&buf[j + 6],

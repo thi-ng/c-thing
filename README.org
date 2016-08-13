@@ -136,7 +136,7 @@ make config=release_sse ex-dla && bin/release/ex-dla > assets/dla.svg
 
 *** GLFW (desktop & emscripten)
 
-[[./examples/glfw/ex01.c][Source]]
+[[./examples/glfw/ex01.c][Source]] | [[http://c.thi.ng/glfw/01/][Online demo]]
 
 [[./assets/glfw01.jpg]]
 
@@ -147,7 +147,7 @@ make config=release_sse ex-glfw01 && bin/release/ex-glfw01
 
 *Note:* Desktop version currently only has build settings for OSX.
 
-To compile with Emscripten & open in browser: http://localhost:8000/glfw.html
+To compile with Emscripten & open in browser: [[http://localhost:8000/glfw.html][http://localhost:8000/glfw.html]]
 
 #+BEGIN_SRC shell
   # build LLVM bitcode of library (libcthing.bc)

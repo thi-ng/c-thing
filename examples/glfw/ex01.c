@@ -1,17 +1,15 @@
-// emcc -Os -DCT_FEATURE_LOG -DNDEBUG -s 'USE_GLFW=3' -s 'ELIMINATE_DUPLICATE_FUNCTIONS=1' --closure 1 -Isrc -o glfw.html --preload-file assets/suzanne.stl examples/glfw/*.c libcthing.bc
-
 #include "glfw_example.h"
 
 extern const char* phong_vs_src;
 extern const char* phong_fs_src;
 
 GLFWwindow* window;
-GLuint vertex_buffer, program;
+GLuint vbo, program;
 GLint model_loc, nmat_loc, view_loc, proj_loc;
-GLint pos_loc, normal_loc;
 
-double mpos[2], zoom = 1;
-bool isFullsceen;
+double mpos[] = {320, 240};
+double zoom   = 1;
+bool is_fullsceen;
 float* vertices;
 uint32_t numFaces;
 
@@ -30,8 +28,8 @@ static void key_callback(GLFWwindow* window,
     }
 #ifndef __EMSCRIPTEN__
     if (key == GLFW_KEY_F) {
-      isFullsceen = !isFullsceen;
-      if (isFullsceen) {
+      is_fullsceen = !is_fullsceen;
+      if (is_fullsceen) {
         glfwSetWindowMonitor(window, glfwGetPrimaryMonitor(), 0, 0, 1280, 720,
                              60);
       } else {
@@ -82,14 +80,14 @@ void render() {
   ct_mat4f_set_perspective(&proj, 60, aspect, 0.1, 10);
 
   ct_mat4f_mul(&view, &model, &t);
-  mat4x4_invert((vec4*)&nmat, (vec4*)&t);
+  mat4x4_invert((vec4*)&nmat, (vec4*)&t);  // TODO
   ct_mat4f_transpose_imm(&nmat);
 
   glUseProgram(program);
-  glUniformMatrix4fv(model_loc, 1, GL_FALSE, (const GLfloat*)&model);
-  glUniformMatrix4fv(view_loc, 1, GL_FALSE, (const GLfloat*)&view);
-  glUniformMatrix4fv(proj_loc, 1, GL_FALSE, (const GLfloat*)&proj);
-  glUniformMatrix4fv(nmat_loc, 1, GL_FALSE, (const GLfloat*)&nmat);
+  glUniformMatrix4fv(model_loc, 1, GL_FALSE, (GLfloat*)&model);
+  glUniformMatrix4fv(view_loc, 1, GL_FALSE, (GLfloat*)&view);
+  glUniformMatrix4fv(proj_loc, 1, GL_FALSE, (GLfloat*)&proj);
+  glUniformMatrix4fv(nmat_loc, 1, GL_FALSE, (GLfloat*)&nmat);
   glUniform3f(glGetUniformLocation(program, "lightPos"), 0, 1, 2);
   glUniform3f(glGetUniformLocation(program, "ambientCol"), 0.05, 0.1, 0.2);
   glUniform3f(glGetUniformLocation(program, "diffuseCol"), 0.05, 0.8, 1);
@@ -130,8 +128,8 @@ int main(void) {
   glfwSwapInterval(1);
 
   CT_TIMED(vertices = read_stl_binary(ASSET_PATH "/suzanne.stl", &numFaces));
-  glGenBuffers(1, &vertex_buffer);
-  glBindBuffer(GL_ARRAY_BUFFER, vertex_buffer);
+  glGenBuffers(1, &vbo);
+  glBindBuffer(GL_ARRAY_BUFFER, vbo);
   glBufferData(GL_ARRAY_BUFFER, numFaces * 18 * sizeof(float), vertices,
                GL_STATIC_DRAW);
 
@@ -144,15 +142,15 @@ int main(void) {
   CT_DEBUG("model: %d, view: %d, proj: %d, nmat: %d", model_loc, view_loc,
            proj_loc, nmat_loc);
 
-  pos_loc    = glGetAttribLocation(program, "position");
-  normal_loc = glGetAttribLocation(program, "normal");
-  CT_DEBUG("pos: %d, norm: %d", pos_loc, normal_loc);
+  GLint pos    = glGetAttribLocation(program, "position");
+  GLint normal = glGetAttribLocation(program, "normal");
+  CT_DEBUG("pos: %d, norm: %d", pos, normal);
 
-  glEnableVertexAttribArray(pos_loc);
-  glVertexAttribPointer(pos_loc, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float),
+  glEnableVertexAttribArray(pos);
+  glVertexAttribPointer(pos, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float),
                         (void*)0);
-  glEnableVertexAttribArray(normal_loc);
-  glVertexAttribPointer(normal_loc, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float),
+  glEnableVertexAttribArray(normal);
+  glVertexAttribPointer(normal, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float),
                         (void*)(sizeof(float) * 3));
 #ifdef __EMSCRIPTEN__
   emscripten_set_main_loop(render, 0, 1);
