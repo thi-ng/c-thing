@@ -8,15 +8,15 @@ CT_TEST_DECLS
 
 static char buf[256];
 
-#define ASSERT_VEC(a, n, ...)                                             \
-  {                                                                       \
+#define ASSERT_VEC(a, n, ...)                                                \
+  {                                                                          \
     int res = ct_array_compare_f32((float*)a, FVEC(__VA_ARGS__), CT_EPS, n); \
-    __testAsserts++;                                                      \
-    if (res) {                                                            \
-      ct_array_tostring_f32(buf, 256, (float*)a, n, 1);                   \
-      CT_ERROR("%s", buf);                                                \
-      return 1;                                                           \
-    }                                                                     \
+    __testAsserts++;                                                         \
+    if (res) {                                                               \
+      ct_array_tostring_f32(buf, 256, (float*)a, n, 1);                      \
+      CT_ERROR("%s", buf);                                                   \
+      return 1;                                                              \
+    }                                                                        \
   }
 
 #define ASSERT_VEC4F(v, ...) ASSERT_VEC(v, 4, __VA_ARGS__)

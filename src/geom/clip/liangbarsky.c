@@ -1,24 +1,24 @@
 #include "geom/clip/liangbarsky.h"
 
-#define CLIP_LB(pp, qq)         \
-  p = (pp);                     \
-  q = (qq);                     \
+#define CLIP_LB(pp, qq)            \
+  p = (pp);                        \
+  q = (qq);                        \
   if (q < 0 && fabs(p) < CT_EPS) { \
-    return 0;                   \
-  }                             \
-  r = q / p;                    \
-  if (p < 0) {                  \
-    if (r > b) {                \
-      return 0;                 \
-    } else if (r > a) {         \
-      a = r;                    \
-    }                           \
-  } else if (p > 0) {           \
-    if (r < a) {                \
-      return 0;                 \
-    } else if (r < b) {         \
-      b = r;                    \
-    }                           \
+    return 0;                      \
+  }                                \
+  r = q / p;                       \
+  if (p < 0) {                     \
+    if (r > b) {                   \
+      return 0;                    \
+    } else if (r > a) {            \
+      a = r;                       \
+    }                              \
+  } else if (p > 0) {              \
+    if (r < a) {                   \
+      return 0;                    \
+    } else if (r < b) {            \
+      b = r;                       \
+    }                              \
   }
 
 // https://en.wikipedia.org/wiki/Liang%E2%80%93Barsky_algorithm

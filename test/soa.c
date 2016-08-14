@@ -42,8 +42,10 @@ int test_soa() {
   reset_soa2(&a, &b);
 
   ct_soa_add1f_imm(&a, 10);
-  CT_IS(0 == ct_array_compare_f32(xa, FVEC(11, 12, 13, 14), CT_EPS, NUM), "add1x");
-  CT_IS(0 == ct_array_compare_f32(ya, FVEC(11, 12, 13, 14), CT_EPS, NUM), "add1y");
+  CT_IS(0 == ct_array_compare_f32(xa, FVEC(11, 12, 13, 14), CT_EPS, NUM),
+        "add1x");
+  CT_IS(0 == ct_array_compare_f32(ya, FVEC(11, 12, 13, 14), CT_EPS, NUM),
+        "add1y");
 
   reset_soa2(&a, &b);
   ct_soa_add1fp_imm(&a, xb);
@@ -57,8 +59,10 @@ int test_soa() {
   CT_IS(14 == v2.x && 24 == v2.y, "get2f");
 
   ct_soa_max_imm(&a, &b);
-  CT_IS(0 == ct_array_compare_f32(xa, FVEC(11, 20, 30, 40), CT_EPS, NUM), "max x");
-  CT_IS(0 == ct_array_compare_f32(ya, FVEC(21, 22, 30, 40), CT_EPS, NUM), "max y");
+  CT_IS(0 == ct_array_compare_f32(xa, FVEC(11, 20, 30, 40), CT_EPS, NUM),
+        "max x");
+  CT_IS(0 == ct_array_compare_f32(ya, FVEC(21, 22, 30, 40), CT_EPS, NUM),
+        "max y");
 
   float *flat = ct_soa_flatten(&a, NULL);
   CT_IS(flat, "flat == NULL");
@@ -73,8 +77,10 @@ int test_soa() {
 
   reset_soa2(&a, &b);
   ct_soa_add_imm(&a, &b);
-  CT_IS(0 == ct_array_compare_f32(xa, FVEC(11, 22, 33, 44), CT_EPS, NUM), "addx");
-  CT_IS(0 == ct_array_compare_f32(ya, FVEC(11, 22, 33, 44), CT_EPS, NUM), "addy");
+  CT_IS(0 == ct_array_compare_f32(xa, FVEC(11, 22, 33, 44), CT_EPS, NUM),
+        "addx");
+  CT_IS(0 == ct_array_compare_f32(ya, FVEC(11, 22, 33, 44), CT_EPS, NUM),
+        "addy");
 
   reset_soa2(&a, &b);
   ct_soa_dot2(&a, &b, xa);
@@ -113,8 +119,8 @@ int test_soa() {
   ct_soa_add_imm(aa, aa);
   for (size_t i = 0; i < aa->width; i++) {
     float *dc = data + i * aa->num;
-    CT_IS(0 == ct_array_compare_f32(aa->comps[i], dc, CT_EPS, aa->num), "row %zu",
-          i);
+    CT_IS(0 == ct_array_compare_f32(aa->comps[i], dc, CT_EPS, aa->num),
+          "row %zu", i);
   }
   //trace_soa(aa);
   ct_soa_free(aa);

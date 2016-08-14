@@ -6,14 +6,16 @@
 
 CT_TEST_DECLS
 
-#define ASSERT_VEC2F(v, xx, yy)                                           \
-  CT_IS(ct_deltaeqf((v)->x, (xx), CT_EPS) && ct_deltaeqf((v)->y, (yy), CT_EPS), \
-        "[%f,%f] != [%f,%f]\n", (v)->x, (v)->y, (float)(xx), (float)(yy));
+#define ASSERT_VEC2F(v, xx, yy)                                               \
+  CT_IS(                                                                      \
+      ct_deltaeqf((v)->x, (xx), CT_EPS) && ct_deltaeqf((v)->y, (yy), CT_EPS), \
+      "[%f,%f] != [%f,%f]\n", (v)->x, (v)->y, (float)(xx), (float)(yy));
 
-#define ASSERT_VEC3F(v, xx, yy, zz)                                         \
-  CT_IS(ct_deltaeqf((v)->x, (xx), CT_EPS) && ct_deltaeqf((v)->y, (yy), CT_EPS) && \
-            ct_deltaeqf((v)->z, (zz), CT_EPS),                                 \
-        "[%f,%f,%f] = [%f,%f,%f]\n", (v)->x, (v)->y, (v)->z, (float)(xx),   \
+#define ASSERT_VEC3F(v, xx, yy, zz)                                       \
+  CT_IS(ct_deltaeqf((v)->x, (xx), CT_EPS) &&                              \
+            ct_deltaeqf((v)->y, (yy), CT_EPS) &&                          \
+            ct_deltaeqf((v)->z, (zz), CT_EPS),                            \
+        "[%f,%f,%f] = [%f,%f,%f]\n", (v)->x, (v)->y, (v)->z, (float)(xx), \
         (float)(yy), (float)(zz));
 
 int test_vec2f() {
