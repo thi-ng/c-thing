@@ -74,10 +74,12 @@ GLuint init_shader(GLenum type, const char *src) {
   GLuint shader = glCreateShader(type);
   glShaderSource(shader, 1, &src, NULL);
   glCompileShader(shader);
-  glGetShaderInfoLog(shader, 0x400, &status, log);
-  CT_CHECK(!status, "shader error: %s", log);
+  glGetShaderiv(shader, GL_COMPILE_STATUS, &status);
+  CT_CHECK(status == GL_TRUE, "shader compiler error: %d", status);
   return shader;
 fail:
+  glGetShaderInfoLog(shader, 0x400, &status, log);
+  CT_ERROR("%s", log);
   exit(1);
 }
 
@@ -93,7 +95,7 @@ GLuint init_shader_program(const char *vsrc, const char *fsrc) {
   glGetProgramiv(program, GL_LINK_STATUS, &status);
   glDeleteShader(vs);
   glDeleteShader(fs);
-  CT_CHECK(!status, "link error: %d", status);
+  CT_CHECK(status == GL_TRUE, "link error: %d", status);
   return program;
 fail:
   exit(1);

@@ -1,3 +1,5 @@
+#include "ct-head/random.h"
+
 #include "io/svg.h"
 #include "math/math.h"
 #include "math/vec.h"

@@ -1,6 +1,8 @@
 #include <string.h>
 #include <unistd.h>
 
+#include "ct-head/random.h"
+
 #include "io/svg.h"
 #include "math/math.h"
 #include "math/poisson.h"

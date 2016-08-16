@@ -1,5 +1,6 @@
 #include <string.h>
 
+#include "ct-head/random.h"
 #include "ct-head/test.h"
 
 #include "data/hashset.h"

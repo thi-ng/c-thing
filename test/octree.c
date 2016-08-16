@@ -1,3 +1,4 @@
+#include "ct-head/random.h"
 #include "ct-head/test.h"
 
 #include "data/octree.h"

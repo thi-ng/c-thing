@@ -1,3 +1,5 @@
+#include "ct-head/random.h"
+
 #include "geom/hull.h"
 #include "io/svg.h"
 

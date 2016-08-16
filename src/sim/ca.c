@@ -1,6 +1,8 @@
 #include <stdio.h>
 #include <string.h>
 
+#include "ct-head/random.h"
+
 #include "math/math.h"
 #include "sim/ca.h"
 

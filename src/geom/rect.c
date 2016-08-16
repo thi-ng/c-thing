@@ -1,3 +1,5 @@
+#include "ct-head/random.h"
+
 #include "geom/rect.h"
 
 ct_export float ct_rect2f_area(const CT_Rect2f *r) {

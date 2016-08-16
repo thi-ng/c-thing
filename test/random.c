@@ -1,6 +1,5 @@
+#include "ct-head/random.h"
 #include "ct-head/test.h"
-
-#include "math/random.h"
 
 CT_TEST_DECLS
 

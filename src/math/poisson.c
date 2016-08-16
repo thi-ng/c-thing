@@ -1,5 +1,7 @@
 #include <math.h>
 
+#include "ct-head/random.h"
+
 #include "geom/isec.h"
 #include "math/poisson.h"
 

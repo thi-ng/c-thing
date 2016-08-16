@@ -1,5 +1,7 @@
 #include <float.h>
 
+#include "ct-head/random.h"
+
 #include "data/spatialgrid.h"
 #include "io/svg.h"
 #include "math/math.h"
