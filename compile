@@ -51,7 +51,7 @@ while getopts acdehkmstD: opt; do
         m) CFLAGS="$CFLAGS -DCT_FEATURE_CHECK_MEM"
            ;;
         t) CFLAGS="$CFLAGS -DNDEBUG -DCT_FEATURE_LOG"
-           TESTS="src/test/test.c"
+           TESTS="ext/ct-head/test.c"
            for f in `ls test/*.c`; do TESTS="$TESTS $f"; done;
            ;;
         h) usage
