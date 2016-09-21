@@ -362,7 +362,7 @@ static CT_Cons *compute_offset_vertices(CT_PolyOffsetContext *ctx,
   }
   const int outward    = dist > 0;
   const int meterLimit = 1 - (ctx->res < 0);
-  CT_INFO("res: %d, ml: %d", ctx->res, meterLimit);
+  CT_DEBUG("res: %d, ml: %d", ctx->res, meterLimit);
   dist              = fabs(dist);
   CT_Cons *vertices = NULL, *vcurr = NULL;
   for (i = 0; i < numE; i++) {

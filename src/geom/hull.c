@@ -3,7 +3,7 @@
 static size_t hull2f(CT_Vec2f *points, size_t num, CT_Vector *h) {
   size_t len = 0;
   for (size_t i = 0; i < num; i++) {
-    while (len >= 2 &&
+    while (CT_LIKELY(len >= 2) &&
            ct_cross2fv3(&((CT_Vec2f *)h->buffer)[h->num - 2],
                         &((CT_Vec2f *)h->buffer)[h->num - 1],
                         &points[i]) >= 0) {

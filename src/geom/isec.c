@@ -18,10 +18,11 @@ ct_export int ct_intersect_lines(const CT_Vec2f *a,
   if (det == 0) {
     return -1;
   }
+  det       = 1 / det;
   float acx = a->x - c->x;
   float acy = a->y - c->y;
-  *alpha    = (dcx * acy - dcy * acx) / det;
-  *beta     = (bax * acy - bay * acx) / det;
+  *alpha    = (dcx * acy - dcy * acx) * det;
+  *beta     = (bax * acy - bay * acx) * det;
   ct_mix2fv(a, b, *alpha, isec);
   return (0 < *alpha && *alpha < 1) && (0 < *beta && *beta < 1);
 }
